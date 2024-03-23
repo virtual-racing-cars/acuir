@@ -88,6 +88,30 @@ function TopBar()
 		rgbm.colors.white
 	)
 
+	ui.setCursorX(sim.windowWidth - 900 * UI_SCALE_X / 100)
+	setCursorY(0)
+	ui.dwriteTextAligned(
+		ac.getCarName(0),
+		infoFontSize,
+		ui.Alignment.Start,
+		ui.Alignment.Start,
+		vec2(300, 22),
+		false,
+		rgbm.colors.white
+	)
+
+	-- ui.setCursorX(sim.windowWidth - 900 * UI_SCALE_X / 100)
+	-- setCursorY(30)
+	-- ui.dwriteTextAligned(
+	-- 	ac.(0),
+	-- 	infoFontSize,
+	-- 	ui.Alignment.Start,
+	-- 	ui.Alignment.Start,
+	-- 	vec2(300, 22),
+	-- 	false,
+	-- 	rgbm.colors.white
+	-- )
+
 	ui.setCursorX(sim.windowWidth - 300 * UI_SCALE_X / 100)
 	setCursorY(0)
 	if ui.modernButtonAdvanced("##Restart", buttonSize, ui.ButtonFlags.None, ui.Icons.Restart) then

@@ -47,7 +47,7 @@ function SettingsList(sim)
 	setCursorX(450)
 	setCursorY(110)
 
-	ui.childWindow("audio", vec2(800, 960), false, ui.WindowFlags.None, function()
+	ui.childWindow("settings_window", vec2(800, 960), false, ui.WindowFlags.None, function()
 		ui.drawRectFilled(vec2(0, 0), ui.availableSpace(), rgbm(0.1, 0.1, 0.1, 0.5), 0, ui.CornerFlags.None)
 
 		if storage.settingsTab == "GENERAL" then

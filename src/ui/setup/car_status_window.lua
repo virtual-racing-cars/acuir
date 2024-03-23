@@ -4,7 +4,7 @@ local setupSpinnersWindowSize = vec2(875 * UI_SCALE_X / 100, 450 * UI_SCALE_Y / 
 
 local setupSpinnersWindowHeaderSize = vec2(875 * UI_SCALE_X / 100, 50 * UI_SCALE_Y / 100)
 
-function SetupInfoWindow()
+function CarStatusWindow()
 	setCursorX(400)
 	setCursorY(570)
 	ui.childWindow("setup_info_window", setupSpinnersWindowSize, false, ui.WindowFlags.None, function()

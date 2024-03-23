@@ -1,13 +1,13 @@
 function SideBar(sim)
 	ui.drawRectFilled(
-		vec2(0, UI_SCALE_X),
-		vec2(UI_SCALE_X, sim.windowHeight),
+		vec2(0, UI_SCALE_Y),
+		vec2(UI_SCALE_Y, sim.windowHeight),
 		settings.uiPrimaryColor,
 		0,
 		ui.CornerFlags.None
 	)
 
-	setCursorY(110)
+	setCursorY(100)
 	if
 		ui.modernButtonAdvanced(
 			"##drive",
