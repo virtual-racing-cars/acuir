@@ -28,9 +28,7 @@ end
 
 local buttonSize = vec2(32 * UI_SCALE_Y / 100, 32 * UI_SCALE_Y / 100)
 function SPINNER:button(direction)
-	if
-		ui.arrowButton("##" .. direction .. self.id, ui.Direction[direction], buttonSize, ui.ButtonFlags.PressedOnClick)
-	then
+	if ui.arrowButtonAdvanced("##" .. direction .. self.id, direction, buttonSize, ui.ButtonFlags.PressedOnClick) then
 		self.value = direction == "Left" and (self.value - self.step) or (self.value + self.step)
 		self.buttonHeldTimer[direction] = os.clock() + 0.5
 
@@ -43,6 +41,50 @@ function SPINNER:button(direction)
 	end
 
 	return false
+end
+
+function SPINNER:helpWindow()
+	if self.help ~= "NULL" and self.help ~= "" then
+		local toolWindowSize = vec2(400, 400)
+		setCursorX(1280)
+		setCursorY(110)
+		ui.transparentWindow(
+			"##help" .. self.id,
+			ui.getCursor(),
+			vec2(400, 560 * UI_SCALE_Y / 100),
+			true,
+			false,
+			function()
+				ui.drawRectFilled(vec2(0, 0), ui.availableSpace(), rgbm(0, 0, 0, 0.75))
+				ui.drawRect(vec2(0, 0), ui.availableSpace(), rgbm(1, 1, 1, 0.25), 0, ui.CornerFlags.None)
+
+				ui.bringWindowToFront()
+				setCursorX(0)
+				ui.pushDWriteFont("Default;Weight=Bold")
+				ui.dwriteTextAligned(
+					self.name,
+					20,
+					ui.Alignment.Center,
+					ui.Alignment.Start,
+					toolWindowSize,
+					false,
+					rgbm.colors.white
+				)
+				ui.popDWriteFont()
+
+				ui.drawLine(vec2(15, 40), vec2(385, 40), rgbm.colors.white)
+
+				setCursorX(10)
+				setCursorY(50)
+
+				local helpSections = string.split(self.help, "\\n\\n")
+
+				for i in ipairs(helpSections) do
+					ui.dwriteTextWrapped(helpSections[i], 16, rgbm.colors.white)
+				end
+			end
+		)
+	end
 end
 
 function SPINNER:slider()
@@ -70,35 +112,7 @@ function SPINNER:slider()
 			self.value = ui.mouseWheel() < 0 and (self.value - self.step) or (self.value + self.step)
 		end
 
-		if self.help ~= "NULL" and self.help ~= "" then
-			local toolWindowSize = vec2(400, 400)
-			ui.toolWindow("##" .. self.id, vec2(self.xPos * 450 + 900, self.yPos * 50 + 205), toolWindowSize, function()
-				ui.drawRectFilled(vec2(0, 0), toolWindowSize, rgbm(0, 0, 0, 0.75))
-				ui.bringWindowToFront()
-				setCursorX(0)
-				ui.pushDWriteFont("Default;Weight=Bold")
-				ui.dwriteTextAligned(
-					self.name,
-					20,
-					ui.Alignment.Center,
-					ui.Alignment.Start,
-					toolWindowSize,
-					false,
-					rgbm.colors.white
-				)
-				ui.popDWriteFont()
-
-				ui.drawLine(vec2(15, 40), vec2(385, 40), rgbm.colors.white)
-
-				setCursorY(50)
-
-				local helpSections = string.split(self.help, "\\n\\n")
-
-				for i in ipairs(helpSections) do
-					ui.dwriteTextWrapped(helpSections[i], 16, rgbm.colors.white)
-				end
-			end)
-		end
+		self:helpWindow()
 	end
 
 	return changed
@@ -137,10 +151,13 @@ function SPINNER:run()
 
 	self.itemActive = false
 
-	setCursorX(self.xPos * 450 + 25)
-	setCursorY(self.yPos * 50 + 95)
+	setCursorX(self.xPos * 400 + 14)
+	setCursorY(self.yPos * 50 + 85)
 	if self:button("Left") then
 		self:set()
+	end
+	if ui.itemHovered(ui.HoveredFlags.None) then
+		self:helpWindow()
 	end
 
 	ui.sameLine()
@@ -151,5 +168,8 @@ function SPINNER:run()
 	ui.sameLine()
 	if self:button("Right") then
 		self:set()
+	end
+	if ui.itemHovered(ui.HoveredFlags.None) then
+		self:helpWindow()
 	end
 end

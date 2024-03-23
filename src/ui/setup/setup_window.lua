@@ -3,9 +3,8 @@ require("src\\ui\\setup\\specials")
 
 loadSetupSpinners()
 
-local setupSpinnersWindowSize = vec2(875 * UI_SCALE_X / 100, 560 * UI_SCALE_Y / 100)
-
-local setupSpinnersWindowHeaderSize = vec2(875 * UI_SCALE_X / 100, 50 * UI_SCALE_Y / 100)
+local setupSpinnersWindowSize = vec2(800 * UI_SCALE_X / 100, 560 * UI_SCALE_Y / 100)
+local setupSpinnersWindowHeaderSize = vec2(800 * UI_SCALE_X / 100, 50 * UI_SCALE_Y / 100)
 
 local function setupItemSpinners()
 	SetupSpecialTabs(storage.setupTab)
@@ -32,9 +31,9 @@ local function setupTabBanner()
 end
 
 function SetupWindow()
-	setCursorX(400)
+	setCursorX(350)
 	setCursorY(0)
-	ui.childWindow("car_setup_window", setupSpinnersWindowSize, false, ui.WindowFlags.None, function()
+	childWindow("car_setup_window", setupSpinnersWindowSize, false, ui.WindowFlags.None, function()
 		ui.drawRectFilled(vec2(0, 0), ui.availableSpace(), settings.uiPrimaryColor, 0, ui.CornerFlags.None)
 		ui.drawRect(vec2(0, 0), ui.availableSpace(), rgbm(1, 1, 1, 0.25), 0, ui.CornerFlags.None)
 

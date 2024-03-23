@@ -1,7 +1,7 @@
 function MenuWindow(sim)
 	setCursorX(0)
 	setCursorY(0)
-	ui.childWindow(
+	childWindow(
 		"bars",
 		vec2(sim.windowWidth, sim.windowHeight),
 		false,
@@ -26,6 +26,18 @@ function MenuWindow(sim)
 			end
 
 			popSetupListStyle()
+
+			ui.drawRectFilled(
+				vec2(sim.windowWidth / 2 - 1, 0),
+				vec2(sim.windowWidth / 2 + 1, sim.windowHeight),
+				rgbm.colors.lime
+			)
+
+			ui.drawRectFilled(
+				vec2(0, sim.windowHeight / 2 - 1),
+				vec2(sim.windowWidth, sim.windowHeight / 2 + 1),
+				rgbm.colors.lime
+			)
 		end
 	)
 end

@@ -22,7 +22,7 @@ end)
 function TimeTablePage(sim)
 	ui.setCursor(setupPageWindowPos)
 
-	ui.childWindow(
+	childWindow(
 		"leaderboard_page",
 		vec2(sim.windowWidth, sim.windowHeight - 110),
 		false,

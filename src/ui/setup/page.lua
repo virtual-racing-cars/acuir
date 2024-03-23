@@ -17,7 +17,7 @@ end
 
 function SetupPage(sim)
 	ui.setCursor(setupPageWindowPos)
-	ui.childWindow(
+	childWindow(
 		"setup_window",
 		vec2(sim.windowWidth, sim.windowHeight - 110),
 		false,

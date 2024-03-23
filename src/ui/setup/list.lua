@@ -7,47 +7,47 @@ local functionButtonSize = vec2((listWidth / 3 - 12) * UI_SCALE_X / 100, setupTa
 function SetupTabList()
 	pushSetupListStyle()
 
-	setCursorX(5)
+	setCursorX(15)
 	setCursorY(0)
-	local buttonFlags = ui.ButtonFlags.None
+	childWindow("setup_list", vec2(listWidth, 960), false, ui.WindowFlags.None, function()
+		setCursorX(5)
+		setCursorY(0)
+		local buttonFlags = ui.ButtonFlags.None
 
-	if storage.setupTab == "LOAD SETUP" then
-		buttonFlags = ui.ButtonFlags.Active
-	end
+		if storage.setupTab == "LOAD SETUP" then
+			buttonFlags = ui.ButtonFlags.Active
+		end
 
-	if ui.modernButtonAdvanced("##load", functionButtonSize, buttonFlags, ui.Icons.Download) then
-		storage.setupTab = "LOAD SETUP"
-	end
+		if ui.modernButtonAdvanced("##load", functionButtonSize, buttonFlags, ui.Icons.Download) then
+			storage.setupTab = "LOAD SETUP"
+		end
 
-	setCursorX(listWidth / 3 * 1)
-	setCursorY(0)
-	local buttonFlags = ui.ButtonFlags.None
+		setCursorX(listWidth / 3 * 1)
+		setCursorY(0)
+		local buttonFlags = ui.ButtonFlags.None
 
-	if storage.setupTab == "SAVE SETUP" then
-		buttonFlags = ui.ButtonFlags.Active
-	end
+		if storage.setupTab == "SAVE SETUP" then
+			buttonFlags = ui.ButtonFlags.Active
+		end
 
-	if ui.modernButtonAdvanced("##save", functionButtonSize, buttonFlags, ui.Icons.Save) then
-		storage.setupTab = "SAVE SETUP"
-	end
+		if ui.modernButtonAdvanced("##save", functionButtonSize, buttonFlags, ui.Icons.Save) then
+			storage.setupTab = "SAVE SETUP"
+		end
 
-	setCursorX(listWidth / 3 * 2)
-	setCursorY(0)
-	local buttonFlags = ui.ButtonFlags.None
+		setCursorX(listWidth / 3 * 2)
+		setCursorY(0)
+		local buttonFlags = ui.ButtonFlags.None
 
-	if storage.setupTab == "COMPARE SETUPS" then
-		buttonFlags = ui.ButtonFlags.Active
-	end
+		if storage.setupTab == "COMPARE SETUPS" then
+			buttonFlags = ui.ButtonFlags.Active
+		end
 
-	if ui.modernButtonAdvanced("##compare", functionButtonSize, buttonFlags, ui.Icons.Contrast) then
-		storage.setupTab = "COMPARE SETUPS"
-	end
+		if ui.modernButtonAdvanced("##compare", functionButtonSize, buttonFlags, ui.Icons.Contrast) then
+			storage.setupTab = "COMPARE SETUPS"
+		end
 
-	setCursorY(60)
-
-	ui.childWindow("setup_list", vec2(listWidth, 960), false, ui.WindowFlags.None, function()
 		local buttonXPos = 5
-		local buttonYPos = 0
+		local buttonYPos = 60
 		for tab in ipairs(tabs) do
 			local buttonFlags = ui.ButtonFlags.None
 

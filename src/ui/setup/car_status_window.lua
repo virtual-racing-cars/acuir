@@ -1,13 +1,12 @@
 local car = ac.getCar()
 
-local setupSpinnersWindowSize = vec2(875 * UI_SCALE_X / 100, 450 * UI_SCALE_Y / 100)
-
-local setupSpinnersWindowHeaderSize = vec2(875 * UI_SCALE_X / 100, 50 * UI_SCALE_Y / 100)
+local setupSpinnersWindowSize = vec2(800 * UI_SCALE_X / 100, 450 * UI_SCALE_Y / 100)
+local setupSpinnersWindowHeaderSize = vec2(800 * UI_SCALE_X / 100, 50 * UI_SCALE_Y / 100)
 
 function CarStatusWindow()
-	setCursorX(400)
+	setCursorX(350)
 	setCursorY(570)
-	ui.childWindow("setup_info_window", setupSpinnersWindowSize, false, ui.WindowFlags.None, function()
+	childWindow("setup_info_window", setupSpinnersWindowSize, false, ui.WindowFlags.None, function()
 		ui.pushFont(ui.Font.Main)
 		ui.drawRectFilled(vec2(0, 0), ui.availableSpace(), settings.uiPrimaryColor, 0, ui.CornerFlags.None)
 		ui.drawRect(vec2(0, 0), ui.availableSpace(), rgbm(1, 1, 1, 0.25), 0, ui.CornerFlags.None)

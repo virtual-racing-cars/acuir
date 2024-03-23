@@ -28,3 +28,21 @@ function ui.modernButtonAdvanced(label, size, flags, icon, iconSize)
 
 	return clicked
 end
+
+function ui.arrowButtonAdvanced(id, direction, size, flags)
+	local clicked = ui.arrowButton("##" .. direction .. id, ui.Direction[direction], size, flags)
+
+	if ui.itemHovered(ui.HoveredFlags.None) and not menuNavTrigged then
+		menuNav:play()
+		menuNavTrigged = true
+		menuItem = id
+	elseif not ui.itemHovered(ui.HoveredFlags.None) and menuNavTrigged and menuItem == id then
+		menuNavTrigged = false
+	end
+
+	if ui.itemActivated() then
+		menuClick:play()
+	end
+
+	return clicked
+end

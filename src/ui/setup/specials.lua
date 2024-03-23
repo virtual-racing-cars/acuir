@@ -8,7 +8,7 @@ local selectedSetupCreation = ""
 local function loadSetupTab()
 	setCursorY(50)
 
-	ui.childWindow("saved_setups", vec2(400, 500), function()
+	childWindow("saved_setups", vec2(400, 500), false, function()
 		io.scanDir(setupsDir, function(dirName)
 			if settings.hideOtherTrackSetups then
 				if dirName ~= ac.getTrackID() and dirName ~= "generic" then
@@ -54,7 +54,7 @@ local function loadSetupTab()
 
 	setCursorX(410)
 	setCursorY(50)
-	ui.childWindow("selected_setup", vec2(500, 500), function()
+	childWindow("selected_setup", vec2(500, 500), false, function()
 		if selectedSetup == "" then
 			return
 		end

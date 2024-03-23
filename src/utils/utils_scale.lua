@@ -12,6 +12,6 @@ end
 
 -- end
 
-childWindow = function(id, size, flags, content)
+childWindow = function(id, size, border, flags, content)
 	ui.childWindow(id, size, false, flags, content)
 end
