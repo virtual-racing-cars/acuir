@@ -37,7 +37,7 @@ function SPINNER:button(direction)
 		return true
 	elseif self.buttonHeldTimer[direction] < os.clock() and ui.itemActive() and ui.mouseDown(ui.MouseButton.Left) then
 		self.value = direction == "Left" and (self.value - self.step) or (self.value + self.step)
-		self.buttonHeldTimer[direction] = os.clock() + 0.2
+		self.buttonHeldTimer[direction] = os.clock() + 0.1
 
 		return true
 	end

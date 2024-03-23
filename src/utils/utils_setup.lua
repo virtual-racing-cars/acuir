@@ -28,8 +28,9 @@ function loadSetupSpinners()
 		local max = v["max"]
 		local step = v["step"]
 		local units = v["units"] or ""
+
 		local lut = setupINI:get(id, "LUT", "")
-		local format = name .. ": %.0f " .. units
+		local format = name .. ": %.0f " .. (units == "%" and "%%" or units)
 
 		if lut ~= "" then
 			local lutFile = ac.DataLUT11.carData(0, lut)
