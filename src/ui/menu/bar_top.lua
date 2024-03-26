@@ -29,6 +29,11 @@ local function getWindDirection()
 	return windDirection[math.floor((math.min(sim.windDirectionDeg, 179) + 180) / 360 * 8) + 1]
 end
 
+local personalBestINI = ac.INIConfig.load(ac.getFolder(ac.FolderID.ACDocuments) .. "\\personalbest.ini")
+local personalBestLapTime = ac.lapTimeToString(
+	personalBestINI:get(string.upper(ac.getCarID(0) .. "@" .. ac.getTrackID() .. "-" .. ac.getTrackLayout()), "TIME", 0)
+)
+
 local pageTitleFontSize = 70 * UI_SCALE_Y / 100
 local sessionFontSize = 20 * UI_SCALE_Y / 100
 local infoFontSize = 15 * UI_SCALE_Y / 100
@@ -92,6 +97,39 @@ function TopBar()
 	setCursorY(0)
 	ui.dwriteTextAligned(
 		ac.getCarName(0),
+		infoFontSize,
+		ui.Alignment.Start,
+		ui.Alignment.Start,
+		vec2(300, 22),
+		false,
+		rgbm.colors.white
+	)
+
+	ui.setCursorX(sim.windowWidth - 900 * UI_SCALE_X / 100)
+	ui.dwriteTextAligned(
+		"Personal best: " .. personalBestLapTime,
+		infoFontSize,
+		ui.Alignment.Start,
+		ui.Alignment.Start,
+		vec2(300, 22),
+		false,
+		rgbm.colors.white
+	)
+
+	ui.setCursorX(sim.windowWidth - 900 * UI_SCALE_X / 100)
+	ui.dwriteTextAligned(
+		"Total Distance driven: " .. math.round(ac.getCar(0).distanceDrivenTotalKm) .. " km",
+		infoFontSize,
+		ui.Alignment.Start,
+		ui.Alignment.Start,
+		vec2(300, 22),
+		false,
+		rgbm.colors.white
+	)
+
+	ui.setCursorX(sim.windowWidth - 900 * UI_SCALE_X / 100)
+	ui.dwriteTextAligned(
+		"Session Distance driven: " .. math.round(ac.getCar(0).distanceDrivenSessionKm) .. " km",
 		infoFontSize,
 		ui.Alignment.Start,
 		ui.Alignment.Start,
