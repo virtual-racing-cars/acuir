@@ -3,21 +3,17 @@ local listMargins = 5
 local setupTabHeight = 50
 
 function SetupTabList()
+	setCursorX(15)
+	setCursorY(15)
 	childWindow(
 		"setup_tab_list",
-		vec2(listWidth, ui.availableSpaceY() / 2),
+		vec2(listWidth, ui.availableSpaceY() / 2) - vec2(0, setupTabHeight * UI_SCALE_Y / 100),
 		false,
 		ui.WindowFlags.ThinScrollbar + ui.WindowFlags.NoScrollWithMouse + ui.WindowFlags.NoScrollbar,
 		function()
 			ui.drawRectFilled(vec2(0, 0), ui.availableSpace(), settings.uiPrimaryColor, 0, ui.CornerFlags.None)
 			ui.drawLine(
 				vec2(0, ui.availableSpaceY()),
-				vec2(ui.availableSpaceX(), ui.availableSpaceY()),
-				rgbm(1, 1, 1, 0.25),
-				3
-			)
-			ui.drawLine(
-				vec2(ui.availableSpaceX(), 0),
 				vec2(ui.availableSpaceX(), ui.availableSpaceY()),
 				rgbm(1, 1, 1, 0.25),
 				3
