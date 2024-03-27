@@ -1,69 +1,97 @@
-local listWidth = 320
+local listWidth = 335 * UI_SCALE_X / 100
 local listMargins = 5
 local setupTabHeight = 50
 
-local functionButtonSize = vec2((listWidth / 3 - 12) * UI_SCALE_X / 100, setupTabHeight * UI_SCALE_Y / 100)
-
 function SetupTabList()
-	pushSetupListStyle()
+	childWindow(
+		"setup_tab_list",
+		vec2(listWidth, ui.availableSpaceY() / 2),
+		false,
+		ui.WindowFlags.ThinScrollbar + ui.WindowFlags.NoScrollWithMouse + ui.WindowFlags.NoScrollbar,
+		function()
+			ui.drawRectFilled(vec2(0, 0), ui.availableSpace(), settings.uiPrimaryColor, 0, ui.CornerFlags.None)
+			ui.drawLine(
+				vec2(0, ui.availableSpaceY()),
+				vec2(ui.availableSpaceX(), ui.availableSpaceY()),
+				rgbm(1, 1, 1, 0.25),
+				3
+			)
+			ui.drawLine(
+				vec2(ui.availableSpaceX(), 0),
+				vec2(ui.availableSpaceX(), ui.availableSpaceY()),
+				rgbm(1, 1, 1, 0.25),
+				3
+			)
 
-	setCursorX(15)
-	setCursorY(0)
-	childWindow("setup_list", vec2(listWidth, 960), false, ui.WindowFlags.None, function()
-		setCursorX(5)
-		setCursorY(0)
-		local buttonFlags = ui.ButtonFlags.None
+			pushSetupListStyle()
 
-		if storage.setupTab == "LOAD SETUP" then
-			buttonFlags = ui.ButtonFlags.Active
-		end
+			setCursorY(0)
 
-		if ui.modernButtonAdvanced("##load", functionButtonSize, buttonFlags, ui.Icons.Download) then
-			storage.setupTab = "LOAD SETUP"
-		end
-
-		setCursorX(listWidth / 3 * 1)
-		setCursorY(0)
-		local buttonFlags = ui.ButtonFlags.None
-
-		if storage.setupTab == "SAVE SETUP" then
-			buttonFlags = ui.ButtonFlags.Active
-		end
-
-		if ui.modernButtonAdvanced("##save", functionButtonSize, buttonFlags, ui.Icons.Save) then
-			storage.setupTab = "SAVE SETUP"
-		end
-
-		setCursorX(listWidth / 3 * 2)
-		setCursorY(0)
-		local buttonFlags = ui.ButtonFlags.None
-
-		if storage.setupTab == "COMPARE SETUPS" then
-			buttonFlags = ui.ButtonFlags.Active
-		end
-
-		if ui.modernButtonAdvanced("##compare", functionButtonSize, buttonFlags, ui.Icons.Contrast) then
-			storage.setupTab = "COMPARE SETUPS"
-		end
-
-		local buttonXPos = 5
-		local buttonYPos = 60
-		for tab in ipairs(tabs) do
 			local buttonFlags = ui.ButtonFlags.None
 
-			if storage.setupTab == tabs[tab] then
+			if storage.setupTab == "SETUP I/O" then
 				buttonFlags = ui.ButtonFlags.Active
 			end
 
-			setCursorX(buttonXPos)
-			setCursorY(buttonYPos)
-			if ui.modernButtonAdvanced(tabs[tab], LIST_BUTTON_SIZE, buttonFlags) then
-				storage.setupTab = tabs[tab]
+			if
+				ui.modernButtonAdvanced(
+					"SETUP I/O",
+					vec2(ui.availableSpaceX(), setupTabHeight * UI_SCALE_Y / 100),
+					buttonFlags
+				)
+			then
+				storage.setupTab = "SETUP I/O"
 			end
 
-			buttonYPos = buttonYPos + setupTabHeight + listMargins
-		end
-	end)
+			childWindow(
+				"setup_list",
+				ui.availableSpace() - vec2(0, setupTabHeight * UI_SCALE_Y / 100 + listMargins),
+				false,
+				ui.WindowFlags.ThinScrollbar,
+				function()
+					local buttonXPos = 0
+					local buttonYPos = 0
+					for tab in ipairs(tabs) do
+						local buttonFlags = ui.ButtonFlags.None
 
-	popSetupListStyle()
+						if storage.setupTab == tabs[tab] then
+							buttonFlags = ui.ButtonFlags.Active
+						end
+
+						setCursorX(buttonXPos)
+						setCursorY(buttonYPos)
+						if
+							ui.modernButtonAdvanced(
+								tabs[tab],
+								vec2(ui.availableSpaceX(), setupTabHeight * UI_SCALE_Y / 100),
+								buttonFlags
+							)
+						then
+							storage.setupTab = tabs[tab]
+						end
+
+						buttonYPos = buttonYPos + setupTabHeight + listMargins
+					end
+				end
+			)
+
+			local buttonFlags = ui.ButtonFlags.None
+
+			if storage.setupTab == "PIT STRATEGY" then
+				buttonFlags = ui.ButtonFlags.Active
+			end
+
+			if
+				ui.modernButtonAdvanced(
+					"PIT STRATEGY",
+					vec2(ui.availableSpaceX(), setupTabHeight * UI_SCALE_Y / 100),
+					buttonFlags
+				)
+			then
+				storage.setupTab = "PIT STRATEGY"
+			end
+
+			popSetupListStyle()
+		end
+	)
 end

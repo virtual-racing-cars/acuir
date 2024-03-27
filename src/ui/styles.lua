@@ -4,10 +4,10 @@ local setupTabHeight = 50
 LIST_BUTTON_SIZE = vec2((listWidth - 12) * UI_SCALE_X / 100, setupTabHeight * UI_SCALE_Y / 100)
 
 function pushSetupListStyle()
-	ui.pushStyleColor(ui.StyleColor.Button, settings.uiPrimaryColor)
+	ui.pushStyleColor(ui.StyleColor.Button, rgbm(0.1, 0.1, 0.1, 0))
 	ui.pushStyleColor(ui.StyleColor.ButtonHovered, settings.uiSecondaryColor)
 	ui.pushStyleColor(ui.StyleColor.ButtonActive, settings.uiSecondaryColor)
-	ui.pushStyleVar(ui.StyleVar.FramePadding, -20)
+	ui.pushStyleVar(ui.StyleVar.FramePadding, -25)
 end
 
 function popSetupListStyle()

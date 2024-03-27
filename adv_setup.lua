@@ -46,13 +46,7 @@ require("init")
 require("classes\\button")
 require("utils\\utils_scale")
 require("ui\\styles")
-require("ui\\menu\\bar_top")
-require("ui\\menu\\bar_side")
-require("ui\\setup\\page")
-require("ui\\menu\\menu_window")
-require("ui\\apps\\page")
-require("ui\\time_table\\page")
-require("ui\\settings\\page")
+require("ui\\main\\main_window")
 
 local stateToggle = false
 
@@ -98,27 +92,7 @@ ui.onExclusiveHUD(function(mode)
 			end
 		end
 
-		MenuWindow(sim)
-
-		if storage.page == MenuPages.Setup then
-			SetupPage(sim)
-			return ""
-		end
-
-		if storage.page == MenuPages.TimeTable then
-			TimeTablePage(sim)
-			return "debug"
-		end
-
-		if storage.page == MenuPages.Apps then
-			AppsPage(sim)
-			return
-		end
-
-		if storage.page == MenuPages.Settings then
-			SettingsPage(sim)
-			return ""
-		end
+		MainWindow(sim)
 
 		return "debug"
 	end

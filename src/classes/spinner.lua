@@ -141,15 +141,21 @@ function SPINNER:set()
 	self.itemSet = true
 end
 
-function SPINNER:run()
+function SPINNER:run(drawSpinner)
 	if self.name == "" or (self.id == "MGUK_DELIVERY" and #self.idPairs > 1) then
 		return
 	end
 
 	self.itemSet = false
 	self:get()
-
 	self.itemActive = false
+
+	if not drawSpinner then
+		if self.value ~= self._value then
+			self:set()
+		end
+		return
+	end
 
 	setCursorX(self.xPos * 400 + 14)
 	setCursorY(self.yPos * 50 + 85)

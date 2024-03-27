@@ -1,5 +1,5 @@
 require("src\\utils\\utils_setup")
-require("src\\ui\\setup\\specials")
+require("src\\ui\\setup\\io_window")
 
 loadSetupSpinners()
 
@@ -7,11 +7,12 @@ local setupSpinnersWindowSize = vec2(800 * UI_SCALE_X / 100, 560 * UI_SCALE_Y / 
 local setupSpinnersWindowHeaderSize = vec2(800 * UI_SCALE_X / 100, 50 * UI_SCALE_Y / 100)
 
 local function setupItemSpinners()
-	SetupSpecialTabs(storage.setupTab)
+	if storage.setupTab == "SETUP I/O" then
+		ioTab()
+	end
+
 	for k, v in pairs(setupSpinners) do
-		if v.tab == storage.setupTab then
-			v:run()
-		end
+		v:run(v.tab == storage.setupTab)
 	end
 end
 

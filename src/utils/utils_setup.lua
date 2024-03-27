@@ -2,6 +2,12 @@ local car = ac.getCar(0)
 
 setupSpinners = {}
 
+local electronicsSetupItems = {
+	"MGUK_DELIVERY",
+	"MGUK_RECOVERY",
+	"MGUH_MODE",
+}
+
 function loadSetupSpinners()
 	for i in ipairs(setupSpinners) do
 		setupSpinners[i] = nil
@@ -44,11 +50,15 @@ function loadSetupSpinners()
 		end
 
 		local xPos = setupINI:get(id, "POS_X", 0.5)
-		local yPos = setupINI:get(id, "POS_Y", 0.2)
+		local yPos = setupINI:get(id, "POS_Y", 0.18)
 
-		if id == "MGUK_DELIVERY" then
-			tab = "ELECTRONICS"
-		end
+		table.findFirst(electronicsSetupItems, function(item, index, callbackData)
+			if id == item then
+				tab = "ELECTRONICS"
+				yPos = index
+				ac.log("hi")
+			end
+		end)
 
 		table.insert(
 			setupSpinners,

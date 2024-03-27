@@ -1,3 +1,5 @@
+local buttonSize = vec2(UI_SCALE_Y, UI_SCALE_Y)
+
 function SideBar(sim)
 	ui.drawRectFilled(
 		vec2(0, UI_SCALE_Y),
@@ -6,29 +8,23 @@ function SideBar(sim)
 		0,
 		ui.CornerFlags.None
 	)
+	ui.drawRectFilledMultiColor(
+		vec2(0, UI_SCALE_Y),
+		vec2(UI_SCALE_Y, ui.availableSpaceY()),
+		rgbm(1, 1, 1, 0.2),
+		rgbm(1, 1, 1, 0.2),
+		rgbm(0, 0, 0, 0),
+		rgbm(0, 0, 0, 0)
+	)
+
+	ui.drawLine(vec2(UI_SCALE_Y, UI_SCALE_Y), vec2(UI_SCALE_Y, ui.availableSpaceY()), rgbm(1, 1, 1, 0.25))
 
 	setCursorY(100)
-	if
-		ui.modernButtonAdvanced(
-			"##drive",
-			vec2(UI_SCALE_X, UI_SCALE_X),
-			ui.ButtonFlags.None,
-			ui.Icons.SteeringWheel,
-			UI_SCALE_X / 2
-		)
-	then
+	if ui.modernButtonAdvanced("##drive", buttonSize, ui.ButtonFlags.None, ui.Icons.SteeringWheel, UI_SCALE_X / 2) then
 		ac.tryToStart()
 	end
 
-	if
-		ui.modernButtonAdvanced(
-			"##setup",
-			vec2(UI_SCALE_X, UI_SCALE_X),
-			ui.ButtonFlags.None,
-			ui.Icons.Wrench,
-			UI_SCALE_X / 2
-		)
-	then
+	if ui.modernButtonAdvanced("##setup", buttonSize, ui.ButtonFlags.None, ui.Icons.Wrench, UI_SCALE_X / 2) then
 		if storage.page == MenuPages.Setup then
 			storage.page = -1
 		else
@@ -36,15 +32,7 @@ function SideBar(sim)
 		end
 	end
 
-	if
-		ui.modernButtonAdvanced(
-			"##notes",
-			vec2(UI_SCALE_X, UI_SCALE_X),
-			ui.ButtonFlags.None,
-			ui.Icons.Document,
-			UI_SCALE_X / 2
-		)
-	then
+	if ui.modernButtonAdvanced("##notes", buttonSize, ui.ButtonFlags.None, ui.Icons.Document, UI_SCALE_X / 2) then
 		if storage.page == MenuPages.Notes then
 			storage.page = -1
 		else
@@ -52,15 +40,7 @@ function SideBar(sim)
 		end
 	end
 
-	if
-		ui.modernButtonAdvanced(
-			"##timetable",
-			vec2(UI_SCALE_X, UI_SCALE_X),
-			ui.ButtonFlags.None,
-			ui.Icons.List,
-			UI_SCALE_X / 2
-		)
-	then
+	if ui.modernButtonAdvanced("##timetable", buttonSize, ui.ButtonFlags.None, ui.Icons.List, UI_SCALE_X / 2) then
 		if storage.page == MenuPages.TimeTable then
 			storage.page = -1
 		else
@@ -72,15 +52,7 @@ function SideBar(sim)
 	setCursorY(1235)
 	-- setCursorY(1120)
 
-	if
-		ui.modernButtonAdvanced(
-			"##apps",
-			vec2(UI_SCALE_X, UI_SCALE_X),
-			ui.ButtonFlags.None,
-			ui.Icons.Apps,
-			UI_SCALE_X / 2
-		)
-	then
+	if ui.modernButtonAdvanced("##apps", buttonSize, ui.ButtonFlags.None, ui.Icons.Apps, UI_SCALE_X / 2) then
 		if storage.page == MenuPages.Apps then
 			storage.page = -1
 		else
@@ -88,10 +60,13 @@ function SideBar(sim)
 		end
 	end
 
+	if storage.page == MenuPages.Apps then
+	end
+
 	-- if
 	-- 	ui.modernButtonAdvanced(
 	-- 		"##manual",
-	-- 		vec2(UI_SCALE_X, UI_SCALE_X),
+	-- 		buttonSize,
 	-- 		ui.ButtonFlags.None,
 	-- 		ui.Icons.Book,
 	-- 		UI_SCALE_X / 2
@@ -104,15 +79,7 @@ function SideBar(sim)
 	-- 	end
 	-- end
 
-	if
-		ui.modernButtonAdvanced(
-			"##settings",
-			vec2(UI_SCALE_X, UI_SCALE_X),
-			ui.ButtonFlags.None,
-			ui.Icons.SettingsAlt,
-			UI_SCALE_X / 2
-		)
-	then
+	if ui.modernButtonAdvanced("##settings", buttonSize, ui.ButtonFlags.None, ui.Icons.SettingsAlt, UI_SCALE_X / 2) then
 		if storage.page == MenuPages.Settings then
 			storage.page = -1
 		else

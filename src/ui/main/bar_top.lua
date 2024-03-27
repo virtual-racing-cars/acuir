@@ -75,13 +75,21 @@ function TopBar()
 		0,
 		ui.CornerFlags.None
 	)
+	ui.drawRectFilledMultiColor(
+		vec2(0, UI_SCALE_Y),
+		vec2(ui.availableSpaceX(), 0),
+		rgbm(1, 1, 1, 0.2),
+		rgbm(1, 1, 1, 0.2),
+		rgbm(0, 0, 0, 0),
+		rgbm(0, 0, 0, 0)
+	)
 
 	setCursorX(10)
 	setCursorY(15)
 
 	ui.image(acLogo, acLogoSize, rgbm(1, 1, 1, 1))
 
-	setCursorX(160)
+	setCursorX(130)
 	setCursorY(0)
 	ui.dwriteTextAligned(
 		string.upper(MenuPagesString[storage.page]),
@@ -197,4 +205,6 @@ function TopBar()
 		)
 		ui.popDWriteFont()
 	end
+
+	ui.drawLine(vec2(UI_SCALE_Y, UI_SCALE_Y), vec2(ui.availableSpaceX(), UI_SCALE_Y), rgbm(1, 1, 1, 0.25))
 end
