@@ -9,9 +9,12 @@ local setupSpinnersWindowHeaderSize = vec2(830 * UI_SCALE_X / 100, 50 * UI_SCALE
 local linkButtonSize = vec2(50 * UI_SCALE_X / 100, 50 * UI_SCALE_X / 100)
 
 local mirrorSetupTabs = {}
+local mirrorButtonShow = {}
+local mirrorButtonsInitialized = false
 
 for _, tab in pairs(tabs) do
 	mirrorSetupTabs[tab] = true
+	mirrorButtonShow[tab] = false
 end
 
 local mirrorSetupStorage = ac.storage(mirrorSetupTabs)
@@ -28,6 +31,17 @@ local function setupItemSpinners()
 
 		if mirrorSetupTabs[tab] ~= nil then
 			v:run(tab == storage.setupTab, mirrorSetupStorage[tab])
+
+			if not mirrorButtonsInitialized then
+				if
+					string.find(v.id, "LF")
+					or string.find(v.id, "RF")
+					or string.find(v.id, "LR")
+					or string.find(v.id, "RR")
+				then
+					mirrorButtonShow[tab] = true
+				end
+			end
 		end
 	end
 end
@@ -45,7 +59,7 @@ local function setupTabBanner()
 		rgbm.colors.white
 	)
 
-	if mirrorSetupTabs[storage.setupTab] == nil then
+	if not mirrorButtonShow[storage.setupTab] or mirrorSetupTabs[storage.setupTab] == nil then
 		return
 	end
 
