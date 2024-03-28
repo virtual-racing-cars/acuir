@@ -151,7 +151,17 @@ function SPINNER:set()
 	self.itemSet = true
 end
 
-function SPINNER:run(drawSpinner)
+function SPINNER:mirror(id1, id2)
+	local pair = string.replace(self.id, id1, id2)
+	local pairSpinner = ac.getSetupSpinnerValue(pair)
+
+	if self.value ~= pairSpinner then
+		self.value = pairSpinner
+		self:set()
+	end
+end
+
+function SPINNER:run(drawSpinner, mirror)
 	if self.name == "" or (self.id == "MGUK_DELIVERY" and #self.idPairs > 1) then
 		return
 	end
@@ -159,6 +169,13 @@ function SPINNER:run(drawSpinner)
 	self.itemSet = false
 	self:get()
 	self.itemActive = false
+
+	if mirror then
+		self:mirror("LF", "RF")
+		self:mirror("RF", "LF")
+		self:mirror("LR", "RR")
+		self:mirror("RR", "LR")
+	end
 
 	if not drawSpinner then
 		if self.value ~= self._value then

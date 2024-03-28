@@ -44,37 +44,37 @@ local infoText = {
 		return 1, 12, "Temp: ", math.round(car.wheels[2].tyreCoreTemperature, 2) .. "°C"
 	end,
 	function()
-		return 5.35, 1, "Camber: ", math.round(car.wheels[1].camber, 2)
+		return 5.280, 1, "Camber: ", math.round(car.wheels[1].camber, 2)
 	end,
 	function()
-		return 5.35, 2, "Caster: ", math.round(car.caster, 2)
+		return 5.280, 2, "Caster: ", math.round(car.caster, 2)
 	end,
 	function()
-		return 5.35, 3, "Toe: ", -math.round(car.wheels[1].toeIn, 2)
+		return 5.280, 3, "Toe: ", -math.round(car.wheels[1].toeIn, 2)
 	end,
 	function()
-		return 5.35, 4, "Pressure (cold): ", math.round(car.wheels[1].tyreStaticPressure, 2) .. " psi"
+		return 5.280, 4, "Pressure (cold): ", math.round(car.wheels[1].tyreStaticPressure, 2) .. " psi"
 	end,
 	function()
-		return 5.35, 5, "Pressure (hot): ", math.round(car.wheels[1].tyrePressure, 2) .. " psi"
+		return 5.280, 5, "Pressure (hot): ", math.round(car.wheels[1].tyrePressure, 2) .. " psi"
 	end,
 	function()
-		return 5.35, 6, "Temp: ", math.round(car.wheels[1].tyreCoreTemperature, 2) .. "°C"
+		return 5.280, 6, "Temp: ", math.round(car.wheels[1].tyreCoreTemperature, 2) .. "°C"
 	end,
 	function()
-		return 5.35, 8, "Camber: ", math.round(car.wheels[3].camber, 2)
+		return 5.280, 8, "Camber: ", math.round(car.wheels[3].camber, 2)
 	end,
 	function()
-		return 5.35, 9, "Toe: ", -math.round(car.wheels[3].toeIn, 2)
+		return 5.280, 9, "Toe: ", -math.round(car.wheels[3].toeIn, 2)
 	end,
 	function()
-		return 5.35, 10, "Pressure (cold): ", math.round(car.wheels[3].tyreStaticPressure, 2) .. " psi"
+		return 5.280, 10, "Pressure (cold): ", math.round(car.wheels[3].tyreStaticPressure, 2) .. " psi"
 	end,
 	function()
-		return 5.35, 11, "Pressure (hot): ", math.round(car.wheels[3].tyrePressure, 2) .. " psi"
+		return 5.280, 11, "Pressure (hot): ", math.round(car.wheels[3].tyrePressure, 2) .. " psi"
 	end,
 	function()
-		return 5.35, 12, "Temp: ", math.round(car.wheels[3].tyreCoreTemperature, 2) .. "°C"
+		return 5.280, 12, "Temp: ", math.round(car.wheels[3].tyreCoreTemperature, 2) .. "°C"
 	end,
 
 	function()

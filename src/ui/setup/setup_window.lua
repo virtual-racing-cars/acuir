@@ -6,13 +6,27 @@ loadSetupSpinners()
 local setupSpinnersWindowSize = vec2(830 * UI_SCALE_X / 100, 605 * UI_SCALE_Y / 100)
 local setupSpinnersWindowHeaderSize = vec2(830 * UI_SCALE_X / 100, 50 * UI_SCALE_Y / 100)
 
+local mirrorSetupTabs = {}
+
+for _, tab in pairs(tabs) do
+	mirrorSetupTabs[tab] = true
+end
+
+local mirrorSetupStorage = ac.storage(mirrorSetupTabs)
+
+ac.log(mirrorSetupStorage["DIFFERENTIAL"])
+
 local function setupItemSpinners()
 	if storage.setupTab == "SETUP I/O" then
 		ioTab()
 	end
 
 	for k, v in pairs(setupSpinners) do
-		v:run(v.tab == storage.setupTab)
+		local tab = v.tab
+
+		if mirrorSetupTabs[tab] ~= nil then
+			v:run(tab == storage.setupTab, mirrorSetupStorage[tab])
+		end
 	end
 end
 
@@ -28,6 +42,17 @@ local function setupTabBanner()
 		false,
 		rgbm.colors.white
 	)
+
+	if mirrorSetupTabs[storage.setupTab] == nil then
+		return
+	end
+
+	setCursorY(0)
+	if
+		ui.iconButton(mirrorSetupStorage[storage.setupTab] and ui.Icons.Link or ui.Icons.LinkBroken, vec2(50, 50), 15)
+	then
+		mirrorSetupStorage[storage.setupTab] = not mirrorSetupStorage[storage.setupTab]
+	end
 end
 
 function SetupWindow()
