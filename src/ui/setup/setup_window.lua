@@ -6,6 +6,8 @@ loadSetupSpinners()
 local setupSpinnersWindowSize = vec2(830 * UI_SCALE_X / 100, 605 * UI_SCALE_Y / 100)
 local setupSpinnersWindowHeaderSize = vec2(830 * UI_SCALE_X / 100, 50 * UI_SCALE_Y / 100)
 
+local linkButtonSize = vec2(50 * UI_SCALE_X / 100, 50 * UI_SCALE_X / 100)
+
 local mirrorSetupTabs = {}
 
 for _, tab in pairs(tabs) do
@@ -48,8 +50,15 @@ local function setupTabBanner()
 	end
 
 	setCursorY(0)
+	ui.setCursorX(ui.availableSpaceX() - linkButtonSize.x)
 	if
-		ui.iconButton(mirrorSetupStorage[storage.setupTab] and ui.Icons.Link or ui.Icons.LinkBroken, vec2(50, 50), 15)
+		ui.modernButtonAdvanced(
+			"##linksetupitems",
+			linkButtonSize,
+			ui.ButtonFlags.None,
+			mirrorSetupStorage[storage.setupTab] and ui.Icons.Link or ui.Icons.LinkBroken,
+			15 * UI_SCALE_X / 100
+		)
 	then
 		mirrorSetupStorage[storage.setupTab] = not mirrorSetupStorage[storage.setupTab]
 	end
