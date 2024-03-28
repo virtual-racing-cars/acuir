@@ -1,13 +1,13 @@
 local car = ac.getCar()
 
-local setupSpinnersWindowSize = vec2(830 * UI_SCALE_X / 100, 350 * UI_SCALE_Y / 100)
+local setupSpinnersWindowSize = vec2(830 * UI_SCALE_X / 100, 310 * UI_SCALE_Y / 100)
 local setupSpinnersWindowHeaderSize = vec2(830 * UI_SCALE_X / 100, 50 * UI_SCALE_Y / 100)
 
 local textBoxSize = vec2(300, 18)
 local textBoxFont = 15 * UI_SCALE_Y / 100
 
 local carINI = ac.INIConfig.carData(0, "car.ini")
-local kgPerL = carINI:get("FUEL_EXT", "KG_PER_LITER", 0.74)
+local kgPerL = carINI:get("FUEL_EXT", "KG_PER_LITER", 0.7339)
 
 local infoText = {
 	function()
@@ -29,19 +29,19 @@ local infoText = {
 		return 1, 6, "Temp: ", math.round(car.wheels[0].tyreCoreTemperature, 2) .. "°C"
 	end,
 	function()
-		return 1, 10, "Camber: ", math.round(car.wheels[2].camber, 2)
+		return 1, 8, "Camber: ", math.round(car.wheels[2].camber, 2)
 	end,
 	function()
-		return 1, 11, "Toe: ", math.round(car.wheels[2].toeIn, 2)
+		return 1, 9, "Toe: ", math.round(car.wheels[2].toeIn, 2)
 	end,
 	function()
-		return 1, 12, "Pressure (cold): ", math.round(car.wheels[2].tyreStaticPressure, 2) .. " psi"
+		return 1, 10, "Pressure (cold): ", math.round(car.wheels[2].tyreStaticPressure, 2) .. " psi"
 	end,
 	function()
-		return 1, 13, "Pressure (hot): ", math.round(car.wheels[2].tyrePressure, 2) .. " psi"
+		return 1, 11, "Pressure (hot): ", math.round(car.wheels[2].tyrePressure, 2) .. " psi"
 	end,
 	function()
-		return 1, 14, "Temp: ", math.round(car.wheels[2].tyreCoreTemperature, 2) .. "°C"
+		return 1, 12, "Temp: ", math.round(car.wheels[2].tyreCoreTemperature, 2) .. "°C"
 	end,
 	function()
 		return 5.35, 1, "Camber: ", math.round(car.wheels[1].camber, 2)
@@ -62,40 +62,46 @@ local infoText = {
 		return 5.35, 6, "Temp: ", math.round(car.wheels[1].tyreCoreTemperature, 2) .. "°C"
 	end,
 	function()
-		return 5.35, 10, "Camber: ", math.round(car.wheels[3].camber, 2)
+		return 5.35, 8, "Camber: ", math.round(car.wheels[3].camber, 2)
 	end,
 	function()
-		return 5.35, 11, "Toe: ", -math.round(car.wheels[3].toeIn, 2)
+		return 5.35, 9, "Toe: ", -math.round(car.wheels[3].toeIn, 2)
 	end,
 	function()
-		return 5.35, 12, "Pressure (cold): ", math.round(car.wheels[3].tyreStaticPressure, 2) .. " psi"
+		return 5.35, 10, "Pressure (cold): ", math.round(car.wheels[3].tyreStaticPressure, 2) .. " psi"
 	end,
 	function()
-		return 5.35, 13, "Pressure (hot): ", math.round(car.wheels[3].tyrePressure, 2) .. " psi"
+		return 5.35, 11, "Pressure (hot): ", math.round(car.wheels[3].tyrePressure, 2) .. " psi"
 	end,
 	function()
-		return 5.35, 14, "Temp: ", math.round(car.wheels[3].tyreCoreTemperature, 2) .. "°C"
+		return 5.35, 12, "Temp: ", math.round(car.wheels[3].tyreCoreTemperature, 2) .. "°C"
 	end,
 
 	function()
-		return 3, 4, "Front Height: ", math.round(car.rideHeight[0] * 1000, 1) .. " mm"
+		return 3.2, 2, "Front Height: ", math.round(car.rideHeight[0] * 1000, 1) .. " mm"
 	end,
 	function()
-		return 3, 6, "Rear Height: ", math.round(car.rideHeight[1] * 1000, 1) .. " mm"
+		return 3.2, 3, "Rear Height: ", math.round(car.rideHeight[1] * 1000, 1) .. " mm"
 	end,
 	function()
-		return 3, 8, "Plank Wear: ", math.round(car.maxRelativePlankWear * 1000, 2) .. " mm"
+		return 3.2, 5, "Plank Wear: ", math.round(car.maxRelativePlankWear * 1000, 2) .. " mm"
 	end,
 	function()
-		return 3, 10, "Mass: ", math.round(car.mass + (car.fuel * kgPerL), 2) .. " kg"
+		return 3.2, 7, "CoG Height: ", math.round(car.cgHeight, 3)
 	end,
 	function()
-		return 3, 11, "(", math.round(car.fuel * kgPerL, 2) .. " kg from fuel)"
+		return 3.2, 9, "Mass: ", math.round(car.mass + (car.fuel * kgPerL) + car.ballast, 2) .. " kg"
+	end,
+	function()
+		return 3.2, 10, "(", math.round(car.fuel * kgPerL, 2) .. " kg from fuel)"
+	end,
+	function()
+		return 3.2, 11, "(", math.round(car.ballast, 2) .. " kg from ballast)"
 	end,
 }
 
 function CarStatusWindow()
-	setCursorX(350)
+	setCursorX(365)
 	setCursorY(635)
 	childWindow(
 		"setup_info_window",

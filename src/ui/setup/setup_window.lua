@@ -18,6 +18,7 @@ end
 
 local function setupTabBanner()
 	ui.drawRectFilled(vec2(0, 0), setupSpinnersWindowHeaderSize, rgbm(0.1, 0.1, 0.1, 0.5), 0, ui.CornerFlags.None)
+	setCursorY(0)
 	ui.dwriteTextAligned(
 		storage.setupTab,
 		35 * UI_SCALE_Y / 100,
@@ -30,7 +31,7 @@ local function setupTabBanner()
 end
 
 function SetupWindow()
-	setCursorX(350)
+	setCursorX(365)
 	setCursorY(15)
 	childWindow("car_setup_window", setupSpinnersWindowSize, false, ui.WindowFlags.None, function()
 		ui.drawRectFilled(vec2(0, 0), ui.availableSpace(), settings.uiPrimaryColor, 0, ui.CornerFlags.None)

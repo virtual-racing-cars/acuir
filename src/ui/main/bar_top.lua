@@ -67,6 +67,21 @@ local infoText = {
 	end,
 }
 
+local carText = {
+	function()
+		return 1, 1, "", ac.getCarName(0)
+	end,
+	function()
+		return 1, 2, "Personal best: ", personalBestLapTime
+	end,
+	function()
+		return 1, 3, "Total Distance driven: ", math.round(ac.getCar(0).distanceDrivenTotalKm) .. " km"
+	end,
+	function()
+		return 1, 4, "Session Distance driven: ", math.round(ac.getCar(0).distanceDrivenSessionKm) .. " km"
+	end,
+}
+
 function TopBar()
 	ui.drawRectFilled(
 		vec2(0, 0),
@@ -101,63 +116,6 @@ function TopBar()
 		rgbm.colors.white
 	)
 
-	ui.setCursorX(sim.windowWidth - 900 * UI_SCALE_X / 100)
-	setCursorY(0)
-	ui.dwriteTextAligned(
-		ac.getCarName(0),
-		infoFontSize,
-		ui.Alignment.Start,
-		ui.Alignment.Start,
-		vec2(300, 22),
-		false,
-		rgbm.colors.white
-	)
-
-	ui.setCursorX(sim.windowWidth - 900 * UI_SCALE_X / 100)
-	ui.dwriteTextAligned(
-		"Personal best: " .. personalBestLapTime,
-		infoFontSize,
-		ui.Alignment.Start,
-		ui.Alignment.Start,
-		vec2(300, 22),
-		false,
-		rgbm.colors.white
-	)
-
-	ui.setCursorX(sim.windowWidth - 900 * UI_SCALE_X / 100)
-	ui.dwriteTextAligned(
-		"Total Distance driven: " .. math.round(ac.getCar(0).distanceDrivenTotalKm) .. " km",
-		infoFontSize,
-		ui.Alignment.Start,
-		ui.Alignment.Start,
-		vec2(300, 22),
-		false,
-		rgbm.colors.white
-	)
-
-	ui.setCursorX(sim.windowWidth - 900 * UI_SCALE_X / 100)
-	ui.dwriteTextAligned(
-		"Session Distance driven: " .. math.round(ac.getCar(0).distanceDrivenSessionKm) .. " km",
-		infoFontSize,
-		ui.Alignment.Start,
-		ui.Alignment.Start,
-		vec2(300, 22),
-		false,
-		rgbm.colors.white
-	)
-
-	-- ui.setCursorX(sim.windowWidth - 900 * UI_SCALE_X / 100)
-	-- setCursorY(30)
-	-- ui.dwriteTextAligned(
-	-- 	ac.(0),
-	-- 	infoFontSize,
-	-- 	ui.Alignment.Start,
-	-- 	ui.Alignment.Start,
-	-- 	vec2(300, 22),
-	-- 	false,
-	-- 	rgbm.colors.white
-	-- )
-
 	ui.setCursorX(sim.windowWidth - 300 * UI_SCALE_X / 100)
 	setCursorY(0)
 	if ui.modernButtonAdvanced("##Restart", buttonSize, ui.ButtonFlags.None, ui.Icons.Restart) then
@@ -173,6 +131,29 @@ function TopBar()
 	setCursorY(0)
 	if ui.modernButtonAdvanced("##Exit", buttonSize, ui.ButtonFlags.None, ui.Icons.Leave) then
 		ac.shutdownAssettoCorsa()
+	end
+
+	for k, v in ipairs(carText) do
+		local column, position, label, value, font = v()
+
+		if not font then
+			font = "Default"
+		end
+		ui.pushDWriteFont("font")
+
+		setCursorY(-10 + (20 * position))
+		setCursorX(1520 + 150 * column)
+
+		ui.dwriteTextAligned(
+			label .. value,
+			infoFontSize,
+			ui.Alignment.Start,
+			ui.Alignment.Start,
+			vec2(250, 22),
+			false,
+			rgbm.colors.white
+		)
+		ui.popDWriteFont()
 	end
 
 	ui.drawRectFilled(

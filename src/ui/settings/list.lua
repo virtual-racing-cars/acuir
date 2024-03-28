@@ -12,15 +12,21 @@ local settingsTabs = {
 	"CONTROLS",
 }
 
-local listWidth = 320
+local listWidth = 335 * UI_SCALE_X / 100
 local listMargins = 5
 local setupTabHeight = 50
 
-function SettingsList(sim)
-	setCursorX(100)
-	setCursorY(110)
+local settingsWindowSize = vec2(830 * UI_SCALE_X / 100, 605 * UI_SCALE_Y / 100)
+local settingsListSize = vec2(listWidth, 605 * UI_SCALE_Y / 100)
 
-	childWindow("settings_list", vec2(listWidth, 960), false, ui.WindowFlags.None, function()
+function SettingsList(sim)
+	setCursorX(15)
+	setCursorY(15)
+
+	childWindow("settings_list", settingsListSize, false, ui.WindowFlags.None, function()
+		ui.drawRectFilled(vec2(0, 0), ui.availableSpace(), settings.uiPrimaryColor, 0, ui.CornerFlags.None)
+		ui.drawRect(vec2(0, 0), ui.availableSpace(), rgbm(1, 1, 1, 0.25), 0, ui.CornerFlags.None)
+
 		pushSetupListStyle()
 
 		local buttonXPos = 5
@@ -44,11 +50,12 @@ function SettingsList(sim)
 		popSetupListStyle()
 	end)
 
-	setCursorX(450)
-	setCursorY(110)
+	setCursorX(365)
+	setCursorY(15)
 
-	childWindow("settings_window", vec2(800, 960), false, ui.WindowFlags.None, function()
-		ui.drawRectFilled(vec2(0, 0), ui.availableSpace(), rgbm(0.1, 0.1, 0.1, 0.5), 0, ui.CornerFlags.None)
+	childWindow("settings_window", settingsWindowSize, false, ui.WindowFlags.None, function()
+		ui.drawRectFilled(vec2(0, 0), ui.availableSpace(), settings.uiPrimaryColor, 0, ui.CornerFlags.None)
+		ui.drawRect(vec2(0, 0), ui.availableSpace(), rgbm(1, 1, 1, 0.25), 0, ui.CornerFlags.None)
 
 		if storage.settingsTab == "GENERAL" then
 			generalSettings()
