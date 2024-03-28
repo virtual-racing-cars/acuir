@@ -2,6 +2,9 @@ local listWidth = 335 * UI_SCALE_X / 100
 local listMargins = 5
 local setupTabHeight = 50
 
+local scrollY = 0
+local scrollYMax = 0
+
 function SetupTabList()
 	setCursorX(15)
 	setCursorY(15)
@@ -11,6 +14,7 @@ function SetupTabList()
 		false,
 		ui.WindowFlags.NoScrollWithMouse + ui.WindowFlags.NoScrollbar,
 		function()
+			local windowHeight = ui.availableSpaceY()
 			ui.drawRectFilled(vec2(0, 0), ui.availableSpace(), settings.uiPrimaryColor, 0, ui.CornerFlags.None)
 			ui.drawRect(vec2(0, 0), ui.availableSpace(), rgbm(1, 1, 1, 0.25), 0, ui.CornerFlags.None)
 
@@ -74,7 +78,32 @@ function SetupTabList()
 
 					buttonYPos = buttonYPos + setupTabHeight + listMargins
 				end
+
+				scrollY = ui.getScrollY()
+				scrollYMax = ui.getScrollMaxY()
 			end)
+
+			if scrollY > 0 then
+				ui.drawRectFilledMultiColor(
+					vec2(0, 100),
+					vec2(ui.availableSpaceX(), 200),
+					rgbm(1, 1, 1, 0.1),
+					rgbm(1, 1, 1, 0.1),
+					rgbm(0, 0, 0, 0),
+					rgbm(0, 0, 0, 0)
+				)
+			end
+
+			if scrollY < scrollYMax then
+				ui.drawRectFilledMultiColor(
+					vec2(0, windowHeight - 100),
+					vec2(ui.availableSpaceX(), windowHeight),
+					rgbm(0, 0, 0, 0),
+					rgbm(0, 0, 0, 0),
+					rgbm(1, 1, 1, 0.1),
+					rgbm(1, 1, 1, 0.1)
+				)
+			end
 
 			popSetupListStyle()
 		end

@@ -33,10 +33,11 @@ function loadSetupSpinners()
 		local min = v["min"]
 		local max = v["max"]
 		local step = v["step"]
+		local multiplier = v["displayMultiplier"] or 1
 		local units = v["units"] or ""
 
 		local lut = setupINI:get(id, "LUT", "")
-		local format = name .. ": %.0f " .. (units == "%" and "%%" or units)
+		local format = name .. (multiplier == 1 and ": %.0f " or ": %.1f ") .. (units == "%" and "%%" or units)
 
 		if lut ~= "" then
 			local lutFile = ac.DataLUT11.carData(0, lut)
@@ -62,11 +63,26 @@ function loadSetupSpinners()
 
 		table.insert(
 			setupSpinners,
-			SPINNER(id, tab, name, min, max, step, format, xPos, yPos, ac.checksumXXH(stringify({ tab, xPos, yPos })))
+			SPINNER(
+				id,
+				tab,
+				name,
+				min,
+				max,
+				step,
+				multiplier,
+				format,
+				xPos,
+				yPos,
+				ac.checksumXXH(stringify({ tab, xPos, yPos }))
+			)
 		)
 	end
 
-	table.insert(setupSpinners, SPINNER("FUEL", "FUEL", "FUEL", 0, car.maxFuel, 1, "FUEL" .. ": %.0f " .. "L", 0.5, 0))
+	table.insert(
+		setupSpinners,
+		SPINNER("FUEL", "FUEL", "FUEL", 0, car.maxFuel, 1, 1, "FUEL" .. ": %.0f " .. "L", 0.5, 0)
+	)
 	table.insert(
 		setupSpinners,
 		SPINNER(
@@ -75,6 +91,7 @@ function loadSetupSpinners()
 			"COMPOUND",
 			0,
 			compoundCount - 1,
+			1,
 			1,
 			ac.getTyresLongName(0, car.compoundIndex),
 			0.5,

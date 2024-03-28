@@ -2,13 +2,14 @@ local car = ac.getCar(0)
 
 SPINNER = class("SPINNER")
 
-function SPINNER:initialize(id, tab, name, min, max, step, format, xPos, yPos, uid)
+function SPINNER:initialize(id, tab, name, min, max, step, multiplier, format, xPos, yPos, uid)
 	self.id = id
 	self.tab = tab
 	self.name = name
 	self.min = min
 	self.max = max
 	self.step = step
+	self.multiplier = multiplier
 	self.value = ac.getSetupSpinnerValue(self.id)
 	self.default = self.value
 	self.format = format
@@ -93,7 +94,16 @@ function SPINNER:slider()
 	end
 
 	ui.setNextItemWidth(300 * UI_SCALE_X / 100)
-	local value, changed = ui.slider("##" .. self.id .. self.name, self._value, self.min, self.max, self.format, 1)
+	local value, changed = ui.slider(
+		"##" .. self.id .. self.name,
+		self._value * self.multiplier,
+		self.min * self.multiplier,
+		self.max * self.multiplier,
+		self.format,
+		1
+	)
+
+	value = value / self.multiplier
 
 	if ui.itemActive() then
 		self.itemActive = true
