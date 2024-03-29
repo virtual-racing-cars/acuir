@@ -2,6 +2,9 @@ local sim = ac.getSim()
 local car = ac.getCar(0)
 
 function viewSettings()
+	setCursorY(60)
+
+	setCursorX(10)
 	ui.setNextItemWidth(300)
 	local value, changed = ui.slider("##fpv_slider", sim.firstPersonCameraFOV, 30, 120, "First Person FOV: %.0f")
 

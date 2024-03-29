@@ -19,8 +19,6 @@ end
 
 local mirrorSetupStorage = ac.storage(mirrorSetupTabs)
 
-ac.log(mirrorSetupStorage["DIFFERENTIAL"])
-
 local function setupItemSpinners()
 	if storage.setupTab == "SETUP I/O" then
 		ioTab()

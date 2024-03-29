@@ -17,6 +17,7 @@ local listMargins = 5
 local setupTabHeight = 50
 
 local settingsWindowSize = vec2(830 * UI_SCALE_X / 100, 605 * UI_SCALE_Y / 100)
+local setupSpinnersWindowHeaderSize = vec2(830 * UI_SCALE_X / 100, 50 * UI_SCALE_Y / 100)
 local settingsListSize = vec2(listWidth, 605 * UI_SCALE_Y / 100)
 
 function SettingsList(sim)
@@ -29,7 +30,7 @@ function SettingsList(sim)
 
 		pushSetupListStyle()
 
-		local buttonXPos = 5
+		local buttonXPos = 0
 		local buttonYPos = 0
 		for tab in ipairs(settingsTabs) do
 			local buttonFlags = ui.ButtonFlags.None
@@ -40,7 +41,13 @@ function SettingsList(sim)
 
 			setCursorX(buttonXPos)
 			setCursorY(buttonYPos)
-			if ui.modernButtonAdvanced(settingsTabs[tab], LIST_BUTTON_SIZE, buttonFlags) then
+			if
+				ui.modernButtonAdvanced(
+					settingsTabs[tab],
+					vec2(ui.availableSpaceX(), setupTabHeight * UI_SCALE_Y / 100),
+					buttonFlags
+				)
+			then
 				storage.settingsTab = settingsTabs[tab]
 			end
 
@@ -56,6 +63,18 @@ function SettingsList(sim)
 	childWindow("settings_window", settingsWindowSize, false, ui.WindowFlags.None, function()
 		ui.drawRectFilled(vec2(0, 0), ui.availableSpace(), settings.uiPrimaryColor, 0, ui.CornerFlags.None)
 		ui.drawRect(vec2(0, 0), ui.availableSpace(), rgbm(1, 1, 1, 0.25), 0, ui.CornerFlags.None)
+
+		ui.drawRectFilled(vec2(0, 0), setupSpinnersWindowHeaderSize, rgbm(0.1, 0.1, 0.1, 0.5), 0, ui.CornerFlags.None)
+		setCursorY(0)
+		ui.dwriteTextAligned(
+			storage.settingsTab,
+			35 * UI_SCALE_Y / 100,
+			ui.Alignment.Center,
+			ui.Alignment.Start,
+			ui.availableSpace(),
+			false,
+			rgbm.colors.white
+		)
 
 		if storage.settingsTab == "GENERAL" then
 			generalSettings()

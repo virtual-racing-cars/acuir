@@ -90,13 +90,24 @@ local infoText = {
 		return 3.2, 7, "CoG Height: ", math.round(car.cgHeight, 3)
 	end,
 	function()
-		return 3.2, 9, "Mass: ", math.round(car.mass + (car.fuel * kgPerL) + car.ballast, 2) .. " kg"
+		return 3.2,
+			8,
+			"Weight Balance F: ",
+			math.round(
+				(car.wheels[0].load + car.wheels[1].load)
+					/ (car.wheels[0].load + car.wheels[1].load + car.wheels[2].load + car.wheels[3].load)
+					* 100,
+				1
+			) .. "%"
 	end,
 	function()
-		return 3.2, 10, "(", math.round(car.fuel * kgPerL, 2) .. " kg from fuel)"
+		return 3.2, 10, "Mass: ", math.round(car.mass + (car.fuel * kgPerL) + car.ballast, 2) .. " kg"
 	end,
 	function()
-		return 3.2, 11, "(", math.round(car.ballast, 2) .. " kg from ballast)"
+		return 3.2, 11, "(", math.round(car.fuel * kgPerL, 2) .. " kg from fuel)"
+	end,
+	function()
+		return 3.2, 12, "(", math.round(car.ballast, 2) .. " kg from ballast)"
 	end,
 }
 

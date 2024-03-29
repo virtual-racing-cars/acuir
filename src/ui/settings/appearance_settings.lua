@@ -2,6 +2,8 @@ local primaryActive = false
 local secondaryActive = false
 
 function appearanceSettings()
+	setCursorY(60)
+
 	setCursorX(10)
 	if ui.checkbox("Show 'Car Info' window on the setup page", settings.hideOtherTrackSetups) then
 		settings.hideOtherTrackSetups = not settings.hideOtherTrackSetups
