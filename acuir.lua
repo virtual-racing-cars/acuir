@@ -42,7 +42,6 @@ settings = ac.storage({
 
 storage.appOpen = false
 storage.hasAppOpened = false
-settings.autoStart = true
 
 package.add("src")
 require("init")
