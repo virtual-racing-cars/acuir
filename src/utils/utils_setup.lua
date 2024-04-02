@@ -1,25 +1,25 @@
-local car = ac.getCar(0)
-
 setupSpinners = {}
 
 local electronicsSetupItems = {
 	"MGUK_DELIVERY",
 	"MGUK_RECOVERY",
 	"MGUH_MODE",
+	"ABS",
+	"TRACTION_CONTROL",
 }
+
+-- ac.log(ac.getSetupSpinners())
+
+local populatedTabs = {}
+
+local pairedItems = {}
 
 function loadSetupSpinners()
 	for i in ipairs(setupSpinners) do
 		setupSpinners[i] = nil
 	end
 
-	local compoundCount = 1
-
 	for k, v in pairs(ac.getSetupSpinners()) do
-		if v.name == "COMPOUND" then
-			compoundCount = #v.items
-		end
-
 		local id = v["name"]
 
 		local ext = setupINI:get(id, "EXT_CONTROLLER", "")
@@ -35,77 +35,72 @@ function loadSetupSpinners()
 		local step = v["step"]
 		local multiplier = v["displayMultiplier"] or 1
 		local units = v["units"] or ""
-
-		local lut = setupINI:get(id, "LUT", "")
 		local format = name .. (multiplier == 1 and ": %.0f " or ": %.1f ") .. (units == "%" and "%%" or units)
-
-		if lut ~= "" then
-			local lutFile = ac.DataLUT11.carData(0, lut)
-			local minimumBounds, maximumBounds = lutFile:bounds()
-
-			min = 0
-			max = #lutFile - 1
-			step = 1
-
-			-- format = name .. ": " .. lutFile:get(ac.getSetupSpinnerValue(id, 0))
-		end
-
+		local items = v["items"] or {}
 		local xPos = setupINI:get(id, "POS_X", 0.5)
-		local yPos = setupINI:get(id, "POS_Y", 0.18)
+		local yPos = setupINI:get(id, "POS_Y", 0)
 
 		table.findFirst(electronicsSetupItems, function(item, index, callbackData)
 			if id == item then
 				tab = "ELECTRONICS"
-				yPos = index
+				yPos = index - 1
 			end
 		end)
 
-		table.insert(
-			setupSpinners,
-			SPINNER(
-				id,
-				tab,
-				name,
-				min,
-				max,
-				step,
-				multiplier,
-				format,
-				xPos,
-				yPos,
-				ac.checksumXXH(stringify({ tab, xPos, yPos }))
-			)
-		)
+		if tab == "ELECTRONICS" then
+			yPos = math.round(yPos)
+		end
+
+		if v.name == "COMPOUND" then
+			tab = "TYRES"
+			min = 0
+			max = #items - 1
+		end
+
+		if v.name == "GEARSET" then
+			tab = "GEARS"
+			min = 0
+			max = #items - 1
+		end
+
+		if v.name == "FUEL" then
+			tab = "FUEL"
+		end
+
+		if not table.contains(populatedTabs, tab) then
+			table.insert(populatedTabs, tab)
+		end
+
+		local uid = bit.tohex(ac.checksumXXH(stringify({ tab, xPos, yPos })))
+
+		table.insert(setupSpinners, SPINNER(id, tab, name, min, max, step, multiplier, items, format, xPos, yPos, uid))
+
+		if not pairedItems[uid] then
+			pairedItems[uid] = { id }
+		else
+			table.insert(pairedItems[uid], 1, id)
+		end
 	end
 
-	table.insert(
-		setupSpinners,
-		SPINNER("FUEL", "FUEL", "FUEL", 0, car.maxFuel, 1, 1, "FUEL" .. ": %.0f " .. "L", 0.5, 0)
-	)
-
-	table.insert(
-		setupSpinners,
-		SPINNER(
-			"COMPOUND",
-			"TYRES",
-			"COMPOUND",
-			0,
-			compoundCount - 1,
-			1,
-			1,
-			ac.getTyresLongName(0, car.compoundIndex),
-			0.5,
-			0
-		)
-	)
-
-	for _cK, childV in pairs(setupSpinners) do
-		if childV.name == "" or childV.name == "MGUK-Delivery" then
-			for _pK, parentV in pairs(setupSpinners) do
-				if parentV.uid == childV.uid then
-					table.insert(parentV.idPairs, childV.id)
+	for uid, uidPairs in pairs(pairedItems) do
+		if #uidPairs > 1 then
+			for _k, parent in pairs(setupSpinners) do
+				if parent.uid == uid then
+					if parent.id == uidPairs[1] then
+						ac.log(parent.id)
+						parent.idPairs = uidPairs
+						ac.log(parent.idPairs)
+					else
+						parent.child = true
+					end
 				end
 			end
+		end
+	end
+
+	for k, v in pairs(tabs) do
+		if not table.contains(populatedTabs, v) then
+			table.removeItem(tabs, v)
 		end
 	end
 end

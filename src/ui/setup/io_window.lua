@@ -268,7 +268,7 @@ function ioTab()
 
 	childWindow(
 		"setup_io",
-		vec2(ui.availableSpaceX(), ui.availableSpaceY() / 3 * 2 - 20),
+		vec2(ui.availableSpaceX(), ui.availableSpaceY() / 2.75 * 2 - 20),
 		false,
 		ui.WindowFlags.None,
 		function()

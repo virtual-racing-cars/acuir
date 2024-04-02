@@ -10,7 +10,7 @@ function SetupTabList()
 	setCursorY(15)
 	childWindow(
 		"setup_tab_list",
-		vec2(listWidth, ui.availableSpaceY() / 2) - vec2(0, setupTabHeight * UI_SCALE_Y / 100 + 8),
+		vec2(listWidth, 605 * UI_SCALE_Y / 100),
 		false,
 		ui.WindowFlags.NoScrollWithMouse + ui.WindowFlags.NoScrollbar,
 		function()

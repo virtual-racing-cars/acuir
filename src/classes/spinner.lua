@@ -1,8 +1,6 @@
-local car = ac.getCar(0)
-
 SPINNER = class("SPINNER")
 
-function SPINNER:initialize(id, tab, name, min, max, step, multiplier, format, xPos, yPos, uid)
+function SPINNER:initialize(id, tab, name, min, max, step, multiplier, items, format, xPos, yPos, uid)
 	self.id = id
 	self.tab = tab
 	self.name = name
@@ -12,12 +10,14 @@ function SPINNER:initialize(id, tab, name, min, max, step, multiplier, format, x
 	self.multiplier = multiplier
 	self.value = ac.getSetupSpinnerValue(self.id)
 	self.default = self.value
+	self.items = items
 	self.format = format
 	self.xPos = xPos
 	self.yPos = yPos
 	self.help = setupINI:get(self.id, "HELP", "")
 	self.uid = uid
 	self.idPairs = { self.id }
+	self.child = false
 
 	self._value = self.value
 
@@ -89,8 +89,8 @@ function SPINNER:helpWindow()
 end
 
 function SPINNER:slider()
-	if self.id == "COMPOUND" then
-		self.format = ac.getTyresLongName(0, car.compoundIndex)
+	if #self.items > 0 then
+		self.format = self.name .. ": " .. self.items[self.value + 1]
 	end
 
 	ui.setNextItemWidth(300 * UI_SCALE_X / 100)
@@ -111,7 +111,6 @@ function SPINNER:slider()
 	elseif self.value ~= self._value then
 		changed = true
 		self.value = self._value
-		ac.log("hi")
 	else
 		self.value = ac.getSetupSpinnerValue(self.id)
 		self._value = self.value
@@ -153,17 +152,24 @@ function SPINNER:set()
 end
 
 function SPINNER:mirror(id1, id2)
-	local pair = string.replace(self.id, id1, id2)
-	local pairSpinner = ac.getSetupSpinnerValue(pair)
+	if not string.find(self.id, id1) then
+		return
+	end
 
-	if self.value ~= pairSpinner then
-		self.value = pairSpinner
+	local pairedValue = ac.getSetupSpinnerValue(string.trim(self.id, id1, 1) .. id2, -12345)
+
+	if pairedValue == -12345 then
+		return
+	end
+
+	if self.value ~= pairedValue then
+		self.value = pairedValue
 		self:set()
 	end
 end
 
 function SPINNER:run(drawSpinner, mirror)
-	if self.name == "" or (self.id == "MGUK_DELIVERY" and #self.idPairs > 1) then
+	if self.name == "" or self.child then
 		return
 	end
 
@@ -185,7 +191,7 @@ function SPINNER:run(drawSpinner, mirror)
 		return
 	end
 
-	setCursorX(self.xPos * 400 + 14)
+	setCursorX(self.xPos * 400 + 15)
 	setCursorY(self.yPos * 50 + 85)
 	if self:button("Left") then
 		self:set()
