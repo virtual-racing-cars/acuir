@@ -18,6 +18,21 @@ function SPINNER:initialize(id, tab, name, min, max, step, multiplier, items, fo
 	self.uid = uid
 	self.idPairs = { self.id }
 	self.child = false
+	self.idMirror = nil
+
+	if string.find(self.id, "LF") then
+		self.idMirror = string.replace(self.id, "LF", "RF")
+	elseif string.find(self.id, "RF") then
+		self.idMirror = string.replace(self.id, "RF", "LF")
+	elseif string.find(self.id, "LR") then
+		self.idMirror = string.replace(self.id, "LR", "RR")
+	elseif string.find(self.id, "RR") then
+		self.idMirror = string.replace(self.id, "RR", "LR")
+	end
+
+	if ac.getSetupSpinnerValue(self.idMirror, -12345) == -12345 then
+		self.idMirror = nil
+	end
 
 	self._value = self.value
 
@@ -152,18 +167,18 @@ function SPINNER:set()
 end
 
 function SPINNER:mirror(id1, id2)
-	if not string.find(self.id, id1) then
+	if not self.idMirror then
 		return
 	end
 
-	local pairedValue = ac.getSetupSpinnerValue(string.trim(self.id, id1, 1) .. id2, -12345)
+	local mirrorValue = ac.getSetupSpinnerValue(self.idMirror, ac.get)
 
-	if pairedValue == -12345 then
+	if mirrorValue == -12345 then
 		return
 	end
 
-	if self.value ~= pairedValue then
-		self.value = pairedValue
+	if self.value ~= mirrorValue then
+		self.value = mirrorValue
 		self:set()
 	end
 end
@@ -178,10 +193,7 @@ function SPINNER:run(drawSpinner, mirror)
 	self.itemActive = false
 
 	if mirror then
-		self:mirror("LF", "RF")
-		self:mirror("RF", "LF")
-		self:mirror("LR", "RR")
-		self:mirror("RR", "LR")
+		self:mirror()
 	end
 
 	if not drawSpinner then

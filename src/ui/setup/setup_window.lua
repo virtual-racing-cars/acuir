@@ -31,12 +31,7 @@ local function setupItemSpinners()
 			v:run(tab == storage.setupTab, mirrorSetupStorage[tab])
 
 			if not mirrorButtonsInitialized then
-				if
-					string.find(v.id, "LF")
-					or string.find(v.id, "RF")
-					or string.find(v.id, "LR")
-					or string.find(v.id, "RR")
-				then
+				if v.idMirror then
 					mirrorButtonShow[tab] = true
 				end
 			end
