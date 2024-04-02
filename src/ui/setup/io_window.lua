@@ -95,7 +95,7 @@ local function savedSetupsWindow()
 									setupButtonFlags = ui.ButtonFlags.Active
 								end
 
-								local setupName = string.trim(setup.name, ".ini")
+								local setupName = string.replace(setup.name, ".ini", "")
 
 								ui.pushStyleVar(ui.StyleVar.ItemSpacing, 3)
 								ui.pushStyleVar(ui.StyleVar.FramePadding, -25)
