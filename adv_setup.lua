@@ -26,7 +26,7 @@ storage = ac.storage({
 	appOpen = false,
 	hasAppOpened = false,
 	setupTab = "AERO",
-	settingsTab = "APP SETTINGS",
+	settingsTab = "GENERAL",
 	page = MenuPages.Setup,
 })
 

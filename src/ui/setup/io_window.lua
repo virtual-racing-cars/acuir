@@ -156,14 +156,21 @@ local function loadSetupInfoWindow()
 				setCursorX(10)
 				ui.pushDWriteFont("Default;Weight=Bold")
 
-				ui.dwriteText(selectedSetupDir .. " - " .. selectedSetupName, 20)
+				ui.dwriteText(selectedSetupDir .. " - " .. selectedSetupName, 20 * UI_SCALE_Y / 100)
 				ui.popDWriteFont()
 
 				setCursorX(10)
-				ui.text("Created:" .. selectedSetupCreation)
+				ui.dwriteText("Created:" .. selectedSetupCreation, 20 * UI_SCALE_Y / 100)
 
 				setCursorX(10)
-				if ui.modernButtonAdvanced("Load", vec2(100, 30), ui.ButtonFlags.None, ui.Icons.Download) then
+				if
+					ui.modernButtonAdvanced(
+						"Load",
+						vec2(ui.availableSpaceX() / 2 - 10, 30 * UI_SCALE_Y / 100),
+						ui.ButtonFlags.None,
+						ui.Icons.Download
+					)
+				then
 					ac.loadSetup(selectedSetupPath)
 					loadedSetup = saveDir .. " - " .. saveName
 
@@ -171,7 +178,14 @@ local function loadSetupInfoWindow()
 				end
 				ui.sameLine()
 
-				if ui.modernButtonAdvanced("Delete", vec2(100, 30), ui.ButtonFlags.None, ui.Icons.Delete) then
+				if
+					ui.modernButtonAdvanced(
+						"Delete",
+						vec2(ui.availableSpaceX() - 10, 30 * UI_SCALE_Y / 100),
+						ui.ButtonFlags.None,
+						ui.Icons.Delete
+					)
+				then
 					io.deleteFile(selectedSetupPath)
 					io.deleteFile(string.trim(selectedSetupPath, ".ini") .. ".sp")
 
@@ -205,25 +219,15 @@ local function saveSetupWindow()
 
 			setCursorX(10)
 			ui.text("Name:")
-			ui.sameLine(70)
-			ui.setNextItemWidth(ui.availableSpaceX() / 2 - 20)
+			ui.sameLine()
+			setCursorX(80)
+			ui.setNextItemWidth((ui.availableSpaceX() - 80) / 2)
 			saveName = ui.inputText("##SetupName", saveName, ui.InputTextFlags.None)
 
 			ui.sameLine()
-			ui.text("Notes:")
-			ui.sameLine()
-			saveDescription = ui.inputText(
-				"##SetupDesc",
-				saveDescription,
-				ui.InputTextFlags.None,
-				vec2(ui.availableSpaceX() - 20, 120)
-			)
-			ui.newLine(-100)
-
-			setCursorX(10)
 			ui.text("Track:")
-			ui.sameLine(70)
-			ui.setNextItemWidth(ui.availableSpaceX() / 2 - 20)
+			ui.sameLine()
+			ui.setNextItemWidth(ui.availableSpaceX() - 10)
 			ui.combo("##setupcombo", saveDir, ui.ComboFlags.None, function()
 				ui.bringWindowToFront()
 
@@ -242,21 +246,47 @@ local function saveSetupWindow()
 				end)
 			end)
 
-			if ui.modernButtonAdvanced("Save", vec2(100, 30), ui.ButtonFlags.None, ui.Icons.Save) then
-				ac.setActiveSetupName(saveName, saveDir)
-				ac.saveCurrentSetup(setupsDir .. "\\" .. saveDir .. "\\" .. saveName .. ".ini")
-				ui.toast(ui.Icons.Save, "Setup Saved: " .. saveName)
-
-				loadedSetup = saveDir .. " - " .. saveName
-
-				loadSetups()
-			end
-
 			setCursorX(10)
+			ui.text("Notes:")
+			ui.sameLine()
+			setCursorX(80)
+			saveDescription = ui.inputText(
+				"##SetupDesc",
+				saveDescription,
+				ui.InputTextFlags.None,
+				vec2((ui.availableSpaceX() - 80) / 2, ui.availableSpaceY() - 10)
+			)
 
 			ui.sameLine()
 
-			if ui.modernButtonAdvanced("Reset", vec2(100, 30), ui.ButtonFlags.None, ui.Icons.Restart) then
+			if
+				ui.modernButtonAdvanced(
+					"Save Setup",
+					vec2(ui.availableSpaceX() / 2 - 10, ui.availableSpaceY() - 10),
+					ui.ButtonFlags.None,
+					ui.Icons.Save
+				)
+			then
+				if saveName ~= "" then
+					ac.setActiveSetupName(saveName, saveDir)
+					ac.saveCurrentSetup(setupsDir .. "\\" .. saveDir .. "\\" .. saveName .. ".ini")
+					ui.toast(ui.Icons.Save, "Setup Saved: " .. saveName)
+					loadedSetup = saveDir .. " - " .. saveName
+					loadSetups()
+				end
+			end
+
+			setCursorX(10)
+			ui.sameLine()
+
+			if
+				ui.modernButtonAdvanced(
+					"Reset Setup",
+					vec2(ui.availableSpaceX() - 10, ui.availableSpaceY() - 10),
+					ui.ButtonFlags.None,
+					ui.Icons.Restart
+				)
+			then
 				ac.resetSetupToDefault()
 			end
 		end

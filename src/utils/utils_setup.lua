@@ -8,10 +8,7 @@ local electronicsSetupItems = {
 	"TRACTION_CONTROL",
 }
 
--- ac.log(ac.getSetupSpinners())
-
 local populatedTabs = {}
-
 local pairedItems = {}
 
 function loadSetupSpinners()
@@ -88,9 +85,7 @@ function loadSetupSpinners()
 			for _k, parent in pairs(setupSpinners) do
 				if parent.uid == uid then
 					if parent.id == uidPairs[1] then
-						ac.log(parent.id)
 						parent.idPairs = uidPairs
-						ac.log(parent.idPairs)
 					else
 						parent.child = true
 					end
