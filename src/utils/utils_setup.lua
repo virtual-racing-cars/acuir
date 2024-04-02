@@ -58,6 +58,7 @@ function loadSetupSpinners()
 		end
 
 		if v.name == "GEARSET" then
+			name = "GEAR SETS"
 			tab = "GEARS"
 			min = 0
 			max = #items - 1
