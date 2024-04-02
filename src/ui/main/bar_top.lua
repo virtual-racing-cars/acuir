@@ -99,9 +99,14 @@ function TopBar()
 		rgbm(0, 0, 0, 0)
 	)
 
-	setCursorX(10)
+	setCursorX(5)
 	setCursorY(15)
+	if ui.invisibleButton("##ui_toggle", acLogoSize) then
+		storage.appOpen = not storage.appOpen
+	end
 
+	setCursorX(5)
+	setCursorY(15)
 	ui.image(acLogo, acLogoSize, rgbm(1, 1, 1, 1))
 
 	setCursorX(130)
@@ -125,6 +130,7 @@ function TopBar()
 	ui.setCursorX(sim.windowWidth - 200 * UI_SCALE_X / 100)
 	setCursorY(0)
 	if ui.modernButtonAdvanced("##Skip", buttonSize, ui.ButtonFlags.None, ui.Icons.Skip) then
+		ac.tryToSkipSession()
 	end
 
 	ui.setCursorX(sim.windowWidth - 100 * UI_SCALE_X / 100)

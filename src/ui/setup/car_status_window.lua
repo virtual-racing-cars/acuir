@@ -1,6 +1,6 @@
 local car = ac.getCar()
 
-local setupSpinnersWindowSize = vec2(830 * UI_SCALE_X / 100, 310 * UI_SCALE_Y / 100)
+local setupSpinnersWindowSize = vec2(500 * UI_SCALE_X / 100, 605 * UI_SCALE_Y / 100)
 local setupSpinnersWindowHeaderSize = vec2(830 * UI_SCALE_X / 100, 50 * UI_SCALE_Y / 100)
 
 local textBoxSize = vec2(300, 18)
@@ -112,8 +112,8 @@ local infoText = {
 }
 
 function CarStatusWindow()
-	setCursorX(365)
-	setCursorY(635)
+	setCursorX(1209)
+	setCursorY(15)
 	childWindow(
 		"setup_info_window",
 		setupSpinnersWindowSize,

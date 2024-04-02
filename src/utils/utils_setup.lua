@@ -57,7 +57,6 @@ function loadSetupSpinners()
 			if id == item then
 				tab = "ELECTRONICS"
 				yPos = index
-				ac.log("hi")
 			end
 		end)
 
@@ -83,6 +82,7 @@ function loadSetupSpinners()
 		setupSpinners,
 		SPINNER("FUEL", "FUEL", "FUEL", 0, car.maxFuel, 1, 1, "FUEL" .. ": %.0f " .. "L", 0.5, 0)
 	)
+
 	table.insert(
 		setupSpinners,
 		SPINNER(

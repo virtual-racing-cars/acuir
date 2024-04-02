@@ -23,6 +23,8 @@ MenuPagesString = {
 }
 
 storage = ac.storage({
+	appOpen = false,
+	hasAppOpened = false,
 	setupTab = "AERO",
 	settingsTab = "APP SETTINGS",
 	page = MenuPages.Setup,
@@ -38,8 +40,9 @@ settings = ac.storage({
 	uiSecondaryColor = rgbm(1, 0, 0, 1),
 })
 
-ac.store("adv_setup_trigger", 0)
-ac.store("adv_setup_open", 0)
+storage.appOpen = false
+storage.hasAppOpened = false
+settings.autoStart = true
 
 package.add("src")
 require("init")
@@ -48,86 +51,37 @@ require("utils\\utils_scale")
 require("ui\\styles")
 require("ui\\main\\main_window")
 
-local stateToggle = false
-
-local timer = os.clock() + 60
-
 ui.onExclusiveHUD(function(mode)
-	if ac.isKeyDown(ui.KeyIndex.LeftControl) and ac.isKeyDown(ui.KeyIndex.LeftShift) then
-		if not stateToggle then
-			local state = ac.load("adv_setup_open")
-			ac.store("adv_setup_open", state == 1 and 0 or 1)
-			stateToggle = true
-		end
-	else
-		stateToggle = false
-	end
-
-	if
-		ac.load("adv_setup_trigger") == 0
-		and ac.load("adv_setup_open") == 0
-		and sim.isInMainMenu
-		and not sim.isWindowForeground
-		and settings.autoStart
-	then
-		ui.drawRectFilled(vec2(0, 0), vec2(sim.windowWidth, sim.windowHeight), rgbm.colors.black)
-		ui.dwriteTextAligned(
-			"CLICK OR DIE",
-			200,
-			ui.Alignment.Center,
-			ui.Alignment.Center,
-			vec2(sim.windowWidth, sim.windowHeight)
-		)
-	end
-
-	if mode == "menu" and ac.load("adv_setup_open") == 1 then
-		if settings.uiHideonIdle then
-			if ui.mouseDelta() ~= vec2(0, 0) and sim.isWindowForeground then
-				timer = os.clock() + 60
-			end
-
-			if timer < os.clock() then
-				ac.setCurrentCamera(ac.CameraMode.Start)
-				return ""
-			end
-		end
-
-		MainWindow(sim)
-
-		return "debug"
+	if mode == "menu" then
+		return MainWindow(sim)
 	end
 end)
 
 function script.update(dt)
-	if ac.load("adv_setup_trigger") == 0 and sim.isInMainMenu and sim.isWindowForeground and settings.autoStart then
-		ac.setMousePosition(vec2(50, 270))
-
-		ac.setMouseLeftButtonDown(true)
+	if
+		sim.isInMainMenu
+		and settings.autoStart
+		and not storage.hasAppOpened
+		and not storage.appOpen
+		and ac.isWindowOpen("main")
+	then
+		ac.tryToOpenRaceMenu("race")
+		ac.tryToOpenRaceMenu("setup")
+		storage.appOpen = settings.autoStart
 	end
 end
 
 function script.main()
-	if ac.load("adv_setup_trigger") == 0 and ac.load("adv_setup_open") == 0 then
-		if settings.autoStart then
-			ac.store("adv_setup_open", 1)
-			stateToggle = true
-		end
-
-		ac.store("adv_setup_trigger", 1)
-	end
-
 	setCursorX(0)
 	setCursorY(0)
 
 	if
 		ui.modernButtonAdvanced(
-			ac.load("adv_setup_open") == 0 and "Activate Advanced Setup" or "Deactivate Advanced Setup",
+			storage.appOpen and "Deactivate Advanced Setup" or "Activate Advanced Setup",
 			vec2(300, 50),
 			ui.ButtonFlags.None
 		)
 	then
-		local state = ac.load("adv_setup_open")
-		ac.store("adv_setup_open", state == 1 and 0 or 1)
-		stateToggle = true
+		storage.appOpen = not storage.appOpen
 	end
 end

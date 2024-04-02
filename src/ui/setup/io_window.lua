@@ -56,138 +56,139 @@ end
 
 loadSetups()
 
-function ioTab()
-	setCursorY(50)
-
+local function savedSetupsWindow()
 	childWindow(
-		"load_compare_setups",
-		vec2(ui.availableSpaceX(), ui.availableSpaceY() / 3 * 2 - 20),
+		"saved_setups",
+		vec2(ui.availableSpaceX() / 2, ui.availableSpaceY()),
 		false,
 		ui.WindowFlags.None,
 		function()
-			setCursorY(0)
-			ui.textAligned("Current Setup [" .. loadedSetup .. "]", vec2(0.5, 0.5), vec2(ui.availableSpaceX(), 30))
+			setCursorX(10)
+			childWindow("saved_setups", vec2(ui.availableSpaceX() - 10, ui.availableSpaceY()), false, function()
+				ui.drawRectFilled(
+					vec2(0, 0),
+					vec2(ui.availableSpaceX(), ui.availableSpaceY() - 10),
+					settings.uiPrimaryColor,
+					0,
+					ui.CornerFlags.None
+				)
+				ui.drawRect(
+					vec2(0, 0),
+					vec2(ui.availableSpaceX(), ui.availableSpaceY() - 10),
+					rgbm(1, 1, 1, 0.25),
+					0,
+					ui.CornerFlags.None
+				)
 
-			childWindow(
-				"saved_setups",
-				vec2(ui.availableSpaceX() / 2, ui.availableSpaceY()),
-				false,
-				ui.WindowFlags.None,
-				function()
-					setCursorX(10)
-					childWindow("saved_setups", vec2(ui.availableSpaceX() - 10, ui.availableSpaceY()), false, function()
-						ui.drawRectFilled(
-							vec2(0, 0),
-							vec2(ui.availableSpaceX(), ui.availableSpaceY() - 10),
-							settings.uiPrimaryColor,
-							0,
-							ui.CornerFlags.None
-						)
-						ui.drawRect(
-							vec2(0, 0),
-							vec2(ui.availableSpaceX(), ui.availableSpaceY() - 10),
-							rgbm(1, 1, 1, 0.25),
-							0,
-							ui.CornerFlags.None
-						)
+				ui.textAligned("Saved Setups", vec2(0.5, 0.5), vec2(ui.availableSpaceX(), 22 * UI_SCALE_Y / 100))
 
-						ui.textAligned("Saved Setups", vec2(0.5, 0.5), vec2(ui.availableSpaceX(), 22))
+				if refreshingSetups then
+					ui.icon(ui.Icons.LoadingSpinner, ui.availableSpace())
+				else
+					for track, trackSetups in pairs(setups) do
+						ui.treeNode(track, function()
+							for i in ipairs(trackSetups) do
+								local setup = trackSetups[i]
+								local setupButtonFlags = ui.ButtonFlags.None
 
-						if refreshingSetups then
-							ui.icon(ui.Icons.LoadingSpinner, ui.availableSpace())
-						else
-							for track, trackSetups in pairs(setups) do
-								ui.treeNode(track, function()
-									for i in ipairs(trackSetups) do
-										local setup = trackSetups[i]
-										local setupButtonFlags = ui.ButtonFlags.None
+								if selectedSetupPath == setup.path then
+									setupButtonFlags = ui.ButtonFlags.Active
+								end
 
-										if selectedSetupPath == setup.path then
-											setupButtonFlags = ui.ButtonFlags.Active
-										end
+								local setupName = string.trim(setup.name, ".ini")
 
-										local setupName = string.trim(setup.name, ".ini")
+								ui.pushStyleVar(ui.StyleVar.ItemSpacing, 3)
+								ui.pushStyleVar(ui.StyleVar.FramePadding, -25)
+								if
+									ui.modernButtonAdvanced(
+										setupName,
+										vec2(ui.availableSpaceX(), 30 * UI_SCALE_Y / 100),
+										setupButtonFlags
+									)
+								then
+									selectedSetupPath = setup.path
+									selectedSetupCreation = setup.creationTime
+									saveName = setupName
+									saveDir = track
 
-										if ui.modernButtonAdvanced(setupName, vec2(300, 30), setupButtonFlags) then
-											selectedSetupPath = setup.path
-											selectedSetupCreation = setup.creationTime
-											saveName = setupName
-											saveDir = track
+									selectedSetupName = setupName
+									selectedSetupDir = track
+								end
 
-											selectedSetupName = setupName
-											selectedSetupDir = track
-										end
-									end
-								end)
+								ui.popStyleVar(2)
 							end
-						end
-					end)
-				end
-			)
-
-			setCursorX(ui.availableSpaceX() / 2)
-			ui.sameLine()
-
-			childWindow(
-				"load_setup",
-				vec2(ui.availableSpaceX() - 10, ui.availableSpaceY()),
-				false,
-				ui.WindowFlags.None,
-				function()
-					ui.drawRectFilled(
-						vec2(0, 0),
-						vec2(ui.availableSpaceX(), ui.availableSpaceY() - 10),
-						settings.uiPrimaryColor,
-						0,
-						ui.CornerFlags.None
-					)
-					ui.drawRect(
-						vec2(0, 0),
-						vec2(ui.availableSpaceX(), ui.availableSpaceY() - 10),
-						rgbm(1, 1, 1, 0.25),
-						0,
-						ui.CornerFlags.None
-					)
-
-					ui.textAligned("Load Setup", vec2(0.5, 0.5), vec2(ui.availableSpaceX(), 22))
-
-					if selectedSetupName ~= "" then
-						setCursorX(10)
-						ui.pushDWriteFont("Default;Weight=Bold")
-
-						ui.dwriteText(selectedSetupDir .. " - " .. selectedSetupName, 20)
-						ui.popDWriteFont()
-
-						setCursorX(10)
-						ui.text("Created:" .. selectedSetupCreation)
-
-						setCursorX(10)
-						if ui.modernButtonAdvanced("Load", vec2(100, 30), ui.ButtonFlags.None, ui.Icons.Download) then
-							ac.loadSetup(selectedSetupPath)
-							loadedSetup = saveDir .. " - " .. saveName
-
-							ui.toast(ui.Icons.Download, "Setup loaded: " .. saveName)
-						end
-						ui.sameLine()
-
-						if ui.modernButtonAdvanced("Delete", vec2(100, 30), ui.ButtonFlags.None, ui.Icons.Delete) then
-							io.deleteFile(selectedSetupPath)
-							io.deleteFile(string.trim(selectedSetupPath, ".ini") .. ".sp")
-
-							ui.toast(ui.Icons.Download, "Setup deleted: " .. selectedSetupName)
-
-							selectedSetupPath = ""
-							selectedSetupDir = ""
-							selectedSetupName = ""
-
-							loadSetups()
-						end
+						end)
 					end
 				end
-			)
+			end)
 		end
 	)
+end
 
+local function loadSetupInfoWindow()
+	setCursorX(ui.availableSpaceX() / 2)
+	ui.sameLine()
+
+	childWindow(
+		"load_setup",
+		vec2(ui.availableSpaceX() - 10, ui.availableSpaceY()),
+		false,
+		ui.WindowFlags.None,
+		function()
+			ui.drawRectFilled(
+				vec2(0, 0),
+				vec2(ui.availableSpaceX(), ui.availableSpaceY() - 10),
+				settings.uiPrimaryColor,
+				0,
+				ui.CornerFlags.None
+			)
+			ui.drawRect(
+				vec2(0, 0),
+				vec2(ui.availableSpaceX(), ui.availableSpaceY() - 10),
+				rgbm(1, 1, 1, 0.25),
+				0,
+				ui.CornerFlags.None
+			)
+
+			ui.textAligned("Load Setup", vec2(0.5, 0.5), vec2(ui.availableSpaceX(), 22))
+
+			if selectedSetupName ~= "" then
+				setCursorX(10)
+				ui.pushDWriteFont("Default;Weight=Bold")
+
+				ui.dwriteText(selectedSetupDir .. " - " .. selectedSetupName, 20)
+				ui.popDWriteFont()
+
+				setCursorX(10)
+				ui.text("Created:" .. selectedSetupCreation)
+
+				setCursorX(10)
+				if ui.modernButtonAdvanced("Load", vec2(100, 30), ui.ButtonFlags.None, ui.Icons.Download) then
+					ac.loadSetup(selectedSetupPath)
+					loadedSetup = saveDir .. " - " .. saveName
+
+					ui.toast(ui.Icons.Download, "Setup loaded: " .. saveName)
+				end
+				ui.sameLine()
+
+				if ui.modernButtonAdvanced("Delete", vec2(100, 30), ui.ButtonFlags.None, ui.Icons.Delete) then
+					io.deleteFile(selectedSetupPath)
+					io.deleteFile(string.trim(selectedSetupPath, ".ini") .. ".sp")
+
+					ui.toast(ui.Icons.Download, "Setup deleted: " .. selectedSetupName)
+
+					selectedSetupPath = ""
+					selectedSetupDir = ""
+					selectedSetupName = ""
+
+					loadSetups()
+				end
+			end
+		end
+	)
+end
+
+local function saveSetupWindow()
 	setCursorX(0)
 	ui.newLine(-30)
 
@@ -260,4 +261,24 @@ function ioTab()
 			end
 		end
 	)
+end
+
+function ioTab()
+	setCursorY(50)
+
+	childWindow(
+		"setup_io",
+		vec2(ui.availableSpaceX(), ui.availableSpaceY() / 3 * 2 - 20),
+		false,
+		ui.WindowFlags.None,
+		function()
+			setCursorY(0)
+			ui.textAligned("Current Setup [" .. loadedSetup .. "]", vec2(0.5, 0.5), vec2(ui.availableSpaceX(), 30))
+
+			savedSetupsWindow()
+			loadSetupInfoWindow()
+		end
+	)
+
+	saveSetupWindow()
 end

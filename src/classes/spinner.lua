@@ -111,6 +111,7 @@ function SPINNER:slider()
 	elseif self.value ~= self._value then
 		changed = true
 		self.value = self._value
+		ac.log("hi")
 	else
 		self.value = ac.getSetupSpinnerValue(self.id)
 		self._value = self.value
@@ -205,4 +206,6 @@ function SPINNER:run(drawSpinner, mirror)
 	if ui.itemHovered(ui.HoveredFlags.None) then
 		self:helpWindow()
 	end
+
+	return self.itemSet
 end
