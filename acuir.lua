@@ -25,18 +25,21 @@ MenuPagesString = {
 storage = ac.storage({
 	appOpen = false,
 	hasAppOpened = false,
-	setupTab = "AERO",
+	setupTab = "SETUP I/O",
 	settingsTab = "GENERAL",
 	page = MenuPages.Setup,
 })
 
+storage.setupTab = "SETUP I/O"
+storage.settingsTab = "GENERAL"
+
 settings = ac.storage({
-	autoStart = false,
+	autoStart = true,
 	showVersions = true,
 	autoLoadLastSetup = true,
 	hideOtherTrackSetups = true,
 	uiHideonIdle = true,
-	uiPrimaryColor = rgbm(0.1, 0.1, 0.1, 0.65),
+	uiPrimaryColor = rgbm(0.1, 0.1, 0.1, 0.75),
 	uiSecondaryColor = rgbm(1, 0, 0, 1),
 })
 

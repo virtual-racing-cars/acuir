@@ -1,6 +1,21 @@
 SPINNER = class("SPINNER")
 
-function SPINNER:initialize(id, tab, name, min, max, step, multiplier, items, format, xPos, yPos, uid)
+function SPINNER:initialize(
+	id,
+	tab,
+	name,
+	min,
+	max,
+	step,
+	multiplier,
+	items,
+	format,
+	xPos,
+	yPos,
+	uid,
+	independentSpinner,
+	zeroDefault
+)
 	self.id = id
 	self.tab = tab
 	self.name = name
@@ -8,7 +23,7 @@ function SPINNER:initialize(id, tab, name, min, max, step, multiplier, items, fo
 	self.max = max
 	self.step = step
 	self.multiplier = multiplier
-	self.value = ac.getSetupSpinnerValue(self.id)
+	self.value = zeroDefault and 0 or ac.getSetupSpinnerValue(self.id)
 	self.default = self.value
 	self.items = items
 	self.format = format
@@ -19,6 +34,7 @@ function SPINNER:initialize(id, tab, name, min, max, step, multiplier, items, fo
 	self.idPairs = { self.id }
 	self.child = false
 	self.idMirror = nil
+	self.independentSpinner = independentSpinner and true or false
 
 	if string.find(self.id, "LF") then
 		self.idMirror = string.replace(self.id, "LF", "RF")
@@ -105,7 +121,7 @@ end
 
 function SPINNER:slider()
 	if #self.items > 0 then
-		self.format = self.name .. ": " .. self.items[self.value + 1]
+		self.format = self.name .. ": " .. (self.items[self.value + 1] and self.items[self.value + 1] or self.value)
 	end
 
 	ui.setNextItemWidth(300 * UI_SCALE_X / 100)
@@ -126,7 +142,7 @@ function SPINNER:slider()
 	elseif self.value ~= self._value then
 		changed = true
 		self.value = self._value
-	else
+	elseif not self.independentSpinner then
 		self.value = ac.getSetupSpinnerValue(self.id)
 		self._value = self.value
 	end
@@ -144,6 +160,10 @@ function SPINNER:slider()
 end
 
 function SPINNER:get()
+	if self.independentSpinner then
+		return
+	end
+
 	if not self.itemActive then
 		self.value = ac.getSetupSpinnerValue(self.id)
 	end
@@ -151,6 +171,13 @@ end
 
 function SPINNER:set()
 	if self.itemSet then
+		return
+	end
+
+	if self.independentSpinner then
+		self.value = math.clamp(math.floor(self.value / self.step + 0.5) * self.step, self.min, self.max)
+		self._value = self.value
+		self.itemSet = true
 		return
 	end
 

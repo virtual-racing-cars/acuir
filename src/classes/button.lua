@@ -14,16 +14,18 @@ menuNav:setVolume(0.1)
 function ui.modernButtonAdvanced(label, size, flags, icon, iconSize)
 	local clicked = ui.modernButton(label, size, flags, icon, iconSize)
 
-	if ui.itemHovered(ui.HoveredFlags.None) and not menuNavTrigged then
-		menuNav:play()
-		menuNavTrigged = true
-		menuItem = label
-	elseif not ui.itemHovered(ui.HoveredFlags.None) and menuNavTrigged and menuItem == label then
-		menuNavTrigged = false
-	end
+	if flags ~= ui.ButtonFlags.Disabled then
+		if ui.itemHovered(ui.HoveredFlags.None) and not menuNavTrigged then
+			menuNav:play()
+			menuNavTrigged = true
+			menuItem = label
+		elseif not ui.itemHovered(ui.HoveredFlags.None) and menuNavTrigged and menuItem == label then
+			menuNavTrigged = false
+		end
 
-	if ui.itemActivated() then
-		menuClick:play()
+		if ui.itemActivated() then
+			menuClick:play()
+		end
 	end
 
 	return clicked

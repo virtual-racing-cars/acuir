@@ -37,6 +37,12 @@ function loadSetupSpinners()
 		local xPos = setupINI:get(id, "POS_X", 0.5)
 		local yPos = setupINI:get(id, "POS_Y", 0)
 
+		for i in ipairs(items) do
+			if string.find(items[i], "%%") then
+				items[i] = string.replace(items[i], "%", "%%")
+			end
+		end
+
 		table.findFirst(electronicsSetupItems, function(item, index, callbackData)
 			if id == item then
 				tab = "ELECTRONICS"

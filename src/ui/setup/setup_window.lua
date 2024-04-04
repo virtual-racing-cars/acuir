@@ -1,5 +1,6 @@
 require("src\\utils\\utils_setup")
 require("src\\ui\\setup\\io_window")
+require("src\\ui\\setup\\pitstop_strategy_window")
 
 loadSetupSpinners()
 
@@ -22,6 +23,10 @@ local mirrorSetupStorage = ac.storage(mirrorSetupTabs)
 local function setupItemSpinners()
 	if storage.setupTab == "SETUP I/O" then
 		ioTab()
+	end
+
+	if storage.setupTab == "PITSTOP STRATEGY" then
+		pitstopStrategyWindow()
 	end
 
 	for k, v in pairs(setupSpinners) do

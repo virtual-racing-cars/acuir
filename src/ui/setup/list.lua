@@ -1,3 +1,5 @@
+local sim = ac.getSim()
+
 local listWidth = 335 * UI_SCALE_X / 100
 local listMargins = 5
 local setupTabHeight = 50
@@ -42,18 +44,24 @@ function SetupTabList()
 
 			local buttonFlags = ui.ButtonFlags.None
 
-			if storage.setupTab == "PIT STRATEGY" then
+			if
+				sim.raceSessionType == ac.SessionType.Hotlap
+				or sim.raceSessionType == ac.SessionType.TimeAttack
+				or sim.raceSessionType == ac.SessionType.Undefined
+			then
+				buttonFlags = ui.ButtonFlags.Disabled
+			elseif storage.setupTab == "PITSTOP STRATEGY" then
 				buttonFlags = ui.ButtonFlags.Active
 			end
 
 			if
 				ui.modernButtonAdvanced(
-					"PIT STRATEGY",
+					"PITSTOP STRATEGY",
 					vec2(ui.availableSpaceX(), setupTabHeight * UI_SCALE_Y / 100),
 					buttonFlags
 				)
 			then
-				storage.setupTab = "PIT STRATEGY"
+				storage.setupTab = "PITSTOP STRATEGY"
 			end
 
 			popSetupListStyle()

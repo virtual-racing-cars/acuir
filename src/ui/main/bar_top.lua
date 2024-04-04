@@ -129,7 +129,14 @@ function TopBar()
 
 	ui.setCursorX(sim.windowWidth - 200 * UI_SCALE_X / 100)
 	setCursorY(0)
-	if ui.modernButtonAdvanced("##Skip", buttonSize, ui.ButtonFlags.None, ui.Icons.Skip) then
+	if
+		ui.modernButtonAdvanced(
+			"##Skip",
+			buttonSize,
+			sim.sessionsCount > 1 and ui.ButtonFlags.None or ui.ButtonFlags.Disabled,
+			ui.Icons.Skip
+		)
+	then
 		ac.tryToSkipSession()
 	end
 
