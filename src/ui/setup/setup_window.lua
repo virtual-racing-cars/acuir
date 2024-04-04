@@ -4,7 +4,7 @@ require("src\\ui\\setup\\pitstop_strategy_window")
 
 loadSetupSpinners()
 
-local setupSpinnersWindowSize = vec2(830 * UI_SCALE_X / 100, 605 * UI_SCALE_Y / 100)
+local setupSpinnersWindowSize = vec2(830 * UI_SCALE_X / 100, 660 * UI_SCALE_Y / 100)
 local setupSpinnersWindowHeaderSize = vec2(830 * UI_SCALE_X / 100, 50 * UI_SCALE_Y / 100)
 
 local linkButtonSize = vec2(50 * UI_SCALE_X / 100, 50 * UI_SCALE_X / 100)

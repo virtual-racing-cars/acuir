@@ -12,7 +12,7 @@ function SetupTabList()
 	setCursorY(15)
 	childWindow(
 		"setup_tab_list",
-		vec2(listWidth, 605 * UI_SCALE_Y / 100),
+		vec2(listWidth, 660 * UI_SCALE_Y / 100),
 		false,
 		ui.WindowFlags.NoScrollWithMouse + ui.WindowFlags.NoScrollbar,
 		function()
@@ -63,10 +63,6 @@ function SetupTabList()
 			then
 				storage.setupTab = "PITSTOP STRATEGY"
 			end
-
-			popSetupListStyle()
-
-			pushSetupListStyle()
 
 			ui.drawLine(
 				vec2(1, ui.getCursorY() - 7),

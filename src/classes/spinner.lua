@@ -58,7 +58,9 @@ function SPINNER:initialize(
 	self.buttonHeldTimer = { Left = 0, Right = 0 }
 end
 
-local buttonSize = vec2(32 * UI_SCALE_Y / 100, 32 * UI_SCALE_Y / 100)
+local buttonSize = vec2(0, 0)
+local buttonResized = false
+
 function SPINNER:button(direction)
 	if ui.arrowButtonAdvanced("##" .. direction .. self.id, direction, buttonSize, ui.ButtonFlags.PressedOnClick) then
 		self.value = direction == "Left" and (self.value - self.step) or (self.value + self.step)
@@ -230,8 +232,8 @@ function SPINNER:run(drawSpinner, mirror)
 		return
 	end
 
-	setCursorX(self.xPos * 400 + 15)
-	setCursorY(self.yPos * 50 + 85)
+	setCursorX(self.xPos * 405 + 15)
+	setCursorY(self.yPos * 70 + 85)
 	if self:button("Left") then
 		self:set()
 	end
@@ -242,6 +244,9 @@ function SPINNER:run(drawSpinner, mirror)
 	ui.sameLine()
 	if self:slider() and not self.itemActive then
 		self:set()
+	end
+	if not buttonResized then
+		buttonSize = vec2(ui.getItemRectSize().y, ui.getItemRectSize().y)
 	end
 
 	ui.sameLine()

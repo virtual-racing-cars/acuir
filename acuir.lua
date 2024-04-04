@@ -30,7 +30,7 @@ storage = ac.storage({
 	page = MenuPages.Setup,
 })
 
-storage.setupTab = "SETUP I/O"
+-- storage.setupTab = "SETUP I/O"
 storage.settingsTab = "GENERAL"
 
 settings = ac.storage({
