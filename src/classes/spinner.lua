@@ -1,3 +1,17 @@
+local acHelpTags = {}
+
+local acHelpTagFile = io.open(ac.getFolder(ac.FolderID.Root) .. "\\system\\locales\\setup\\en.tag", "r")
+
+local currentSection = ""
+for line in acHelpTagFile:lines() do
+	if string.startsWith(line, "[") then
+		currentSection = string.replace(string.replace(line, "[", ""), "]", "")
+		acHelpTags[currentSection] = ""
+	else
+		acHelpTags[currentSection] = acHelpTags[currentSection] .. line .. "\n"
+	end
+end
+
 SPINNER = class("SPINNER")
 
 function SPINNER:initialize(
@@ -30,6 +44,13 @@ function SPINNER:initialize(
 	self.xPos = xPos
 	self.yPos = yPos
 	self.help = setupINI:get(self.id, "HELP", "")
+
+	if string.startsWith(self.help, "HELP") then
+		self.help = acHelpTags[self.help] or ""
+
+		ac.log(self.help)
+	end
+
 	self.uid = uid
 	self.idPairs = { self.id }
 	self.child = false
@@ -94,19 +115,6 @@ function SPINNER:helpWindow()
 			function()
 				ui.bringWindowToFront()
 				setCursorY(38)
-
-				ui.pushDWriteFont("Default;Weight=Bold")
-				ui.dwriteTextAligned(
-					self.name,
-					20 * UI_SCALE_Y / 100,
-					ui.Alignment.Center,
-					ui.Alignment.Center,
-					vec2(ui.availableSpaceX(), 30 * UI_SCALE_Y / 100),
-					false,
-					rgbm.colors.white
-				)
-				ui.popDWriteFont()
-
 				setCursorX(10)
 
 				ui.beginGroup()
@@ -114,7 +122,7 @@ function SPINNER:helpWindow()
 				local helpSections = string.split(self.help, "\\n\\n")
 
 				for i in ipairs(helpSections) do
-					ui.dwriteTextWrapped(helpSections[i], 16 * UI_SCALE_Y / 100, rgbm.colors.white)
+					ui.dwriteTextWrapped(helpSections[i], 14 * UI_SCALE_Y / 100, rgbm.colors.white)
 				end
 
 				ui.endGroup()
@@ -239,7 +247,7 @@ function SPINNER:run(drawSpinner, mirror)
 		return
 	end
 
-	setCursorX(self.xPos * 470 + 15)
+	setCursorX(self.xPos * 497 + 15)
 	setCursorY(self.yPos * 70 + 85)
 	if self:button("Left") then
 		self:set()

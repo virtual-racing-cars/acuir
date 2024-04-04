@@ -18,7 +18,7 @@ function SetupTabList()
 
 			pushSetupListStyle()
 
-			setCursorY(80 * UI_SCALE_Y / 100)
+			setCursorY(38 * UI_SCALE_Y / 100)
 			local buttonFlags = ui.ButtonFlags.None
 
 			if storage.setupTab == "SETUP I/O" then
@@ -35,7 +35,7 @@ function SetupTabList()
 				storage.setupTab = "SETUP I/O"
 			end
 
-			setCursorY(80 * UI_SCALE_Y / 100 + setupTabHeight + listMargins)
+			setCursorY(38 * UI_SCALE_Y / 100 + setupTabHeight + listMargins)
 
 			local buttonFlags = ui.ButtonFlags.None
 
@@ -65,7 +65,7 @@ function SetupTabList()
 				rgbm(1, 1, 1, 0.25)
 			)
 
-			setCursorY(80 * UI_SCALE_Y / 100 + (setupTabHeight + listMargins) * 2)
+			setCursorY(42 * UI_SCALE_Y / 100 + (setupTabHeight + listMargins) * 2)
 
 			childWindow("setup_list", ui.availableSpace(), false, ui.WindowFlags.ThinScrollbar, function()
 				local buttonXPos = 0

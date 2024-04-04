@@ -26,7 +26,7 @@ function SettingsList(sim)
 	contentWindow("settings_list", "SETTINGS", settingsListSize, ui.WindowFlags.None, function()
 		pushSetupListStyle()
 
-		setCursorY(80 * UI_SCALE_Y / 100)
+		setCursorY(42 * UI_SCALE_Y / 100)
 
 		childWindow("settings_list", ui.availableSpace(), false, ui.WindowFlags.ThinScrollbar, function()
 			local buttonXPos = 0

@@ -6,16 +6,8 @@ setCursorX = function(pos)
 	ui.setCursorX(pos * UI_SCALE_X / 100)
 end
 
--- local scale = {}
-
--- function scale()
-
--- end
-
 childWindow = function(id, size, border, flags, content)
-	ui.childWindow(id, size, false, flags, function()
-		content()
-	end)
+	ui.childWindow(id, size, false, flags, content)
 end
 
 contentWindow = function(id, title, size, flags, content)
