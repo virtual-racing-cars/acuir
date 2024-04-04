@@ -24,13 +24,13 @@ local function VersionText()
 	end
 end
 
-local timer = os.clock() + 60
+local timer = os.clock() + settings.uiHideonIdleTime
 local exclusiveHudMode = ""
 
 function MainWindow(sim)
-	if settings.uiHideonIdle then
+	if settings.uiHideonIdleTime > 0 then
 		if (ui.mouseDelta() ~= vec2(0, 0) and sim.isWindowForeground) or ui.mouseClicked(ui.MouseButton.Left) then
-			timer = os.clock() + 60
+			timer = os.clock() + settings.uiHideonIdleTime
 		end
 
 		if timer < os.clock() then
@@ -47,79 +47,81 @@ function MainWindow(sim)
 		windowSize = vec2(UI_SCALE_Y, UI_SCALE_Y)
 	end
 
-	childWindow("bars", windowSize, false, ui.WindowFlags.NoScrollbar + ui.WindowFlags.NoScrollWithMouse, function()
-		exclusiveHudMode = ""
+	childWindow(
+		"main_window",
+		windowSize,
+		false,
+		ui.WindowFlags.NoScrollbar + ui.WindowFlags.NoScrollWithMouse,
+		function()
+			exclusiveHudMode = ""
 
-		if ui.invisibleButton("ui_toggle", vec2(UI_SCALE_Y, UI_SCALE_Y)) then
+			if ui.invisibleButton("ui_toggle", vec2(UI_SCALE_Y, UI_SCALE_Y)) then
+				if not storage.appOpen then
+					ac.tryToOpenRaceMenu("race")
+					ac.tryToOpenRaceMenu("setup")
+				end
+
+				storage.appOpen = not storage.appOpen
+			end
+
 			if not storage.appOpen then
-				ac.tryToOpenRaceMenu("race")
-				ac.tryToOpenRaceMenu("setup")
+				exclusiveHudMode = nil
+				return
 			end
 
-			storage.appOpen = not storage.appOpen
-		end
+			storage.hasAppOpened = true
 
-		if not storage.appOpen then
-			exclusiveHudMode = nil
-			return
-		end
+			ui.bringWindowToFront()
 
-		storage.hasAppOpened = true
-
-		ui.bringWindowToFront()
-
-		pushSetupListStyle()
-
-		if storage.page == MenuPages.Apps then
-			AppsPage(sim)
-			exclusiveHudMode = nil
-		end
-
-		TopBar()
-		SideBar(sim)
-		VersionText()
-
-		popSetupListStyle()
-
-		ui.setCursorX(UI_SCALE_Y)
-		ui.setCursorY(UI_SCALE_Y)
-		childWindow(
-			"page_windows",
-			ui.availableSpace(),
-			false,
-			ui.WindowFlags.NoScrollbar + ui.WindowFlags.NoScrollWithMouse,
-			function()
-				-- ui.drawRectFilled(vec2(0, 0), ui.availableSpace(), rgbm(0.2, 0.8, 1, 0.25), 0, ui.CornerFlags.None)
-
-				if storage.page == MenuPages.Setup then
-					SetupPage(sim)
-					exclusiveHudMode = "debug"
-				end
-
-				if storage.page == MenuPages.TimeTable then
-					TimeTablePage(sim)
-					exclusiveHudMode = "debug"
-				end
-
-				if storage.page == MenuPages.Settings then
-					SettingsPage(sim)
-					exclusiveHudMode = ""
-				end
+			if storage.page == MenuPages.Apps then
+				AppsPage(sim)
+				exclusiveHudMode = nil
 			end
-		)
 
-		ui.drawRectFilled(
-			vec2(sim.windowWidth / 2 - 1, 0),
-			vec2(sim.windowWidth / 2 + 1, sim.windowHeight),
-			rgbm.colors.lime
-		)
+			-- TopBar()
+			SideBar(sim)
+			VersionText()
 
-		ui.drawRectFilled(
-			vec2(0, sim.windowHeight / 2 - 1),
-			vec2(sim.windowWidth, sim.windowHeight / 2 + 1),
-			rgbm.colors.lime
-		)
-	end)
+			ui.setCursorX(265 * UI_SCALE_Y / 100)
+			ui.setCursorY(200 * UI_SCALE_Y / 100)
+			childWindow(
+				"page_windows",
+				ui.availableSpace(),
+				false,
+				ui.WindowFlags.NoScrollbar + ui.WindowFlags.NoScrollWithMouse,
+				function()
+					-- ui.drawRectFilled(vec2(0, 0), ui.availableSpace(), rgbm(0.2, 0.8, 1, 0.25), 0, ui.CornerFlags.None)
+
+					if storage.page == MenuPages.Setup then
+						SetupPage(sim)
+						exclusiveHudMode = "debug"
+					end
+
+					if storage.page == MenuPages.TimeTable then
+						TimeTablePage(sim)
+						exclusiveHudMode = "debug"
+					end
+
+					if storage.page == MenuPages.Settings then
+						SettingsPage(sim)
+						exclusiveHudMode = ""
+					end
+				end
+			)
+
+			-- ui.drawRectFilled(
+			-- 	vec2(sim.windowWidth / 2 - 1, 0),
+			-- 	vec2(sim.windowWidth / 2 + 1, sim.windowHeight),
+			-- 	rgbm.colors.lime
+			-- )
+
+			-- ui.drawRectFilled(
+			-- 	vec2(0, sim.windowHeight / 2 - 1),
+			-- 	vec2(sim.windowWidth, sim.windowHeight / 2 + 1),
+			-- 	rgbm.colors.lime
+			-- )
+		end
+	)
 
 	return exclusiveHudMode
 end

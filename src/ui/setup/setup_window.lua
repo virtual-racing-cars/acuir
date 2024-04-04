@@ -4,10 +4,9 @@ require("src\\ui\\setup\\pitstop_strategy_window")
 
 loadSetupSpinners()
 
-local setupSpinnersWindowSize = vec2(830 * UI_SCALE_X / 100, 660 * UI_SCALE_Y / 100)
-local setupSpinnersWindowHeaderSize = vec2(830 * UI_SCALE_X / 100, 50 * UI_SCALE_Y / 100)
+local setupSpinnersWindowSize = vec2(950 * UI_SCALE_X / 100, 730 * UI_SCALE_Y / 100)
 
-local linkButtonSize = vec2(50 * UI_SCALE_X / 100, 50 * UI_SCALE_X / 100)
+local linkButtonSize = vec2(38 * UI_SCALE_X / 100, 38 * UI_SCALE_X / 100)
 
 local mirrorSetupTabs = {}
 local mirrorButtonShow = {}
@@ -21,6 +20,8 @@ end
 local mirrorSetupStorage = ac.storage(mirrorSetupTabs)
 
 local function setupItemSpinners()
+	storage.helpOpen = false
+
 	if storage.setupTab == "SETUP I/O" then
 		ioTab()
 	end
@@ -45,18 +46,6 @@ local function setupItemSpinners()
 end
 
 local function setupTabBanner()
-	ui.drawRectFilled(vec2(0, 0), setupSpinnersWindowHeaderSize, rgbm(0.1, 0.1, 0.1, 0.5), 0, ui.CornerFlags.None)
-	setCursorY(0)
-	ui.dwriteTextAligned(
-		storage.setupTab,
-		35 * UI_SCALE_Y / 100,
-		ui.Alignment.Center,
-		ui.Alignment.Start,
-		ui.availableSpace(),
-		false,
-		rgbm.colors.white
-	)
-
 	if not mirrorButtonShow[storage.setupTab] or mirrorSetupTabs[storage.setupTab] == nil then
 		return
 	end
@@ -77,16 +66,13 @@ local function setupTabBanner()
 end
 
 function SetupWindow()
-	setCursorX(365)
-	setCursorY(15)
-	childWindow("car_setup_window", setupSpinnersWindowSize, false, ui.WindowFlags.None, function()
-		ui.drawRectFilled(vec2(0, 0), ui.availableSpace(), settings.uiPrimaryColor, 0, ui.CornerFlags.None)
-		ui.drawRect(vec2(0, 0), ui.availableSpace(), rgbm(1, 1, 1, 0.25), 0, ui.CornerFlags.None)
-
+	setCursorX(350)
+	setCursorY(0)
+	contentWindow("car_setup_window", storage.setupTab, setupSpinnersWindowSize, ui.WindowFlags.None, function()
 		pushMainMenuStyle()
 
-		setupItemSpinners()
 		setupTabBanner()
+		setupItemSpinners()
 
 		popMainMenuStyle()
 	end)

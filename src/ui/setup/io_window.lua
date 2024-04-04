@@ -68,7 +68,7 @@ local function savedSetupsWindow()
 				ui.drawRectFilled(
 					vec2(0, 0),
 					vec2(ui.availableSpaceX(), ui.availableSpaceY() - 10),
-					settings.uiPrimaryColor,
+					settings.uiPrimaryColor / 2,
 					0,
 					ui.CornerFlags.None
 				)
@@ -102,7 +102,7 @@ local function savedSetupsWindow()
 								if
 									ui.modernButtonAdvanced(
 										setupName,
-										vec2(ui.availableSpaceX(), 30 * UI_SCALE_Y / 100),
+										vec2(ui.availableSpaceX() - 20, 30 * UI_SCALE_Y / 100),
 										setupButtonFlags
 									)
 								then
@@ -138,7 +138,7 @@ local function loadSetupInfoWindow()
 			ui.drawRectFilled(
 				vec2(0, 0),
 				vec2(ui.availableSpaceX(), ui.availableSpaceY() - 10),
-				settings.uiPrimaryColor,
+				settings.uiPrimaryColor / 2,
 				0,
 				ui.CornerFlags.None
 			)
@@ -150,7 +150,7 @@ local function loadSetupInfoWindow()
 				ui.CornerFlags.None
 			)
 
-			ui.textAligned("Load Setup", vec2(0.5, 0.5), vec2(ui.availableSpaceX(), 22))
+			ui.textAligned("Selected Setup", vec2(0.5, 0.5), vec2(ui.availableSpaceX(), 22))
 
 			if selectedSetupName ~= "" then
 				setCursorX(10)
@@ -210,7 +210,7 @@ local function saveSetupWindow()
 		"save_setups",
 		vec2(ui.availableSpaceX(), ui.availableSpaceY() - 10),
 		false,
-		ui.WindowFlags.NoScrollbar + ui.WindowFlags.NoScrollWithMouse,
+		ui.WindowFlags.None,
 		function()
 			-- ui.drawRectFilled(vec2(0, 0), ui.availableSpace(), rgbm.colors.red, 0, ui.CornerFlags.None)
 
@@ -218,15 +218,33 @@ local function saveSetupWindow()
 			ui.textAligned("Save Current Setup", vec2(0.5, 0.5), vec2(ui.availableSpaceX(), 30))
 
 			setCursorX(10)
+			ui.beginGroup(ui.availableSpaceX())
+
 			ui.text("Name:")
 			ui.sameLine()
 			setCursorX(80)
 			ui.setNextItemWidth((ui.availableSpaceX() - 80) / 2)
 			saveName = ui.inputText("##SetupName", saveName, ui.InputTextFlags.None)
 
+			ui.text("Notes:")
 			ui.sameLine()
+			setCursorX(80)
+			saveDescription = ui.inputText(
+				"##SetupDesc",
+				saveDescription,
+				ui.InputTextFlags.None,
+				vec2((ui.availableSpaceX() - 80) / 2, ui.availableSpaceY() - 10)
+			)
+
+			ui.endGroup()
+
+			setCursorX(ui.availableSpaceX() / 2 + 5)
+			setCursorY(40)
+
+			ui.beginGroup(ui.availableSpaceX())
+
 			ui.text("Track:")
-			ui.sameLine()
+			ui.sameLine(50)
 			ui.setNextItemWidth(ui.availableSpaceX() - 10)
 			ui.combo("##setupcombo", saveDir, ui.ComboFlags.None, function()
 				ui.bringWindowToFront()
@@ -246,18 +264,10 @@ local function saveSetupWindow()
 				end)
 			end)
 
-			setCursorX(10)
-			ui.text("Notes:")
-			ui.sameLine()
-			setCursorX(80)
-			saveDescription = ui.inputText(
-				"##SetupDesc",
-				saveDescription,
-				ui.InputTextFlags.None,
-				vec2((ui.availableSpaceX() - 80) / 2, ui.availableSpaceY() - 10)
-			)
-
-			ui.sameLine()
+			ui.text("Tags:")
+			ui.sameLine(50)
+			ui.setNextItemWidth(ui.availableSpaceX() - 10)
+			saveName = ui.inputText("##SetupTags", saveName, ui.InputTextFlags.None)
 
 			if
 				ui.modernButtonAdvanced(
@@ -289,6 +299,8 @@ local function saveSetupWindow()
 			then
 				ac.resetSetupToDefault()
 			end
+
+			ui.endGroup()
 		end
 	)
 end

@@ -27,6 +27,7 @@ storage = ac.storage({
 	hasAppOpened = false,
 	setupTab = "SETUP I/O",
 	settingsTab = "GENERAL",
+	helpOpen = false,
 	page = MenuPages.Setup,
 })
 
@@ -38,7 +39,7 @@ settings = ac.storage({
 	showVersions = true,
 	autoLoadLastSetup = true,
 	hideOtherTrackSetups = true,
-	uiHideonIdle = true,
+	uiHideonIdleTime = 150,
 	uiPrimaryColor = rgbm(0.1, 0.1, 0.1, 0.75),
 	uiSecondaryColor = rgbm(1, 0, 0, 1),
 })

@@ -56,68 +56,72 @@ function SPINNER:initialize(
 	self.itemActive = false
 
 	self.buttonHeldTimer = { Left = 0, Right = 0 }
+	self.buttonHeldStart = 0
+
+	self.helpWindowShow = false
 end
 
 local buttonSize = vec2(0, 0)
 local buttonResized = false
 
 function SPINNER:button(direction)
+	local changed = false
+
 	if ui.arrowButtonAdvanced("##" .. direction .. self.id, direction, buttonSize, ui.ButtonFlags.PressedOnClick) then
 		self.value = direction == "Left" and (self.value - self.step) or (self.value + self.step)
 		self.buttonHeldTimer[direction] = os.clock() + 0.5
-
-		return true
+		self.buttonHeldStart = os.clock()
+		changed = true
 	elseif self.buttonHeldTimer[direction] < os.clock() and ui.itemActive() and ui.mouseDown(ui.MouseButton.Left) then
 		self.value = direction == "Left" and (self.value - self.step) or (self.value + self.step)
-		self.buttonHeldTimer[direction] = os.clock() + 0.1
-
-		return true
+		self.buttonHeldTimer[direction] = (os.clock() - self.buttonHeldStart) < 2.5 and os.clock() + 0.1
+			or os.clock() + 0.075
+		changed = true
 	end
 
-	return false
+	ui.sameLine()
+	return changed
 end
 
 function SPINNER:helpWindow()
 	if self.help ~= "NULL" and self.help ~= "" then
-		local toolWindowSize = vec2(400, 400)
-		setCursorX(1280)
-		setCursorY(110)
 		ui.transparentWindow(
 			"##help" .. self.id,
-			ui.getCursor(),
-			vec2(400, 560 * UI_SCALE_Y / 100),
+			vec2((265 * UI_SCALE_Y / 100) + 1315 * UI_SCALE_X / 100, 200 * UI_SCALE_Y / 100),
+			vec2(325 * UI_SCALE_Y / 100, 730 * UI_SCALE_Y / 100 / 2),
 			true,
 			false,
 			function()
-				ui.drawRectFilled(vec2(0, 0), ui.availableSpace(), rgbm(0, 0, 0, 0.75))
-				ui.drawRect(vec2(0, 0), ui.availableSpace(), rgbm(1, 1, 1, 0.25), 0, ui.CornerFlags.None)
-
 				ui.bringWindowToFront()
-				setCursorX(0)
+				setCursorY(38)
+
 				ui.pushDWriteFont("Default;Weight=Bold")
 				ui.dwriteTextAligned(
 					self.name,
-					20,
+					20 * UI_SCALE_Y / 100,
 					ui.Alignment.Center,
-					ui.Alignment.Start,
-					toolWindowSize,
+					ui.Alignment.Center,
+					vec2(ui.availableSpaceX(), 30 * UI_SCALE_Y / 100),
 					false,
 					rgbm.colors.white
 				)
 				ui.popDWriteFont()
 
-				ui.drawLine(vec2(15, 40), vec2(385, 40), rgbm.colors.white)
-
 				setCursorX(10)
-				setCursorY(50)
+
+				ui.beginGroup()
 
 				local helpSections = string.split(self.help, "\\n\\n")
 
 				for i in ipairs(helpSections) do
-					ui.dwriteTextWrapped(helpSections[i], 16, rgbm.colors.white)
+					ui.dwriteTextWrapped(helpSections[i], 16 * UI_SCALE_Y / 100, rgbm.colors.white)
 				end
+
+				ui.endGroup()
 			end
 		)
+	else
+		storage.helpOpen = false
 	end
 end
 
@@ -126,7 +130,7 @@ function SPINNER:slider()
 		self.format = self.name .. ": " .. (self.items[self.value + 1] and self.items[self.value + 1] or self.value)
 	end
 
-	ui.setNextItemWidth(300 * UI_SCALE_X / 100)
+	ui.setNextItemWidth(350 * UI_SCALE_X / 100)
 	local value, changed = ui.slider(
 		"##" .. self.id .. self.name,
 		self._value * self.multiplier,
@@ -149,13 +153,15 @@ function SPINNER:slider()
 		self._value = self.value
 	end
 
+	ui.sameLine()
+
 	if ui.itemHovered(ui.HoveredFlags.None) then
 		if ui.mouseWheel() ~= 0 then
 			changed = true
 			self.value = ui.mouseWheel() < 0 and (self.value - self.step) or (self.value + self.step)
 		end
 
-		self:helpWindow()
+		self.helpWindowShow = true
 	end
 
 	return changed
@@ -220,6 +226,7 @@ function SPINNER:run(drawSpinner, mirror)
 	self.itemSet = false
 	self:get()
 	self.itemActive = false
+	self.helpWindowShow = false
 
 	if mirror then
 		self:mirror()
@@ -232,28 +239,32 @@ function SPINNER:run(drawSpinner, mirror)
 		return
 	end
 
-	setCursorX(self.xPos * 405 + 15)
+	setCursorX(self.xPos * 470 + 15)
 	setCursorY(self.yPos * 70 + 85)
 	if self:button("Left") then
 		self:set()
 	end
 	if ui.itemHovered(ui.HoveredFlags.None) then
-		self:helpWindow()
+		self.helpWindowShow = true
 	end
 
-	ui.sameLine()
 	if self:slider() and not self.itemActive then
 		self:set()
 	end
 	if not buttonResized then
 		buttonSize = vec2(ui.getItemRectSize().y, ui.getItemRectSize().y)
+		buttonResized = true
 	end
 
-	ui.sameLine()
 	if self:button("Right") then
 		self:set()
 	end
 	if ui.itemHovered(ui.HoveredFlags.None) then
+		self.helpWindowShow = true
+	end
+
+	if self.helpWindowShow then
+		storage.helpOpen = true
 		self:helpWindow()
 	end
 

@@ -1,6 +1,8 @@
 require("src\\classes\\spinner")
 require("src\\ui\\setup\\list")
 require("src\\ui\\setup\\setup_window")
+require("src\\ui\\setup\\help_window")
+require("src\\ui\\setup\\changes_window")
 require("src\\ui\\setup\\car_status_window")
 
 local setupPageFontSize = ui.Font.Title
@@ -18,6 +20,8 @@ function SetupPage(sim)
 
 	SetupTabList()
 	SetupWindow()
+	HelpWindow()
+	ChangesWindow()
 	CarStatusWindow()
 
 	ui.popFont()

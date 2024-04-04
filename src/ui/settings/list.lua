@@ -2,6 +2,7 @@ require("src\\ui\\settings\\general_settings")
 require("src\\ui\\settings\\appearance_settings")
 require("src\\ui\\settings\\audio_settings")
 require("src\\ui\\settings\\view_settings")
+require("src\\ui\\settings\\setup_settings")
 
 local settingsTabs = {
 	"GENERAL",
@@ -9,6 +10,8 @@ local settingsTabs = {
 	"VIEW",
 	"AUDIO",
 	"TELEMETRY",
+	"SETUP",
+	"CAR INSTRUMENTS",
 	"CONTROLS",
 }
 
@@ -16,66 +19,48 @@ local listWidth = 335 * UI_SCALE_X / 100
 local listMargins = 5
 local setupTabHeight = 50
 
-local settingsWindowSize = vec2(830 * UI_SCALE_X / 100, 605 * UI_SCALE_Y / 100)
-local setupSpinnersWindowHeaderSize = vec2(830 * UI_SCALE_X / 100, 50 * UI_SCALE_Y / 100)
-local settingsListSize = vec2(listWidth, 605 * UI_SCALE_Y / 100)
+local settingsWindowSize = vec2(830 * UI_SCALE_X / 100, 710 * UI_SCALE_Y / 100)
+local settingsListSize = vec2(listWidth, 710 * UI_SCALE_Y / 100)
 
 function SettingsList(sim)
-	setCursorX(15)
-	setCursorY(15)
-
-	childWindow("settings_list", settingsListSize, false, ui.WindowFlags.None, function()
-		ui.drawRectFilled(vec2(0, 0), ui.availableSpace(), settings.uiPrimaryColor, 0, ui.CornerFlags.None)
-		ui.drawRect(vec2(0, 0), ui.availableSpace(), rgbm(1, 1, 1, 0.25), 0, ui.CornerFlags.None)
-
+	contentWindow("settings_list", "SETTINGS", settingsListSize, ui.WindowFlags.None, function()
 		pushSetupListStyle()
 
-		local buttonXPos = 0
-		local buttonYPos = 0
-		for tab in ipairs(settingsTabs) do
-			local buttonFlags = ui.ButtonFlags.None
+		setCursorY(80 * UI_SCALE_Y / 100)
 
-			if storage.settingsTab == settingsTabs[tab] then
-				buttonFlags = ui.ButtonFlags.Active
+		childWindow("settings_list", ui.availableSpace(), false, ui.WindowFlags.ThinScrollbar, function()
+			local buttonXPos = 0
+			local buttonYPos = 0
+			for tab in ipairs(settingsTabs) do
+				local buttonFlags = ui.ButtonFlags.None
+
+				if storage.settingsTab == settingsTabs[tab] then
+					buttonFlags = ui.ButtonFlags.Active
+				end
+
+				setCursorX(buttonXPos)
+				setCursorY(buttonYPos)
+				if
+					ui.modernButtonAdvanced(
+						settingsTabs[tab],
+						vec2(ui.availableSpaceX(), setupTabHeight * UI_SCALE_Y / 100),
+						buttonFlags
+					)
+				then
+					storage.settingsTab = settingsTabs[tab]
+				end
+
+				buttonYPos = buttonYPos + setupTabHeight + listMargins
 			end
-
-			setCursorX(buttonXPos)
-			setCursorY(buttonYPos)
-			if
-				ui.modernButtonAdvanced(
-					settingsTabs[tab],
-					vec2(ui.availableSpaceX(), setupTabHeight * UI_SCALE_Y / 100),
-					buttonFlags
-				)
-			then
-				storage.settingsTab = settingsTabs[tab]
-			end
-
-			buttonYPos = buttonYPos + setupTabHeight + listMargins
-		end
+		end)
 
 		popSetupListStyle()
 	end)
 
-	setCursorX(365)
-	setCursorY(15)
+	setCursorX(350)
+	setCursorY(0)
 
-	childWindow("settings_window", settingsWindowSize, false, ui.WindowFlags.None, function()
-		ui.drawRectFilled(vec2(0, 0), ui.availableSpace(), settings.uiPrimaryColor, 0, ui.CornerFlags.None)
-		ui.drawRect(vec2(0, 0), ui.availableSpace(), rgbm(1, 1, 1, 0.25), 0, ui.CornerFlags.None)
-
-		ui.drawRectFilled(vec2(0, 0), setupSpinnersWindowHeaderSize, rgbm(0.1, 0.1, 0.1, 0.5), 0, ui.CornerFlags.None)
-		setCursorY(0)
-		ui.dwriteTextAligned(
-			storage.settingsTab,
-			35 * UI_SCALE_Y / 100,
-			ui.Alignment.Center,
-			ui.Alignment.Start,
-			ui.availableSpace(),
-			false,
-			rgbm.colors.white
-		)
-
+	contentWindow("settings_window", storage.settingsTab, settingsWindowSize, ui.WindowFlags.None, function()
 		if storage.settingsTab == "GENERAL" then
 			generalSettings()
 		end
@@ -90,6 +75,10 @@ function SettingsList(sim)
 
 		if storage.settingsTab == "VIEW" then
 			viewSettings()
+		end
+
+		if storage.settingsTab == "SETUP" then
+			setupSettings()
 		end
 	end)
 end

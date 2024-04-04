@@ -10,11 +10,6 @@ function appearanceSettings()
 	end
 
 	setCursorX(10)
-	if ui.checkbox("Hide all UI after being idle for 60 seconds", settings.uiHideonIdle) then
-		settings.uiHideonIdle = not settings.uiHideonIdle
-	end
-
-	setCursorX(10)
 	ui.text("Primary Theme Color:")
 	ui.sameLine()
 	setCursorX(210)
