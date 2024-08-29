@@ -70,12 +70,19 @@ end
 function SetupWindow()
 	setCursorX(350)
 	setCursorY(0)
-	contentWindow("car_setup_window", storage.setupTab, setupSpinnersWindowSize, ui.WindowFlags.None, function()
-		pushMainMenuStyle()
+	contentWindow(
+		"car_setup_window",
+		storage.setupTab,
+		vec2(300, 30),
+		setupSpinnersWindowSize,
+		ui.WindowFlags.None,
+		function()
+			pushMainMenuStyle()
 
-		setupTabBanner()
-		setupItemSpinners()
+			setupTabBanner()
+			setupItemSpinners()
 
-		popMainMenuStyle()
-	end)
+			popMainMenuStyle()
+		end
+	)
 end

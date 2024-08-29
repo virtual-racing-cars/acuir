@@ -3,7 +3,15 @@ local setupSpinnersWindowSize = vec2(335 * UI_SCALE_Y / 100, 730 * UI_SCALE_Y / 
 HELP_TEXT = ""
 
 function HelpWindow()
-	setCursorX(1365)
-	setCursorY(0)
-	contentWindow("help_window", "HELP", setupSpinnersWindowSize, ui.WindowFlags.None, function() end)
+	contentWindow("help_window", "HELP", vec2(1315, 405), setupSpinnersWindowSize, ui.WindowFlags.None, function()
+		local helpSections = string.split(HELP_TEXT, "\\n\\n")
+		setCursorX(6)
+		setCursorY(50)
+
+		for i in ipairs(helpSections) do
+			ui.textWrapped(helpSections[i], ui.availableSpaceX() - 10)
+		end
+
+		HELP_TEXT = ""
+	end)
 end

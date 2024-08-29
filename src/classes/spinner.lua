@@ -145,12 +145,13 @@ function SPINNER:helpWindow()
 
 				ui.beginGroup()
 
-				local helpSections = string.split(self.help, "\\n\\n")
+				-- local helpSections = string.split(self.help, "\\n\\n")
 
-				ui.pushFont(setupPageFontSize[3])
-				for i in ipairs(helpSections) do
-					ui.textWrapped(helpSections[i], ui.availableSpaceX() - 10)
-				end
+				-- ui.pushFont(setupPageFontSize[3])
+				-- for i in ipairs(helpSections) do
+				-- 	ui.textWrapped(helpSections[i], ui.availableSpaceX() - 10)
+				-- end
+
 				ui.popFont()
 
 				ui.endGroup()
@@ -325,8 +326,10 @@ function SPINNER:run(drawSpinner, mirror)
 	end
 
 	if self.helpWindowShow then
+		HELP_TEXT = self.help
+
 		storage.helpOpen = true
-		self:helpWindow()
+		-- self:helpWindow()
 	end
 
 	return self.itemSet

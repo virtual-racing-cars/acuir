@@ -23,7 +23,7 @@ local settingsWindowSize = vec2(830 * UI_SCALE_X / 100, 710 * UI_SCALE_Y / 100)
 local settingsListSize = vec2(listWidth, 710 * UI_SCALE_Y / 100)
 
 function SettingsList(sim)
-	contentWindow("settings_list", "SETTINGS", settingsListSize, ui.WindowFlags.None, function()
+	contentWindow("settings_list", "SETTINGS", vec2(0, 30), settingsListSize, ui.WindowFlags.None, function()
 		pushSetupListStyle()
 
 		setCursorY(42)
@@ -60,25 +60,32 @@ function SettingsList(sim)
 	setCursorX(350)
 	setCursorY(0)
 
-	contentWindow("settings_window", storage.settingsTab, settingsWindowSize, ui.WindowFlags.None, function()
-		if storage.settingsTab == "GENERAL" then
-			generalSettings()
-		end
+	contentWindow(
+		"settings_window",
+		storage.settingsTab,
+		vec2(345, 30),
+		settingsWindowSize,
+		ui.WindowFlags.None,
+		function()
+			if storage.settingsTab == "GENERAL" then
+				generalSettings()
+			end
 
-		if storage.settingsTab == "APPEARANCE" then
-			appearanceSettings()
-		end
+			if storage.settingsTab == "APPEARANCE" then
+				appearanceSettings()
+			end
 
-		if storage.settingsTab == "AUDIO" then
-			audioSettings()
-		end
+			if storage.settingsTab == "AUDIO" then
+				audioSettings()
+			end
 
-		if storage.settingsTab == "VIEW" then
-			viewSettings()
-		end
+			if storage.settingsTab == "VIEW" then
+				viewSettings()
+			end
 
-		if storage.settingsTab == "SETUP" then
-			setupSettings()
+			if storage.settingsTab == "SETUP" then
+				setupSettings()
+			end
 		end
-	end)
+	)
 end

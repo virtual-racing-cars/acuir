@@ -138,9 +138,12 @@ function CarStatusWindow()
 	contentWindow(
 		"setup_info_window",
 		"CAR STATUS",
+		vec2(1665, 30),
 		setupSpinnersWindowSize,
 		ui.WindowFlags.NoScrollWithMouse + ui.WindowFlags.NoScrollbar,
 		function()
+			ac.ControlButton("Testerrr"):control(vec2(200, 20))
+
 			for k, v in ipairs(infoText) do
 				local column, position, label, value = v()
 

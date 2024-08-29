@@ -160,7 +160,7 @@ end
 
 local margins = 15
 
-function cui.pushTabWindow(id, x, y, width, height, scroll)
+function cui.pushWindow(id, x, y, width, height, scroll)
 	local windowFlags = ui.WindowFlags.NoResize
 
 	if not scroll then
@@ -188,7 +188,7 @@ function cui.pushTabWindow(id, x, y, width, height, scroll)
 	ui.beginGroup(tabWidth)
 end
 
-function cui.popTabWindow(scroll)
+function cui.popWindow(scroll)
 	if not scroll then
 		ui.popClipRect()
 	end
