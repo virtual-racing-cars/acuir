@@ -1,27 +1,20 @@
-local car = ac.getCar(0)
-
 local setupsDir = ac.getFolder(ac.FolderID.UserSetups) .. "\\" .. ac.getCarID(0)
 
 local refreshingSetups = false
 
-local setups = {}
-local selectedSetupPath = ""
+local savedSetups = {}
+local selectedSetup = { name = "", track = "", path = "", description = "", tags = "", creation = "" }
+local saveSetup = { name = "", track = ac.getTrackID(), path = "", description = "", tags = "", creation = "" }
 local loadedSetup = "generic - default"
-local selectedSetupName = ""
-local selectedSetupDir = ""
-local selectedSetupCreation = ""
-local saveDir = "generic"
-local saveName = ""
-local saveDescription = ""
 
 local function loadSetups()
 	refreshingSetups = true
 
-	for track, _ in pairs(setups) do
-		for i in ipairs(setups[track]) do
-			setups[track][i] = nil
+	for track, _ in pairs(savedSetups) do
+		for i in ipairs(savedSetups[track]) do
+			savedSetups[track][i] = nil
 		end
-		setups[track] = nil
+		savedSetups[track] = nil
 	end
 
 	io.scanDir(setupsDir, function(dirName)
@@ -32,17 +25,39 @@ local function loadSetups()
 		end
 
 		io.scanDir(setupsDir .. "\\" .. dirName, function(fileName, fileAttributes)
-			if string.find(fileName, ".sp") then
+			if string.find(fileName, ".sp") or string.find(fileName, ".txt") then
 				return
 			end
 
-			if setups[dirName] == nil then
-				setups[dirName] = {}
+			if savedSetups[dirName] == nil then
+				savedSetups[dirName] = {}
 			end
 
-			table.insert(setups[dirName], {
+			local tags = ""
+			local description = ""
+
+			local extraInfoFilePath, _ =
+				string.replace(setupsDir .. "\\" .. dirName .. "\\" .. fileName, ".ini", ".txt")
+
+			if io.fileExists(extraInfoFilePath) then
+				local extraInfoFile = io.open(extraInfoFilePath, "r")
+				for line in extraInfoFile:lines() do
+					if string.startsWith(line, "[") then
+						tags = string.replace(line, "[TAGS]", "")
+					else
+						description = description .. line .. "\n"
+					end
+				end
+
+				extraInfoFile:close()
+			end
+
+			table.insert(savedSetups[dirName], {
 				name = fileName,
+				track = dirName,
 				path = setupsDir .. "\\" .. dirName .. "\\" .. fileName,
+				description = description,
+				tags = tags,
 				creationTime = os.date(
 					"%A, %B %d, %Y %H:%M:%S",
 					tonumber(string.trim(tostring(fileAttributes.creationTime), "LL"))
@@ -63,34 +78,44 @@ local function savedSetupsWindow()
 			if refreshingSetups then
 				ui.icon(ui.Icons.LoadingSpinner, ui.availableSpace())
 			else
-				for track, trackSetups in pairs(setups) do
+				for track, setups in pairs(savedSetups) do
 					ui.treeNode(track, function()
-						for i in ipairs(trackSetups) do
-							local setup = trackSetups[i]
+						for i in ipairs(setups) do
+							local setup = setups[i]
 							local setupButtonFlags = ui.ButtonFlags.None
 
-							if selectedSetupPath == setup.path then
+							if selectedSetup.path == setup.path then
 								setupButtonFlags = ui.ButtonFlags.Active
 							end
 
-							local setupName = string.replace(setup.name, ".ini", "")
+							local name = string.replace(setup.name, ".ini", "")
 
 							ui.pushStyleVar(ui.StyleVar.ItemSpacing, 3)
 							ui.pushStyleVar(ui.StyleVar.FramePadding, -25)
 							if
 								ui.modernButtonAdvanced(
-									setupName,
+									name,
 									vec2(ui.availableSpaceX() - 20, 30 * UI_SCALE_Y / 100),
 									setupButtonFlags
 								)
 							then
-								selectedSetupPath = setup.path
-								selectedSetupCreation = setup.creationTime
-								saveName = setupName
-								saveDir = track
+								selectedSetup = {
+									name = name,
+									track = track,
+									path = setup.path,
+									description = setup.description,
+									tags = setup.tags,
+									creation = setup.creationTime,
+								}
 
-								selectedSetupName = setupName
-								selectedSetupDir = track
+								saveSetup = {
+									name = name,
+									track = track,
+									path = setup.path,
+									description = setup.description,
+									tags = setup.tags,
+									creation = setup.creationTime,
+								}
 							end
 
 							ui.popStyleVar(2)
@@ -103,25 +128,26 @@ local function savedSetupsWindow()
 end
 
 local function saveSetupWindow()
-	setCursorX(10)
-	ui.textAligned("Save Current Setup", vec2(0.5, 0.5), vec2(ui.availableSpaceX(), 30))
+	local availableSpaceY = ui.availableSpaceY()
 
 	setCursorX(10)
+
 	ui.beginGroup(ui.availableSpaceX())
+	ui.textAligned("Save Current Setup", vec2(0.5, 0.5), vec2(ui.availableSpaceX(), 30))
 
 	ui.text("Name:")
 	ui.sameLine(60)
 	ui.setNextItemWidth(ui.availableSpaceX())
-	saveName = ui.inputText("##SetupName", saveName, ui.InputTextFlags.None)
+	saveSetup.name = ui.inputText("##SetupName", saveSetup.name, ui.InputTextFlags.None)
 
 	ui.text("Track:")
 	ui.sameLine(60)
 	ui.setNextItemWidth(ui.availableSpaceX())
-	ui.combo("##setupcombo", saveDir, ui.ComboFlags.None, function()
+	ui.combo("##setupcombo", saveSetup.track, ui.ComboFlags.None, function()
 		ui.bringWindowToFront()
 
 		if ui.selectable("generic") then
-			saveDir = "generic"
+			saveSetup.track = "generic"
 		end
 
 		io.scanDir(setupsDir, function(dirName)
@@ -130,7 +156,7 @@ local function saveSetupWindow()
 			end
 
 			if ui.selectable(dirName) then
-				saveDir = dirName
+				saveSetup.track = dirName
 			end
 		end)
 	end)
@@ -138,32 +164,40 @@ local function saveSetupWindow()
 	ui.text("Tags:")
 	ui.sameLine(60)
 	ui.setNextItemWidth(ui.availableSpaceX())
-	saveName = ui.inputText("##SetupTags", saveName, ui.InputTextFlags.None)
+	saveSetup.tags = ui.inputText("##SetupTags", saveSetup.tags, ui.InputTextFlags.None)
 
 	ui.text("Notes:")
 	ui.sameLine(60)
-	saveDescription =
-		ui.inputText("##SetupDesc", saveDescription, ui.InputTextFlags.None, vec2(ui.availableSpaceX(), 100))
+	saveSetup.description = ui.inputText(
+		"##SetupDesc",
+		saveSetup.description,
+		ui.InputTextFlags.NoHorizontalScroll,
+		vec2(ui.availableSpaceX(), 250 * UI_SCALE_Y / 100)
+	)
+
+	local availableSpaceX = (ui.availableSpaceX() - 30 * UI_SCALE_X / 100) / 5
+
+	setCursorY(580)
 
 	if
 		ui.modernButtonAdvanced(
 			"##loadsetup",
-			vec2(ui.availableSpaceX() / 5, 50),
+			vec2(availableSpaceX, availableSpaceX),
 			ui.ButtonFlags.None,
 			ui.Icons.Download
 		)
 	then
-		ac.loadSetup(selectedSetupPath)
-		loadedSetup = saveDir .. " - " .. saveName
+		ac.loadSetup(selectedSetup.path)
+		loadedSetup = selectedSetup.track .. " - " .. selectedSetup.name
 
-		ui.toast(ui.Icons.Download, "Setup loaded: " .. saveName)
+		ui.toast(ui.Icons.Download, "Setup loaded: " .. selectedSetup.name)
 	end
 
 	ui.sameLine()
 	if
 		ui.modernButtonAdvanced(
 			"##comparesetup",
-			vec2(ui.availableSpaceX() / 4, 50),
+			vec2(availableSpaceX, availableSpaceX),
 			ui.ButtonFlags.None,
 			ui.Icons.Contrast
 		)
@@ -175,7 +209,7 @@ local function saveSetupWindow()
 	if
 		ui.modernButtonAdvanced(
 			"##resetsetup",
-			vec2(ui.availableSpaceX() / 3, 50),
+			vec2(availableSpaceX, availableSpaceX),
 			ui.ButtonFlags.None,
 			ui.Icons.Restart
 		)
@@ -187,30 +221,56 @@ local function saveSetupWindow()
 	if
 		ui.modernButtonAdvanced(
 			"##deletesetup",
-			vec2(ui.availableSpaceX() / 2, 50),
+			vec2(availableSpaceX, availableSpaceX),
 			ui.ButtonFlags.None,
 			ui.Icons.Delete
 		)
 	then
-		io.deleteFile(selectedSetupPath)
-		io.deleteFile(string.trim(selectedSetupPath, ".ini") .. ".sp")
+		io.deleteFile(saveSetup.path)
+		io.deleteFile(string.trim(saveSetup.path, ".ini") .. ".sp")
 
-		ui.toast(ui.Icons.Download, "Setup deleted: " .. selectedSetupName)
+		ui.toast(ui.Icons.Download, "Setup deleted: " .. saveSetup.name)
 
-		selectedSetupPath = ""
-		selectedSetupDir = ""
-		selectedSetupName = ""
+		saveSetup.name = ""
+		saveSetup.path = ""
+		saveSetup.tags = ""
+		saveSetup.description = ""
 
 		loadSetups()
 	end
 
 	ui.sameLine()
-	if ui.modernButtonAdvanced("##savesetup", vec2(ui.availableSpaceX(), 50), ui.ButtonFlags.None, ui.Icons.Save) then
-		if saveName ~= "" then
-			ac.setActiveSetupName(saveName, saveDir)
-			ac.saveCurrentSetup(setupsDir .. "\\" .. saveDir .. "\\" .. saveName .. ".ini")
-			ui.toast(ui.Icons.Save, "Setup Saved: " .. saveName)
-			loadedSetup = saveDir .. " - " .. saveName
+	if
+		ui.modernButtonAdvanced(
+			"##savesetup",
+			vec2(availableSpaceX, availableSpaceX),
+			ui.ButtonFlags.None,
+			ui.Icons.Save
+		)
+	then
+		if saveSetup.name ~= "" then
+			saveSetup.path = setupsDir .. "\\" .. saveSetup.track .. "\\" .. saveSetup.name .. ".ini"
+			ac.setActiveSetupName(saveSetup.name, saveSetup.track)
+			ac.saveCurrentSetup(saveSetup.path)
+			ui.toast(ui.Icons.Save, "Setup Saved: " .. saveSetup.name)
+			loadedSetup = saveSetup.track .. " - " .. saveSetup.name
+
+			if saveSetup.description ~= "" or saveSetup.tags ~= "" then
+				local descriptionFile =
+					io.open(setupsDir .. "\\" .. saveSetup.track .. "\\" .. saveSetup.name .. ".txt", "w+")
+
+				if saveSetup.tags ~= "" and saveSetup.tags ~= nil then
+					descriptionFile:write("[TAGS]" .. saveSetup.tags .. "\n")
+				end
+				if saveSetup.description ~= "" and saveSetup.description ~= nil then
+					descriptionFile:write(saveSetup.description)
+				end
+
+				descriptionFile:close()
+			end
+
+			selectedSetup = table.clone(saveSetup, true)
+
 			loadSetups()
 		end
 	end

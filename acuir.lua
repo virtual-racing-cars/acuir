@@ -53,6 +53,7 @@ require("classes\\button")
 require("utils\\utils_scale")
 require("ui\\styles")
 require("ui\\main\\main_window")
+cui = require("utils\\utils_cui")
 
 ui.onExclusiveHUD(function(mode)
 	if mode == "menu" then

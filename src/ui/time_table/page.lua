@@ -1,3 +1,5 @@
+local carShortName = ac.INIConfig.carData(0, "car.ini"):get("INFO", "SHORT_NAME", "S")
+
 local car = ac.getCar(0)
 
 local lapCount = 0
@@ -81,7 +83,7 @@ function TimeTablePage(sim)
 
 				ui.sameLine()
 				ui.dwriteTextAligned(
-					ac.getCarName(c.index),
+					carShortName,
 					18 * UI_SCALE_Y / 100,
 					ui.Alignment.Start,
 					ui.Alignment.Start,

@@ -1,3 +1,12 @@
+local max = math.max
+
+local setupPageFontSize = { -20, 0, ui.Font.Title, 0.75 }
+if UI_SCALE_Y < 75 then
+	setupPageFontSize = { 14, 44, ui.Font.Tiny, 1 }
+elseif UI_SCALE_Y < 100 then
+	setupPageFontSize = { 0, 10, ui.Font.Small, 1 }
+end
+
 local acHelpTags = {}
 
 local acHelpTagFile = io.open(ac.getFolder(ac.FolderID.Root) .. "\\system\\locales\\setup\\en.tag", "r")
@@ -47,8 +56,6 @@ function SPINNER:initialize(
 
 	if string.startsWith(self.help, "HELP") then
 		self.help = acHelpTags[self.help] or ""
-
-		ac.log(self.help)
 	end
 
 	self.uid = uid
@@ -88,7 +95,23 @@ local buttonResized = false
 function SPINNER:button(direction)
 	local changed = false
 
-	if ui.arrowButtonAdvanced("##" .. direction .. self.id, direction, buttonSize, ui.ButtonFlags.PressedOnClick) then
+	if self.min == self.max then
+		ui.dummy(buttonSize)
+	elseif direction == "Reset" then
+		if
+			ui.modernButtonAdvanced(
+				"##" .. direction .. self.id,
+				buttonSize,
+				ui.ButtonFlags.PressedOnClick,
+				ui.Icons.Stay
+			)
+		then
+			self.value = self.default
+			changed = true
+		end
+	elseif
+		ui.arrowButtonAdvanced("##" .. direction .. self.id, direction, buttonSize, ui.ButtonFlags.PressedOnClick)
+	then
 		self.value = direction == "Left" and (self.value - self.step) or (self.value + self.step)
 		self.buttonHeldTimer[direction] = os.clock() + 0.5
 		self.buttonHeldStart = os.clock()
@@ -108,24 +131,30 @@ function SPINNER:helpWindow()
 	if self.help ~= "NULL" and self.help ~= "" then
 		ui.transparentWindow(
 			"##help" .. self.id,
-			vec2((265 * UI_SCALE_Y / 100) + 1315 * UI_SCALE_X / 100, 200 * UI_SCALE_Y / 100),
+			vec2(
+				(265 * UI_SCALE_Y / 100) + (1315 + setupPageFontSize[1]) * UI_SCALE_X / 100,
+				(200 + setupPageFontSize[2]) * UI_SCALE_Y / 100
+			),
 			vec2(325 * UI_SCALE_Y / 100, 730 * UI_SCALE_Y / 100 / 2),
 			true,
 			false,
 			function()
 				ui.bringWindowToFront()
-				setCursorY(38)
-				setCursorX(10)
+
+				ui.beginScale()
 
 				ui.beginGroup()
 
 				local helpSections = string.split(self.help, "\\n\\n")
 
+				ui.pushFont(setupPageFontSize[3])
 				for i in ipairs(helpSections) do
-					ui.dwriteTextWrapped(helpSections[i], 14 * UI_SCALE_Y / 100, rgbm.colors.white)
+					ui.textWrapped(helpSections[i], ui.availableSpaceX() - 10)
 				end
+				ui.popFont()
 
 				ui.endGroup()
+				ui.endScale(setupPageFontSize[4])
 			end
 		)
 	else
@@ -139,6 +168,10 @@ function SPINNER:slider()
 	end
 
 	ui.setNextItemWidth(350 * UI_SCALE_X / 100)
+
+	local sliderGrabSize = max(350 * UI_SCALE_X / 100 / (self.max - self.min + self.step) / self.step, 10)
+
+	ui.pushStyleVar(ui.StyleVar.GrabMinSize, self.min == self.max and 0 or sliderGrabSize)
 	local value, changed = ui.slider(
 		"##" .. self.id .. self.name,
 		self._value * self.multiplier,
@@ -147,6 +180,8 @@ function SPINNER:slider()
 		self.format,
 		1
 	)
+
+	ui.popStyleVar(1)
 
 	value = value / self.multiplier
 
@@ -200,10 +235,24 @@ function SPINNER:set()
 	self.value = math.clamp(math.floor(self.value / self.step + 0.5) * self.step, self.min, self.max)
 	self._value = self.value
 
+	if self.value == ac.getSetupSpinnerValue(self.id) then
+		self.itemSet = true
+		ac.log("hi")
+		return
+	end
+
+	if #CHANGE_LOG > 100 then
+		CHANGE_LOG[#CHANGE_LOG] = nil
+	end
+
+	table.insert(
+		CHANGE_LOG,
+		1,
+		{ label = self.name .. " | " .. ac.getSetupSpinnerValue(self.id) .. " -> " .. self.value }
+	)
+
 	for _key, id in pairs(self.idPairs) do
 		ac.setSetupSpinnerValue(id, self.value)
-
-		ui.toast(ui.Icons.Info, id .. " setup value set to: " .. self.value)
 	end
 
 	self.itemSet = true
@@ -214,7 +263,7 @@ function SPINNER:mirror(id1, id2)
 		return
 	end
 
-	local mirrorValue = ac.getSetupSpinnerValue(self.idMirror, ac.get)
+	local mirrorValue = ac.getSetupSpinnerValue(self.idMirror)
 
 	if mirrorValue == -12345 then
 		return
@@ -269,6 +318,10 @@ function SPINNER:run(drawSpinner, mirror)
 	end
 	if ui.itemHovered(ui.HoveredFlags.None) then
 		self.helpWindowShow = true
+	end
+
+	if self:button("Reset") then
+		self:set()
 	end
 
 	if self.helpWindowShow then

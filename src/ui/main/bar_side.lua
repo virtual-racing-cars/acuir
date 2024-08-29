@@ -1,7 +1,7 @@
 local buttonSize = vec2(200 * UI_SCALE_Y / 100, UI_SCALE_Y)
 
 local acLogo = ac.getFolder(ac.FolderID.Root) .. "\\launcher\\themes\\default\\graphics\\btn_AC_logo.png"
-local acLogoSize = ui.imageSize(acLogo) * UI_SCALE_Y / 100
+local acLogoSize = ui.imageSize(acLogo) * vec2(UI_SCALE_Y / 100, UI_SCALE_Y / 100)
 
 local setupPageFontSize = ui.Font.Title
 
@@ -14,6 +14,9 @@ elseif UI_SCALE_Y < 100 then
 end
 
 function SideBar(sim)
+	setCursorY(0)
+	local availableSpaceY = ui.availableSpaceY()
+
 	ui.pushFont(setupPageFontSize)
 
 	ui.drawRectFilled(
@@ -99,7 +102,7 @@ function SideBar(sim)
 		end
 	end
 
-	if ui.modernButtonAdvanced("Notes", buttonSize, ui.ButtonFlags.None, ui.Icons.Document, UI_SCALE_X / 3) then
+	if ui.modernButtonAdvanced("Notes", buttonSize, ui.ButtonFlags.Disabled, ui.Icons.Document, UI_SCALE_X / 3) then
 		if storage.page == MenuPages.Notes then
 			storage.page = -1
 		else
@@ -108,6 +111,14 @@ function SideBar(sim)
 	end
 
 	if ui.modernButtonAdvanced("Lap Times", buttonSize, ui.ButtonFlags.None, ui.Icons.List, UI_SCALE_X / 3) then
+		if storage.page == MenuPages.TimeTable then
+			storage.page = -1
+		else
+			storage.page = MenuPages.TimeTable
+		end
+	end
+
+	if ui.modernButtonAdvanced("Telemetry", buttonSize, ui.ButtonFlags.Disabled, ui.Icons.Barcode, UI_SCALE_X / 3) then
 		if storage.page == MenuPages.TimeTable then
 			storage.page = -1
 		else
@@ -127,35 +138,9 @@ function SideBar(sim)
 
 	ui.pushStyleVar(ui.StyleVar.ItemSpacing, 0)
 
-	ui.setCursorY(ui.getCursorY() + ui.availableSpaceY() - UI_SCALE_Y)
-	if
-		ui.modernButtonAdvanced(
-			"##Restart",
-			vec2(200, 200) * UI_SCALE_Y / 100 / 3,
-			ui.ButtonFlags.None,
-			ui.Icons.Restart
-		)
-	then
-		ac.tryToRestartSession()
-	end
+	ui.dummy(buttonSize * vec2(1, 0.5))
 
-	ui.sameLine()
-	if
-		ui.modernButtonAdvanced(
-			"##Skip",
-			vec2(200, 200) * UI_SCALE_Y / 100 / 3,
-			sim.sessionsCount > 1 and ui.ButtonFlags.None or ui.ButtonFlags.Disabled,
-			ui.Icons.Skip
-		)
-	then
-		ac.tryToSkipSession()
-	end
-
-	ui.sameLine()
-
-	if
-		ui.modernButtonAdvanced("##Exit", vec2(200, 200) * UI_SCALE_Y / 100 / 3, ui.ButtonFlags.None, ui.Icons.Leave)
-	then
+	if ui.modernButtonAdvanced("Exit", buttonSize * vec2(1, 0.5), ui.ButtonFlags.None, ui.Icons.Leave) then
 		ac.shutdownAssettoCorsa()
 	end
 
@@ -178,4 +163,6 @@ function SideBar(sim)
 	-- end
 
 	ui.popFont()
+
+	ui.drawLine(vec2(200 * UI_SCALE_Y / 100, 0), vec2(200 * UI_SCALE_Y / 100, availableSpaceY), rgbm(1, 1, 1, 0.25))
 end

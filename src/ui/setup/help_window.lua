@@ -3,7 +3,7 @@ local setupSpinnersWindowSize = vec2(335 * UI_SCALE_Y / 100, 730 * UI_SCALE_Y / 
 HELP_TEXT = ""
 
 function HelpWindow()
-	setCursorX(1315)
+	setCursorX(1365)
 	setCursorY(0)
 	contentWindow("help_window", "HELP", setupSpinnersWindowSize, ui.WindowFlags.None, function() end)
 end

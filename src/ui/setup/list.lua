@@ -14,11 +14,12 @@ function SetupTabList()
 		vec2(listWidth, 730 * UI_SCALE_Y / 100),
 		ui.WindowFlags.NoScrollWithMouse + ui.WindowFlags.NoScrollbar,
 		function()
+			setCursorY(0)
 			local windowHeight = ui.availableSpaceY()
 
 			pushSetupListStyle()
 
-			setCursorY(38 * UI_SCALE_Y / 100)
+			setCursorY(42)
 			local buttonFlags = ui.ButtonFlags.None
 
 			if storage.setupTab == "SETUP I/O" then
@@ -35,7 +36,7 @@ function SetupTabList()
 				storage.setupTab = "SETUP I/O"
 			end
 
-			setCursorY(38 * UI_SCALE_Y / 100 + setupTabHeight + listMargins)
+			setCursorY(42 + setupTabHeight + listMargins)
 
 			local buttonFlags = ui.ButtonFlags.None
 
@@ -65,7 +66,7 @@ function SetupTabList()
 				rgbm(1, 1, 1, 0.25)
 			)
 
-			setCursorY(42 * UI_SCALE_Y / 100 + (setupTabHeight + listMargins) * 2)
+			setCursorY(42 + (setupTabHeight + listMargins) * 2)
 
 			childWindow("setup_list", ui.availableSpace(), false, ui.WindowFlags.ThinScrollbar, function()
 				local buttonXPos = 0
@@ -98,7 +99,7 @@ function SetupTabList()
 
 			if scrollY > 0 then
 				ui.drawRectFilledMultiColor(
-					vec2(0, 38 * UI_SCALE_Y / 100 + (setupTabHeight * UI_SCALE_Y / 100 + 2) * 2),
+					vec2(0, 45 * UI_SCALE_Y / 100 + (setupTabHeight * UI_SCALE_Y / 100 + 2) * 2),
 					vec2(ui.availableSpaceX(), (setupTabHeight * UI_SCALE_Y / 100 + 5) * 4),
 					rgbm(1, 1, 1, 0.2),
 					rgbm(1, 1, 1, 0.2),

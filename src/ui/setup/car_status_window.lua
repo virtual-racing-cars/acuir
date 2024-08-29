@@ -1,11 +1,6 @@
 local car = ac.getCar(0)
 
 local setupSpinnersWindowSize = vec2(570 * UI_SCALE_X / 100, 730 * UI_SCALE_Y / 100)
-local setupSpinnersWindowHeaderSize = vec2(830 * UI_SCALE_X / 100, 50 * UI_SCALE_Y / 100)
-
-local textBoxSize = vec2(300, 18)
-local textBoxFont = 20 * UI_SCALE_Y / 100
-ac.log(textBoxFont)
 
 local carINI = ac.INIConfig.carData(0, "car.ini")
 local kgPerL = carINI:get("FUEL_EXT", "KG_PER_LITER", 0.7339)
@@ -117,7 +112,7 @@ local infoText = {
 				(car.wheels[0].load + car.wheels[1].load)
 					/ (car.wheels[0].load + car.wheels[1].load + car.wheels[2].load + car.wheels[3].load)
 					* 100,
-				1
+				2
 			) .. "%"
 	end,
 	function()
@@ -138,7 +133,7 @@ local infoText = {
 }
 
 function CarStatusWindow()
-	setCursorX(1665)
+	setCursorX(1715)
 	setCursorY(0)
 	contentWindow(
 		"setup_info_window",

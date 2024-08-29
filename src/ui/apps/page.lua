@@ -1,5 +1,5 @@
 function AppsPage(sim)
-	ui.drawRectFilled(vec2(0, 0), vec2(sim.windowWidth, sim.windowHeight), rgbm(0.2, 0.2, 0.2, 1))
+	-- ui.drawRectFilled(vec2(0, 0), vec2(sim.windowWidth, sim.windowHeight), rgbm(0.2, 0.2, 0.2, 1))
 
 	-- ui.transparentWindow(
 	-- 	"apps",

@@ -4,6 +4,7 @@ local electronicsSetupItems = {
 	"MGUK_DELIVERY",
 	"MGUK_RECOVERY",
 	"MGUH_MODE",
+	"BRAKE_ENGINE",
 	"ABS",
 	"TRACTION_CONTROL",
 }

@@ -4,7 +4,7 @@ require("src\\ui\\setup\\pitstop_strategy_window")
 
 loadSetupSpinners()
 
-local setupSpinnersWindowSize = vec2(950 * UI_SCALE_X / 100, 730 * UI_SCALE_Y / 100)
+local setupSpinnersWindowSize = vec2(1000 * UI_SCALE_X / 100, 730 * UI_SCALE_Y / 100)
 
 local linkButtonSize = vec2(38 * UI_SCALE_X / 100, 38 * UI_SCALE_X / 100)
 
@@ -30,6 +30,7 @@ local function setupItemSpinners()
 		pitstopStrategyWindow()
 	end
 
+	ui.beginScale()
 	for k, v in pairs(setupSpinners) do
 		local tab = v.tab
 
@@ -43,6 +44,7 @@ local function setupItemSpinners()
 			end
 		end
 	end
+	ui.endScale(1)
 end
 
 local function setupTabBanner()
