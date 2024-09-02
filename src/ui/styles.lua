@@ -9,8 +9,8 @@ function pushSetupListStyle(padding)
 	end
 
 	ui.pushStyleColor(ui.StyleColor.Button, rgbm(0, 0, 0, 0))
-	ui.pushStyleColor(ui.StyleColor.ButtonHovered, settings.uiSecondaryColor)
-	ui.pushStyleColor(ui.StyleColor.ButtonActive, settings.uiSecondaryColor)
+	ui.pushStyleColor(ui.StyleColor.ButtonHovered, settings.uiSecondaryColor / 2)
+	ui.pushStyleColor(ui.StyleColor.ButtonActive, rgbm(0, 0, 0, 0))
 	ui.pushStyleVar(ui.StyleVar.FramePadding, padding)
 end
 

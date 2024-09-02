@@ -133,12 +133,10 @@ local infoText = {
 }
 
 function CarStatusWindow()
-	setCursorX(1715)
-	setCursorY(0)
 	contentWindow(
 		"setup_info_window",
 		"CAR STATUS",
-		vec2(1665, 30),
+		vec2(1715, 0),
 		setupSpinnersWindowSize,
 		ui.WindowFlags.NoScrollWithMouse + ui.WindowFlags.NoScrollbar,
 		function()

@@ -68,12 +68,10 @@ local function setupTabBanner()
 end
 
 function SetupWindow()
-	setCursorX(350)
-	setCursorY(0)
 	contentWindow(
 		"car_setup_window",
 		storage.setupTab,
-		vec2(300, 30),
+		vec2(350, 0),
 		setupSpinnersWindowSize,
 		ui.WindowFlags.None,
 		function()

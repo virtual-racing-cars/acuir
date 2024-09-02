@@ -11,10 +11,11 @@ function SetupTabList()
 	contentWindow(
 		"setup_tab_list",
 		"SETUP",
-		vec2(0, 30),
+		vec2(0, 0),
 		vec2(listWidth, 730 * UI_SCALE_Y / 100),
 		ui.WindowFlags.NoScrollWithMouse + ui.WindowFlags.NoScrollbar,
 		function()
+			setCursorX(0)
 			setCursorY(0)
 			local windowHeight = ui.availableSpaceY()
 
@@ -28,7 +29,7 @@ function SetupTabList()
 			end
 
 			if
-				ui.modernButtonAdvanced(
+				ui.buttonAdvanced(
 					"SETUP I/O",
 					vec2(ui.availableSpaceX(), setupTabHeight * UI_SCALE_Y / 100),
 					buttonFlags
@@ -37,6 +38,7 @@ function SetupTabList()
 				storage.setupTab = "SETUP I/O"
 			end
 
+			setCursorX(0)
 			setCursorY(42 + setupTabHeight + listMargins)
 
 			local buttonFlags = ui.ButtonFlags.None
@@ -52,7 +54,7 @@ function SetupTabList()
 			end
 
 			if
-				ui.modernButtonAdvanced(
+				ui.buttonAdvanced(
 					"PITSTOP STRATEGY",
 					vec2(ui.availableSpaceX(), setupTabHeight * UI_SCALE_Y / 100),
 					buttonFlags
@@ -67,6 +69,7 @@ function SetupTabList()
 				rgbm(1, 1, 1, 0.25)
 			)
 
+			setCursorX(0)
 			setCursorY(42 + (setupTabHeight + listMargins) * 2)
 
 			childWindow("setup_list", ui.availableSpace(), false, ui.WindowFlags.ThinScrollbar, function()
@@ -82,7 +85,7 @@ function SetupTabList()
 					setCursorX(buttonXPos)
 					setCursorY(buttonYPos)
 					if
-						ui.modernButtonAdvanced(
+						ui.buttonAdvanced(
 							tabs[tab],
 							vec2(ui.availableSpaceX(), setupTabHeight * UI_SCALE_Y / 100),
 							buttonFlags

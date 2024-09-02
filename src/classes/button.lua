@@ -31,6 +31,39 @@ function ui.modernButtonAdvanced(label, size, flags, icon, iconSize)
 	return clicked
 end
 
+local activeLabel = ""
+function ui.buttonAdvanced(label, size, flags)
+	if activeLabel == label then
+		ui.pushStyleColor(ui.StyleColor.Button, settings.uiSecondaryColor)
+		ui.pushStyleColor(ui.StyleColor.ButtonHovered, settings.uiSecondaryColor)
+	end
+	local clicked = ui.button(label, size, flags)
+
+	if activeLabel == label then
+		ui.popStyleColor(2)
+	end
+
+	if ui.itemActive() then
+		activeLabel = label
+	end
+
+	if flags ~= ui.ButtonFlags.Disabled then
+		if ui.itemHovered(ui.HoveredFlags.None) and not menuNavTrigged then
+			menuNav:play()
+			menuNavTrigged = true
+			menuItem = label
+		elseif not ui.itemHovered(ui.HoveredFlags.None) and menuNavTrigged and menuItem == label then
+			menuNavTrigged = false
+		end
+
+		if ui.itemActivated() then
+			menuClick:play()
+		end
+	end
+
+	return clicked
+end
+
 function ui.arrowButtonAdvanced(id, direction, size, flags)
 	local clicked = ui.arrowButton("##" .. direction .. id, ui.Direction[direction], size, flags)
 

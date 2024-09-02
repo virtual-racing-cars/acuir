@@ -242,16 +242,6 @@ function SPINNER:set()
 		return
 	end
 
-	if #CHANGE_LOG > 100 then
-		CHANGE_LOG[#CHANGE_LOG] = nil
-	end
-
-	table.insert(
-		CHANGE_LOG,
-		1,
-		{ label = self.name .. " | " .. ac.getSetupSpinnerValue(self.id) .. " -> " .. self.value }
-	)
-
 	for _key, id in pairs(self.idPairs) do
 		ac.setSetupSpinnerValue(id, self.value)
 	end

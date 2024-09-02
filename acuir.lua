@@ -18,8 +18,7 @@ MenuPagesString = {
 	[1] = "Notes",
 	[2] = "Time Table",
 	[3] = "Apps",
-	[4] = "Manual",
-	[5] = "Settings",
+	[4] = "Settings",
 }
 
 storage = ac.storage({
@@ -61,21 +60,13 @@ ui.onExclusiveHUD(function(mode)
 	end
 end)
 
-function script.update(dt)
-	if
-		sim.isInMainMenu
-		and settings.autoStart
-		and not storage.hasAppOpened
-		and not storage.appOpen
-		and ac.isWindowOpen("main")
-	then
-		ac.tryToOpenRaceMenu("race")
-		ac.tryToOpenRaceMenu("setup")
-		storage.appOpen = settings.autoStart
-	end
-end
+ac.setWindowOpen("main", true)
 
 function script.main()
+	if not storage.hasAppOpened then
+		storage.hasAppOpened = true
+	end
+
 	setCursorX(0)
 	setCursorY(0)
 
@@ -87,5 +78,19 @@ function script.main()
 		)
 	then
 		storage.appOpen = not storage.appOpen
+	end
+end
+
+function script.update(dt)
+	if
+		sim.isInMainMenu
+		and settings.autoStart
+		and not storage.hasAppOpened
+		and not storage.appOpen
+		and ac.isWindowOpen("main")
+	then
+		-- ac.tryToOpenRaceMenu("race")
+		-- ac.tryToOpenRaceMenu("setup")
+		storage.appOpen = settings.autoStart
 	end
 end

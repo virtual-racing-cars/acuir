@@ -123,8 +123,6 @@ function MainWindow()
 				return
 			end
 
-			storage.hasAppOpened = true
-
 			ui.bringWindowToFront()
 
 			if storage.page == MenuPages.Apps then
@@ -136,212 +134,84 @@ function MainWindow()
 			SideBar(sim)
 			VersionText()
 
-			setCursorX(1605)
-			setCursorY(50)
+			local fontSize = 36 * UI_SCALE_Y / 100
 
-			local fontSize = 18 * UI_SCALE_Y / 100
+			cui.pushWindow("weather_window_1", ui.windowWidth() / 2 - 1000 / 2, 0, 1000, 70)
+			ui.drawRectFilled(vec2(0, 0), vec2(1000, 50), settings.uiPrimaryColor, 20, ui.CornerFlags.Bottom)
+			ui.drawRectFilled(vec2(400, 0), vec2(600, 60), settings.uiSecondaryColor, 20, ui.CornerFlags.Bottom)
 
-			childWindow(
-				"session_window",
-				vec2(330 * UI_SCALE_Y / 100, 100 * UI_SCALE_Y / 100),
+			setCursorX(0)
+			setCursorY(0)
+
+			ui.dwriteText("Remaining: " .. ac.lapTimeToString(sim.sessionTimeLeft), fontSize / 2, rgbm.colors.white)
+			ui.sameLine()
+			ui.dwriteText("Duration: " .. ac.lapTimeToString(sim.currentSessionTime), fontSize / 2, rgbm.colors.white)
+			ui.sameLine()
+
+			setCursorX(0)
+			ui.pushDWriteFont("Defualt;Weight=Bold")
+			ui.dwriteTextAligned(
+				raceSessiontTypeString[sim.raceSessionType + 1],
+				fontSize,
+				ui.Alignment.Center,
+				ui.Alignment.Center,
+				vec2(1000, 40),
 				false,
-				ui.WindowFlags.NoScrollbar + ui.WindowFlags.NoScrollWithMouse,
-				function()
-					ui.drawRectFilled(
-						vec2(0, 0),
-						ui.availableSpace(),
-						settings.uiSecondaryColor,
-						0,
-						ui.CornerFlags.None
-					)
+				rgbm.colors.white
+			)
+			ui.popDWriteFont()
 
-					setCursorX(10)
-					ui.beginGroup()
+			local saveYPos = ui.getCursorY()
 
-					ui.pushDWriteFont("Defualt;Weight=Bold")
-					ui.dwriteText(raceSessiontTypeString[sim.raceSessionType + 1], fontSize, rgbm.colors.white)
-					ui.popDWriteFont()
+			setCursorX(180)
+			ui.setCursorY(saveYPos)
 
-					local saveYPos = ui.getCursorY()
+			ui.beginGroup(10)
 
-					ui.dwriteText(
-						"Duration: " .. ac.lapTimeToString(sim.currentSessionTime),
-						fontSize,
-						rgbm.colors.white
-					)
-
-					ui.dwriteText("Remaining: " .. ac.lapTimeToString(sim.sessionTimeLeft), fontSize, rgbm.colors.white)
-
-					ui.endGroup()
-
-					setCursorX(180)
-					ui.setCursorY(saveYPos)
-
-					ui.beginGroup(10)
-
-					ui.dwriteText(
-						"Sim Time: " .. string.format("%02d:%02d", sim.timeHours, sim.timeMinutes),
-						fontSize,
-						rgbm.colors.white
-					)
-
-					ui.dwriteText("Real Time: " .. os.date("%H:%M"), fontSize, rgbm.colors.white)
-
-					ui.endGroup()
-
-					setCursorX(355)
-					setCursorY(20)
-					if
-						ui.modernButtonAdvanced(
-							"##Restart",
-							vec2(200, 200) * UI_SCALE_Y / 100 / 3,
-							ui.ButtonFlags.None,
-							ui.Icons.Restart
-						)
-					then
-						ac.tryToRestartSession()
-					end
-
-					ui.sameLine()
-					if
-						ui.modernButtonAdvanced(
-							"##Skip",
-							vec2(200, 200) * UI_SCALE_Y / 100 / 3,
-							sim.sessionsCount > 1 and ui.ButtonFlags.None or ui.ButtonFlags.Disabled,
-							ui.Icons.Skip
-						)
-					then
-						ac.tryToSkipSession()
-					end
-				end
+			ui.dwriteText(
+				"Sim Time: " .. string.format("%02d:%02d", sim.timeHours, sim.timeMinutes),
+				fontSize,
+				rgbm.colors.white
 			)
 
-			setCursorX(1950)
-			setCursorY(50)
+			ui.dwriteText("Real Time: " .. os.date("%H:%M"), fontSize, rgbm.colors.white)
+			ui.endGroup()
 
-			childWindow(
-				"weather_window",
-				vec2(335 * UI_SCALE_Y / 100, 100 * UI_SCALE_Y / 100),
-				false,
-				ui.WindowFlags.NoScrollbar + ui.WindowFlags.NoScrollWithMouse,
-				function()
-					ui.drawRectFilled(vec2(0, 0), ui.availableSpace(), settings.uiPrimaryColor, 0, ui.CornerFlags.None)
+			cui.popWindow()
 
-					setCursorX(10)
-					ui.beginGroup()
+			cui.pushWindow("weather_window_2", 2230, 0, 335, 100)
+			ui.drawRectFilled(vec2(0, 0), vec2(335, 100), settings.uiPrimaryColor, 0, ui.CornerFlags.None)
 
-					local saveYPos = ui.getCursorY()
+			setCursorY(5)
+			ui.beginGroup()
 
-					ui.dwriteText("Air Temp: " .. math.round(sim.ambientTemperature, 1), fontSize, rgbm.colors.white)
-					ui.dwriteText("Track Temp: " .. math.round(sim.roadTemperature, 1), fontSize, rgbm.colors.white)
-					ui.dwriteText("Track Grip: " .. math.round(sim.roadGrip * 100, 1), fontSize, rgbm.colors.white)
+			local saveYPos = ui.getCursorY()
 
-					ui.endGroup()
+			ui.dwriteText("Air Temp: " .. math.round(sim.ambientTemperature, 1), fontSize, rgbm.colors.white)
+			ui.dwriteText("Track Temp: " .. math.round(sim.roadTemperature, 1), fontSize, rgbm.colors.white)
+			ui.dwriteText("Track Grip: " .. math.round(sim.roadGrip * 100, 1), fontSize, rgbm.colors.white)
 
-					setCursorX(180)
-					ui.setCursorY(saveYPos)
+			ui.endGroup()
 
-					ui.beginGroup(10)
+			setCursorX(180)
+			ui.setCursorY(saveYPos)
 
-					ui.dwriteText("Weather: ", fontSize, rgbm.colors.white)
-					ui.sameLine()
-					ui.offsetCursorY(7)
-					ui.icon(ui.weatherIcon(sim.weatherType), vec2(15, 15))
-					ui.offsetCursorY(-7)
+			ui.beginGroup(10)
 
-					ui.dwriteText(
-						"Wind: " .. math.round(sim.windSpeedKmh, 1) .. " km/h " .. getWindDirection(),
-						fontSize,
-						rgbm.colors.white
-					)
-					ui.dwriteText("Wind: " .. math.round(sim.ambientTemperature, 1), fontSize, rgbm.colors.white)
+			ui.dwriteText("Weather: ", fontSize, rgbm.colors.white)
+			ui.sameLine()
+			ui.offsetCursorY(7)
+			ui.icon(ui.weatherIcon(sim.weatherType), vec2(15, 15))
+			ui.offsetCursorY(-7)
 
-					setCursorX(355)
-					setCursorY(20)
-					if
-						ui.modernButtonAdvanced(
-							"##Restart",
-							vec2(200, 200) * UI_SCALE_Y / 100 / 3,
-							ui.ButtonFlags.None,
-							ui.Icons.Restart
-						)
-					then
-						ac.tryToRestartSession()
-					end
-
-					ui.sameLine()
-					if
-						ui.modernButtonAdvanced(
-							"##Skip",
-							vec2(200, 200) * UI_SCALE_Y / 100 / 3,
-							sim.sessionsCount > 1 and ui.ButtonFlags.None or ui.ButtonFlags.Disabled,
-							ui.Icons.Skip
-						)
-					then
-						ac.tryToSkipSession()
-					end
-
-					ui.sameLine()
-				end
+			ui.dwriteText(
+				"Wind: " .. math.round(sim.windSpeedKmh, 1) .. " km/h " .. getWindDirection(),
+				fontSize,
+				rgbm.colors.white
 			)
+			ui.dwriteText("Wind: " .. math.round(sim.ambientTemperature, 1), fontSize, rgbm.colors.white)
 
-			setCursorX(2300)
-			setCursorY(50)
-
-			childWindow(
-				"session_control_window",
-				vec2(220 * UI_SCALE_Y / 100, 100 * UI_SCALE_Y / 100),
-				false,
-				ui.WindowFlags.NoScrollbar + ui.WindowFlags.NoScrollWithMouse,
-				function()
-					ui.drawRectFilled(vec2(0, 0), ui.availableSpace(), settings.uiPrimaryColor, 0, ui.CornerFlags.None)
-
-					ui.dwriteTextAligned(
-						"Session Control",
-						fontSize,
-						ui.Alignment.Center,
-						ui.Alignment.Center,
-						vec2(ui.availableSpaceX(), 20 * UI_SCALE_Y / 100)
-					)
-
-					setCursorX(5)
-
-					if
-						ui.modernButtonAdvanced(
-							"##Restart",
-							vec2(200, 200) * UI_SCALE_Y / 100 / 3,
-							ui.ButtonFlags.None,
-							ui.Icons.Restart
-						)
-					then
-						ac.tryToRestartSession()
-					end
-
-					ui.sameLine()
-					if
-						ui.modernButtonAdvanced(
-							"##Skip",
-							vec2(200, 200) * UI_SCALE_Y / 100 / 3,
-							sim.sessionsCount > 1 and ui.ButtonFlags.None or ui.ButtonFlags.Disabled,
-							ui.Icons.Skip
-						)
-					then
-						ac.tryToSkipSession()
-					end
-
-					ui.sameLine()
-					if
-						ui.modernButtonAdvanced(
-							"##ExitAC",
-							vec2(200, 200) * UI_SCALE_Y / 100 / 3,
-							ui.ButtonFlags.None,
-							ui.Icons.Leave
-						)
-					then
-						ac.shutdownAssettoCorsa()
-					end
-				end
-			)
+			cui.popWindow()
 
 			setCursorX(237)
 			setCursorY(200)

@@ -23,9 +23,10 @@ local settingsWindowSize = vec2(830 * UI_SCALE_X / 100, 710 * UI_SCALE_Y / 100)
 local settingsListSize = vec2(listWidth, 710 * UI_SCALE_Y / 100)
 
 function SettingsList(sim)
-	contentWindow("settings_list", "SETTINGS", vec2(0, 30), settingsListSize, ui.WindowFlags.None, function()
+	contentWindow("settings_list", "SETTINGS", vec2(0, 0), settingsListSize, ui.WindowFlags.None, function()
 		pushSetupListStyle()
 
+		setCursorX(0)
 		setCursorY(42)
 
 		childWindow("settings_list", ui.availableSpace(), false, ui.WindowFlags.ThinScrollbar, function()
@@ -41,7 +42,7 @@ function SettingsList(sim)
 				setCursorX(buttonXPos)
 				setCursorY(buttonYPos)
 				if
-					ui.modernButtonAdvanced(
+					ui.buttonAdvanced(
 						settingsTabs[tab],
 						vec2(ui.availableSpaceX(), setupTabHeight * UI_SCALE_Y / 100),
 						buttonFlags
@@ -57,13 +58,10 @@ function SettingsList(sim)
 		popSetupListStyle()
 	end)
 
-	setCursorX(350)
-	setCursorY(0)
-
 	contentWindow(
 		"settings_window",
 		storage.settingsTab,
-		vec2(345, 30),
+		vec2(345, 0),
 		settingsWindowSize,
 		ui.WindowFlags.None,
 		function()

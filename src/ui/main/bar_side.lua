@@ -134,34 +134,42 @@ function SideBar(sim)
 		end
 	end
 
+	if ui.modernButtonAdvanced("Settings", buttonSize, ui.ButtonFlags.None, ui.Icons.Settings, UI_SCALE_X / 3) then
+		if storage.page == MenuPages.Settings then
+			storage.page = -1
+		else
+			storage.page = MenuPages.Settings
+		end
+	end
+
 	ui.popStyleVar(1)
 
 	ui.pushStyleVar(ui.StyleVar.ItemSpacing, 0)
 
 	ui.dummy(buttonSize * vec2(1, 0.5))
 
+	ui.offsetCursorY(ui.availableSpaceY() - 165)
+
+	if ui.modernButtonAdvanced("Restart", buttonSize * vec2(1, 0.5), ui.ButtonFlags.None, ui.Icons.Restart) then
+		ac.tryToRestartSession()
+	end
+
+	if
+		ui.modernButtonAdvanced(
+			"Skip",
+			buttonSize * vec2(1, 0.5),
+			sim.sessionsCount > 1 and ui.ButtonFlags.None or ui.ButtonFlags.Disabled,
+			ui.Icons.Skip
+		)
+	then
+		ac.tryToSkipSession()
+	end
+
 	if ui.modernButtonAdvanced("Exit", buttonSize * vec2(1, 0.5), ui.ButtonFlags.None, ui.Icons.Leave) then
 		ac.shutdownAssettoCorsa()
 	end
 
 	ui.popStyleVar(1)
-
-	-- if
-	-- 	ui.modernButtonAdvanced(
-	-- 		"##manual",
-	-- 		buttonSize,
-	-- 		ui.ButtonFlags.None,
-	-- 		ui.Icons.Book,
-	-- 		UI_SCALE_X / 2
-	-- 	)
-	-- then
-	-- 	if storage.page == MenuPages.Manual then
-	-- 		storage.page = -1
-	-- 	else
-	-- 		storage.page = MenuPages.Manual
-	-- 	end
-	-- end
-
 	ui.popFont()
 
 	ui.drawLine(vec2(200 * UI_SCALE_Y / 100, 0), vec2(200 * UI_SCALE_Y / 100, availableSpaceY), rgbm(1, 1, 1, 0.25))
