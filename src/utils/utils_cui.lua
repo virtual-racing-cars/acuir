@@ -154,6 +154,90 @@ function cui.iconButton(label, icon, sizeX, sizeY, flags)
 	return clicked
 end
 
+function cui.menuButton(label, icon, size, flags)
+	local clicked = false
+
+	local cursorStart = ui.getCursor()
+
+	-- ui.drawRectFilled(
+	-- 	ui.getCursor(),
+	-- 	ui.getCursor() + vec2(size * scaleY, size * scaleY),
+	-- 	rgbm(0, 0, 0, 0.2),
+	-- 	10,
+	-- 	ui.CornerFlags.All
+	-- )
+
+	ui.pushDWriteFont("Defualt;Weight=Bold")
+	ui.dwriteTextAligned(
+		label,
+		16 * scaleX,
+		ui.Alignment.Center,
+		ui.Alignment.End,
+		vec2Temp1:set(size * scaleY, size * scaleY)
+	)
+	ui.popDWriteFont()
+
+	ui.sameLine()
+
+	ui.setCursor(cursorStart)
+
+	cui.offsetCursorX(size / 1.5 / 4)
+	cui.offsetCursorY(size / 1.5 / 10)
+
+	ui.icon(icon, vec2(size, size) / 1.5)
+
+	ui.setCursor(cursorStart)
+
+	if ui.invisibleButton("##" .. label, vec2(size * scaleY, size * scaleY)) then
+		clicked = true
+		ui.text("hi")
+	end
+
+	return clicked
+end
+
+function cui.menuButtonWide(label, icon, size, flags)
+	local clicked = false
+
+	local cursorStart = ui.getCursor()
+
+	ui.drawRectFilled(
+		ui.getCursor(),
+		ui.getCursor() + vec2(size * 8 * scaleY, size * scaleY),
+		rgbm(0, 0.5, 0, 0.2),
+		10,
+		ui.CornerFlags.All
+	)
+
+	ui.pushDWriteFont("Defualt;Weight=Bold")
+	ui.dwriteTextAligned(
+		label,
+		26 * scaleX,
+		ui.Alignment.Center,
+		ui.Alignment.Center,
+		vec2Temp1:set(size * 8 * scaleY, size * scaleY)
+	)
+	ui.popDWriteFont()
+
+	ui.sameLine()
+
+	ui.setCursor(cursorStart)
+
+	cui.offsetCursorX(size / 1.5 / 4)
+	cui.offsetCursorY(size / 1.5 / 4)
+
+	ui.icon(icon, vec2(size, size) / 1.5)
+
+	ui.setCursor(cursorStart)
+
+	if ui.invisibleButton("##" .. label, vec2(size * 8 * scaleY, size * scaleY)) then
+		clicked = true
+		ui.text("hi")
+	end
+
+	return clicked
+end
+
 function cui.dummy(x, y)
 	ui.dummy(x * scaleY, y * scaleY)
 end

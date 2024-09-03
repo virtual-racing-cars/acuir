@@ -20,25 +20,20 @@ function SideBar(sim)
 	ui.pushFont(setupPageFontSize)
 
 	ui.drawRectFilled(
-		vec2(0, 0),
-		vec2(200 * UI_SCALE_Y / 100, sim.windowHeight),
+		vec2(20, 20),
+		vec2(sim.windowWidth - 20, 150 * UI_SCALE_Y / 100),
 		settings.uiPrimaryColor,
-		0,
-		ui.CornerFlags.None
+		10,
+		ui.CornerFlags.All
 	)
+
 	ui.drawRectFilledMultiColor(
-		vec2(0, 0),
-		vec2(200 * UI_SCALE_Y / 100, ui.availableSpaceY()),
+		vec2(20, 20),
+		vec2(sim.windowWidth - 20, 150 * UI_SCALE_Y / 100),
 		rgbm(1, 1, 1, 0.2),
 		rgbm(1, 1, 1, 0.2),
 		rgbm(0, 0, 0, 0),
 		rgbm(0, 0, 0, 0)
-	)
-
-	ui.drawLine(
-		vec2(200 * UI_SCALE_Y / 100, 0),
-		vec2(200 * UI_SCALE_Y / 100, ui.availableSpaceY()),
-		rgbm(1, 1, 1, 0.25)
 	)
 
 	setCursorX(5)
@@ -47,130 +42,120 @@ function SideBar(sim)
 		storage.appOpen = not storage.appOpen
 	end
 
-	setCursorX(25)
-	setCursorY(15)
+	setCursorX(1280 - 154)
+	setCursorY(20)
+
+	ui.drawRectFilled(
+		ui.getCursor() - vec2(30, 0),
+		ui.getCursor() + acLogoSize + vec2(30, 0),
+		settings.uiPrimaryColor,
+		10,
+		ui.CornerFlags.All
+	)
+
 	ui.image(acLogo, acLogoSize)
-
-	if ui.mousePos() > vec2(0, 0) and ui.mousePos() <= vec2(200, 200) then
-		setCursorX(70)
-		if
-			ui.modernButtonAdvanced(
-				"##settings",
-				vec2(UI_SCALE_Y / 4, UI_SCALE_Y / 4),
-				ui.ButtonFlags.None,
-				ui.Icons.Settings,
-				UI_SCALE_X / 8
-			)
-		then
-			if storage.page == MenuPages.Settings then
-				storage.page = -1
-			else
-				storage.page = MenuPages.Settings
-			end
-		end
-
-		ui.sameLine()
-		if
-			ui.modernButtonAdvanced(
-				"##appinfo",
-				vec2(UI_SCALE_Y / 4, UI_SCALE_Y / 4),
-				ui.ButtonFlags.None,
-				ui.Icons.Info,
-				UI_SCALE_X / 8
-			)
-		then
-			if storage.page == MenuPages.Settings then
-				storage.page = -1
-			else
-				storage.page = MenuPages.Settings
-			end
-		end
-	end
 
 	ui.pushStyleVar(ui.StyleVar.ItemSpacing, 2)
 
-	setCursorY(200)
-	if ui.modernButtonAdvanced("Drive", buttonSize, ui.ButtonFlags.None, ui.Icons.SteeringWheel, UI_SCALE_X / 3) then
+	setCursorX(50)
+	setCursorY(44)
+
+	ui.pushStyleVar(ui.StyleVar.ItemSpacing, 20)
+
+	if cui.menuButton("Drive", ui.Icons.SteeringWheel, 80, ui.ButtonFlags.None) then
 		ac.tryToStart()
 	end
+	ui.sameLine()
 
-	if ui.modernButtonAdvanced("Setup", buttonSize, ui.ButtonFlags.None, ui.Icons.Wrench, UI_SCALE_X / 3) then
+	if cui.menuButton("Setup", ui.Icons.Wrench, 80, ui.ButtonFlags.None) then
 		if storage.page == MenuPages.Setup then
 			storage.page = -1
 		else
 			storage.page = MenuPages.Setup
 		end
 	end
+	ui.sameLine()
 
-	if ui.modernButtonAdvanced("Notes", buttonSize, ui.ButtonFlags.Disabled, ui.Icons.Document, UI_SCALE_X / 3) then
-		if storage.page == MenuPages.Notes then
+	if cui.menuButton("Standings", ui.Icons.Trophy, 80, ui.ButtonFlags.None) then
+		if storage.page == MenuPages.Setup then
 			storage.page = -1
 		else
-			storage.page = MenuPages.Notes
+			storage.page = MenuPages.Setup
 		end
 	end
+	ui.sameLine()
 
-	if ui.modernButtonAdvanced("Lap Times", buttonSize, ui.ButtonFlags.None, ui.Icons.List, UI_SCALE_X / 3) then
+	if cui.menuButton("Lap Times", ui.Icons.List, 80, ui.ButtonFlags.None) then
 		if storage.page == MenuPages.TimeTable then
 			storage.page = -1
 		else
 			storage.page = MenuPages.TimeTable
 		end
 	end
+	ui.sameLine()
 
-	if ui.modernButtonAdvanced("Telemetry", buttonSize, ui.ButtonFlags.Disabled, ui.Icons.Barcode, UI_SCALE_X / 3) then
+	-- if cui.menuButtonWide("Notes", ui.Icons.Document, 120, ui.ButtonFlags.Disabled) then
+	-- 	if storage.page == MenuPages.Notes then
+	-- 		storage.page = -1
+	-- 	else
+	-- 		storage.page = MenuPages.Notes
+	-- 	end
+	-- end
+	-- ui.sameLine()
+
+	if cui.menuButton("Telemetry", ui.Icons.Barcode, 80, ui.ButtonFlags.None) then
 		if storage.page == MenuPages.TimeTable then
 			storage.page = -1
 		else
 			storage.page = MenuPages.TimeTable
 		end
 	end
+	ui.sameLine()
 
-	if ui.modernButtonAdvanced("Apps", buttonSize, ui.ButtonFlags.None, ui.Icons.Apps, UI_SCALE_X / 3) then
-		if storage.page == MenuPages.Apps then
-			storage.page = -1
-		else
-			storage.page = MenuPages.Apps
-		end
-	end
+	-- if ui.modernButtonAdvanced("Apps", buttonSize, ui.ButtonFlags.None, ui.Icons.Apps, UI_SCALE_X / 3) then
+	-- 	if storage.page == MenuPages.Apps then
+	-- 		storage.page = -1
+	-- 	else
+	-- 		storage.page = MenuPages.Apps
+	-- 	end
+	-- end
+	-- ui.sameLine()
 
-	if ui.modernButtonAdvanced("Settings", buttonSize, ui.ButtonFlags.None, ui.Icons.Settings, UI_SCALE_X / 3) then
+	setCursorX(2020)
+
+	if cui.menuButton("Info", ui.Icons.Info, 80, ui.ButtonFlags.None) then
 		if storage.page == MenuPages.Settings then
 			storage.page = -1
 		else
 			storage.page = MenuPages.Settings
 		end
 	end
+	ui.sameLine()
 
-	ui.popStyleVar(1)
+	if cui.menuButton("Settings", ui.Icons.Settings, 80, ui.ButtonFlags.None) then
+		if storage.page == MenuPages.Settings then
+			storage.page = -1
+		else
+			storage.page = MenuPages.Settings
+		end
+	end
+	ui.sameLine()
 
-	ui.pushStyleVar(ui.StyleVar.ItemSpacing, 0)
-
-	ui.dummy(buttonSize * vec2(1, 0.5))
-
-	ui.offsetCursorY(ui.availableSpaceY() - 165)
-
-	if ui.modernButtonAdvanced("Restart", buttonSize * vec2(1, 0.5), ui.ButtonFlags.None, ui.Icons.Restart) then
+	if cui.menuButton("Restart", ui.Icons.Restart, 80, ui.ButtonFlags.None) then
 		ac.tryToRestartSession()
 	end
+	ui.sameLine()
 
-	if
-		ui.modernButtonAdvanced(
-			"Skip",
-			buttonSize * vec2(1, 0.5),
-			sim.sessionsCount > 1 and ui.ButtonFlags.None or ui.ButtonFlags.Disabled,
-			ui.Icons.Skip
-		)
-	then
+	if cui.menuButton("Skip", ui.Icons.Skip, 80, ui.ButtonFlags.None) then
 		ac.tryToSkipSession()
 	end
+	ui.sameLine()
 
-	if ui.modernButtonAdvanced("Exit", buttonSize * vec2(1, 0.5), ui.ButtonFlags.None, ui.Icons.Leave) then
+	if cui.menuButton("Exit", ui.Icons.Leave, 80, ui.ButtonFlags.None) then
 		ac.shutdownAssettoCorsa()
 	end
 
 	ui.popStyleVar(1)
-	ui.popFont()
 
-	ui.drawLine(vec2(200 * UI_SCALE_Y / 100, 0), vec2(200 * UI_SCALE_Y / 100, availableSpaceY), rgbm(1, 1, 1, 0.25))
+	ui.popFont()
 end

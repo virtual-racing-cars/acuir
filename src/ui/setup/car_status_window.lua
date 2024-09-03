@@ -136,7 +136,7 @@ function CarStatusWindow()
 	contentWindow(
 		"setup_info_window",
 		"CAR STATUS",
-		vec2(1715, 0),
+		vec2(1735, 200),
 		setupSpinnersWindowSize,
 		ui.WindowFlags.NoScrollWithMouse + ui.WindowFlags.NoScrollbar,
 		function()

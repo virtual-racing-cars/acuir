@@ -11,7 +11,7 @@ function SetupTabList()
 	contentWindow(
 		"setup_tab_list",
 		"SETUP",
-		vec2(0, 0),
+		vec2(20, 200),
 		vec2(listWidth, 730 * UI_SCALE_Y / 100),
 		ui.WindowFlags.NoScrollWithMouse + ui.WindowFlags.NoScrollbar,
 		function()

@@ -12,7 +12,7 @@ end
 
 contentWindow = function(id, title, position, size, flags, content)
 	cui.pushWindow(id .. "test", position.x, position.y, size.x, size.y)
-	ui.drawRectFilled(vec2(0, 0), size, settings.uiPrimaryColor, 10, ui.CornerFlags.Top)
+	ui.drawRectFilled(vec2(0, 0), size, settings.uiPrimaryColor, 10, ui.CornerFlags.All)
 
 	ui.drawRectFilled(
 		vec2(0, 0),
@@ -44,7 +44,7 @@ contentWindow = function(id, title, position, size, flags, content)
 
 	content()
 
-	ui.drawRect(vec2(0, 0), size, rgbm(0.3, 0.3, 0.3, 1), 10, ui.CornerFlags.Top)
+	ui.drawRect(vec2(0, 0), size, rgbm(0.3, 0.3, 0.3, 1), 10, ui.CornerFlags.All)
 
 	cui.popWindow()
 end

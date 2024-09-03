@@ -109,14 +109,14 @@ function MainWindow()
 		function()
 			exclusiveHudMode = ""
 
-			if ui.invisibleButton("ui_toggle", vec2(UI_SCALE_Y, UI_SCALE_Y)) then
-				if not storage.appOpen then
-					ac.tryToOpenRaceMenu("race")
-					ac.tryToOpenRaceMenu("setup")
-				end
+			-- if ui.invisibleButton("ui_toggle", vec2(UI_SCALE_Y, UI_SCALE_Y)) then
+			-- 	if not storage.appOpen then
+			-- 		ac.tryToOpenRaceMenu("race")
+			-- 		ac.tryToOpenRaceMenu("setup")
+			-- 	end
 
-				storage.appOpen = not storage.appOpen
-			end
+			-- 	storage.appOpen = not storage.appOpen
+			-- end
 
 			if not storage.appOpen then
 				exclusiveHudMode = nil
@@ -136,109 +136,101 @@ function MainWindow()
 
 			local fontSize = 36 * UI_SCALE_Y / 100
 
-			cui.pushWindow("weather_window_1", ui.windowWidth() / 2 - 1000 / 2, 0, 1000, 70)
-			ui.drawRectFilled(vec2(0, 0), vec2(1000, 50), settings.uiPrimaryColor, 20, ui.CornerFlags.Bottom)
-			ui.drawRectFilled(vec2(400, 0), vec2(600, 60), settings.uiSecondaryColor, 20, ui.CornerFlags.Bottom)
+			-- if true then
+			-- 	return
+			-- end
 
-			setCursorX(0)
-			setCursorY(0)
+			-- cui.pushWindow("weather_window_1", ui.windowWidth() / 2 - 1000 / 2, 0, 1000, 70)
+			-- ui.drawRectFilled(vec2(0, 0), vec2(1000, 50), settings.uiPrimaryColor, 20, ui.CornerFlags.Bottom)
+			-- ui.drawRectFilled(vec2(400, 0), vec2(600, 60), settings.uiSecondaryColor, 20, ui.CornerFlags.Bottom)
 
-			ui.dwriteText("Remaining: " .. ac.lapTimeToString(sim.sessionTimeLeft), fontSize / 2, rgbm.colors.white)
-			ui.sameLine()
-			ui.dwriteText("Duration: " .. ac.lapTimeToString(sim.currentSessionTime), fontSize / 2, rgbm.colors.white)
-			ui.sameLine()
+			-- setCursorX(0)
+			-- setCursorY(0)
 
-			setCursorX(0)
-			ui.pushDWriteFont("Defualt;Weight=Bold")
-			ui.dwriteTextAligned(
-				raceSessiontTypeString[sim.raceSessionType + 1],
-				fontSize,
-				ui.Alignment.Center,
-				ui.Alignment.Center,
-				vec2(1000, 40),
-				false,
-				rgbm.colors.white
-			)
-			ui.popDWriteFont()
+			-- ui.dwriteText("Remaining: " .. ac.lapTimeToString(sim.sessionTimeLeft), fontSize / 2, rgbm.colors.white)
+			-- ui.sameLine()
+			-- ui.dwriteText("Duration: " .. ac.lapTimeToString(sim.currentSessionTime), fontSize / 2, rgbm.colors.white)
+			-- ui.sameLine()
 
-			local saveYPos = ui.getCursorY()
+			-- setCursorX(0)
+			-- ui.pushDWriteFont("Defualt;Weight=Bold")
+			-- ui.dwriteTextAligned(
+			-- 	raceSessiontTypeString[sim.raceSessionType + 1],
+			-- 	fontSize,
+			-- 	ui.Alignment.Center,
+			-- 	ui.Alignment.Center,
+			-- 	vec2(1000, 40),
+			-- 	false,
+			-- 	rgbm.colors.white
+			-- )
+			-- ui.popDWriteFont()
 
-			setCursorX(180)
-			ui.setCursorY(saveYPos)
+			-- local saveYPos = ui.getCursorY()
 
-			ui.beginGroup(10)
+			-- setCursorX(180)
+			-- ui.setCursorY(saveYPos)
 
-			ui.dwriteText(
-				"Sim Time: " .. string.format("%02d:%02d", sim.timeHours, sim.timeMinutes),
-				fontSize,
-				rgbm.colors.white
-			)
+			-- ui.beginGroup(10)
 
-			ui.dwriteText("Real Time: " .. os.date("%H:%M"), fontSize, rgbm.colors.white)
-			ui.endGroup()
+			-- ui.dwriteText(
+			-- 	"Sim Time: " .. string.format("%02d:%02d", sim.timeHours, sim.timeMinutes),
+			-- 	fontSize,
+			-- 	rgbm.colors.white
+			-- )
 
-			cui.popWindow()
+			-- ui.dwriteText("Real Time: " .. os.date("%H:%M"), fontSize, rgbm.colors.white)
+			-- ui.endGroup()
 
-			cui.pushWindow("weather_window_2", 2230, 0, 335, 100)
-			ui.drawRectFilled(vec2(0, 0), vec2(335, 100), settings.uiPrimaryColor, 0, ui.CornerFlags.None)
+			-- cui.popWindow()
 
-			setCursorY(5)
-			ui.beginGroup()
+			-- cui.pushWindow("weather_window_2", 2230, 0, 335, 100)
+			-- ui.drawRectFilled(vec2(0, 0), vec2(335, 100), settings.uiPrimaryColor, 0, ui.CornerFlags.None)
 
-			local saveYPos = ui.getCursorY()
+			-- setCursorY(5)
+			-- ui.beginGroup()
 
-			ui.dwriteText("Air Temp: " .. math.round(sim.ambientTemperature, 1), fontSize, rgbm.colors.white)
-			ui.dwriteText("Track Temp: " .. math.round(sim.roadTemperature, 1), fontSize, rgbm.colors.white)
-			ui.dwriteText("Track Grip: " .. math.round(sim.roadGrip * 100, 1), fontSize, rgbm.colors.white)
+			-- local saveYPos = ui.getCursorY()
 
-			ui.endGroup()
+			-- ui.dwriteText("Air Temp: " .. math.round(sim.ambientTemperature, 1), fontSize, rgbm.colors.white)
+			-- ui.dwriteText("Track Temp: " .. math.round(sim.roadTemperature, 1), fontSize, rgbm.colors.white)
+			-- ui.dwriteText("Track Grip: " .. math.round(sim.roadGrip * 100, 1), fontSize, rgbm.colors.white)
 
-			setCursorX(180)
-			ui.setCursorY(saveYPos)
+			-- ui.endGroup()
 
-			ui.beginGroup(10)
+			-- setCursorX(180)
+			-- ui.setCursorY(saveYPos)
 
-			ui.dwriteText("Weather: ", fontSize, rgbm.colors.white)
-			ui.sameLine()
-			ui.offsetCursorY(7)
-			ui.icon(ui.weatherIcon(sim.weatherType), vec2(15, 15))
-			ui.offsetCursorY(-7)
+			-- ui.beginGroup(10)
 
-			ui.dwriteText(
-				"Wind: " .. math.round(sim.windSpeedKmh, 1) .. " km/h " .. getWindDirection(),
-				fontSize,
-				rgbm.colors.white
-			)
-			ui.dwriteText("Wind: " .. math.round(sim.ambientTemperature, 1), fontSize, rgbm.colors.white)
+			-- ui.dwriteText("Weather: ", fontSize, rgbm.colors.white)
+			-- ui.sameLine()
+			-- ui.offsetCursorY(7)
+			-- ui.icon(ui.weatherIcon(sim.weatherType), vec2(15, 15))
+			-- ui.offsetCursorY(-7)
 
-			cui.popWindow()
+			-- ui.dwriteText(
+			-- 	"Wind: " .. math.round(sim.windSpeedKmh, 1) .. " km/h " .. getWindDirection(),
+			-- 	fontSize,
+			-- 	rgbm.colors.white
+			-- )
+			-- ui.dwriteText("Wind: " .. math.round(sim.ambientTemperature, 1), fontSize, rgbm.colors.white)
 
-			setCursorX(237)
-			setCursorY(200)
-			childWindow(
-				"page_windows",
-				ui.availableSpace(),
-				false,
-				ui.WindowFlags.NoScrollbar + ui.WindowFlags.NoScrollWithMouse,
-				function()
-					-- ui.drawRectFilled(vec2(0, 0), ui.availableSpace(), rgbm(0.2, 0.8, 1, 0.25), 0, ui.CornerFlags.None)
+			-- cui.popWindow()
 
-					if storage.page == MenuPages.Setup then
-						SetupPage(sim)
-						exclusiveHudMode = "debug"
-					end
+			if storage.page == MenuPages.Setup then
+				SetupPage(sim)
+				exclusiveHudMode = "debug"
+			end
 
-					if storage.page == MenuPages.TimeTable then
-						TimeTablePage(sim)
-						exclusiveHudMode = "debug"
-					end
+			if storage.page == MenuPages.TimeTable then
+				TimeTablePage(sim)
+				exclusiveHudMode = "debug"
+			end
 
-					if storage.page == MenuPages.Settings then
-						SettingsPage(sim)
-						exclusiveHudMode = ""
-					end
-				end
-			)
+			if storage.page == MenuPages.Settings then
+				SettingsPage(sim)
+				exclusiveHudMode = ""
+			end
 
 			-- ui.drawRectFilled(
 			-- 	vec2(sim.windowWidth / 2 - 1, 0),
@@ -253,6 +245,8 @@ function MainWindow()
 			-- )
 		end
 	)
+
+	exclusiveHudMode = "debug"
 
 	return exclusiveHudMode
 end

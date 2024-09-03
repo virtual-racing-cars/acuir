@@ -71,7 +71,7 @@ function SetupWindow()
 	contentWindow(
 		"car_setup_window",
 		storage.setupTab,
-		vec2(350, 0),
+		vec2(370, 200),
 		setupSpinnersWindowSize,
 		ui.WindowFlags.None,
 		function()
