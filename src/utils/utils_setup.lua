@@ -33,7 +33,8 @@ function loadSetupSpinners()
 		local step = v["step"]
 		local multiplier = v["displayMultiplier"] or 1
 		local units = v["units"] or ""
-		local format = name .. (multiplier == 1 and ": %.0f " or ": %.1f ") .. (units == "%" and "%%" or units)
+		-- local format = name .. (multiplier == 1 and ": %.0f " or ": %.1f ") .. (units == "%" and "%%" or units)
+		local format = (multiplier == 1 and "%.0f " or "%.1f ") .. (units == "%" and "%%" or units)
 		local items = v["items"] or {}
 		local xPos = setupINI:get(id, "POS_X", 0.5)
 		local yPos = setupINI:get(id, "POS_Y", 0)
@@ -102,7 +103,8 @@ function loadSetupSpinners()
 	end
 
 	for k, v in pairs(tabs) do
-		if not table.contains(populatedTabs, v) then
+		if v ~= "SETUP I/O" and v ~= "PITSTOP STRATEGY" and v ~= "GEARS" and not table.contains(populatedTabs, v) then
+			ac.log(v)
 			table.removeItem(tabs, v)
 		end
 	end

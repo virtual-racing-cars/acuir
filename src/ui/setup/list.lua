@@ -8,11 +8,15 @@ local scrollY = 0
 local scrollYMax = 0
 
 function SetupTabList()
+	if true then
+		return
+	end
+
 	contentWindow(
 		"setup_tab_list",
 		"SETUP",
 		vec2(20, 200),
-		vec2(listWidth, 730 * UI_SCALE_Y / 100),
+		vec2(335, 730),
 		ui.WindowFlags.NoScrollWithMouse + ui.WindowFlags.NoScrollbar,
 		function()
 			setCursorX(0)

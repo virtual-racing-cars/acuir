@@ -4,8 +4,6 @@ require("src\\ui\\setup\\pitstop_strategy_window")
 
 loadSetupSpinners()
 
-local setupSpinnersWindowSize = vec2(1000 * UI_SCALE_X / 100, 730 * UI_SCALE_Y / 100)
-
 local linkButtonSize = vec2(38 * UI_SCALE_X / 100, 38 * UI_SCALE_X / 100)
 
 local mirrorSetupTabs = {}
@@ -67,20 +65,118 @@ local function setupTabBanner()
 	end
 end
 
-function SetupWindow()
-	contentWindow(
-		"car_setup_window",
-		storage.setupTab,
-		vec2(370, 200),
-		setupSpinnersWindowSize,
-		ui.WindowFlags.None,
-		function()
-			pushMainMenuStyle()
+local currentApp = 0
 
-			setupTabBanner()
-			setupItemSpinners()
-
-			popMainMenuStyle()
-		end
+local function tabItem(tabCount, index, title)
+	ui.pushStyleColor(
+		ui.StyleColor.ButtonHovered,
+		currentApp == index and rgbm(0.74, 0, 0, 1) or rgbm(0.25, 0.25, 0.25, 0.4)
 	)
+	ui.pushStyleColor(ui.StyleColor.Button, currentApp == index and rgbm(0.74, 0, 0, 1) or rgbm.colors.transparent)
+	ui.pushStyleColor(
+		ui.StyleColor.ButtonActive,
+		currentApp == index and rgbm(0.74, 0, 0, 1) or rgbm.colors.transparent
+	)
+
+	cui.setCursorY(0)
+	local width = ui.measureDWriteText(title, 14)
+	if cui.button(title, width.x + 15, 34, 14, ui.Alignment.Center, ui.Alignment.Start) then
+		currentApp = index
+	end
+
+	ui.sameLine()
+
+	ui.popStyleColor(3)
+end
+
+local tabBarPosition = 0
+local tabItemPositions = { [0] = 0 }
+-- local tabItemPositions = {
+-- 	0,
+-- 	0,
+-- 	0,
+-- 	0,
+-- 	0,
+-- 	0,
+-- 	0,
+-- 	0,
+-- 	0,
+-- 	0,
+-- 	0,
+-- 	0,
+-- 	0,
+-- 	0,
+-- 	0,
+-- 	0,
+-- 	0,
+-- 	0,
+-- 	0,
+-- 	0,
+-- 	0,
+-- 	0,
+-- 	0,
+-- 	0,
+-- 	0,
+-- 	0,
+-- 	0,
+-- 	0,
+-- 	0,
+-- 	0,
+-- 	0,
+-- 	0,
+-- 	0,
+-- 	0,
+-- 	0,
+-- 	0,
+-- 	0,
+-- 	0,
+-- 	0,
+-- 	0,
+-- 	0,
+-- }
+
+function tabBar(apps)
+	ui.pushFont(ui.Font.Title)
+	ui.pushStyleVar(ui.StyleVar.ItemSpacing, 0)
+
+	cui.setCursorX(0)
+
+	ui.drawRectFilled(vec2(0, 0), vec2(790, 36) * cui.scaleY(), rgbm(0.1, 0.1, 0.1, 0.5))
+	ui.pushClipRect(vec2(0, 0), vec2(790, 36) * cui.scaleY())
+
+	tabBarPosition = math.applyLag(
+		tabBarPosition,
+		-math.max(tabItemPositions[currentApp] - 705 * cui.scaleY(), 0),
+		0.4,
+		ac.getScriptDeltaT()
+	)
+
+	ui.setCursorX(tabBarPosition)
+	for i in ipairs(apps) do
+		-- ac.log(apps[i])
+		tabItem(#apps, i - 1, apps[i])
+
+		if not tabItemPositions[i - 1] then
+			tabItemPositions[i - 1] = ui.getCursorX()
+		end
+	end
+
+	ui.popClipRect()
+
+	ui.popStyleVar(1)
+	ui.popFont()
+
+	return currentApp + 1
+end
+
+function SetupWindow()
+	contentWindow("car_setup_window", storage.setupTab, vec2(20, 200), vec2(790, 830), ui.WindowFlags.None, function()
+		pushMainMenuStyle()
+
+		storage.setupTab = tabs[tabBar(tabs)]
+		setupTabBanner()
+		setupItemSpinners()
+
+		popMainMenuStyle()
+	end)
 end

@@ -19,8 +19,8 @@ function cui.setScaleY(y)
 	scaleY = y
 end
 
-local defaultWidth = 1020
-local defaultHeight = 510
+local defaultWidth = 2560
+local defaultHeight = 1440
 local ratio = defaultWidth / defaultHeight
 local windowMaxWidth = 0
 local windowMaxHeight = 0
@@ -63,7 +63,7 @@ function cui.scaleY()
 end
 
 function cui.setCursorX(v)
-	ui.setCursorX(v * scaleX)
+	ui.setCursorX(v * scaleY)
 end
 
 function cui.setCursorY(v)
@@ -162,36 +162,44 @@ function cui.menuButton(label, icon, size, flags)
 	-- ui.drawRectFilled(
 	-- 	ui.getCursor(),
 	-- 	ui.getCursor() + vec2(size * scaleY, size * scaleY),
-	-- 	rgbm(0, 0, 0, 0.2),
+	-- 	rgbm(1, 0, 0, 1),
 	-- 	10,
 	-- 	ui.CornerFlags.All
 	-- )
 
-	ui.pushDWriteFont("Defualt;Weight=Bold")
-	ui.dwriteTextAligned(
-		label,
-		16 * scaleX,
-		ui.Alignment.Center,
-		ui.Alignment.End,
-		vec2Temp1:set(size * scaleY, size * scaleY)
-	)
-	ui.popDWriteFont()
-
-	ui.sameLine()
-
-	ui.setCursor(cursorStart)
-
-	cui.offsetCursorX(size / 1.5 / 4)
-	cui.offsetCursorY(size / 1.5 / 10)
-
-	ui.icon(icon, vec2(size, size) / 1.5)
-
-	ui.setCursor(cursorStart)
-
-	if ui.invisibleButton("##" .. label, vec2(size * scaleY, size * scaleY)) then
+	if ui.invisibleButton("##" .. label, vec2(size * scaleY, size * 1.5 * scaleY)) then
 		clicked = true
 		ui.text("hi")
 	end
+
+	local hovered = ui.itemHovered(ui.HoveredFlags.None)
+	local mouseDown = hovered and ui.mouseDown(ui.MouseButton.Left)
+	local iconColor = rgbm.colors.white
+
+	if mouseDown then
+		iconColor = rgbm(1, 0, 0, 1)
+	elseif hovered then
+		iconColor = rgbm(0.8, 0.2, 0.2, 1)
+	end
+
+	ui.setCursor(cursorStart)
+
+	cui.offsetCursorY(20)
+	ui.pushDWriteFont("Defualt;Weight=Bold")
+	ui.dwriteTextAligned(
+		label,
+		16 * scaleY,
+		ui.Alignment.Center,
+		ui.Alignment.End,
+		vec2Temp1:set(size * scaleY, size * scaleY),
+		false,
+		flags == ui.ButtonFlags.Disabled and rgbm(0.3, 0.3, 0.3, 1) or iconColor
+	)
+	ui.popDWriteFont()
+
+	ui.setCursor(cursorStart)
+
+	ui.icon(icon, (vec2(size, size) * scaleY), flags == ui.ButtonFlags.Disabled and rgbm(0.3, 0.3, 0.3, 1) or iconColor)
 
 	return clicked
 end
@@ -251,13 +259,11 @@ function cui.pushWindow(id, x, y, width, height, scroll)
 		windowFlags = windowFlags + ui.WindowFlags.NoScrollbar + ui.WindowFlags.NoScrollWithMouse
 	end
 
-	local tabX = x * scaleX
-	local tabY = y * scaleY
-	local tabWidth = width * scaleX
+	local tabWidth = width * scaleY
 	local tabHeight = height * scaleY
 
-	ui.setCursorX(tabX)
-	ui.setCursorY(tabY)
+	cui.setCursorX(x)
+	cui.setCursorY(y)
 
 	ui.pushStyleVar(ui.StyleVar.WindowPadding, 0)
 	ui.beginChild(id, vec2(tabWidth, tabHeight), true, windowFlags)

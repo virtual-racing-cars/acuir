@@ -31,82 +31,82 @@ local infoText = {
 		return 1, 8, "Core Temp: ", math.round(car.wheels[0].tyreCoreTemperature, 2) .. "°C"
 	end,
 	function()
-		return 1, 21, "Camber: ", math.round(car.wheels[2].camber, 2)
+		return 1, 25, "Camber: ", math.round(car.wheels[2].camber, 2)
 	end,
 	function()
-		return 1, 22, "Toe: ", math.round(car.wheels[2].toeIn, 2)
+		return 1, 26, "Toe: ", math.round(car.wheels[2].toeIn, 2)
 	end,
 	function()
-		return 1, 23, "Travel: ", math.round(car.wheels[2].suspensionTravel * 1000, 2) .. " mm"
+		return 1, 27, "Travel: ", math.round(car.wheels[2].suspensionTravel * 1000, 2) .. " mm"
 	end,
 	function()
-		return 1, 24, "Load: ", math.round(car.wheels[2].load, 0) .. " N"
+		return 1, 28, "Load: ", math.round(car.wheels[2].load, 0) .. " N"
 	end,
 	function()
-		return 1, 25, "Pressure (cold): ", math.round(car.wheels[2].tyreStaticPressure, 2) .. " psi"
+		return 1, 29, "Pressure (cold): ", math.round(car.wheels[2].tyreStaticPressure, 2) .. " psi"
 	end,
 	function()
-		return 1, 26, "Pressure (hot): ", math.round(car.wheels[2].tyrePressure, 2) .. " psi"
+		return 1, 30, "Pressure (hot): ", math.round(car.wheels[2].tyrePressure, 2) .. " psi"
 	end,
 	function()
-		return 1, 27, "Core Temp: ", math.round(car.wheels[2].tyreCoreTemperature, 2) .. "°C"
+		return 1, 31, "Core Temp: ", math.round(car.wheels[2].tyreCoreTemperature, 2) .. "°C"
 	end,
 	function()
-		return 3, 1, "Camber: ", math.round(car.wheels[1].camber, 2)
+		return 2.95, 1, "Camber: ", math.round(car.wheels[1].camber, 2)
 	end,
 	function()
-		return 3, 2, "Caster: ", math.round(car.caster, 2)
+		return 2.95, 2, "Caster: ", math.round(car.caster, 2)
 	end,
 	function()
-		return 3, 3, "Toe: ", -math.round(car.wheels[1].toeIn, 2)
+		return 2.95, 3, "Toe: ", -math.round(car.wheels[1].toeIn, 2)
 	end,
 	function()
-		return 3, 4, "Travel: ", math.round(car.wheels[1].suspensionTravel * 1000, 2) .. " mm"
+		return 2.95, 4, "Travel: ", math.round(car.wheels[1].suspensionTravel * 1000, 2) .. " mm"
 	end,
 	function()
-		return 3, 5, "Load: ", math.round(car.wheels[1].load, 0) .. " N"
+		return 2.95, 5, "Load: ", math.round(car.wheels[1].load, 0) .. " N"
 	end,
 	function()
-		return 3, 6, "Pressure (cold): ", math.round(car.wheels[1].tyreStaticPressure, 2) .. " psi"
+		return 2.95, 6, "Pressure (cold): ", math.round(car.wheels[1].tyreStaticPressure, 2) .. " psi"
 	end,
 	function()
-		return 3, 7, "Pressure (hot): ", math.round(car.wheels[1].tyrePressure, 2) .. " psi"
+		return 2.95, 7, "Pressure (hot): ", math.round(car.wheels[1].tyrePressure, 2) .. " psi"
 	end,
 	function()
-		return 3, 8, "Core Temp: ", math.round(car.wheels[1].tyreCoreTemperature, 2) .. "°C"
+		return 2.95, 8, "Core Temp: ", math.round(car.wheels[1].tyreCoreTemperature, 2) .. "°C"
 	end,
 	function()
-		return 3, 21, "Camber: ", math.round(car.wheels[3].camber, 2)
+		return 2.95, 25, "Camber: ", math.round(car.wheels[3].camber, 2)
 	end,
 	function()
-		return 3, 22, "Toe: ", -math.round(car.wheels[3].toeIn, 2)
+		return 2.95, 26, "Toe: ", -math.round(car.wheels[3].toeIn, 2)
 	end,
 	function()
-		return 3, 23, "Travel: ", math.round(car.wheels[3].suspensionTravel * 1000, 2) .. " mm"
+		return 2.95, 27, "Travel: ", math.round(car.wheels[3].suspensionTravel * 1000, 2) .. " mm"
 	end,
 	function()
-		return 3, 24, "Load: ", math.round(car.wheels[3].load, 0) .. " N"
+		return 2.95, 28, "Load: ", math.round(car.wheels[3].load, 0) .. " N"
 	end,
 	function()
-		return 3, 25, "Pressure (cold): ", math.round(car.wheels[3].tyreStaticPressure, 2) .. " psi"
+		return 2.95, 29, "Pressure (cold): ", math.round(car.wheels[3].tyreStaticPressure, 2) .. " psi"
 	end,
 	function()
-		return 3, 26, "Pressure (hot): ", math.round(car.wheels[3].tyrePressure, 2) .. " psi"
+		return 2.95, 30, "Pressure (hot): ", math.round(car.wheels[3].tyrePressure, 2) .. " psi"
 	end,
 	function()
-		return 3, 27, "Core Temp: ", math.round(car.wheels[3].tyreCoreTemperature, 2) .. "°C"
-	end,
-
-	function()
-		return 1.8, 10, "Front Height: ", "~" .. math.round(car.rideHeight[0] * 1000, 1) .. " mm"
+		return 2.95, 31, "Core Temp: ", math.round(car.wheels[3].tyreCoreTemperature, 2) .. "°C"
 	end,
 
 	function()
-		return 1.8, 12, "CoG Height: ", math.round(car.cgHeight, 3)
+		return 1.8, 11, "Front Height: ", "~" .. math.round(car.rideHeight[0] * 1000, 1) .. " mm"
+	end,
+
+	function()
+		return 1.8, 13, "CoG Height: ", math.round(car.cgHeight, 3)
 	end,
 	function()
 		return 1.8,
-			13,
+			14,
 			"WB Front: ",
 			math.round(
 				(car.wheels[0].load + car.wheels[1].load)
@@ -116,19 +116,19 @@ local infoText = {
 			) .. "%"
 	end,
 	function()
-		return 1.8, 14, "Mass: ", math.round(car.mass + (car.fuel * kgPerL) + car.ballast, 2) .. " kg"
+		return 1.8, 16, "Mass: ", math.round(car.mass + (car.fuel * kgPerL) + car.ballast, 2) .. " kg"
 	end,
 	function()
-		return 1.8, 15, "", "(" .. math.round(car.fuel * kgPerL, 2) .. " kg from fuel)"
+		return 1.8, 17, "", "(" .. math.round(car.fuel * kgPerL, 2) .. " kg from fuel)"
 	end,
 	function()
-		return 1.8, 16, "", "(" .. math.round(car.ballast, 2) .. " kg from ballast)"
+		return 1.8, 18, "", "(" .. math.round(car.ballast, 2) .. " kg from ballast)"
 	end,
 	function()
-		return 1.8, 17, "Plank Wear: ", "~" .. math.round(car.maxRelativePlankWear * 1000, 1) .. " mm"
+		return 1.8, 20, "Plank Wear: ", "~" .. math.round(car.maxRelativePlankWear * 1000, 1) .. " mm"
 	end,
 	function()
-		return 1.8, 19, "Rear Height: ", "~" .. math.round(car.rideHeight[1] * 1000, 1) .. " mm"
+		return 1.8, 22, "Rear Height: ", "~" .. math.round(car.rideHeight[1] * 1000, 1) .. " mm"
 	end,
 }
 
@@ -136,12 +136,10 @@ function CarStatusWindow()
 	contentWindow(
 		"setup_info_window",
 		"CAR STATUS",
-		vec2(1735, 200),
-		setupSpinnersWindowSize,
+		vec2(825, 200),
+		vec2(570, 830),
 		ui.WindowFlags.NoScrollWithMouse + ui.WindowFlags.NoScrollbar,
 		function()
-			ac.ControlButton("Testerrr"):control(vec2(200, 20))
-
 			for k, v in ipairs(infoText) do
 				local column, position, label, value = v()
 
@@ -158,6 +156,7 @@ function CarStatusWindow()
 
 				ui.text(value)
 			end
-		end
+		end,
+		true
 	)
 end

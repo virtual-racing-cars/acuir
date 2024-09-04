@@ -130,9 +130,6 @@ end
 local function saveSetupWindow()
 	local availableSpaceY = ui.availableSpaceY()
 
-	setCursorX(10)
-
-	ui.beginGroup(ui.availableSpaceX())
 	ui.textAligned("Save Current Setup", vec2(0.5, 0.5), vec2(ui.availableSpaceX(), 30))
 
 	ui.text("Name:")
@@ -274,8 +271,6 @@ local function saveSetupWindow()
 			loadSetups()
 		end
 	end
-
-	ui.endGroup()
 end
 
 function ioTab()
@@ -311,17 +306,13 @@ function ioTab()
 		end
 	)
 
-	ui.sameLine(0)
+	cui.setCursorX(0)
+	cui.setCursorY(50)
+	cui.setCursorX(410)
 
-	childWindow(
-		"selected_setup",
-		vec2(ui.availableSpaceX() - 10, ui.availableSpaceY() - 10),
-		false,
-		ui.WindowFlags.NoScrollWithMouse + ui.WindowFlags.NoScrollbar,
-		function()
-			setCursorY(0)
+	ui.beginGroup(370 * cui.scaleY())
 
-			saveSetupWindow()
-		end
-	)
+	saveSetupWindow()
+
+	ui.endGroup()
 end

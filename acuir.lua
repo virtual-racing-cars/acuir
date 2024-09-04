@@ -56,6 +56,7 @@ cui = require("utils\\utils_cui")
 
 ui.onExclusiveHUD(function(mode)
 	if mode == "menu" then
+		cui.bestFit()
 		return MainWindow(sim)
 	end
 end)

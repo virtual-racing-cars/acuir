@@ -103,7 +103,8 @@ function SPINNER:button(direction)
 				"##" .. direction .. self.id,
 				buttonSize,
 				ui.ButtonFlags.PressedOnClick,
-				ui.Icons.Stay
+				ui.Icons.Stay,
+				16 * cui.scaleY()
 			)
 		then
 			self.value = self.default
@@ -129,6 +130,18 @@ end
 
 function SPINNER:helpWindow()
 	if self.help ~= "NULL" and self.help ~= "" then
+		ac.log(os.clock())
+
+		ui.tooltip(function()
+			ui.dummy(vec2(230 * cui.scaleY(), 0))
+			ui.bringWindowToFront()
+			local helpSections = string.split(self.help, "\\n\\n")
+
+			for i in ipairs(helpSections) do
+				ui.dwriteTextWrapped(helpSections[i], 14 * cui.scaleY())
+			end
+		end)
+
 		ui.transparentWindow(
 			"##help" .. self.id,
 			vec2(
@@ -138,25 +151,7 @@ function SPINNER:helpWindow()
 			vec2(325 * UI_SCALE_Y / 100, 730 * UI_SCALE_Y / 100 / 2),
 			true,
 			false,
-			function()
-				ui.bringWindowToFront()
-
-				ui.beginScale()
-
-				ui.beginGroup()
-
-				-- local helpSections = string.split(self.help, "\\n\\n")
-
-				-- ui.pushFont(setupPageFontSize[3])
-				-- for i in ipairs(helpSections) do
-				-- 	ui.textWrapped(helpSections[i], ui.availableSpaceX() - 10)
-				-- end
-
-				ui.popFont()
-
-				ui.endGroup()
-				ui.endScale(setupPageFontSize[4])
-			end
+			function() end
 		)
 	else
 		storage.helpOpen = false
@@ -165,12 +160,15 @@ end
 
 function SPINNER:slider()
 	if #self.items > 0 then
-		self.format = self.name .. ": " .. (self.items[self.value + 1] and self.items[self.value + 1] or self.value)
+		self.format = (self.items[self.value + 1] and self.items[self.value + 1] or self.value)
 	end
 
-	ui.setNextItemWidth(350 * UI_SCALE_X / 100)
+	-- ui.drawRectFilled(ui.getCursor(), ui.getCursor() + vec2(250, -20), rgbm.colors.red)
+	ui.dwriteDrawText(self.name, 18 * cui.scaleY(), ui.getCursor() - vec2(0, 25 * cui.scaleY()))
 
-	local sliderGrabSize = max(350 * UI_SCALE_X / 100 / (self.max - self.min + self.step) / self.step, 10)
+	ui.setNextItemWidth(250 * cui.scaleY())
+
+	local sliderGrabSize = max(350 * cui.scaleY() / (self.max - self.min + self.step) / self.step, 10)
 
 	ui.pushStyleVar(ui.StyleVar.GrabMinSize, self.min == self.max and 0 or sliderGrabSize)
 	local value, changed = ui.slider(
@@ -238,7 +236,6 @@ function SPINNER:set()
 
 	if self.value == ac.getSetupSpinnerValue(self.id) then
 		self.itemSet = true
-		ac.log("hi")
 		return
 	end
 
@@ -267,6 +264,8 @@ function SPINNER:mirror(id1, id2)
 end
 
 function SPINNER:run(drawSpinner, mirror)
+	ui.pushStyleVar(ui.StyleVar.ItemSpacing, 0 * cui.scaleY())
+
 	if self.name == "" or self.child then
 		return
 	end
@@ -287,8 +286,16 @@ function SPINNER:run(drawSpinner, mirror)
 		return
 	end
 
-	setCursorX(self.xPos * 497 + 15)
-	setCursorY(self.yPos * 70 + 85)
+	local setupitemwidth = (252 * cui.scaleY()) + (buttonSize.x * 3)
+
+	local positions = {
+		[0] = 15 * cui.scaleY(),
+		[0.5] = (790 * cui.scaleY()) / 2 - setupitemwidth / 2,
+		[1] = ((790 * cui.scaleY()) - setupitemwidth - (15 * cui.scaleY())),
+	}
+
+	ui.setCursorX(positions[self.xPos])
+	cui.setCursorY(self.yPos * 70 + 100)
 	if self:button("Left") then
 		self:set()
 	end
@@ -318,9 +325,13 @@ function SPINNER:run(drawSpinner, mirror)
 	if self.helpWindowShow then
 		HELP_TEXT = self.help
 
+		ac.log(HELP_TEXT)
+
 		storage.helpOpen = true
-		-- self:helpWindow()
+		self:helpWindow()
 	end
+
+	ui.popStyleVar(1)
 
 	return self.itemSet
 end
