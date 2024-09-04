@@ -219,12 +219,12 @@ function MainWindow()
 
 			if storage.page == MenuPages.Setup then
 				SetupPage(sim)
-				exclusiveHudMode = "debug"
+				exclusiveHudMode = "apps"
 			end
 
 			if storage.page == MenuPages.TimeTable then
 				TimeTablePage(sim)
-				exclusiveHudMode = "debug"
+				exclusiveHudMode = ""
 			end
 
 			if storage.page == MenuPages.Settings then
@@ -246,7 +246,7 @@ function MainWindow()
 		end
 	)
 
-	exclusiveHudMode = "debug"
+	-- exclusiveHudMode = "apps"
 
 	return exclusiveHudMode
 end

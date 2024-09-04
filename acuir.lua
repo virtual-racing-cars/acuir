@@ -55,6 +55,10 @@ require("ui\\main\\main_window")
 cui = require("utils\\utils_cui")
 
 ui.onExclusiveHUD(function(mode)
+	if not storage.appOpen then
+		return
+	end
+
 	if mode == "menu" then
 		cui.bestFit()
 		return MainWindow(sim)
@@ -92,6 +96,6 @@ function script.update(dt)
 	then
 		-- ac.tryToOpenRaceMenu("race")
 		-- ac.tryToOpenRaceMenu("setup")
-		storage.appOpen = settings.autoStart
+		storage.appOpen = true
 	end
 end
