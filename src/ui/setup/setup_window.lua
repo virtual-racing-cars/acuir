@@ -153,7 +153,6 @@ function tabBar(apps)
 
 	ui.setCursorX(tabBarPosition)
 	for i in ipairs(apps) do
-		-- ac.log(apps[i])
 		tabItem(#apps, i - 1, apps[i])
 
 		if not tabItemPositions[i - 1] then

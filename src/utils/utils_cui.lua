@@ -168,8 +168,9 @@ function cui.menuButton(label, icon, size, flags)
 	-- )
 
 	if ui.invisibleButton("##" .. label, vec2(size * scaleY, size * 1.5 * scaleY)) then
-		clicked = true
-		ui.text("hi")
+		if flags ~= ui.ButtonFlags.Disabled then
+			clicked = true
+		end
 	end
 
 	local hovered = ui.itemHovered(ui.HoveredFlags.None)

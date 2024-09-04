@@ -130,8 +130,6 @@ end
 
 function SPINNER:helpWindow()
 	if self.help ~= "NULL" and self.help ~= "" then
-		ac.log(os.clock())
-
 		ui.tooltip(function()
 			ui.dummy(vec2(230 * cui.scaleY(), 0))
 			ui.bringWindowToFront()
@@ -324,8 +322,6 @@ function SPINNER:run(drawSpinner, mirror)
 
 	if self.helpWindowShow then
 		HELP_TEXT = self.help
-
-		ac.log(HELP_TEXT)
 
 		storage.helpOpen = true
 		self:helpWindow()

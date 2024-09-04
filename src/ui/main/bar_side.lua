@@ -19,7 +19,7 @@ function SideBar(sim)
 
 	ui.drawRectFilled(
 		vec2(20 * cui.scaleY(), 20 * cui.scaleY()),
-		vec2(sim.windowWidth - 20, 150 * cui.scaleY()),
+		vec2(sim.windowWidth - 20 * cui.scaleY(), 150 * cui.scaleY()),
 		settings.uiPrimaryColor,
 		10,
 		ui.CornerFlags.All

@@ -39,8 +39,8 @@ settings = ac.storage({
 	autoLoadLastSetup = true,
 	hideOtherTrackSetups = true,
 	uiHideonIdleTime = 150,
-	uiPrimaryColor = rgbm(0.1, 0.1, 0.1, 0.75),
-	uiSecondaryColor = rgbm(1, 0, 0, 1),
+	uiPrimaryColor = rgbm(0, 0, 0, 0.75),
+	uiSecondaryColor = rgbm(0.74, 0, 0, 1),
 })
 
 storage.appOpen = false
