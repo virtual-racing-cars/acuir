@@ -80,7 +80,7 @@ local function tabItem(tabCount, index, title)
 
 	cui.setCursorY(0)
 	local width = ui.measureDWriteText(title, 14)
-	if cui.button(title, width.x + 15, 34, 14, ui.Alignment.Center, ui.Alignment.Start) then
+	if cui.button(title, width.x + 10, 34, 12, ui.Alignment.Center, ui.Alignment.Center) then
 		currentApp = index
 	end
 
@@ -143,6 +143,14 @@ function tabBar(apps)
 
 	ui.drawRectFilled(vec2(0, 0), vec2(790, 36) * cui.scaleY(), rgbm(0.1, 0.1, 0.1, 0.5))
 	ui.pushClipRect(vec2(0, 0), vec2(790, 36) * cui.scaleY())
+
+	if ui.mouseLocalPos() >= vec2(0, 0) and ui.mouseLocalPos() < vec2(790, 36) * cui.scaleY() then
+		if ui.mouseWheel() > 0 then
+			currentApp = currentApp >= #apps - 1 and 0 or currentApp + 1
+		elseif ui.mouseWheel() < 0 then
+			currentApp = currentApp == 0 and #apps - 1 or currentApp - 1
+		end
+	end
 
 	tabBarPosition = math.applyLag(
 		tabBarPosition,

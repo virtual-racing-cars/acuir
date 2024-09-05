@@ -12,9 +12,9 @@ function setupSettings()
 		settings.hideOtherTrackSetups = not settings.hideOtherTrackSetups
 	end
 
-	if ui.checkbox("Auto-Save setup when new personal best lap time achieved", settings.hideOtherTrackSetups) then
-		settings.hideOtherTrackSetups = not settings.hideOtherTrackSetups
-	end
+	-- if ui.checkbox("Auto-Save setup when new personal best lap time achieved", settings.hideOtherTrackSetups) then
+	-- 	settings.hideOtherTrackSetups = not settings.hideOtherTrackSetups
+	-- end
 
 	ui.endGroup()
 end

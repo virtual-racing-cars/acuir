@@ -130,7 +130,7 @@ function SideBar(sim)
 	end
 	ui.sameLine()
 
-	if cui.menuButton("Settings", ui.Icons.Settings, 55, ui.ButtonFlags.Disabled) then
+	if cui.menuButton("Settings", ui.Icons.Settings, 55, ui.ButtonFlags.None) then
 		if storage.page == MenuPages.Settings then
 			storage.page = -1
 		else

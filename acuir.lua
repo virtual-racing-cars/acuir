@@ -95,7 +95,7 @@ function script.update(dt)
 		and ac.isWindowOpen("main")
 	then
 		-- ac.tryToOpenRaceMenu("race")
-		-- ac.tryToOpenRaceMenu("setup")
+		ac.tryToOpenRaceMenu("setup")
 		storage.appOpen = true
 	end
 end
