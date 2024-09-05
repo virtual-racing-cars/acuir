@@ -178,8 +178,6 @@ local function tabBar(apps)
 	ui.popStyleVar(1)
 	ui.popFont()
 
-	currentApp = 2
-
 	return currentApp + 1
 end
 
