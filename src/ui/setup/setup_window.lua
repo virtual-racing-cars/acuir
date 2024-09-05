@@ -1,6 +1,7 @@
 require("src\\utils\\utils_setup")
 require("src\\ui\\setup\\io_window")
 require("src\\ui\\setup\\pitstop_strategy_window")
+require("src\\ui\\setup\\gear_window")
 
 loadSetupSpinners()
 
@@ -26,6 +27,10 @@ local function setupItemSpinners()
 
 	if storage.setupTab == "PITSTOP STRATEGY" then
 		pitstopStrategyWindow()
+	end
+
+	if storage.setupTab == "GEARS" then
+		gearWindow()
 	end
 
 	ui.beginScale()
@@ -135,7 +140,7 @@ local tabItemPositions = { [0] = 0 }
 -- 	0,
 -- }
 
-function tabBar(apps)
+local function tabBar(apps)
 	ui.pushFont(ui.Font.Title)
 	ui.pushStyleVar(ui.StyleVar.ItemSpacing, 0)
 
@@ -173,6 +178,8 @@ function tabBar(apps)
 	ui.popStyleVar(1)
 	ui.popFont()
 
+	currentApp = 2
+
 	return currentApp + 1
 end
 
@@ -181,6 +188,7 @@ function SetupWindow()
 		pushMainMenuStyle()
 
 		storage.setupTab = tabs[tabBar(tabs)]
+
 		setupTabBanner()
 		setupItemSpinners()
 

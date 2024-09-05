@@ -1,5 +1,5 @@
 local acLogo = ac.getFolder(ac.FolderID.Root) .. "\\launcher\\themes\\default\\graphics\\btn_AC_logo.png"
-local acLogoSize = ui.imageSize(acLogo) * vec2(UI_SCALE_Y / 100, UI_SCALE_Y / 100)
+local acLogoSize = ui.imageSize(acLogo) * 0.8
 
 local setupPageFontSize = ui.Font.Title
 
@@ -11,6 +11,8 @@ elseif UI_SCALE_Y < 100 then
 	setupPageFontSize = ui.Font.Main
 end
 
+local menuButtonSize = 40
+
 function SideBar(sim)
 	setCursorY(0)
 	local availableSpaceY = ui.availableSpaceY()
@@ -19,7 +21,7 @@ function SideBar(sim)
 
 	ui.drawRectFilled(
 		vec2(20 * cui.scaleY(), 20 * cui.scaleY()),
-		vec2(sim.windowWidth - 20 * cui.scaleY(), 150 * cui.scaleY()),
+		vec2(sim.windowWidth - 20 * cui.scaleY(), 156 * 0.8 * cui.scaleY()),
 		settings.uiPrimaryColor,
 		10,
 		ui.CornerFlags.All
@@ -27,14 +29,14 @@ function SideBar(sim)
 
 	ui.drawRectFilledMultiColor(
 		vec2(20 * cui.scaleY(), 20 * cui.scaleY()),
-		vec2(sim.windowWidth - 20 * cui.scaleY(), 150 * cui.scaleY()),
+		vec2(sim.windowWidth - 20 * cui.scaleY(), 156 * 0.8 * cui.scaleY()),
 		rgbm(1, 1, 1, 0.2),
 		rgbm(1, 1, 1, 0.2),
 		rgbm(0, 0, 0, 0),
 		rgbm(0, 0, 0, 0)
 	)
 
-	cui.setCursorX(1280 - 154 / 2)
+	cui.setCursorX(1280 - (154 * 0.8) / 2)
 	cui.setCursorY(20)
 
 	ui.drawRectFilled(
@@ -53,19 +55,23 @@ function SideBar(sim)
 	-- 	ui.CornerFlags.All
 	-- )
 
-	ui.image(acLogo, acLogoSize)
+	ui.image(acLogo, acLogoSize * cui.scaleY())
 
-	cui.setCursorX(50)
-	cui.setCursorY(38)
+	local xPos = 50
+	local menuButtonSpacing = 160
 
-	ui.pushStyleVar(ui.StyleVar.ItemSpacing, 98 * cui.scaleY())
+	cui.setCursorX(xPos)
+	cui.setCursorY(35)
 
-	if cui.menuButton("Drive", ui.Icons.SteeringWheel, 55, ui.ButtonFlags.None) then
+	ui.pushStyleVar(ui.StyleVar.ItemSpacing, 50 * cui.scaleY())
+
+	if cui.menuButton("Drive", ui.Icons.SteeringWheel, menuButtonSize, ui.ButtonFlags.None) then
 		ac.tryToStart()
 	end
 	ui.sameLine()
+	cui.setCursorX(xPos + menuButtonSpacing * 1)
 
-	if cui.menuButton("Setup", ui.Icons.Wrench, 55, ui.ButtonFlags.None) then
+	if cui.menuButton("Setup", ui.Icons.Wrench, menuButtonSize, ui.ButtonFlags.None) then
 		if storage.page == MenuPages.Setup then
 			storage.page = -1
 		else
@@ -73,8 +79,9 @@ function SideBar(sim)
 		end
 	end
 	ui.sameLine()
+	cui.setCursorX(xPos + menuButtonSpacing * 2)
 
-	if cui.menuButton("Standings", ui.Icons.Trophy, 55, ui.ButtonFlags.Disabled) then
+	if cui.menuButton("Standings", ui.Icons.Trophy, menuButtonSize, ui.ButtonFlags.Disabled) then
 		if storage.page == MenuPages.Setup then
 			storage.page = -1
 		else
@@ -82,8 +89,9 @@ function SideBar(sim)
 		end
 	end
 	ui.sameLine()
+	cui.setCursorX(xPos + menuButtonSpacing * 3)
 
-	if cui.menuButton("Lap Times", ui.Icons.List, 55, ui.ButtonFlags.Disabled) then
+	if cui.menuButton("Lap Times", ui.Icons.List, menuButtonSize, ui.ButtonFlags.Disabled) then
 		if storage.page == MenuPages.TimeTable then
 			storage.page = -1
 		else
@@ -91,6 +99,7 @@ function SideBar(sim)
 		end
 	end
 	ui.sameLine()
+	cui.setCursorX(xPos + menuButtonSpacing * 4)
 
 	-- if cui.menuButtonWide("Notes", ui.Icons.Document, 120, ui.ButtonFlags.Disabled) then
 	-- 	if storage.page == MenuPages.Notes then
@@ -101,7 +110,7 @@ function SideBar(sim)
 	-- end
 	-- ui.sameLine()
 
-	if cui.menuButton("Telemetry", ui.Icons.Barcode, 55, ui.ButtonFlags.Disabled) then
+	if cui.menuButton("Telemetry", ui.Icons.Barcode, menuButtonSize, ui.ButtonFlags.Disabled) then
 		if storage.page == MenuPages.TimeTable then
 			storage.page = -1
 		else
@@ -119,9 +128,10 @@ function SideBar(sim)
 	-- end
 	-- ui.sameLine()
 
-	cui.setCursorX(1835)
+	local xPos = 1825
+	cui.setCursorX(xPos)
 
-	if cui.menuButton("Info", ui.Icons.Info, 55, ui.ButtonFlags.Disabled) then
+	if cui.menuButton("Info", ui.Icons.Info, menuButtonSize, ui.ButtonFlags.Disabled) then
 		if storage.page == MenuPages.Settings then
 			storage.page = -1
 		else
@@ -129,8 +139,9 @@ function SideBar(sim)
 		end
 	end
 	ui.sameLine()
+	cui.setCursorX(xPos + menuButtonSpacing * 1)
 
-	if cui.menuButton("Settings", ui.Icons.Settings, 55, ui.ButtonFlags.None) then
+	if cui.menuButton("Settings", ui.Icons.Settings, menuButtonSize, ui.ButtonFlags.None) then
 		if storage.page == MenuPages.Settings then
 			storage.page = -1
 		else
@@ -138,18 +149,21 @@ function SideBar(sim)
 		end
 	end
 	ui.sameLine()
+	cui.setCursorX(xPos + menuButtonSpacing * 2)
 
-	if cui.menuButton("Restart", ui.Icons.Restart, 55, ui.ButtonFlags.None) then
+	if cui.menuButton("Restart", ui.Icons.Restart, menuButtonSize, ui.ButtonFlags.None) then
 		ac.tryToRestartSession()
 	end
 	ui.sameLine()
+	cui.setCursorX(xPos + menuButtonSpacing * 3)
 
-	if cui.menuButton("Skip", ui.Icons.Skip, 55, ui.ButtonFlags.None) then
+	if cui.menuButton("Skip", ui.Icons.Skip, menuButtonSize, ui.ButtonFlags.None) then
 		ac.tryToSkipSession()
 	end
 	ui.sameLine()
+	cui.setCursorX(xPos + menuButtonSpacing * 4)
 
-	if cui.menuButton("Exit", ui.Icons.Leave, 55, ui.ButtonFlags.None) then
+	if cui.menuButton("Exit", ui.Icons.Leave, menuButtonSize, ui.ButtonFlags.None) then
 		ac.shutdownAssettoCorsa()
 	end
 
