@@ -1,5 +1,11 @@
+local sim = ac.getSim()
+
+local acEvoLogo = ac.dirname() .. "\\acevo.png"
+
+local acEvoLogoSize = ui.imageSize(acEvoLogo) * 0.38
+
 local acLogo = ac.getFolder(ac.FolderID.Root) .. "\\launcher\\themes\\default\\graphics\\btn_AC_logo.png"
-local acLogoSize = ui.imageSize(acLogo) * 0.8
+local acLogoSize = ui.imageSize(acEvoLogo) * 0.15
 
 local setupPageFontSize = ui.Font.Title
 
@@ -11,67 +17,132 @@ elseif UI_SCALE_Y < 100 then
 	setupPageFontSize = ui.Font.Main
 end
 
-local menuButtonSize = 40
+local uiStartY = 40
+local uiStartX = 60
+
+local topBarHeight = 200
+
+local menuButtonSizeX = 120
+local menuButtonSizeY = 56
+local menuButtonFontSize = 12
+
+local fontLol = ui.DWriteFont("Panton-Trial"):weight(ui.DWriteFont.Weight.Black)
+
+local manifestINI = ac.INIConfig.load("manifest.ini", ac.INIFormat.Extended)
+local version = manifestINI:get("ABOUT", "VERSION", "0.0.0")
+
+function bottomBar()
+	ui.drawRectFilled(
+		vec2(uiStartX * cui.scaleY(), sim.windowHeight - 96 * cui.scaleY()),
+		vec2(sim.windowWidth - uiStartX * cui.scaleY(), sim.windowHeight - 40 * cui.scaleY()),
+		settings.uiPrimaryColor
+	)
+
+	setCursorX(0)
+	setCursorY(0)
+	if settings.showVersions then
+		ui.dwriteTextAligned(
+			"v" .. version .. ", CSP: " .. ac.getPatchVersion() .. " (" .. ac.getPatchVersionCode() .. ")",
+			26,
+			ui.Alignment.End,
+			ui.Alignment.End,
+			ui.availableSpace() - vec2(250, 52),
+			false,
+			rgbm(0.8, 0.8, 0.8, 1)
+		)
+	end
+
+	setCursorX(0)
+	setCursorY(0)
+	ui.dwriteTextAligned(
+		"OFFLINE",
+		26,
+		ui.Alignment.End,
+		ui.Alignment.End,
+		ui.availableSpace() - vec2(125, 52),
+		false,
+		rgbm(1, 0.9, 0, 1)
+	)
+
+	ui.drawCircleFilled(vec2(sim.windowWidth - 95, sim.windowHeight - 68), 10, rgbm.colors.orange)
+
+	if storage.page == MenuPages.Home then
+		return
+	end
+	cui.setCursorX(uiStartX)
+	cui.setCursorY(sim.windowHeight - 96)
+	if
+		cui.button(
+			"Back",
+			menuButtonSizeX,
+			menuButtonSizeY,
+			menuButtonFontSize,
+			ui.Alignment.Center,
+			ui.Alignment.Center,
+			ui.ButtonFlags.None
+		)
+	then
+		storage.page = MenuPages.Home
+	end
+end
 
 function SideBar(sim)
-	setCursorY(0)
-	local availableSpaceY = ui.availableSpaceY()
+	setCursorY(uiStartY)
 
 	ui.pushFont(setupPageFontSize)
 
 	ui.drawRectFilled(
-		vec2(20 * cui.scaleY(), 20 * cui.scaleY()),
-		vec2(sim.windowWidth - 20 * cui.scaleY(), 156 * 0.8 * cui.scaleY()),
-		settings.uiPrimaryColor,
-		10,
-		ui.CornerFlags.All
+		vec2(uiStartX, uiStartY),
+		vec2(sim.windowWidth - uiStartX, uiStartY + topBarHeight * cui.scaleY()),
+		settings.uiPrimaryColor
 	)
-
-	ui.drawRectFilledMultiColor(
-		vec2(20 * cui.scaleY(), 20 * cui.scaleY()),
-		vec2(sim.windowWidth - 20 * cui.scaleY(), 156 * 0.8 * cui.scaleY()),
-		rgbm(1, 1, 1, 0.2),
-		rgbm(1, 1, 1, 0.2),
-		rgbm(0, 0, 0, 0),
-		rgbm(0, 0, 0, 0)
-	)
-
-	cui.setCursorX(1280 - (154 * 0.8) / 2)
-	cui.setCursorY(20)
 
 	ui.drawRectFilled(
-		ui.getCursor() - vec2(450 * cui.scaleY(), 0),
-		ui.getCursor() + acLogoSize + vec2(450 * cui.scaleY(), 0),
-		rgbm(0, 0, 0, 0.2),
-		10,
-		ui.CornerFlags.All
+		vec2(uiStartX, uiStartY + topBarHeight * cui.scaleY()),
+		vec2(sim.windowWidth - uiStartX, uiStartY + topBarHeight + menuButtonSizeY * cui.scaleY()),
+		rgbm(0.231373, 0.223529, 0.262745, 0.85)
 	)
 
-	-- ui.drawRectFilled(
-	-- 	ui.getCursor() - vec2(30 * cui.scaleY(), 0),
-	-- 	ui.getCursor() + acLogoSize + vec2(30 * cui.scaleY(), 0),
-	-- 	settings.uiPrimaryColor,
-	-- 	10,
-	-- 	ui.CornerFlags.All
-	-- )
+	-- cui.setCursorX(sim.windowWidth / 2 - acEvoLogoSize.x / 2)
+	-- cui.setCursorY(-55)
+	-- ui.image(acEvoLogo, acEvoLogoSize * cui.scaleY())
 
+	cui.setCursorX(sim.windowWidth / 2 - acLogoSize.x / 2)
+	cui.setCursorY(65)
 	ui.image(acLogo, acLogoSize * cui.scaleY())
 
-	local xPos = 50
-	local menuButtonSpacing = 160
-
+	local xPos = uiStartX
 	cui.setCursorX(xPos)
-	cui.setCursorY(35)
+	cui.setCursorY(uiStartY + topBarHeight)
 
-	ui.pushStyleVar(ui.StyleVar.ItemSpacing, 50 * cui.scaleY())
+	ui.pushStyleVar(ui.StyleVar.ItemSpacing, 0)
 
-	if cui.menuButton("Drive", ui.Icons.SteeringWheel, menuButtonSize, ui.ButtonFlags.None) then
+	if
+		cui.button(
+			"Drive",
+			menuButtonSizeX,
+			menuButtonSizeY,
+			menuButtonFontSize,
+			ui.Alignment.Center,
+			ui.Alignment.Center,
+			ui.ButtonFlags.None
+		)
+	then
 		ac.tryToStart()
 	end
 	ui.sameLine()
-	cui.setCursorX(xPos + menuButtonSpacing * 1)
 
-	if cui.menuButton("Setup", ui.Icons.Wrench, menuButtonSize, ui.ButtonFlags.None) then
+	if
+		cui.button(
+			"Vehicle Setup",
+			menuButtonSizeX,
+			menuButtonSizeY,
+			menuButtonFontSize,
+			ui.Alignment.Center,
+			ui.Alignment.Center,
+			ui.ButtonFlags.None
+		)
+	then
 		if storage.page == MenuPages.Setup then
 			storage.page = -1
 		else
@@ -79,59 +150,18 @@ function SideBar(sim)
 		end
 	end
 	ui.sameLine()
-	cui.setCursorX(xPos + menuButtonSpacing * 2)
 
-	if cui.menuButton("Standings", ui.Icons.Trophy, menuButtonSize, ui.ButtonFlags.Disabled) then
-		if storage.page == MenuPages.Setup then
-			storage.page = -1
-		else
-			storage.page = MenuPages.Setup
-		end
-	end
-	ui.sameLine()
-	cui.setCursorX(xPos + menuButtonSpacing * 3)
-
-	if cui.menuButton("Lap Times", ui.Icons.List, menuButtonSize, ui.ButtonFlags.Disabled) then
-		if storage.page == MenuPages.TimeTable then
-			storage.page = -1
-		else
-			storage.page = MenuPages.TimeTable
-		end
-	end
-	ui.sameLine()
-	cui.setCursorX(xPos + menuButtonSpacing * 4)
-
-	-- if cui.menuButtonWide("Notes", ui.Icons.Document, 120, ui.ButtonFlags.Disabled) then
-	-- 	if storage.page == MenuPages.Notes then
-	-- 		storage.page = -1
-	-- 	else
-	-- 		storage.page = MenuPages.Notes
-	-- 	end
-	-- end
-	-- ui.sameLine()
-
-	if cui.menuButton("Telemetry", ui.Icons.Barcode, menuButtonSize, ui.ButtonFlags.Disabled) then
-		if storage.page == MenuPages.TimeTable then
-			storage.page = -1
-		else
-			storage.page = MenuPages.TimeTable
-		end
-	end
-	ui.sameLine()
-
-	-- if ui.modernButtonAdvanced("Apps", buttonSize, ui.ButtonFlags.None, ui.Icons.Apps, UI_SCALE_X / 3) then
-	-- 	if storage.page == MenuPages.Apps then
-	-- 		storage.page = -1
-	-- 	else
-	-- 		storage.page = MenuPages.Apps
-	-- 	end
-	-- end
-	-- ui.sameLine()
-
-	local xPos = 1825
-	cui.setCursorX(xPos)
-
-	if cui.menuButton("Info", ui.Icons.Info, menuButtonSize, ui.ButtonFlags.Disabled) then
+	if
+		cui.button(
+			"Replay",
+			menuButtonSizeX,
+			menuButtonSizeY,
+			menuButtonFontSize,
+			ui.Alignment.Center,
+			ui.Alignment.Center,
+			ui.ButtonFlags.Disabled
+		)
+	then
 		if storage.page == MenuPages.Settings then
 			storage.page = -1
 		else
@@ -139,9 +169,18 @@ function SideBar(sim)
 		end
 	end
 	ui.sameLine()
-	cui.setCursorX(xPos + menuButtonSpacing * 1)
 
-	if cui.menuButton("Settings", ui.Icons.Settings, menuButtonSize, ui.ButtonFlags.None) then
+	if
+		cui.button(
+			"Settings",
+			menuButtonSizeX,
+			menuButtonSizeY,
+			menuButtonFontSize,
+			ui.Alignment.Center,
+			ui.Alignment.Center,
+			ui.ButtonFlags.None
+		)
+	then
 		if storage.page == MenuPages.Settings then
 			storage.page = -1
 		else
@@ -149,43 +188,97 @@ function SideBar(sim)
 		end
 	end
 	ui.sameLine()
-	cui.setCursorX(xPos + menuButtonSpacing * 2)
 
-	if cui.menuButton("Restart", ui.Icons.Restart, menuButtonSize, ui.ButtonFlags.None) then
+	if
+		cui.button(
+			"Restart Session",
+			menuButtonSizeX,
+			menuButtonSizeY,
+			menuButtonFontSize,
+			ui.Alignment.Center,
+			ui.Alignment.Center,
+			ui.ButtonFlags.None
+		)
+	then
 		ac.tryToRestartSession()
 	end
 	ui.sameLine()
-	cui.setCursorX(xPos + menuButtonSpacing * 3)
 
-	if cui.menuButton("Skip", ui.Icons.Skip, menuButtonSize, ui.ButtonFlags.None) then
-		ac.tryToSkipSession()
-	end
-	ui.sameLine()
-	cui.setCursorX(xPos + menuButtonSpacing * 4)
+	-- if
+	-- 	cui.button(
+	-- 		"Skip",
+	-- 		menuButtonSizeX,
+	-- 		menuButtonSizeY,
+	-- 		menuButtonFontSize,
+	-- 		ui.Alignment.Center,
+	-- 		ui.Alignment.Center,
+	-- 		ui.ButtonFlags.None
+	-- 	)
+	-- then
+	-- 	ac.tryToSkipSession()
+	-- end
+	-- ui.sameLine()
 
-	if cui.menuButton("Exit", ui.Icons.Leave, menuButtonSize, ui.ButtonFlags.None) then
+	if
+		cui.button(
+			"Quit",
+			menuButtonSizeX,
+			menuButtonSizeY,
+			menuButtonFontSize,
+			ui.Alignment.Center,
+			ui.Alignment.Center,
+			ui.ButtonFlags.None
+		)
+	then
 		ac.shutdownAssettoCorsa()
 	end
 
+	local startX = 1918
+	local startY = 100
+	local sizeX = 171
+	local sizeY = 35
+	local gap = 1
+
+	ui.setCursor(vec2(startX, startY))
+
+	ui.pushDWriteFont(fontLol)
+
+	ui.drawRectFilled(ui.getCursor(), ui.getCursor() + vec2(sizeX, sizeY), rgbm(0, 0, 0, 0.6))
+	ui.dwriteTextAligned(
+		string.format("%02d:%02d", sim.timeHours, sim.timeMinutes),
+		16,
+		ui.Alignment.Center,
+		ui.Alignment.Center,
+		vec2(sizeX, sizeY)
+	)
+	ui.sameLine()
+
 	ui.drawRectFilled(
-		vec2(20 * cui.scaleY(), sim.windowHeight - 200 * cui.scaleY()),
-		vec2(sim.windowWidth - 20 * cui.scaleY(), sim.windowHeight - 20 * cui.scaleY()),
-		settings.uiPrimaryColor,
-		10,
-		ui.CornerFlags.All
+		ui.getCursor() + vec2(gap, 0),
+		ui.getCursor() + vec2(gap, 0) + vec2(sizeX, sizeY),
+		rgbm(0, 0, 0, 0.6)
 	)
+	ui.dwriteTextAligned("Track", 16, ui.Alignment.Center, ui.Alignment.Center, vec2(sizeX, sizeY))
+	ui.sameLine()
 
-	ui.drawRectFilledMultiColor(
-		vec2(20 * cui.scaleY(), sim.windowHeight - 200 * cui.scaleY()),
-		vec2(sim.windowWidth - 20 * cui.scaleY(), sim.windowHeight - 20 * cui.scaleY()),
-		rgbm(1, 1, 1, 0.2),
-		rgbm(1, 1, 1, 0.2),
-		rgbm(0, 0, 0, 0),
-		rgbm(0, 0, 0, 0)
+	ui.drawRectFilled(
+		ui.getCursor() + vec2(gap * 2, 0),
+		ui.getCursor() + vec2(gap, 0) + vec2(sizeX, sizeY),
+		rgbm(0, 0, 0, 0.6)
 	)
+	ui.dwriteTextAligned("Practice", 16, ui.Alignment.Center, ui.Alignment.Center, vec2(sizeX, sizeY))
 
+	ui.setCursor(vec2(startX, startY) + vec2(sizeX, sizeY))
+	ui.drawRectFilled(
+		ui.getCursor() + vec2(sizeX + gap, 0),
+		ui.getCursor() + vec2(-sizeX + gap, 0) + vec2(sizeX, sizeY),
+		rgbm(0.1, 0.1, 0.1, 0.5)
+	)
+	ui.dwriteTextAligned("OPTIMUM", 16, ui.Alignment.Center, ui.Alignment.Center, vec2(sizeX, sizeY))
+	ui.sameLine()
+
+	ui.popDWriteFont()
 	ui.popStyleVar(1)
-
 	ui.popFont()
 
 	-- ui.drawLine(vec2(1280, 0), vec2(1280, 1440), rgbm.colors.aqua)

@@ -166,7 +166,7 @@ function SettingsList(sim)
 	-- 	popSetupListStyle()
 	-- end)
 
-	contentWindow("settings_window", storage.setupTab, vec2(20, 200), vec2(790, 830), ui.WindowFlags.None, function()
+	contentWindow("settings_window", storage.setupTab, vec2(20, 340), vec2(790, 830), ui.WindowFlags.None, function()
 		pushMainMenuStyle()
 
 		storage.settingsTab = settingsTabs[tabBar(settingsTabs)]

@@ -1,3 +1,6 @@
+-- if true then
+-- 	return
+-- end
 local sim = ac.getSim()
 
 UI_SCALE_X = sim.windowWidth / 2560 * 100
@@ -10,6 +13,7 @@ MenuPages = {
 	Apps = 3,
 	Manual = 4,
 	Settings = 5,
+	Home = 6,
 }
 
 MenuPagesString = {
@@ -19,6 +23,7 @@ MenuPagesString = {
 	[2] = "Time Table",
 	[3] = "Apps",
 	[4] = "Settings",
+	[5] = "Home",
 }
 
 storage = ac.storage({
@@ -43,7 +48,7 @@ settings = ac.storage({
 	uiSecondaryColor = rgbm(0.74, 0, 0, 1),
 })
 
-storage.appOpen = false
+storage.appOpen = settings.autoStart
 storage.hasAppOpened = false
 
 package.add("src")
@@ -87,15 +92,8 @@ function script.main()
 end
 
 function script.update(dt)
-	if
-		sim.isInMainMenu
-		and settings.autoStart
-		and not storage.hasAppOpened
-		and not storage.appOpen
-		and ac.isWindowOpen("main")
-	then
-		-- ac.tryToOpenRaceMenu("race")
+	if sim.isInMainMenu and settings.autoStart and not storage.hasAppOpened then
+		ac.tryToOpenRaceMenu("race")
 		ac.tryToOpenRaceMenu("setup")
-		storage.appOpen = true
 	end
 end

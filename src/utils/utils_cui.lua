@@ -78,6 +78,8 @@ function cui.offsetCursorY(v)
 	ui.offsetCursorY(v * scaleX)
 end
 
+local fontLol = ui.DWriteFont("Panton-Trial"):weight(ui.DWriteFont.Weight.Regular)
+
 function cui.button(label, sizeX, sizeY, fontSize, horizontalAligment, verticalAlignment, flags)
 	if not horizontalAligment then
 		horizontalAligment = ui.Alignment.Center
@@ -93,20 +95,41 @@ function cui.button(label, sizeX, sizeY, fontSize, horizontalAligment, verticalA
 
 	local clicked = false
 
-	local tempCursorX = ui.getCursorX()
-	if ui.button("##" .. label, vec2Temp1:set(sizeX * scaleX, sizeY * scaleY), flags) then
+	local textWidth = ui.measureDWriteText(string.upper(label), fontSize * scaleX).x
+
+	local fontColor = nil
+
+	if flags == ui.ButtonFlags.Disabled then
+		fontColor = rgbm(0.6, 0.6, 0.6, 1)
+		ui.pushStyleColor(ui.StyleColor.Button, rgbm(0.05, 0.05, 0.05, 1))
+	end
+
+	local tempCursor = ui.getCursor()
+	if ui.button("##" .. label, vec2Temp1:set(textWidth + 30 * scaleX, sizeY * scaleY), flags) then
 		clicked = true
 	end
+
+	if flags == ui.ButtonFlags.Disabled then
+		ui.popStyleColor(1)
+	end
+
 	ui.sameLine()
 	ui.offsetCursorY(1)
-	ui.setCursorX(tempCursorX)
+	ui.setCursor(tempCursor)
+
+	ui.pushDWriteFont(fontLol)
+
 	ui.dwriteTextAligned(
-		label,
+		string.upper(label),
 		fontSize * scaleX,
 		horizontalAligment,
 		verticalAlignment,
-		vec2Temp1:set(sizeX * scaleX, sizeY * scaleY)
+		vec2Temp1:set(textWidth + 30 * scaleX, sizeY * scaleY),
+		false,
+		fontColor
 	)
+
+	ui.popDWriteFont()
 
 	return clicked
 end

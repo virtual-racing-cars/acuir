@@ -132,31 +132,23 @@ local infoText = {
 	end,
 }
 
+local sim = ac.getSim()
+
 function CarStatusWindow()
-	contentWindow(
-		"setup_info_window",
-		"CAR STATUS",
-		vec2(825, 200),
-		vec2(570, 830),
-		ui.WindowFlags.NoScrollWithMouse + ui.WindowFlags.NoScrollbar,
-		function()
-			for k, v in ipairs(infoText) do
-				local column, position, label, value = v()
+	for k, v in ipairs(infoText) do
+		local column, position, label, value = v()
 
-				setCursorY(40 + (24 * position))
+		setCursorY(300 + (24 * position))
 
-				local x = -140 + 150 * column
+		local x = -140 + 150 * column
 
-				setCursorX(-130 + 150 * column)
+		setCursorX(-130 + 150 * column)
 
-				ui.text(label)
+		ui.text(label)
 
-				setCursorY(40 + (24 * position))
-				setCursorX(x + 164)
+		setCursorY(300 + (24 * position))
+		setCursorX(x + 164)
 
-				ui.text(value)
-			end
-		end,
-		true
-	)
+		ui.text(value)
+	end
 end

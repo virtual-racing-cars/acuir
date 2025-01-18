@@ -13,7 +13,7 @@ end
 contentWindow = function(id, title, position, size, flags, content, showTitle)
 	cui.pushWindow(id .. "test", position.x, position.y, size.x, size.y)
 	size = size * cui.scaleY()
-	ui.drawRectFilled(vec2(0, 0), size, settings.uiPrimaryColor, 10, ui.CornerFlags.Bottom)
+	ui.drawRectFilled(vec2(0, 0), size, settings.uiPrimaryColor)
 
 	-- ui.drawRectFilled(vec2(0, 0), size, rgbm(0.1, 0.1, 0.1, 0.25), 10, ui.CornerFlags.Top)
 	-- ui.drawRectFilledMultiColor(

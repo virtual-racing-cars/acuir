@@ -1,4 +1,3 @@
-require("src\\classes\\spinner")
 require("src\\ui\\setup\\setup_window")
 require("src\\ui\\setup\\help_window")
 require("src\\ui\\setup\\car_status_window")
@@ -18,7 +17,6 @@ function SetupPage(sim)
 
 	SetupWindow()
 	HelpWindow()
-	CarStatusWindow()
 
 	ui.popFont()
 end
