@@ -39,21 +39,28 @@ function slider(label, value, min, max, round, format, color, size, step, noScro
 	local yPos = ui.getCursorY()
 	local xMax = xPos + width
 
-	ui.drawRectFilled(ui.getCursor(), ui.getCursor() + vec2(width, height), rgbm(0, 0, 0, 0.67))
+	ui.drawRectFilled(ui.getCursor() + vec2(0, 10), ui.getCursor() + vec2(width, height - 10), rgbm(0, 0, 0, 0.67), 5)
 
 	ui.invisibleButton("invis" .. label, vec2(width, height))
 	ui.setCursor(vec2(xPos, yPos))
 
 	local sliderPosition = ((value - min) / (max - min)) * (width - sliderWidth)
 
+	ui.drawRectFilled(
+		ui.getCursor() + vec2(0, 10),
+		ui.getCursor() + vec2(sliderPosition, height - 10),
+		rgbm(1, 1, 1, 0.67),
+		5
+	)
+
 	if not ui.mouseDown(ui.MouseButton.Left) then
 		activeItem = ""
 	end
 
 	if activeItem == label and ui.mouseDown(ui.MouseButton.Left) then
-		ui.pushStyleColor(ui.StyleColor.Button, rgbm(0.74, 0, 0, 1))
+		ui.pushStyleColor(ui.StyleColor.Button, rgbm(1, 1, 1, 1))
 	else
-		ui.pushStyleColor(ui.StyleColor.Button, color)
+		ui.pushStyleColor(ui.StyleColor.Button, rgbm(1, 1, 1, 1))
 	end
 
 	ui.offsetCursorX(sliderPosition)
@@ -99,13 +106,7 @@ function slider(label, value, min, max, round, format, color, size, step, noScro
 	local fontSize = math.floor(size.y * 0.5)
 	fontSize = (fontSize % 2 ~= 0) and fontSize + 1 or fontSize
 
-	ui.dwriteTextAligned(
-		string.format(format, value * mult + offset),
-		math.round(size.y * 0.5),
-		ui.Alignment.Center,
-		ui.Alignment.Center,
-		vec2(width, height)
-	)
+	ui.dummy(vec2(width, 55))
 
 	return value, changed, active
 end

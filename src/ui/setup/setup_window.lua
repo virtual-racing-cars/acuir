@@ -149,7 +149,7 @@ local function tabBar(apps)
 	ui.popStyleVar(1)
 	ui.popFont()
 
-	-- currentApp = 7
+	-- currentApp = 11
 
 	return currentApp + 1
 end
@@ -177,13 +177,14 @@ end
 
 local SpinnerButtonType = { Reset = -1, Left = 0, Right = 1 }
 
-local spinnerWidth = 400
+local spinnerWidth = 550
 local spinnerHeight = 30
 local buttonSize = vec2(spinnerHeight, spinnerHeight)
 
 function drawSpinnerButton(setupItem, direction)
 	local changed = false
 
+	ui.pushStyleColor(ui.StyleColor.Button, rgbm(0, 0, 0, 0))
 	if setupItem.min == setupItem.max then
 		ui.dummy(buttonSize)
 	elseif direction == SpinnerButtonType.Reset then
@@ -199,11 +200,12 @@ function drawSpinnerButton(setupItem, direction)
 			changed = setupItem:resetValue()
 		end
 	elseif
-		ui.arrowButtonAdvanced(
+		ui.modernButtonAdvanced(
 			"##" .. direction .. setupItem.id,
-			direction == SpinnerButtonType.Left and "Left" or "Right",
 			buttonSize,
-			ui.ButtonFlags.PressedOnClick
+			ui.ButtonFlags.PressedOnClick,
+			direction == SpinnerButtonType.Left and ui.Icons.ArrowLeft or ui.Icons.ArrowRight,
+			true
 		)
 	then
 		setupItem.buttonHeldTimer[direction] = os.clock() + 0.5
@@ -233,27 +235,35 @@ function drawSpinnerButton(setupItem, direction)
 		setupItem.helpWindowShow = true
 	end
 
+	ui.popStyleColor(1)
+
 	ui.sameLine()
 	return changed
 end
 
-function drawSlider(setupItem)
+function drawSlider(setupItem, pos)
 	if #setupItem.items > 0 then
 		setupItem.format = (
 			setupItem.items[setupItem.value + 1] and setupItem.items[setupItem.value + 1] or setupItem.value
 		)
 	end
 
-	local sliderWidth = spinnerWidth - (3 * spinnerHeight)
+	local sliderWidth = spinnerWidth - (2 * spinnerHeight)
 	local sliderHeight = spinnerHeight
 
-	-- ui.drawRectFilled(ui.getCursor(), ui.getCursor() + vec2(sliderWidth, -spinnerHeight * 0.8), rgbm.colors.red)
-	ui.dwriteDrawText(
+	local tempPos = ui.getCursor()
+
+	ui.offsetCursor(-vec2(sliderHeight, sliderHeight))
+
+	ui.dwriteTextAligned(
 		setupItem.name,
 		sliderHeight * 0.5,
-		ui.getCursor() - vec2(0, 25 * cui.scaleY()),
-		rgbm.colors.black
+		ui.Alignment.Center,
+		ui.Alignment.Start,
+		vec2(spinnerWidth, sliderHeight)
 	)
+
+	ui.setCursor(tempPos)
 
 	-- local sliderGrabSize =
 	-- 	max(350 * cui.scaleY() / (setupItem.max - setupItem.min + setupItem.step) / setupItem.step, 10)
@@ -308,17 +318,49 @@ local function drawSetupSpinner(sm, setupItem)
 	}
 
 	ui.setCursorX(positions[setupItem.xPos])
-	cui.setCursorY(setupItem.yPos * 60 + 100)
+	cui.setCursorY(setupItem.yPos * 90 + 100)
 
-	if
-		drawSpinnerButton(setupItem, SpinnerButtonType.Left)
-		or drawSlider(setupItem)
-		or drawSpinnerButton(setupItem, SpinnerButtonType.Right)
-		or drawSpinnerButton(setupItem, SpinnerButtonType.Reset)
-	then
+	ui.drawRectFilled(
+		ui.getCursor() - vec2(0, spinnerHeight * 1.1),
+		ui.getCursor() + vec2(spinnerWidth, spinnerHeight * 2),
+		rgbm.new("#3a3842")
+	)
+
+	local setupItemHovered = ui.mouseLocalPos() >= ui.getCursor() - vec2(0, spinnerHeight * 1.1)
+		and ui.mouseLocalPos() < ui.getCursor() + vec2(spinnerWidth, spinnerHeight * 2)
+
+	local sliderPos = ui.getCursor()
+
+	if setupItemHovered then
+		if drawSpinnerButton(setupItem, SpinnerButtonType.Left) then
+			changed = true
+		end
+	else
+		ui.dummy(buttonSize)
+		ui.sameLine()
+	end
+
+	if drawSlider(setupItem, sliderPos) then
 		changed = true
 	end
 
+	if setupItemHovered then
+		if drawSpinnerButton(setupItem, SpinnerButtonType.Right) then
+			changed = true
+		end
+	else
+		ui.dummy(buttonSize)
+		ui.sameLine()
+	end
+
+	if setupItemHovered then
+		if drawSpinnerButton(setupItem, SpinnerButtonType.Reset) then
+			changed = true
+		end
+	else
+		ui.dummy(buttonSize)
+		ui.sameLine()
+	end
 	if setupItem.helpWindowShow then
 		HELP_TEXT = setupItem.help
 		setupItem:helpWindow()

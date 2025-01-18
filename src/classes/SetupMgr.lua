@@ -124,7 +124,7 @@ SetupMgr = class("SetupMgr")
 
 function SetupMgr:initialize()
 	self._setupSpinners = loadSetupSpinners()
-	self._defaultTabNames = { "ELECTRONICS", "FUEL", "TYRES", "GEARS" }
+	self._defaultTabNames = { "ELECTRONICS", "FUEL", "TYRES" } --, "GEARS" }
 	self._tabNames = {}
 	self._tabCount = 0
 
