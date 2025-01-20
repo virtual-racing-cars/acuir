@@ -176,44 +176,6 @@ local bottomBarButtonsIO = {
 		end,
 	},
 	{
-		label = "Load",
-		enabled = true,
-		func = function()
-			ac.loadSetup(selectedSetup.path)
-			loadedSetup = selectedSetup.track .. " - " .. selectedSetup.name
-			ui.toast(ui.Icons.Download, "Setup loaded: " .. selectedSetup.name)
-		end,
-	},
-	{
-		label = "Compare",
-		enabled = false,
-		func = function() end,
-	},
-	{
-		label = "Reset",
-		enabled = true,
-		func = function()
-			ac.resetSetupToDefault()
-		end,
-	},
-	{
-		label = "Delete",
-		enabled = true,
-		func = function()
-			io.deleteFile(saveSetup.path)
-			io.deleteFile(string.trim(saveSetup.path, ".ini") .. ".sp")
-
-			ui.toast(ui.Icons.Download, "Setup deleted: " .. saveSetup.name)
-
-			saveSetup.name = ""
-			saveSetup.path = ""
-			saveSetup.tags = ""
-			saveSetup.description = ""
-
-			loadSetups()
-		end,
-	},
-	{
 		label = "Save",
 		enabled = true,
 		func = function()
@@ -244,6 +206,38 @@ local bottomBarButtonsIO = {
 			end
 		end,
 	},
+	{
+		label = "Load",
+		enabled = true,
+		func = function()
+			ac.loadSetup(selectedSetup.path)
+			loadedSetup = selectedSetup.track .. " - " .. selectedSetup.name
+			ui.toast(ui.Icons.Download, "Setup loaded: " .. selectedSetup.name)
+		end,
+	},
+	{
+		label = "Compare",
+		enabled = false,
+		func = function() end,
+	},
+
+	{
+		label = "Delete",
+		enabled = true,
+		func = function()
+			io.deleteFile(saveSetup.path)
+			io.deleteFile(string.trim(saveSetup.path, ".ini") .. ".sp")
+
+			ui.toast(ui.Icons.Download, "Setup deleted: " .. saveSetup.name)
+
+			saveSetup.name = ""
+			saveSetup.path = ""
+			saveSetup.tags = ""
+			saveSetup.description = ""
+
+			loadSetups()
+		end,
+	},
 }
 
 function ioTab()
@@ -264,6 +258,11 @@ function ioTab()
 				0,
 				ui.CornerFlags.None
 			)
+
+			if ui.checkbox("Hide other track setups", settings.hideOtherTrackSetups) then
+				settings.hideOtherTrackSetups = not settings.hideOtherTrackSetups
+				loadSetups()
+			end
 
 			ui.setCursorY(0)
 			ui.textAligned("Current Setup [" .. loadedSetup .. "]", vec2(0.5, 0.5), vec2(ui.availableSpaceX(), 30))

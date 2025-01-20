@@ -31,7 +31,6 @@ storage.settingsTab = 1
 settings = ac.storage({
 	autoStart = true,
 	showVersions = true,
-	autoLoadLastSetup = true,
 	hideOtherTrackSetups = true,
 	uiHideonIdleTime = 150,
 	uiPrimaryColor = rgbm(0, 0, 0, 0.75),
@@ -43,12 +42,13 @@ storage.hasAppOpened = false
 
 package.add("src")
 cui = require("utils\\utils_cui")
-require("init")
 require("classes\\button")
 require("utils\\utils_scale")
 require("ui\\styles")
 require("ui\\main")
 require("ui\\audio")
+
+ac.setWindowOpen("main", true)
 
 ui.onExclusiveHUD(function(mode)
 	if not storage.appOpen then

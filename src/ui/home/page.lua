@@ -49,7 +49,6 @@ function HomePage(sim)
 			enabled = true,
 			func = function()
 				ac.shutdownAssettoCorsa()
-				ac.log("hi")
 			end,
 		},
 	})

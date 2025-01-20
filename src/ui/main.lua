@@ -66,7 +66,7 @@ function MainWindow()
 
 			if storage.page == MenuPages.Setup then
 				SetupPage()
-				exclusiveHudMode = ""
+				exclusiveHudMode = "debug"
 			end
 
 			if storage.page == MenuPages.Settings then

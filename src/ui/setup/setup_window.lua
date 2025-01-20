@@ -7,70 +7,37 @@ require("src.classes.SetupMgr")
 require("src.classes.Button")
 require("src.classes.Slider")
 
-local linkButtonSize = vec2(38 * UI_SCALE_X / 100, 38 * UI_SCALE_X / 100)
+-- local function setupItemSpinners()
+-- 	storage.helpOpen = false
 
-local mirrorSetupTabs = {}
-local mirrorButtonShow = {}
-local mirrorButtonsInitialized = false
+-- 	if storage.setupTab == "SETUP I/O" then
+-- 		ioTab()
+-- 	end
 
-for _, tab in pairs(tabs) do
-	mirrorSetupTabs[tab] = true
-	mirrorButtonShow[tab] = false
-end
+-- 	if storage.setupTab == "PITSTOP STRATEGY" then
+-- 		pitstopStrategyWindow()
+-- 	end
 
-local mirrorSetupStorage = ac.storage(mirrorSetupTabs)
+-- 	if storage.setupTab == "GEARS" then
+-- 		gearWindow()
+-- 	end
 
-local function setupItemSpinners()
-	storage.helpOpen = false
+-- 	ui.beginScale()
+-- 	for k, v in pairs(setupSpinners) do
+-- 		local tab = v.tab
 
-	if storage.setupTab == "SETUP I/O" then
-		ioTab()
-	end
+-- 		if mirrorSetupTabs[tab] ~= nil then
+-- 			v:run(tab == storage.setupTab, mirrorSetupStorage[tab])
 
-	if storage.setupTab == "PITSTOP STRATEGY" then
-		pitstopStrategyWindow()
-	end
-
-	if storage.setupTab == "GEARS" then
-		gearWindow()
-	end
-
-	ui.beginScale()
-	for k, v in pairs(setupSpinners) do
-		local tab = v.tab
-
-		if mirrorSetupTabs[tab] ~= nil then
-			v:run(tab == storage.setupTab, mirrorSetupStorage[tab])
-
-			if not mirrorButtonsInitialized then
-				if v.idMirror then
-					mirrorButtonShow[tab] = true
-				end
-			end
-		end
-	end
-	ui.endScale(1)
-end
-
-local function setupTabBanner()
-	if not mirrorButtonShow[storage.setupTab] or mirrorSetupTabs[storage.setupTab] == nil then
-		return
-	end
-
-	setCursorY(0)
-	ui.setCursorX(ui.availableSpaceX() - linkButtonSize.x)
-	if
-		ui.modernButtonAdvanced(
-			"##linksetupitems",
-			linkButtonSize,
-			ui.ButtonFlags.None,
-			mirrorSetupStorage[storage.setupTab] and ui.Icons.Link or ui.Icons.LinkBroken,
-			15 * UI_SCALE_X / 100
-		)
-	then
-		mirrorSetupStorage[storage.setupTab] = not mirrorSetupStorage[storage.setupTab]
-	end
-end
+-- 			if not mirrorButtonsInitialized then
+-- 				if v.idMirror then
+-- 					mirrorButtonShow[tab] = true
+-- 				end
+-- 			end
+-- 		end
+-- 	end
+-- 	ui.endScale(1)
+-- end
 
 local currentApp = 0
 
@@ -124,7 +91,7 @@ local function tabBar(apps)
 
 	tabBarPosition = math.applyLag(
 		tabBarPosition,
-		-math.max(tabItemPositions[currentApp] - sim.windowWidth / 2 - 60, 0),
+		-math.max(tabItemPositions[currentApp] - ui.windowWidth() / 2, 0),
 		0.4,
 		ac.getScriptDeltaT()
 	)
@@ -305,7 +272,7 @@ local function drawSetupSpinner(sm, setupItem)
 	}
 
 	local xPos = positions[setupItem.xPos]
-	local yPos = (setupItem.yPos * 98 + 60) * cui.scaleY()
+	local yPos = (setupItem.yPos * 98 + 115) * cui.scaleY()
 
 	ui.setCursorX(xPos)
 	ui.setCursorY(yPos)
@@ -328,6 +295,23 @@ local function drawSetupSpinner(sm, setupItem)
 		ui.Alignment.Center,
 		vec2(spinnerWidth, spinnerHeight)
 	)
+
+	if setupItem.mirrorAvailable then
+		ui.sameLine()
+		ui.offsetCursorX(-spinnerHeight * 2)
+		if
+			ui.modernButtonAdvanced(
+				"##mirror" .. setupItem.name,
+				buttonSize,
+				ui.ButtonFlags.None,
+				setupItem.mirrored and ui.Icons.Link or ui.Icons.LinkBroken,
+				15 * cui.scaleY()
+			)
+		then
+			setupItem.mirrored = not setupItem.mirrored
+		end
+	end
+
 	ui.setCursorX(xPos)
 
 	if setupItemHovered then
@@ -369,6 +353,8 @@ function car_setup(sm)
 	-- spinnerWidth = ui.windowWidth() / 2.15
 	-- spinnerHeight = spinnerWidth / 12
 	-- buttonSize = vec2(spinnerHeight, spinnerHeight)
+	storage.setupTab = tabBar(sm.setupTabs)
+	ui.newLine()
 
 	local changed = false
 
@@ -386,83 +372,6 @@ function car_setup(sm)
 end
 
 function SetupWindow(sm)
-	contentWindow(
-		"car_setup_window",
-		storage.setupTab,
-		vec2(60 * cui.scaleX(), 240 * cui.scaleY()),
-		vec2(sim.windowWidth - 120 * cui.scaleX(), sim.windowHeight - 383 * cui.scaleY()),
-		ui.WindowFlags.None,
-		function()
-			ac.log(sim.windowWidth - 120 * cui.scaleX())
-			-- ui.drawRectFilled(vec2(0, 0), ui.availableSpace(), rgbm.colors.aqua)
-			pushMainMenuStyle()
-
-			storage.setupTab = tabBar(sm.setupTabs)
-			contentWindow(
-				"car_setup_window2",
-				storage.setupTab .. "2",
-				vec2(ui.windowWidth() / 4, 56 * cui.scaleY()),
-				vec2(ui.windowWidth() / 2, ui.availableSpaceY()),
-				ui.WindowFlags.None,
-				function()
-					-- ui.drawRectFilled(vec2(0, 0), ui.availableSpace(), rgbm.colors.aqua)
-					ui.setCursor(0)
-					car_setup(sm)
-				end,
-				false,
-				true
-			)
-
-			ui.setCursor(0)
-			contentWindow(
-				"help_window42",
-				storage.setupTab .. "42",
-				vec2((ui.windowWidth() / 4) * 3, 56 * cui.scaleY()),
-				vec2(ui.windowWidth() / 4, ui.availableSpaceY()),
-				ui.WindowFlags.None,
-				function()
-					ui.drawRectFilled(vec2(0, 0), ui.availableSpace(), rgbm(0, 0, 0, 0.25))
-					ui.setCursor(0)
-
-					setCursorX(6)
-					setCursorY(50)
-
-					if HELP_TEXT ~= "NULL" and HELP_TEXT ~= "" then
-						ui.dummy(vec2(230 * cui.scaleY(), 0))
-						ui.bringWindowToFront()
-						local helpSections = string.split(HELP_TEXT, "\\n\\n")
-
-						for i in ipairs(helpSections) do
-							ui.dwriteTextWrapped(helpSections[i], 24 * cui.scaleY())
-						end
-					end
-
-					HELP_TEXT = ""
-				end,
-				false,
-				true
-			)
-
-			ui.setCursor(0)
-			contentWindow(
-				"help_window432",
-				storage.setupTab .. "423",
-				vec2(0, 56 * cui.scaleY()),
-				vec2(ui.windowWidth() / 4, ui.availableSpaceY()),
-				ui.WindowFlags.None,
-				function()
-					ui.drawRectFilled(vec2(0, 0), ui.availableSpace(), rgbm(0, 0, 0, 0.25))
-					CarStatusWindow()
-				end,
-				false,
-				true
-			)
-
-			popMainMenuStyle()
-			-- CarStatusWindow()
-		end
-	)
-
 	if ui.keyboardButtonPressed(ui.KeyIndex.Escape) then
 		storage.page = MenuPages.Home
 	end

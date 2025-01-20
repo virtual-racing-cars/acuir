@@ -2,7 +2,6 @@ require("src\\ui\\settings\\general_settings")
 require("src\\ui\\settings\\appearance_settings")
 require("src\\ui\\settings\\audio_settings")
 require("src\\ui\\settings\\view_settings")
-require("src\\ui\\settings\\setup_settings")
 
 local settingsPages = {
 	{

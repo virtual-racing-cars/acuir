@@ -69,18 +69,25 @@ function SetupItem:initialize(
 	self.idMirror = nil
 	self.independentSpinner = independentSpinner and true or false
 
+	self.mirrorAvailable = false
+	self.mirrored = false
+
 	if string.find(self.id, "LF") then
 		self.idMirror = string.replace(self.id, "LF", "RF")
+		self.mirrorAvailable = true
 	elseif string.find(self.id, "RF") then
 		self.idMirror = string.replace(self.id, "RF", "LF")
 	elseif string.find(self.id, "LR") then
 		self.idMirror = string.replace(self.id, "LR", "RR")
+		self.mirrorAvailable = true
 	elseif string.find(self.id, "RR") then
 		self.idMirror = string.replace(self.id, "RR", "LR")
 	end
 
-	if ac.getSetupSpinnerValue(self.idMirror, -12345) == -12345 then
+	if ac.getSetupSpinnerValue(self.idMirror, -12345) == -12345 and #self.idPairs > 1 then
 		self.idMirror = nil
+	else
+		self.mirrored = true
 	end
 
 	self.itemActive = false
@@ -134,6 +141,10 @@ function SetupItem:setValue(value)
 		ac.setSetupSpinnerValue(id, self.value)
 	end
 
+	if self.mirrored then
+		self:mirror()
+	end
+
 	return changed
 end
 
@@ -164,24 +175,22 @@ function SetupItem:resetValue()
 	end
 end
 
-function SetupItem:mirror(id1, id2)
-	if not self.idMirror then
-		return
-	end
+function SetupItem:toggleMirror()
+	self.mirrored = not self.mirrored
+end
 
+function SetupItem:mirror()
 	local mirrorValue = ac.getSetupSpinnerValue(self.idMirror, -12345)
 
 	if mirrorValue == -12345 then
 		return
 	end
 
-	if self.value ~= mirrorValue then
-		self:setValue(mirrorValue)
-	end
+	ac.setSetupSpinnerValue(self.idMirror, self.value)
 end
 
-function SetupItem:run(mirror)
-	ui.pushStyleVar(ui.StyleVar.ItemSpacing, 0 * cui.scaleY())
+function SetupItem:run()
+	ui.pushStyleVar(ui.StyleVar.ItemSpacing, 0)
 
 	if self.name == "" or self.child then
 		return
@@ -189,8 +198,4 @@ function SetupItem:run(mirror)
 
 	self:getValue()
 	self.helpWindowShow = false
-
-	if mirror then
-		self:mirror()
-	end
 end

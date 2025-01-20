@@ -28,7 +28,7 @@
 
 -- 			table.insert(
 -- 				pitstopStrategySpinners[i],
--- 				SPINNER(
+-- 				SetupItem(
 -- 					v.name,
 -- 					"PITSTOP STRATEGY",
 -- 					v.label,
@@ -51,7 +51,7 @@
 -- 	end
 -- end
 
--- local pitstopStrategyPresetSpinner = SPINNER(
+-- local pitstopStrategyPresetSpinner = SetupItem(
 -- 	"PITSTOP_STRATEGY_PRESET",
 -- 	"PITSTOP STRATEGY",
 -- 	"Preset",
@@ -74,37 +74,37 @@
 
 -- local pitstopStrategyUpdated = false
 
-function pitstopStrategyWindow()
-	-- cui.setCursorX(0)
-	-- cui.setCursorY(60)
+-- function pitstopStrategyWindow()
+-- 	cui.setCursorX(0)
+-- 	cui.setCursorY(60)
 
-	-- pitstopStrategyPresetSpinner:run(true, false)
+-- 	pitstopStrategyPresetSpinner:run(true, false)
 
-	-- pitstopStrategyUpdated = false
+-- 	pitstopStrategyUpdated = false
 
-	-- for k, v in pairs(pitstopStrategySpinners[pitstopStrategyPresetSpinner.value]) do
-	-- 	if v:run(true, false) then
-	-- 		tempSpFile:setAndSave(
-	-- 			"PRESET_" .. pitstopStrategyPresetSpinner.value - 1,
-	-- 			v.id,
-	-- 			v.id == "COMPOUND" and v.value - 1 or v.value
-	-- 		)
-	-- 		pitstopStrategyUpdated = true
-	-- 	end
-	-- end
+-- 	for k, v in pairs(pitstopStrategySpinners[pitstopStrategyPresetSpinner.value]) do
+-- 		if v:run(true, false) then
+-- 			tempSpFile:setAndSave(
+-- 				"PRESET_" .. pitstopStrategyPresetSpinner.value - 1,
+-- 				v.id,
+-- 				v.id == "COMPOUND" and v.value - 1 or v.value
+-- 			)
+-- 			pitstopStrategyUpdated = true
+-- 		end
+-- 	end
 
-	-- if pitstopStrategyUpdated then
-	-- 	ac.saveCurrentSetup("_temp.ini")
-	-- 	ac.loadSetup("_temp.ini")
-	-- end
+-- 	if pitstopStrategyUpdated then
+-- 		ac.saveCurrentSetup("_temp.ini")
+-- 		ac.loadSetup("_temp.ini")
+-- 	end
 
-	-- cui.setCursorX(0)
-	-- cui.setCursorY(600)
-	-- ui.dwriteTextAligned(
-	-- 	"Effective pressure adjustments will be limited to a range of 8 psi",
-	-- 	20 * cui.scaleY(),
-	-- 	ui.Alignment.Center,
-	-- 	ui.Alignment.Center,
-	-- 	vec2(790, 30) * cui.scaleY()
-	-- )
-end
+-- 	cui.setCursorX(0)
+-- 	cui.setCursorY(600)
+-- 	ui.dwriteTextAligned(
+-- 		"Effective pressure adjustments will be limited to a range of 8 psi",
+-- 		20 * cui.scaleY(),
+-- 		ui.Alignment.Center,
+-- 		ui.Alignment.Center,
+-- 		vec2(790, 30) * cui.scaleY()
+-- 	)
+-- end

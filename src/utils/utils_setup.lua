@@ -104,7 +104,6 @@ function loadSetupSpinners()
 
 	for k, v in pairs(tabs) do
 		if v ~= "SETUP I/O" and v ~= "PITSTOP STRATEGY" and v ~= "GEARS" and not table.contains(populatedTabs, v) then
-			ac.log(v)
 			table.removeItem(tabs, v)
 		end
 	end

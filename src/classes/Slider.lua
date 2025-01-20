@@ -63,7 +63,7 @@ function slider(label, value, min, max, round, format, color, size, step, noScro
 	if
 		active
 		or (
-			ui.mouseLocalPos() > vec2(xPos, yPos - height)
+			ui.mouseLocalPos() > vec2(xPos, yPos)
 			and ui.mouseLocalPos() <= vec2(xPos, yPos) + vec2(width, height + height / 6)
 			and (
 				(ui.mouseClicked(ui.MouseButton.Left) and not ui.itemHovered(ui.HoveredFlags.None))
@@ -77,6 +77,8 @@ function slider(label, value, min, max, round, format, color, size, step, noScro
 			local valueChangeAmount = (ui.keyboardButtonDown(ui.KeyIndex.Shift) and shiftStep or step)
 			value = ui.mouseWheel() < 0 and (math.round(value) - valueChangeAmount)
 				or (math.round(value) + valueChangeAmount)
+
+			audioTrigger()
 		else
 			activeItem = label
 			value = (ui.mouseLocalPos().x - xPos) / (xMax - xPos) * (max - min) + min
