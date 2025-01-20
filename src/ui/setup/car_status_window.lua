@@ -1,7 +1,5 @@
 local car = ac.getCar(0)
 
-local setupSpinnersWindowSize = vec2(570 * UI_SCALE_X / 100, 730 * UI_SCALE_Y / 100)
-
 local carINI = ac.INIConfig.carData(0, "car.ini")
 local kgPerL = carINI:get("FUEL_EXT", "KG_PER_LITER", 0.7339)
 
@@ -135,20 +133,15 @@ local infoText = {
 local sim = ac.getSim()
 
 function CarStatusWindow()
-	for k, v in ipairs(infoText) do
+	for _, v in ipairs(infoText) do
 		local column, position, label, value = v()
-
+		ui.setCursorX(-130 + 150 * column)
 		ui.setCursorY(80 + (24 * position))
+		ui.dwriteText(label, 22)
 
-		local x = -140 + 150 * column
-
-		ui.setCursorX(-110 + 150 * column)
-
-		ui.dwriteText(label, 18)
-
+		local x = -170 + 150 * column
+		ui.setCursorX(x + 230)
 		ui.setCursorY(80 + (24 * position))
-		ui.setCursorX(x + 190)
-
-		ui.dwriteText(value, 18)
+		ui.dwriteText(value, 22)
 	end
 end

@@ -79,21 +79,23 @@ local function tabItem(tabCount, index, title)
 		ui.StyleColor.ButtonHovered,
 		currentApp == index and rgbm(0.74, 0, 0, 1) or rgbm(0.25, 0.25, 0.25, 0.4)
 	)
-	ui.pushStyleColor(ui.StyleColor.Button, currentApp == index and rgbm(0.74, 0, 0, 1) or rgbm.colors.transparent)
+	ui.pushStyleColor(
+		ui.StyleColor.Button,
+		currentApp == index and rgbm(1, 1, 1, 1) or rgbm(0.227451, 0.219608, 0.258824, 1)
+	)
+
 	ui.pushStyleColor(
 		ui.StyleColor.ButtonActive,
 		currentApp == index and rgbm(0.74, 0, 0, 1) or rgbm.colors.transparent
 	)
 
-	cui.setCursorY(200)
-	local width = ui.measureDWriteText(title, 14)
-	if cui.button(title, width.x + 10, 56, 12, ui.Alignment.Center, ui.Alignment.Center) then
+	if cui.menuButton(title, 56, 12, ui.Alignment.Center, ui.Alignment.Center, nil, currentApp == index) then
 		currentApp = index
 	end
 
 	ui.sameLine()
 
-	ui.popStyleColor(3)
+	ui.popStyleColor(2)
 end
 
 local tabBarPosition = 0
@@ -104,23 +106,13 @@ local uiStartX = 60
 
 local topBarHeight = 200
 
-local menuButtonSizeX = 120
-local menuButtonSizeY = 56
-local menuButtonFontSize = 12
-
 local sim = ac.getSim()
 
 local function tabBar(apps)
 	ui.pushFont(ui.Font.Title)
 	ui.pushStyleVar(ui.StyleVar.ItemSpacing, 0)
 
-	cui.setCursorX(uiStartX)
-	cui.setCursorY(uiStartY + topBarHeight)
-
-	ui.drawRectFilled(vec2(0, 200), vec2(sim.windowWidth, 256) * cui.scaleY(), rgbm(0.1, 0.1, 0.1, 0.5))
-	ui.pushClipRect(vec2(0, 200), vec2(sim.windowWidth, 256) * cui.scaleY())
-
-	if ui.mouseLocalPos() >= vec2(60, 200) and ui.mouseLocalPos() < vec2(sim.windowWidth - 120, 256) * cui.scaleY() then
+	if ui.mouseLocalPos() >= vec2(0, 0) and ui.mouseLocalPos() < vec2(sim.windowWidth - 120, 56) * cui.scaleY() then
 		if ui.mouseWheel() > 0 then
 			currentApp = currentApp >= #apps - 1 and 0 or currentApp + 1
 		elseif ui.mouseWheel() < 0 then
@@ -136,6 +128,7 @@ local function tabBar(apps)
 	)
 
 	ui.setCursorX(tabBarPosition)
+	ui.setCursorY(0)
 	for i in ipairs(apps) do
 		tabItem(#apps, i - 1, apps[i].name)
 
@@ -143,8 +136,6 @@ local function tabBar(apps)
 			tabItemPositions[i - 1] = ui.getCursorX()
 		end
 	end
-
-	ui.popClipRect()
 
 	ui.popStyleVar(1)
 	ui.popFont()
@@ -155,8 +146,6 @@ local function tabBar(apps)
 end
 
 local sim = ac.getSim()
-
-local max = math.max
 
 local SpinnerButtonType = { Reset = -1, Left = 0, Right = 1 }
 
@@ -200,7 +189,7 @@ local function arrowButton(direction, size)
 end
 
 local spinnerWidth = 580
-local spinnerHeight = 30
+local spinnerHeight = 34
 local buttonSize = vec2(spinnerHeight, spinnerHeight)
 
 function drawSpinnerButton(setupItem, direction)
@@ -265,7 +254,7 @@ function drawSlider(setupItem, pos)
 		)
 	end
 
-	local sliderWidth = (spinnerWidth / 2.4) - (2 * spinnerHeight)
+	local sliderWidth = spinnerWidth - (2 * spinnerHeight)
 	local sliderHeight = spinnerHeight
 
 	-- local sliderGrabSize =
@@ -280,7 +269,7 @@ function drawSlider(setupItem, pos)
 		setupItem.format,
 		nil,
 		vec2(sliderWidth, sliderHeight),
-		1,
+		setupItem.step,
 		false,
 		true,
 		1,
@@ -293,10 +282,6 @@ function drawSlider(setupItem, pos)
 
 	if ui.mouseDown(ui.MouseButton.Left) then
 		changed = false
-	end
-
-	if ui.itemHovered(ui.HoveredFlags.None) then
-		setupItem.helpWindowShow = true
 	end
 
 	if setupItem.itemActive and ui.mouseReleased(ui.MouseButton.Left) then
@@ -320,12 +305,15 @@ local function drawSetupSpinner(sm, setupItem)
 		[1] = (ui.windowWidth() - spinnerWidth - padding),
 	}
 
-	ui.setCursorX(positions[setupItem.xPos])
-	cui.setCursorY(setupItem.yPos * 98 + 100)
+	local xPos = positions[setupItem.xPos]
+	local yPos = setupItem.yPos * 98 + 60
+
+	ui.setCursorX(xPos)
+	cui.setCursorY(yPos)
 
 	ui.drawRectFilled(
-		ui.getCursor() - vec2(0, spinnerHeight * 1.1),
-		ui.getCursor() + vec2(spinnerWidth, spinnerHeight * 2),
+		ui.getCursor() + vec2(spinnerHeight, 0),
+		ui.getCursor() + vec2(spinnerWidth - spinnerHeight, spinnerHeight),
 		rgbm.new("#3a3842")
 	)
 
@@ -333,16 +321,15 @@ local function drawSetupSpinner(sm, setupItem)
 		and ui.mouseLocalPos() < ui.getCursor() + vec2(spinnerWidth, spinnerHeight * 2)
 
 	local sliderPos = ui.getCursor()
-	local tempPos = ui.getCursor()
 
 	ui.dwriteTextAligned(
 		setupItem.name,
-		spinnerHeight * 0.5,
-		ui.Alignment.End,
-		ui.Alignment.Start,
-		vec2(spinnerWidth / 3, spinnerHeight)
+		spinnerHeight * 0.6,
+		ui.Alignment.Center,
+		ui.Alignment.Center,
+		vec2(spinnerWidth, spinnerHeight)
 	)
-	ui.sameLine()
+	ui.setCursorX(xPos)
 
 	if setupItemHovered then
 		if drawSpinnerButton(setupItem, SpinnerButtonType.Left) then
@@ -366,38 +353,20 @@ local function drawSetupSpinner(sm, setupItem)
 		ui.sameLine()
 	end
 
-	ui.dwriteTextAligned(
-		string.format(setupItem.format, setupItem.value * setupItem.multiplier),
-		spinnerHeight * 0.5,
-		ui.Alignment.Start,
-		ui.Alignment.Center,
-		vec2(spinnerWidth / 3, spinnerHeight)
-	)
-
-	-- if setupItemHovered then
-	-- 	if drawSpinnerButton(setupItem, SpinnerButtonType.Reset) then
-	-- 		changed = true
-	-- 	end
-	-- else
-	-- 	ui.dummy(buttonSize)
-	-- 	ui.sameLine()
-	-- end
-	if setupItem.helpWindowShow then
+	if
+		ui.mouseLocalPos() > vec2(xPos, yPos)
+		and ui.mouseLocalPos() <= vec2(xPos, yPos) + vec2(spinnerWidth, spinnerHeight * 2 + spinnerHeight / 6)
+	then
 		HELP_TEXT = setupItem.help
 		setupItem:helpWindow()
 	end
-
-	ac.debug("HistoryCount", #sm._history)
-	ac.debug("HistoryPosition", sm._history_pos)
 
 	ui.popStyleVar(1)
 
 	return changed
 end
 
-local sm = SetupMgr()
-
-function car_setup()
+function car_setup(sm)
 	-- spinnerWidth = ui.windowWidth() / 2.15
 	-- spinnerHeight = spinnerWidth / 12
 	-- buttonSize = vec2(spinnerHeight, spinnerHeight)
@@ -415,47 +384,30 @@ function car_setup()
 	if changed then
 		sm:makeUndo()
 	end
-
-	ui.setCursorX(210)
-	ui.setCursorY(20)
-
-	if sm:isUndoAvailable() then
-		if myButton("undo", vec2(40, 20), rgbm.colors.cyan, rgbm.colors.gray) then
-			sm:undo()
-		end
-	end
-
-	ui.setCursorX(255)
-	ui.setCursorY(20)
-
-	if sm:isRedoAvailable() then
-		if myButton("redo", vec2(40, 20), rgbm.colors.cyan, rgbm.colors.gray) then
-			sm:redo()
-		end
-	end
 end
 
-function SetupWindow()
+function SetupWindow(sm)
 	contentWindow(
 		"car_setup_window",
 		storage.setupTab,
-		vec2(60, 40),
-		vec2(sim.windowWidth - 120, sim.windowHeight - 183),
+		vec2(60, 240),
+		vec2(sim.windowWidth - 120, sim.windowHeight - 383),
 		ui.WindowFlags.None,
 		function()
+			-- ui.drawRectFilled(vec2(0, 0), ui.availableSpace(), rgbm.colors.aqua)
 			pushMainMenuStyle()
 
 			storage.setupTab = tabBar(sm.setupTabs)
 			contentWindow(
 				"car_setup_window2",
 				storage.setupTab .. "2",
-				vec2(ui.windowWidth() / 4, 256),
+				vec2(ui.windowWidth() / 4, 56),
 				vec2(ui.windowWidth() / 2, ui.availableSpaceY()),
 				ui.WindowFlags.None,
 				function()
 					-- ui.drawRectFilled(vec2(0, 0), ui.availableSpace(), rgbm.colors.aqua)
 					ui.setCursor(0)
-					car_setup()
+					car_setup(sm)
 				end,
 				false,
 				true
@@ -465,11 +417,11 @@ function SetupWindow()
 			contentWindow(
 				"help_window42",
 				storage.setupTab .. "42",
-				vec2((ui.windowWidth() / 4) * 3, 256),
+				vec2((ui.windowWidth() / 4) * 3, 56),
 				vec2(ui.windowWidth() / 4, ui.availableSpaceY()),
 				ui.WindowFlags.None,
 				function()
-					-- ui.drawRectFilled(vec2(0, 0), ui.availableSpace(), rgbm.colors.aqua)
+					ui.drawRectFilled(vec2(0, 0), ui.availableSpace(), rgbm(0, 0, 0, 0.25))
 					ui.setCursor(0)
 
 					setCursorX(6)
@@ -495,10 +447,11 @@ function SetupWindow()
 			contentWindow(
 				"help_window432",
 				storage.setupTab .. "423",
-				vec2(0, 256),
+				vec2(0, 56),
 				vec2(ui.windowWidth() / 4, ui.availableSpaceY()),
 				ui.WindowFlags.None,
 				function()
+					ui.drawRectFilled(vec2(0, 0), ui.availableSpace(), rgbm(0, 0, 0, 0.25))
 					CarStatusWindow()
 				end,
 				false,
@@ -509,4 +462,8 @@ function SetupWindow()
 			-- CarStatusWindow()
 		end
 	)
+
+	if ui.keyboardButtonPressed(ui.KeyIndex.Escape) then
+		storage.page = MenuPages.Home
+	end
 end

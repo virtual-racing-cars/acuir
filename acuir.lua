@@ -7,36 +7,26 @@ UI_SCALE_X = sim.windowWidth / 2560 * 100
 UI_SCALE_Y = sim.windowHeight / 1440 * 100
 
 MenuPages = {
-	Setup = 0,
-	Notes = 1,
-	TimeTable = 2,
-	Apps = 3,
+	Home = 0,
+	Setup = 1,
+	Replay = 2,
+	Settings = 3,
 	Manual = 4,
-	Settings = 5,
-	Home = 6,
-}
-
-MenuPagesString = {
-	[-1] = "",
-	[0] = "Setup",
-	[1] = "Notes",
-	[2] = "Time Table",
-	[3] = "Apps",
-	[4] = "Settings",
-	[5] = "Home",
 }
 
 storage = ac.storage({
 	appOpen = false,
 	hasAppOpened = false,
 	setupTab = "SETUP I/O",
-	settingsTab = "GENERAL",
+	settingsTab = 1,
 	helpOpen = false,
-	page = MenuPages.Setup,
+	page = MenuPages.Home,
 })
 
 -- storage.setupTab = "SETUP I/O"
-storage.settingsTab = "GENERAL"
+storage.settingsTab = 1
+
+-- storage.page = MenuPages.Home
 
 settings = ac.storage({
 	autoStart = true,
@@ -56,7 +46,7 @@ require("init")
 require("classes\\button")
 require("utils\\utils_scale")
 require("ui\\styles")
-require("ui\\main\\main_window")
+require("ui\\main")
 cui = require("utils\\utils_cui")
 
 ui.onExclusiveHUD(function(mode)

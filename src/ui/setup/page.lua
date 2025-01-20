@@ -2,21 +2,47 @@ require("src\\ui\\setup\\setup_window")
 require("src\\ui\\setup\\help_window")
 require("src\\ui\\setup\\car_status_window")
 
-local setupPageFontSize = ui.Font.Title
+local sm = SetupMgr()
 
-if UI_SCALE_Y < 50 then
-	setupPageFontSize = ui.Font.Tiny
-elseif UI_SCALE_Y < 75 then
-	setupPageFontSize = ui.Font.Small
-elseif UI_SCALE_Y < 100 then
-	setupPageFontSize = ui.Font.Main
-end
+local bottomBarButtons = {
+	{
+		label = "BACK",
+		enabled = true,
+		func = function()
+			storage.page = MenuPages.Home
+		end,
+	},
+	{
+		label = "SETUP PRESETS",
+		enabled = true,
+		func = function() end,
+	},
+	{
+		label = "UNDO",
+		enabled = true,
+		func = function()
+			sm:undo()
+		end,
+	},
+	{
+		label = "REDO",
+		enabled = true,
+		func = function()
+			sm:redo()
+		end,
+	},
+}
 
 function SetupPage(sim)
-	ui.pushFont(setupPageFontSize)
+	topBar(false)
 
-	SetupWindow()
+	SetupWindow(sm)
 	HelpWindow()
 
-	ui.popFont()
+	bottomBarButtons[#bottomBarButtons - 1].enabled = sm:isUndoAvailable()
+	bottomBarButtons[#bottomBarButtons].enabled = sm:isRedoAvailable()
+
+	ac.log()
+
+	bottomBar(bottomBarButtons)
 end

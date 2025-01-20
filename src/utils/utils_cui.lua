@@ -80,7 +80,7 @@ end
 
 local fontLol = ui.DWriteFont("Panton-Trial"):weight(ui.DWriteFont.Weight.Regular)
 
-function cui.button(label, sizeX, sizeY, fontSize, horizontalAligment, verticalAlignment, flags)
+function cui.button(label, sizeX, sizeY, fontSize, horizontalAligment, verticalAlignment, flags, fontColor)
 	if not horizontalAligment then
 		horizontalAligment = ui.Alignment.Center
 	end
@@ -97,7 +97,7 @@ function cui.button(label, sizeX, sizeY, fontSize, horizontalAligment, verticalA
 
 	local textWidth = ui.measureDWriteText(string.upper(label), fontSize * scaleX).x
 
-	local fontColor = nil
+	local fontColor = fontColor
 
 	if flags == ui.ButtonFlags.Disabled then
 		fontColor = rgbm(0.6, 0.6, 0.6, 1)
@@ -127,6 +127,107 @@ function cui.button(label, sizeX, sizeY, fontSize, horizontalAligment, verticalA
 		vec2Temp1:set(textWidth + 30 * scaleX, sizeY * scaleY),
 		false,
 		fontColor
+	)
+
+	ui.popDWriteFont()
+
+	return clicked
+end
+
+function cui.settingsButton(label, sizeX, sizeY, flags)
+	local clicked = false
+
+	local fontSize = 35
+
+	local disabled = flags == ui.ButtonFlags.Disabled
+
+	ui.pushStyleColor(ui.StyleColor.Button, rgbm(0.231373, 0.223529, 0.262745, 1))
+	ui.pushStyleColor(ui.StyleColor.ButtonHovered, rgbm(1, 0, 0, 1))
+	ui.pushStyleColor(ui.StyleColor.ButtonActive, rgbm(1, 0, 0, 1))
+
+	local tempCursor = ui.getCursor()
+	if ui.button("##" .. label, vec2Temp1:set(sizeX, sizeY), flags) then
+		clicked = true
+	end
+	local r1, r2 = ui.itemRect()
+
+	if not ui.itemHovered() or disabled then
+		ui.drawRect(r1, r2, disabled and rgbm.colors.gray or rgbm.colors.white, 0, ui.CornerFlags.None, 2)
+	end
+
+	ui.popStyleColor(3)
+
+	ui.sameLine()
+	ui.offsetCursorY(1)
+	ui.setCursor(tempCursor)
+
+	ui.pushDWriteFont(fontLol)
+
+	ui.dwriteTextAligned(
+		string.upper(label),
+		fontSize,
+		ui.Alignment.Center,
+		ui.Alignment.Center,
+		vec2Temp1:set(sizeX, sizeY),
+		false,
+		rgbm.colors.white
+	)
+
+	ui.popDWriteFont()
+
+	return clicked
+end
+
+function cui.menuButton(label, size, fontSize, horizontalAligment, verticalAlignment, flags, active)
+	if not horizontalAligment then
+		horizontalAligment = ui.Alignment.Center
+	end
+
+	if not verticalAlignment then
+		verticalAlignment = ui.Alignment.Center
+	end
+
+	if not flags then
+		flags = ui.ButtonFlags.None
+	end
+
+	local clicked = false
+
+	local textWidth = ui.measureDWriteText(string.upper(label), fontSize * scaleX).x
+
+	local fontColor = active and rgbm(0, 0, 0, 1) or nil
+
+	ui.pushStyleColor(ui.StyleColor.ButtonHovered, rgbm(1, 0, 0, 1))
+
+	if flags == ui.ButtonFlags.Disabled then
+		fontColor = rgbm(0.6, 0.6, 0.6, 1)
+		ui.pushStyleColor(ui.StyleColor.Button, rgbm(0.05, 0.05, 0.05, 1))
+	end
+
+	local tempCursor = ui.getCursor()
+	if ui.button("##" .. label, vec2Temp1:set(textWidth + 30 * scaleX, size * scaleY), flags) then
+		clicked = true
+	end
+
+	if flags == ui.ButtonFlags.Disabled then
+		ui.popStyleColor(1)
+	end
+
+	ui.popStyleColor(1)
+
+	ui.sameLine()
+
+	ui.offsetCursorY(1)
+	ui.setCursor(tempCursor)
+	ui.pushDWriteFont(fontLol)
+	ui.dwriteTextAligned(
+		string.upper(label),
+		fontSize * scaleX,
+		horizontalAligment,
+		verticalAlignment,
+		vec2Temp1:set(textWidth + 30 * scaleX, size * scaleY),
+		false,
+		ui.itemHovered() and rgbm(1, 1, 1, 1) or fontColor
 	)
 
 	ui.popDWriteFont()
@@ -173,99 +274,6 @@ function cui.iconButton(label, icon, sizeX, sizeY, flags)
 	ui.icon(icon, vec2(sizeY, sizeY) * scaleY, nil, sizeY / 2 * scaleY)
 
 	ui.popStyleColor(1)
-
-	return clicked
-end
-
-function cui.menuButton(label, icon, size, flags)
-	local clicked = false
-
-	local cursorStart = ui.getCursor()
-
-	-- ui.drawRectFilled(
-	-- 	ui.getCursor(),
-	-- 	ui.getCursor() + vec2(size * scaleY, size * scaleY),
-	-- 	rgbm(1, 0, 0, 1),
-	-- 	10,
-	-- 	ui.CornerFlags.All
-	-- )
-
-	if ui.invisibleButton("##" .. label, vec2(size * scaleY, size * 1.5 * scaleY)) then
-		if flags ~= ui.ButtonFlags.Disabled then
-			clicked = true
-		end
-	end
-
-	local hovered = ui.itemHovered(ui.HoveredFlags.None)
-	local mouseDown = hovered and ui.mouseDown(ui.MouseButton.Left)
-	local iconColor = rgbm.colors.white
-
-	if mouseDown then
-		iconColor = rgbm(1, 0, 0, 1)
-	elseif hovered then
-		iconColor = rgbm(0.8, 0.2, 0.2, 1)
-	end
-
-	ui.setCursor(cursorStart)
-
-	cui.offsetCursorY(20)
-	ui.pushDWriteFont("Defualt;Weight=Bold")
-	ui.dwriteTextAligned(
-		label,
-		16 * scaleY,
-		ui.Alignment.Center,
-		ui.Alignment.End,
-		vec2Temp1:set(size * scaleY, size * scaleY),
-		false,
-		flags == ui.ButtonFlags.Disabled and rgbm(0.3, 0.3, 0.3, 1) or iconColor
-	)
-	ui.popDWriteFont()
-
-	ui.setCursor(cursorStart)
-
-	ui.icon(icon, (vec2(size, size) * scaleY), flags == ui.ButtonFlags.Disabled and rgbm(0.3, 0.3, 0.3, 1) or iconColor)
-
-	return clicked
-end
-
-function cui.menuButtonWide(label, icon, size, flags)
-	local clicked = false
-
-	local cursorStart = ui.getCursor()
-
-	ui.drawRectFilled(
-		ui.getCursor(),
-		ui.getCursor() + vec2(size * 8 * scaleY, size * scaleY),
-		rgbm(0, 0.5, 0, 0.2),
-		10,
-		ui.CornerFlags.All
-	)
-
-	ui.pushDWriteFont("Defualt;Weight=Bold")
-	ui.dwriteTextAligned(
-		label,
-		26 * scaleX,
-		ui.Alignment.Center,
-		ui.Alignment.Center,
-		vec2Temp1:set(size * 8 * scaleY, size * scaleY)
-	)
-	ui.popDWriteFont()
-
-	ui.sameLine()
-
-	ui.setCursor(cursorStart)
-
-	cui.offsetCursorX(size / 1.5 / 4)
-	cui.offsetCursorY(size / 1.5 / 4)
-
-	ui.icon(icon, vec2(size, size) / 1.5)
-
-	ui.setCursor(cursorStart)
-
-	if ui.invisibleButton("##" .. label, vec2(size * 8 * scaleY, size * scaleY)) then
-		clicked = true
-		ui.text("hi")
-	end
 
 	return clicked
 end

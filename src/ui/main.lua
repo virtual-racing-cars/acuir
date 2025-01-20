@@ -1,4 +1,5 @@
-require("ui\\main\\bar_side")
+require("ui\\common")
+require("ui\\home\\page")
 require("ui\\setup\\page")
 require("ui\\apps\\page")
 require("ui\\time_table\\page")
@@ -26,37 +27,6 @@ local raceSessiontTypeString = {
 	"TimeAttack",
 	"Drift",
 	"Drag",
-}
-
-local function getWindDirection()
-	return windDirection[math.floor((math.min(sim.windDirectionDeg, 179) + 180) / 360 * 8) + 1]
-end
-
-local infoText = {
-	function()
-		return 1, 1, raceSessiontTypeString[sim.raceSessionType + 1], "", "Microsoft JhengHei UI;Weight=Bold"
-	end,
-	function()
-		return 1, 2, "Duration: ", ac.lapTimeToString(sim.currentSessionTime)
-	end,
-	function()
-		return 1, 3, "Clock: ", string.format("%02d:%02d", sim.timeHours, sim.timeMinutes)
-	end,
-	function()
-		return 1, 4, "Remaining: ", ac.lapTimeToString(sim.sessionTimeLeft)
-	end,
-	function()
-		return 2, 1, "Air Temp: ", math.round(sim.ambientTemperature, 1)
-	end,
-	function()
-		return 2, 2, "Track Temp: ", math.round(sim.roadTemperature, 1)
-	end,
-	function()
-		return 2, 3, "Track Grip: ", math.round(sim.roadGrip * 100, 1)
-	end,
-	function()
-		return 2, 4, "Wind: ", math.round(sim.windSpeedKmh, 1) .. " km/h " .. getWindDirection()
-	end,
 }
 
 local timer = os.clock() + settings.uiHideonIdleTime
@@ -98,21 +68,11 @@ function MainWindow()
 			ui.bringWindowToFront()
 
 			if storage.page == MenuPages.Home then
-				SideBar(sim)
-			end
-
-			if storage.page == MenuPages.Apps then
-				AppsPage(sim)
-				exclusiveHudMode = "apps"
+				HomePage(sim)
 			end
 
 			if storage.page == MenuPages.Setup then
 				SetupPage(sim)
-				exclusiveHudMode = ""
-			end
-
-			if storage.page == MenuPages.TimeTable then
-				TimeTablePage(sim)
 				exclusiveHudMode = ""
 			end
 
@@ -121,7 +81,6 @@ function MainWindow()
 				exclusiveHudMode = ""
 			end
 
-			bottomBar()
 			-- ui.drawRectFilled(
 			-- 	vec2(sim.windowWidth / 2 - 1, 0),
 			-- 	vec2(sim.windowWidth / 2 + 1, sim.windowHeight),

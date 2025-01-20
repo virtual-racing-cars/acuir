@@ -39,41 +39,32 @@ function slider(label, value, min, max, round, format, color, size, step, noScro
 	local yPos = ui.getCursorY()
 	local xMax = xPos + width
 
-	ui.drawRectFilled(ui.getCursor() + vec2(0, 10), ui.getCursor() + vec2(width, height - 10), rgbm(0, 0, 0, 0.67), 5)
+	ui.drawRectFilled(ui.getCursor(), ui.getCursor() + vec2(width, height), rgbm(1, 1, 1, 1))
 
 	ui.invisibleButton("invis" .. label, vec2(width, height))
 	ui.setCursor(vec2(xPos, yPos))
 
-	local sliderPosition = ((value - min) / (max - min)) * (width - sliderWidth)
+	local sliderPosition = ((value - min) / (max - min)) * width
 
 	ui.drawRectFilled(
-		ui.getCursor() + vec2(0, 10),
-		ui.getCursor() + vec2(sliderPosition, height - 10),
-		rgbm(1, 1, 1, 0.67),
-		5
+		vec2(xPos, yPos + height),
+		vec2(xPos + sliderPosition, yPos + height + height / 6),
+		rgbm(1, 0, 0, 1)
 	)
 
 	if not ui.mouseDown(ui.MouseButton.Left) then
 		activeItem = ""
 	end
 
-	if activeItem == label and ui.mouseDown(ui.MouseButton.Left) then
-		ui.pushStyleColor(ui.StyleColor.Button, rgbm(1, 1, 1, 1))
-	else
-		ui.pushStyleColor(ui.StyleColor.Button, rgbm(1, 1, 1, 1))
-	end
-
 	ui.offsetCursorX(sliderPosition)
-	ui.button("##" .. label, vec2(sliderWidth, height), ui.ButtonFlags.None)
-	ui.popStyleColor(1)
+	ui.invisibleButton("##" .. label, vec2(sliderWidth / 2, height))
 
 	active = ui.itemActive() or (activeItem == label and ui.mouseDown(ui.MouseButton.Left))
-
 	if
 		active
 		or (
-			ui.mouseLocalPos() > vec2(xPos, yPos)
-			and ui.mouseLocalPos() <= vec2(xPos, yPos) + vec2(width, height)
+			ui.mouseLocalPos() > vec2(xPos, yPos - height)
+			and ui.mouseLocalPos() <= vec2(xPos, yPos) + vec2(width, height + height / 6)
 			and (
 				(ui.mouseClicked(ui.MouseButton.Left) and not ui.itemHovered(ui.HoveredFlags.None))
 				or (ui.mouseWheel() ~= 0 and not noScroll)
@@ -88,7 +79,7 @@ function slider(label, value, min, max, round, format, color, size, step, noScro
 				or (math.round(value) + valueChangeAmount)
 		else
 			activeItem = label
-			value = (ui.mouseLocalPos().x - xPos) / (xMax - (sliderWidth / 2) - xPos) * (max - min) + min
+			value = (ui.mouseLocalPos().x - xPos) / (xMax - xPos) * (max - min) + min
 		end
 	end
 
@@ -102,11 +93,20 @@ function slider(label, value, min, max, round, format, color, size, step, noScro
 
 	ui.sameLine()
 	ui.setCursorX(xPos)
+	ui.setCursorY(yPos)
 
 	local fontSize = math.floor(size.y * 0.5)
 	fontSize = (fontSize % 2 ~= 0) and fontSize + 1 or fontSize
 
-	ui.dummy(vec2(width, 55))
+	ui.dwriteTextAligned(
+		string.format(format, value * mult + offset),
+		math.round(size.y * 0.6),
+		ui.Alignment.Center,
+		ui.Alignment.Center,
+		vec2(width, height),
+		false,
+		rgbm.colors.black
+	)
 
 	return value, changed, active
 end

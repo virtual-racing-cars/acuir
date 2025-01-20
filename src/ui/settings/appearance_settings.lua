@@ -1,83 +1,133 @@
+local sim = ac.getSim()
+
+local bottomBarButtons = {
+	{
+		label = "BACK",
+		enabled = true,
+		func = function()
+			storage.settingsTab = 1
+		end,
+	},
+	{
+		label = "APPLY",
+		enabled = false,
+		func = function() end,
+	},
+	{
+		label = "CANCEL",
+		enabled = false,
+		func = function() end,
+	},
+	-- {
+	-- 	label = "SETUP PRESETS",
+	-- 	enabled = true,
+	-- 	func = function() end,
+	-- },
+}
+
 local primaryActive = false
 local secondaryActive = false
 
 function appearanceSettings()
-	setCursorY(60)
+	contentWindow(
+		"car_setup_window",
+		storage.setupTab,
+		vec2(60, 240),
+		vec2(sim.windowWidth - 120, sim.windowHeight - 383),
+		ui.WindowFlags.None,
+		function()
+			ui.drawLine(vec2(0, 2), vec2(ui.windowWidth(), 2), rgbm.colors.gray, 2)
+			ui.drawRectFilled(vec2(0, 2), vec2(ui.windowWidth(), ui.windowHeight()), rgbm(0, 0, 0, 0.2))
 
-	setCursorX(10)
-	if ui.checkbox("Show 'Car Info' window on the setup page", settings.hideOtherTrackSetups) then
-		settings.hideOtherTrackSetups = not settings.hideOtherTrackSetups
-	end
+			ui.setCursorY(60)
+			ui.setCursorX(50)
 
-	setCursorX(10)
-	ui.text("Primary Theme Color:")
-	ui.sameLine()
-	setCursorX(210)
-	ui.setNextItemWidth(275)
-	local primaryColor, primaryOpacity = settings.uiPrimaryColor:unpack()
-	local newPrimaryOpacity, primaryOpacityChanged =
-		ui.slider("##ui_primary_slider", primaryOpacity * 100, 0, 100, "Opacity: %.0f%%")
+			if ui.checkbox("Show 'Car Info' window on the setup page", settings.hideOtherTrackSetups) then
+				settings.hideOtherTrackSetups = not settings.hideOtherTrackSetups
+			end
 
-	if primaryOpacityChanged then
-		settings.uiPrimaryColor = settings.uiPrimaryColor:set(primaryColor, newPrimaryOpacity / 100)
-	end
+			setCursorX(10)
+			ui.text("Primary Theme Color:")
+			ui.sameLine()
+			setCursorX(210)
+			ui.setNextItemWidth(275)
+			local primaryColor, primaryOpacity = settings.uiPrimaryColor:unpack()
+			local newPrimaryOpacity, primaryOpacityChanged =
+				ui.slider("##ui_primary_slider", primaryOpacity * 100, 0, 100, "Opacity: %.0f%%")
 
-	ui.sameLine()
-	if ui.colorButton("##primary", settings.uiPrimaryColor, ui.ColorPickerFlags.None) then
-		primaryActive = not primaryActive
-		secondaryActive = false
-	end
+			if primaryOpacityChanged then
+				settings.uiPrimaryColor = settings.uiPrimaryColor:set(primaryColor, newPrimaryOpacity / 100)
+			end
 
-	if primaryActive then
-		ui.sameLine()
-		local currentXPos = ui.getCursorX()
-		ui.newLine()
-		setCursorX(currentXPos - 304)
-		ui.setNextItemWidth(300)
-		if
-			ui.colorPicker(
-				"##ui_primary_picker",
-				settings.uiPrimaryColor,
-				ui.ColorPickerFlags.DisplayRGB + ui.ColorPickerFlags.NoAlpha + ui.ColorPickerFlags.NoSidePreview
+			ui.sameLine()
+			if ui.colorButton("##primary", settings.uiPrimaryColor, ui.ColorPickerFlags.None) then
+				primaryActive = not primaryActive
+				secondaryActive = false
+			end
+
+			if primaryActive then
+				ui.sameLine()
+				local currentXPos = ui.getCursorX()
+				ui.newLine()
+				setCursorX(currentXPos - 304)
+				ui.setNextItemWidth(300)
+				if
+					ui.colorPicker(
+						"##ui_primary_picker",
+						settings.uiPrimaryColor,
+						ui.ColorPickerFlags.DisplayRGB + ui.ColorPickerFlags.NoAlpha + ui.ColorPickerFlags.NoSidePreview
+					)
+				then
+					settings.uiPrimaryColor = settings.uiPrimaryColor
+				end
+			end
+
+			setCursorX(10)
+			ui.text("Secondary Theme Color:")
+			ui.sameLine()
+			setCursorX(210)
+			ui.setNextItemWidth(275)
+			local secondaryColor, secondaryOpacity = settings.uiSecondaryColor:unpack()
+			local newSecondaryOpacity, secondaryOpacityChanged =
+				ui.slider("##ui_secondary_slider", secondaryOpacity * 100, 0, 100, "Opacity: %.0f%%")
+
+			if secondaryOpacityChanged then
+				settings.uiSecondaryColor = settings.uiSecondaryColor:set(secondaryColor, newSecondaryOpacity / 100)
+			end
+
+			ui.sameLine()
+			if ui.colorButton("##secondary", settings.uiSecondaryColor, ui.ColorPickerFlags.None) then
+				secondaryActive = not secondaryActive
+				primaryActive = false
+			end
+
+			if secondaryActive then
+				ui.sameLine()
+				local currentXPos = ui.getCursorX()
+				ui.newLine()
+				setCursorX(currentXPos - 304)
+				ui.setNextItemWidth(300)
+				if
+					ui.colorPicker(
+						"##ui_secondary_picker",
+						settings.uiSecondaryColor,
+						ui.ColorPickerFlags.DisplayRGB + ui.ColorPickerFlags.NoAlpha + ui.ColorPickerFlags.NoSidePreview
+					)
+				then
+					settings.uiSecondaryColor = settings.uiSecondaryColor
+				end
+			end
+
+			ui.drawLine(
+				vec2(0, ui.windowHeight() - 2),
+				vec2(ui.windowWidth(), ui.windowHeight() - 2),
+				rgbm.colors.gray,
+				2
 			)
-		then
-			settings.uiPrimaryColor = settings.uiPrimaryColor
-		end
-	end
+		end,
+		false,
+		true
+	)
 
-	setCursorX(10)
-	ui.text("Secondary Theme Color:")
-	ui.sameLine()
-	setCursorX(210)
-	ui.setNextItemWidth(275)
-	local secondaryColor, secondaryOpacity = settings.uiSecondaryColor:unpack()
-	local newSecondaryOpacity, secondaryOpacityChanged =
-		ui.slider("##ui_secondary_slider", secondaryOpacity * 100, 0, 100, "Opacity: %.0f%%")
-
-	if secondaryOpacityChanged then
-		settings.uiSecondaryColor = settings.uiSecondaryColor:set(secondaryColor, newSecondaryOpacity / 100)
-	end
-
-	ui.sameLine()
-	if ui.colorButton("##secondary", settings.uiSecondaryColor, ui.ColorPickerFlags.None) then
-		secondaryActive = not secondaryActive
-		primaryActive = false
-	end
-
-	if secondaryActive then
-		ui.sameLine()
-		local currentXPos = ui.getCursorX()
-		ui.newLine()
-		setCursorX(currentXPos - 304)
-		ui.setNextItemWidth(300)
-		if
-			ui.colorPicker(
-				"##ui_secondary_picker",
-				settings.uiSecondaryColor,
-				ui.ColorPickerFlags.DisplayRGB + ui.ColorPickerFlags.NoAlpha + ui.ColorPickerFlags.NoSidePreview
-			)
-		then
-			settings.uiSecondaryColor = settings.uiSecondaryColor
-		end
-	end
+	bottomBar(bottomBarButtons)
 end

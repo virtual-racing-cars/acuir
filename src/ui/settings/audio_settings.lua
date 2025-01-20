@@ -1,3 +1,5 @@
+local sim = ac.getSim()
+
 local channels = {
 	"Main",
 	"Rain",
@@ -16,19 +18,67 @@ local channels = {
 
 table.sort(channels)
 
+local bottomBarButtons = {
+	{
+		label = "BACK",
+		enabled = true,
+		func = function()
+			storage.settingsTab = 1
+		end,
+	},
+	{
+		label = "APPLY",
+		enabled = false,
+		func = function() end,
+	},
+	{
+		label = "CANCEL",
+		enabled = false,
+		func = function() end,
+	},
+	-- {
+	-- 	label = "SETUP PRESETS",
+	-- 	enabled = true,
+	-- 	func = function() end,
+	-- },
+}
+
 function audioSettings()
-	setCursorY(60)
+	contentWindow(
+		"car_setup_window",
+		storage.setupTab,
+		vec2(60, 240),
+		vec2(sim.windowWidth - 120, sim.windowHeight - 383),
+		ui.WindowFlags.None,
+		function()
+			ui.drawLine(vec2(0, 2), vec2(ui.windowWidth(), 2), rgbm.colors.gray, 2)
+			ui.drawRectFilled(vec2(0, 2), vec2(ui.windowWidth(), ui.windowHeight()), rgbm(0, 0, 0, 0.2))
 
-	for k, v in ipairs(channels) do
-		local id = string.replace(v, " ", "")
+			ui.setCursorY(100)
 
-		setCursorX(10)
+			for k, v in ipairs(channels) do
+				local id = string.replace(v, " ", "")
 
-		local value, changed =
-			ui.slider("##" .. id, ac.getAudioVolume(ac.AudioChannel[id]) * 100, 0, 100, v .. ": %.0f")
+				ui.setCursorX(50)
 
-		if changed then
-			ac.setAudioVolume(ac.AudioChannel[id], value / 100)
-		end
-	end
+				local value, changed =
+					ui.slider("##" .. id, ac.getAudioVolume(ac.AudioChannel[id]) * 100, 0, 100, v .. ": %.0f")
+
+				if changed then
+					ac.setAudioVolume(ac.AudioChannel[id], value / 100)
+				end
+			end
+
+			ui.drawLine(
+				vec2(0, ui.windowHeight() - 2),
+				vec2(ui.windowWidth(), ui.windowHeight() - 2),
+				rgbm.colors.gray,
+				2
+			)
+		end,
+		false,
+		true
+	)
+
+	bottomBar(bottomBarButtons)
 end
