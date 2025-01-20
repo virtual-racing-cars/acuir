@@ -138,17 +138,17 @@ function CarStatusWindow()
 	for k, v in ipairs(infoText) do
 		local column, position, label, value = v()
 
-		setCursorY(300 + (24 * position))
+		ui.setCursorY(80 + (24 * position))
 
 		local x = -140 + 150 * column
 
-		setCursorX(-130 + 150 * column)
+		ui.setCursorX(-110 + 150 * column)
 
-		ui.text(label)
+		ui.dwriteText(label, 18)
 
-		setCursorY(300 + (24 * position))
-		setCursorX(x + 164)
+		ui.setCursorY(80 + (24 * position))
+		ui.setCursorX(x + 190)
 
-		ui.text(value)
+		ui.dwriteText(value, 18)
 	end
 end

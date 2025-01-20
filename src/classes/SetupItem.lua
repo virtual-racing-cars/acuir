@@ -92,29 +92,29 @@ function SetupItem:initialize(
 end
 
 function SetupItem:helpWindow()
-	if self.help ~= "NULL" and self.help ~= "" then
-		ui.tooltip(function()
-			ui.dummy(vec2(230 * cui.scaleY(), 0))
-			ui.bringWindowToFront()
-			local helpSections = string.split(self.help, "\\n\\n")
+	-- if self.help ~= "NULL" and self.help ~= "" then
+	-- 	ui.tooltip(function()
+	-- 		ui.dummy(vec2(230 * cui.scaleY(), 0))
+	-- 		ui.bringWindowToFront()
+	-- 		local helpSections = string.split(self.help, "\\n\\n")
 
-			for i in ipairs(helpSections) do
-				ui.dwriteTextWrapped(helpSections[i], 14 * cui.scaleY())
-			end
-		end)
+	-- 		for i in ipairs(helpSections) do
+	-- 			ui.dwriteTextWrapped(helpSections[i], 14 * cui.scaleY())
+	-- 		end
+	-- 	end)
 
-		ui.transparentWindow(
-			"##help" .. self.id,
-			vec2(
-				(265 * UI_SCALE_Y / 100) + (1315 + setupPageFontSize[1]) * UI_SCALE_X / 100,
-				(200 + setupPageFontSize[2]) * UI_SCALE_Y / 100
-			),
-			vec2(325 * UI_SCALE_Y / 100, 730 * UI_SCALE_Y / 100 / 2),
-			true,
-			false,
-			function() end
-		)
-	end
+	-- 	ui.transparentWindow(
+	-- 		"##help" .. self.id,
+	-- 		vec2(
+	-- 			(265 * UI_SCALE_Y / 100) + (1315 + setupPageFontSize[1]) * UI_SCALE_X / 100,
+	-- 			(200 + setupPageFontSize[2]) * UI_SCALE_Y / 100
+	-- 		),
+	-- 		vec2(325 * UI_SCALE_Y / 100, 730 * UI_SCALE_Y / 100 / 2),
+	-- 		true,
+	-- 		false,
+	-- 		function() end
+	-- 	)
+	-- end
 end
 
 function SetupItem:getValue()

@@ -158,6 +158,8 @@ local sim = ac.getSim()
 
 local max = math.max
 
+local SpinnerButtonType = { Reset = -1, Left = 0, Right = 1 }
+
 local _l_button_alignment = vec2(0.5, 0.1)
 
 local function myButton(text, size, hovercolor, backcolor, thumbnail)
@@ -175,9 +177,29 @@ local function myButton(text, size, hovercolor, backcolor, thumbnail)
 	return hovered and ac.getUI().isMouseLeftKeyClicked
 end
 
-local SpinnerButtonType = { Reset = -1, Left = 0, Right = 1 }
+local function arrowButton(direction, size)
+	local tmpPos = ui.getCursor()
+	local clicked = ui.button("##dummyButton" .. direction, size, ui.ButtonFlags.PressedOnClick)
+	local hovered = ui.itemHovered()
+	ui.setCursor(tmpPos)
 
-local spinnerWidth = 550
+	if hovered then
+		ui.popup(function()
+			ui.text("hi")
+		end)
+	end
+
+	ui.icon(
+		direction == SpinnerButtonType.Left and ui.Icons.Skip or ui.Icons.Skip,
+		size,
+		hovered and rgbm.colors.red or rgbm.colors.white,
+		direction == SpinnerButtonType.Left and -size or size
+	)
+
+	return clicked
+end
+
+local spinnerWidth = 580
 local spinnerHeight = 30
 local buttonSize = vec2(spinnerHeight, spinnerHeight)
 
@@ -185,6 +207,9 @@ function drawSpinnerButton(setupItem, direction)
 	local changed = false
 
 	ui.pushStyleColor(ui.StyleColor.Button, rgbm(0, 0, 0, 0))
+	ui.pushStyleColor(ui.StyleColor.ButtonHovered, rgbm(0, 0, 0, 0))
+	ui.pushStyleColor(ui.StyleColor.TextHovered, rgbm(1, 0, 0, 1))
+	ui.pushStyleColor(ui.StyleColor.HeaderHovered, rgbm(0, 0, 0, 0))
 	if setupItem.min == setupItem.max then
 		ui.dummy(buttonSize)
 	elseif direction == SpinnerButtonType.Reset then
@@ -199,15 +224,7 @@ function drawSpinnerButton(setupItem, direction)
 		then
 			changed = setupItem:resetValue()
 		end
-	elseif
-		ui.modernButtonAdvanced(
-			"##" .. direction .. setupItem.id,
-			buttonSize,
-			ui.ButtonFlags.PressedOnClick,
-			direction == SpinnerButtonType.Left and ui.Icons.ArrowLeft or ui.Icons.ArrowRight,
-			true
-		)
-	then
+	elseif arrowButton(direction, buttonSize) then
 		setupItem.buttonHeldTimer[direction] = os.clock() + 0.5
 		setupItem.buttonHeldStart = os.clock()
 
@@ -235,7 +252,7 @@ function drawSpinnerButton(setupItem, direction)
 		setupItem.helpWindowShow = true
 	end
 
-	ui.popStyleColor(1)
+	ui.popStyleColor(4)
 
 	ui.sameLine()
 	return changed
@@ -248,22 +265,8 @@ function drawSlider(setupItem, pos)
 		)
 	end
 
-	local sliderWidth = spinnerWidth - (2 * spinnerHeight)
+	local sliderWidth = (spinnerWidth / 2.4) - (2 * spinnerHeight)
 	local sliderHeight = spinnerHeight
-
-	local tempPos = ui.getCursor()
-
-	ui.offsetCursor(-vec2(sliderHeight, sliderHeight))
-
-	ui.dwriteTextAligned(
-		setupItem.name,
-		sliderHeight * 0.5,
-		ui.Alignment.Center,
-		ui.Alignment.Start,
-		vec2(spinnerWidth, sliderHeight)
-	)
-
-	ui.setCursor(tempPos)
 
 	-- local sliderGrabSize =
 	-- 	max(350 * cui.scaleY() / (setupItem.max - setupItem.min + setupItem.step) / setupItem.step, 10)
@@ -318,7 +321,7 @@ local function drawSetupSpinner(sm, setupItem)
 	}
 
 	ui.setCursorX(positions[setupItem.xPos])
-	cui.setCursorY(setupItem.yPos * 90 + 100)
+	cui.setCursorY(setupItem.yPos * 98 + 100)
 
 	ui.drawRectFilled(
 		ui.getCursor() - vec2(0, spinnerHeight * 1.1),
@@ -330,6 +333,16 @@ local function drawSetupSpinner(sm, setupItem)
 		and ui.mouseLocalPos() < ui.getCursor() + vec2(spinnerWidth, spinnerHeight * 2)
 
 	local sliderPos = ui.getCursor()
+	local tempPos = ui.getCursor()
+
+	ui.dwriteTextAligned(
+		setupItem.name,
+		spinnerHeight * 0.5,
+		ui.Alignment.End,
+		ui.Alignment.Start,
+		vec2(spinnerWidth / 3, spinnerHeight)
+	)
+	ui.sameLine()
 
 	if setupItemHovered then
 		if drawSpinnerButton(setupItem, SpinnerButtonType.Left) then
@@ -353,14 +366,22 @@ local function drawSetupSpinner(sm, setupItem)
 		ui.sameLine()
 	end
 
-	if setupItemHovered then
-		if drawSpinnerButton(setupItem, SpinnerButtonType.Reset) then
-			changed = true
-		end
-	else
-		ui.dummy(buttonSize)
-		ui.sameLine()
-	end
+	ui.dwriteTextAligned(
+		string.format(setupItem.format, setupItem.value * setupItem.multiplier),
+		spinnerHeight * 0.5,
+		ui.Alignment.Start,
+		ui.Alignment.Center,
+		vec2(spinnerWidth / 3, spinnerHeight)
+	)
+
+	-- if setupItemHovered then
+	-- 	if drawSpinnerButton(setupItem, SpinnerButtonType.Reset) then
+	-- 		changed = true
+	-- 	end
+	-- else
+	-- 	ui.dummy(buttonSize)
+	-- 	ui.sameLine()
+	-- end
 	if setupItem.helpWindowShow then
 		HELP_TEXT = setupItem.help
 		setupItem:helpWindow()
@@ -425,11 +446,6 @@ function SetupWindow()
 			pushMainMenuStyle()
 
 			storage.setupTab = tabBar(sm.setupTabs)
-
-			setupTabBanner()
-
-			ui.setCursor(0)
-
 			contentWindow(
 				"car_setup_window2",
 				storage.setupTab .. "2",
@@ -440,14 +456,57 @@ function SetupWindow()
 					-- ui.drawRectFilled(vec2(0, 0), ui.availableSpace(), rgbm.colors.aqua)
 					ui.setCursor(0)
 					car_setup()
-				end
+				end,
+				false,
+				true
 			)
 
-			-- setupItemSpinners()
+			ui.setCursor(0)
+			contentWindow(
+				"help_window42",
+				storage.setupTab .. "42",
+				vec2((ui.windowWidth() / 4) * 3, 256),
+				vec2(ui.windowWidth() / 4, ui.availableSpaceY()),
+				ui.WindowFlags.None,
+				function()
+					-- ui.drawRectFilled(vec2(0, 0), ui.availableSpace(), rgbm.colors.aqua)
+					ui.setCursor(0)
+
+					setCursorX(6)
+					setCursorY(50)
+
+					if HELP_TEXT ~= "NULL" and HELP_TEXT ~= "" then
+						ui.dummy(vec2(230 * cui.scaleY(), 0))
+						ui.bringWindowToFront()
+						local helpSections = string.split(HELP_TEXT, "\\n\\n")
+
+						for i in ipairs(helpSections) do
+							ui.dwriteTextWrapped(helpSections[i], 24)
+						end
+					end
+
+					HELP_TEXT = ""
+				end,
+				false,
+				true
+			)
+
+			ui.setCursor(0)
+			contentWindow(
+				"help_window432",
+				storage.setupTab .. "423",
+				vec2(0, 256),
+				vec2(ui.windowWidth() / 4, ui.availableSpaceY()),
+				ui.WindowFlags.None,
+				function()
+					CarStatusWindow()
+				end,
+				false,
+				true
+			)
 
 			popMainMenuStyle()
-
-			CarStatusWindow()
+			-- CarStatusWindow()
 		end
 	)
 end

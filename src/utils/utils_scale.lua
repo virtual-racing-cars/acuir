@@ -10,10 +10,13 @@ childWindow = function(id, size, border, flags, content)
 	ui.childWindow(id, size, false, flags, content)
 end
 
-contentWindow = function(id, title, position, size, flags, content, showTitle)
+contentWindow = function(id, title, position, size, flags, content, showTitle, hideBackground)
 	cui.pushWindow(id .. "test", position.x, position.y, size.x, size.y)
 	size = size * cui.scaleY()
-	ui.drawRectFilled(vec2(0, 0), size, settings.uiPrimaryColor)
+
+	if not hideBackground then
+		ui.drawRectFilled(vec2(0, 0), size, settings.uiPrimaryColor)
+	end
 
 	-- ui.drawRectFilled(vec2(0, 0), size, rgbm(0.1, 0.1, 0.1, 0.25), 10, ui.CornerFlags.Top)
 	-- ui.drawRectFilledMultiColor(
