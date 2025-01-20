@@ -92,6 +92,8 @@ function MainWindow()
 			-- 	vec2(sim.windowWidth, sim.windowHeight / 2 + 1),
 			-- 	rgbm.colors.lime
 			-- )
+
+			audioDriver()
 		end
 	)
 

@@ -89,7 +89,17 @@ local function tabItem(tabCount, index, title)
 		currentApp == index and rgbm(0.74, 0, 0, 1) or rgbm.colors.transparent
 	)
 
-	if cui.menuButton(title, 56, 12, ui.Alignment.Center, ui.Alignment.Center, nil, currentApp == index) then
+	if
+		cui.menuButton(
+			title,
+			56,
+			12,
+			ui.Alignment.Center,
+			ui.Alignment.Center,
+			ui.ButtonFlags.None,
+			currentApp == index
+		)
+	then
 		currentApp = index
 	end
 
@@ -115,8 +125,10 @@ local function tabBar(apps)
 	if ui.mouseLocalPos() >= vec2(0, 0) and ui.mouseLocalPos() < vec2(sim.windowWidth - 120, 56) * cui.scaleY() then
 		if ui.mouseWheel() > 0 then
 			currentApp = currentApp >= #apps - 1 and 0 or currentApp + 1
+			audioTrigger()
 		elseif ui.mouseWheel() < 0 then
 			currentApp = currentApp == 0 and #apps - 1 or currentApp - 1
+			audioTrigger()
 		end
 	end
 

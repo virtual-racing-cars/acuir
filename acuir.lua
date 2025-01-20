@@ -47,6 +47,7 @@ require("classes\\button")
 require("utils\\utils_scale")
 require("ui\\styles")
 require("ui\\main")
+require("ui\\audio")
 cui = require("utils\\utils_cui")
 
 ui.onExclusiveHUD(function(mode)
