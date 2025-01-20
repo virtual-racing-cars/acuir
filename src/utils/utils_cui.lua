@@ -1,23 +1,9 @@
-local scaleX = 1
-local scaleY = 1
+local sim = ac.getSim()
 
 local vec2Temp1 = vec2()
 local vec2Temp2 = vec2()
 
 local cui = {}
-
-function cui.setScale(x, y)
-	scaleX = x
-	scaleY = y
-end
-
-function cui.setScaleX(x)
-	scaleX = x
-end
-
-function cui.setScaleY(y)
-	scaleY = y
-end
 
 local defaultWidth = 2560
 local defaultHeight = 1440
@@ -26,6 +12,9 @@ local windowMaxWidth = 0
 local windowMaxHeight = 0
 local currentScale = 1
 local itemSpacing = 5
+
+local scaleX = sim.windowWidth / 2560
+local scaleY = sim.windowHeight / 1440
 
 function cui.bestFit()
 	windowMaxWidth = math.clamp(ui.windowWidth(), 0, ui.windowHeight() * ratio)
@@ -63,7 +52,7 @@ function cui.scaleY()
 end
 
 function cui.setCursorX(v)
-	ui.setCursorX(v * scaleY)
+	ui.setCursorX(v * scaleX)
 end
 
 function cui.setCursorY(v)
@@ -75,7 +64,7 @@ function cui.offsetCursorX(v)
 end
 
 function cui.offsetCursorY(v)
-	ui.offsetCursorY(v * scaleX)
+	ui.offsetCursorY(v * scaleY)
 end
 
 local fontLol = ui.DWriteFont("Panton-Trial"):weight(ui.DWriteFont.Weight.Regular)
@@ -135,9 +124,12 @@ function cui.button(label, sizeX, sizeY, fontSize, horizontalAligment, verticalA
 end
 
 function cui.settingsButton(label, sizeX, sizeY, flags)
+	sizeX = sizeX * scaleX
+	sizeY = sizeY * scaleY
+
 	local clicked = false
 
-	local fontSize = 35
+	local fontSize = 35 * scaleY
 
 	local disabled = flags == ui.ButtonFlags.Disabled
 
@@ -178,7 +170,7 @@ function cui.settingsButton(label, sizeX, sizeY, flags)
 	return clicked
 end
 
-function cui.menuButton(label, size, fontSize, horizontalAligment, verticalAlignment, flags, active)
+function cui.menuButton(label, size, horizontalAligment, verticalAlignment, flags, active)
 	if not horizontalAligment then
 		horizontalAligment = ui.Alignment.Center
 	end
@@ -191,9 +183,12 @@ function cui.menuButton(label, size, fontSize, horizontalAligment, verticalAlign
 		flags = ui.ButtonFlags.None
 	end
 
+	size = size * scaleY
+
 	local clicked = false
 
-	local textWidth = ui.measureDWriteText(string.upper(label), fontSize * scaleX).x
+	local fontSize = size / 3
+	local textWidth = ui.measureDWriteText(string.upper(label), fontSize).x + 40 * scaleY
 
 	local fontColor = active and rgbm(0, 0, 0, 1) or nil
 
@@ -205,7 +200,7 @@ function cui.menuButton(label, size, fontSize, horizontalAligment, verticalAlign
 	end
 
 	local tempCursor = ui.getCursor()
-	if ui.button("##" .. label, vec2Temp1:set(textWidth + 30 * scaleX, size * scaleY), flags) then
+	if ui.button("##" .. label, vec2Temp1:set(textWidth, size), flags) then
 		clicked = true
 	end
 
@@ -222,10 +217,10 @@ function cui.menuButton(label, size, fontSize, horizontalAligment, verticalAlign
 	ui.pushDWriteFont(fontLol)
 	ui.dwriteTextAligned(
 		string.upper(label),
-		fontSize * scaleX,
+		fontSize,
 		horizontalAligment,
 		verticalAlignment,
-		vec2Temp1:set(textWidth + 30 * scaleX, size * scaleY),
+		vec2Temp1:set(textWidth, size),
 		false,
 		ui.itemHovered() and rgbm(1, 1, 1, 1) or fontColor
 	)
@@ -291,11 +286,11 @@ function cui.pushWindow(id, x, y, width, height, scroll)
 		windowFlags = windowFlags + ui.WindowFlags.NoScrollbar + ui.WindowFlags.NoScrollWithMouse
 	end
 
-	local tabWidth = width * scaleY
-	local tabHeight = height * scaleY
+	local tabWidth = width
+	local tabHeight = height
 
-	cui.setCursorX(x)
-	cui.setCursorY(y)
+	ui.setCursorX(x)
+	ui.setCursorY(y)
 
 	ui.pushStyleVar(ui.StyleVar.WindowPadding, 0)
 	ui.beginChild(id, vec2(tabWidth, tabHeight), true, windowFlags)
@@ -304,8 +299,8 @@ function cui.pushWindow(id, x, y, width, height, scroll)
 		ui.pushClipRect(vec2(0, 0), vec2(tabWidth, tabHeight))
 	end
 
-	ui.setCursorX(margins * scaleY)
-	ui.setCursorY(margins * scaleY)
+	ui.setCursorX(margins)
+	ui.setCursorY(margins)
 
 	ui.beginGroup(tabWidth)
 end

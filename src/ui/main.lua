@@ -44,17 +44,10 @@ function MainWindow()
 		end
 	end
 
-	local windowSize = vec2(sim.windowWidth, sim.windowHeight)
-	setCursorX(0)
-	setCursorY(0)
-
-	if not storage.appOpen then
-		windowSize = vec2(UI_SCALE_Y, UI_SCALE_Y)
-	end
-
+	ui.setCursor(0)
 	childWindow(
 		"main_window",
-		windowSize,
+		vec2(sim.windowWidth, sim.windowHeight),
 		false,
 		ui.WindowFlags.NoScrollbar + ui.WindowFlags.NoScrollWithMouse,
 		function()
@@ -72,7 +65,7 @@ function MainWindow()
 			end
 
 			if storage.page == MenuPages.Setup then
-				SetupPage(sim)
+				SetupPage()
 				exclusiveHudMode = ""
 			end
 

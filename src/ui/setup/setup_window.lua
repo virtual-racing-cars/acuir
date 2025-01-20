@@ -90,15 +90,7 @@ local function tabItem(tabCount, index, title)
 	)
 
 	if
-		cui.menuButton(
-			title,
-			56,
-			12,
-			ui.Alignment.Center,
-			ui.Alignment.Center,
-			ui.ButtonFlags.None,
-			currentApp == index
-		)
+		cui.menuButton(title, 56, ui.Alignment.Center, ui.Alignment.Center, ui.ButtonFlags.None, currentApp == index)
 	then
 		currentApp = index
 	end
@@ -111,18 +103,16 @@ end
 local tabBarPosition = 0
 local tabItemPositions = { [0] = 0 }
 
-local uiStartY = 40
-local uiStartX = 60
-
-local topBarHeight = 200
-
 local sim = ac.getSim()
 
 local function tabBar(apps)
 	ui.pushFont(ui.Font.Title)
 	ui.pushStyleVar(ui.StyleVar.ItemSpacing, 0)
 
-	if ui.mouseLocalPos() >= vec2(0, 0) and ui.mouseLocalPos() < vec2(sim.windowWidth - 120, 56) * cui.scaleY() then
+	if
+		ui.mouseLocalPos() >= vec2(0, 0)
+		and ui.mouseLocalPos() < vec2(sim.windowWidth - 120 * cui.scaleX(), 56 * cui.scaleY())
+	then
 		if ui.mouseWheel() > 0 then
 			currentApp = currentApp >= #apps - 1 and 0 or currentApp + 1
 			audioTrigger()
@@ -200,8 +190,8 @@ local function arrowButton(direction, size)
 	return clicked
 end
 
-local spinnerWidth = 580
-local spinnerHeight = 34
+local spinnerWidth = 580 * cui.scaleX()
+local spinnerHeight = 34 * cui.scaleY()
 local buttonSize = vec2(spinnerHeight, spinnerHeight)
 
 function drawSpinnerButton(setupItem, direction)
@@ -269,9 +259,6 @@ function drawSlider(setupItem, pos)
 	local sliderWidth = spinnerWidth - (2 * spinnerHeight)
 	local sliderHeight = spinnerHeight
 
-	-- local sliderGrabSize =
-	-- 	max(350 * cui.scaleY() / (setupItem.max - setupItem.min + setupItem.step) / setupItem.step, 10)
-
 	local value, changed, active = slider(
 		"##" .. setupItem.id .. setupItem.name,
 		setupItem.value,
@@ -318,10 +305,10 @@ local function drawSetupSpinner(sm, setupItem)
 	}
 
 	local xPos = positions[setupItem.xPos]
-	local yPos = setupItem.yPos * 98 + 60
+	local yPos = (setupItem.yPos * 98 + 60) * cui.scaleY()
 
 	ui.setCursorX(xPos)
-	cui.setCursorY(yPos)
+	ui.setCursorY(yPos)
 
 	ui.drawRectFilled(
 		ui.getCursor() + vec2(spinnerHeight, 0),
@@ -402,10 +389,11 @@ function SetupWindow(sm)
 	contentWindow(
 		"car_setup_window",
 		storage.setupTab,
-		vec2(60, 240),
-		vec2(sim.windowWidth - 120, sim.windowHeight - 383),
+		vec2(60 * cui.scaleX(), 240 * cui.scaleY()),
+		vec2(sim.windowWidth - 120 * cui.scaleX(), sim.windowHeight - 383 * cui.scaleY()),
 		ui.WindowFlags.None,
 		function()
+			ac.log(sim.windowWidth - 120 * cui.scaleX())
 			-- ui.drawRectFilled(vec2(0, 0), ui.availableSpace(), rgbm.colors.aqua)
 			pushMainMenuStyle()
 
@@ -413,7 +401,7 @@ function SetupWindow(sm)
 			contentWindow(
 				"car_setup_window2",
 				storage.setupTab .. "2",
-				vec2(ui.windowWidth() / 4, 56),
+				vec2(ui.windowWidth() / 4, 56 * cui.scaleY()),
 				vec2(ui.windowWidth() / 2, ui.availableSpaceY()),
 				ui.WindowFlags.None,
 				function()
@@ -429,7 +417,7 @@ function SetupWindow(sm)
 			contentWindow(
 				"help_window42",
 				storage.setupTab .. "42",
-				vec2((ui.windowWidth() / 4) * 3, 56),
+				vec2((ui.windowWidth() / 4) * 3, 56 * cui.scaleY()),
 				vec2(ui.windowWidth() / 4, ui.availableSpaceY()),
 				ui.WindowFlags.None,
 				function()
@@ -445,7 +433,7 @@ function SetupWindow(sm)
 						local helpSections = string.split(HELP_TEXT, "\\n\\n")
 
 						for i in ipairs(helpSections) do
-							ui.dwriteTextWrapped(helpSections[i], 24)
+							ui.dwriteTextWrapped(helpSections[i], 24 * cui.scaleY())
 						end
 					end
 
@@ -459,7 +447,7 @@ function SetupWindow(sm)
 			contentWindow(
 				"help_window432",
 				storage.setupTab .. "423",
-				vec2(0, 56),
+				vec2(0, 56 * cui.scaleY()),
 				vec2(ui.windowWidth() / 4, ui.availableSpaceY()),
 				ui.WindowFlags.None,
 				function()

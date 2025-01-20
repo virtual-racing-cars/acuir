@@ -1,16 +1,14 @@
 local sim = ac.getSim()
 
 local acLogo = ac.getFolder(ac.FolderID.Root) .. "\\launcher\\themes\\default\\graphics\\btn_AC_logo.png"
-local acLogoSize = ui.imageSize(acLogo)
+local acLogoSize = ui.imageSize(acLogo) * cui.scaleX()
 
-local uiStartY = 40
-local uiStartX = 60
+local uiStartY = 40 * cui.scaleX()
+local uiStartX = 60 * cui.scaleX()
 
-local topBarHeight = 200
+local topBarHeight = 200 * cui.scaleX()
 
-local menuButtonSizeX = 120
-local menuButtonSizeY = 56
-local menuButtonFontSize = 12
+local menuButtonSize = 56
 
 local fontLol = ui.DWriteFont("Panton-Trial"):weight(ui.DWriteFont.Weight.Black)
 
@@ -19,41 +17,43 @@ local version = manifestINI:get("ABOUT", "VERSION", "0.0.0")
 
 function bottomBar(buttons)
 	ui.drawRectFilled(
-		vec2(uiStartX * cui.scaleY(), sim.windowHeight - 96 * cui.scaleY()),
-		vec2(sim.windowWidth - uiStartX * cui.scaleY(), sim.windowHeight - 40 * cui.scaleY()),
+		vec2(uiStartX, sim.windowHeight - 96 * cui.scaleY()),
+		vec2(sim.windowWidth - uiStartX, sim.windowHeight - 40 * cui.scaleY()),
 		settings.uiPrimaryColor
 	)
 
-	setCursorX(0)
-	setCursorY(0)
+	ui.setCursor(0)
 	ui.dwriteTextAligned(
 		"v" .. version .. ", CSP: " .. ac.getPatchVersion() .. " (" .. ac.getPatchVersionCode() .. ")",
-		26,
+		26 * cui.scaleY(),
 		ui.Alignment.End,
 		ui.Alignment.End,
-		ui.availableSpace() - vec2(250, 52),
+		ui.availableSpace() - vec2(250 * cui.scaleX(), 52 * cui.scaleY()),
 		false,
 		rgbm(0.8, 0.8, 0.8, 1)
 	)
 
-	setCursorX(0)
-	setCursorY(0)
+	ui.setCursor(0)
 	ui.dwriteTextAligned(
 		"OFFLINE",
-		26,
+		26 * cui.scaleY(),
 		ui.Alignment.End,
 		ui.Alignment.End,
-		ui.availableSpace() - vec2(125, 52),
+		ui.availableSpace() - vec2(125 * cui.scaleX(), 52 * cui.scaleY()),
 		false,
 		rgbm(1, 0.9, 0, 1)
 	)
 
-	ui.drawCircleFilled(vec2(sim.windowWidth - 95, sim.windowHeight - 68), 10, rgbm.colors.orange)
+	ui.drawCircleFilled(
+		vec2(sim.windowWidth - 95 * cui.scaleX(), sim.windowHeight - 68 * cui.scaleY()),
+		10,
+		rgbm.colors.orange
+	)
 
 	ui.pushStyleVar(ui.StyleVar.ItemSpacing, 0)
 
-	cui.setCursorX(uiStartX)
-	cui.setCursorY(sim.windowHeight - 96)
+	ui.setCursorX(uiStartX)
+	ui.setCursorY(sim.windowHeight - 96 * cui.scaleY())
 
 	for i in ipairs(buttons) do
 		local menuButton = buttons[i]
@@ -61,8 +61,7 @@ function bottomBar(buttons)
 		if
 			cui.menuButton(
 				menuButton.label,
-				menuButtonSizeY,
-				menuButtonFontSize,
+				menuButtonSize,
 				ui.Alignment.Center,
 				ui.Alignment.Center,
 				menuButton.enabled and ui.ButtonFlags.None or ui.ButtonFlags.Disabled
@@ -77,11 +76,9 @@ function bottomBar(buttons)
 end
 
 function homeBar(buttons)
-	setCursorY(uiStartY)
-
 	local xPos = uiStartX
-	cui.setCursorX(xPos)
-	cui.setCursorY(uiStartY + topBarHeight)
+	ui.setCursorX(xPos)
+	ui.setCursorY(uiStartY + topBarHeight)
 
 	ui.pushStyleVar(ui.StyleVar.ItemSpacing, 0)
 
@@ -91,8 +88,7 @@ function homeBar(buttons)
 		if
 			cui.menuButton(
 				menuButton.label,
-				menuButtonSizeY,
-				menuButtonFontSize,
+				menuButtonSize,
 				ui.Alignment.Center,
 				ui.Alignment.Center,
 				menuButton.enabled and ui.ButtonFlags.None or ui.ButtonFlags.Disabled
@@ -105,8 +101,6 @@ function homeBar(buttons)
 	end
 
 	ui.popStyleVar(1)
-
-	-- ui.drawLine(vec2(1280, 0), vec2(1280, 1440), rgbm.colors.aqua)
 end
 
 local function sessionInfo()
@@ -157,22 +151,31 @@ local function sessionInfo()
 	ui.popDWriteFont()
 end
 
+function topSubBar(path)
+	cui.setCursorX(60)
+	cui.setCursorY(33)
+	ui.image(acLogo, acLogoSize)
+	ui.drawLine(vec2(227, 105), vec2(1100, 105), rgbm.colors.white, 3)
+
+	ui.setCursor(vec2(230, 24))
+	ui.dwriteTextAligned(path, 32, ui.Alignment.Start, ui.Alignment.Center, vec2(450, 100), false, rgbm(1, 1, 1, 1))
+end
+
 function topBar(showSessionInfo)
 	ui.drawRectFilled(
 		vec2(uiStartX, uiStartY),
-		vec2(sim.windowWidth - uiStartX, uiStartY + topBarHeight * cui.scaleY()),
+		vec2(sim.windowWidth - uiStartX, (uiStartY + topBarHeight)),
 		settings.uiPrimaryColor
 	)
 
 	ui.drawRectFilled(
-		vec2(uiStartX, uiStartY + topBarHeight * cui.scaleY()),
-		vec2(sim.windowWidth - uiStartX, uiStartY + topBarHeight + menuButtonSizeY * cui.scaleY()),
+		vec2(uiStartX, (uiStartY + topBarHeight)),
+		vec2(sim.windowWidth - uiStartX, (uiStartY + topBarHeight + menuButtonSize * cui.scaleY())),
 		rgbm(0.231373, 0.223529, 0.262745, 0.85)
 	)
-
-	cui.setCursorX(sim.windowWidth / 2 - acLogoSize.x / 2)
-	cui.setCursorY(77)
-	ui.image(acLogo, acLogoSize * cui.scaleY())
+	ui.setCursorX(sim.windowWidth / 2 - acLogoSize.x / 2)
+	ui.setCursorY((uiStartY + topBarHeight) * 0.32)
+	ui.image(acLogo, acLogoSize)
 
 	if showSessionInfo then
 		sessionInfo()

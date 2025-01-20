@@ -42,13 +42,13 @@ storage.appOpen = settings.autoStart
 storage.hasAppOpened = false
 
 package.add("src")
+cui = require("utils\\utils_cui")
 require("init")
 require("classes\\button")
 require("utils\\utils_scale")
 require("ui\\styles")
 require("ui\\main")
 require("ui\\audio")
-cui = require("utils\\utils_cui")
 
 ui.onExclusiveHUD(function(mode)
 	if not storage.appOpen then
@@ -56,7 +56,6 @@ ui.onExclusiveHUD(function(mode)
 	end
 
 	if mode == "menu" then
-		cui.bestFit()
 		return MainWindow(sim)
 	end
 end)

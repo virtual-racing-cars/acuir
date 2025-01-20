@@ -15,7 +15,9 @@ local bottomBarButtons = {
 	{
 		label = "SETUP PRESETS",
 		enabled = true,
-		func = function() end,
+		func = function()
+			storage.setupTab = "SETUP I/O"
+		end,
 	},
 	{
 		label = "UNDO",
@@ -34,6 +36,16 @@ local bottomBarButtons = {
 }
 
 function SetupPage(sim)
+	if storage.setupTab == "SETUP I/O" then
+		if ui.keyboardButtonPressed(ui.KeyIndex.Escape) then
+			storage.setupTab = "Tyres"
+		end
+		topSubBar("/Vehicle Setup Presets")
+		ioTab()
+
+		return
+	end
+
 	topBar(false)
 
 	SetupWindow(sm)
@@ -41,8 +53,6 @@ function SetupPage(sim)
 
 	bottomBarButtons[#bottomBarButtons - 1].enabled = sm:isUndoAvailable()
 	bottomBarButtons[#bottomBarButtons].enabled = sm:isRedoAvailable()
-
-	ac.log()
 
 	bottomBar(bottomBarButtons)
 end

@@ -20,10 +20,10 @@ local settingsPages = {
 }
 
 function pageSelector()
-	ui.setCursorX(320)
-	ui.setCursorY(366)
+	cui.setCursorX(320)
+	cui.setCursorY(366)
 
-	ui.pushStyleVar(ui.StyleVar.ItemSpacing, 122)
+	ui.pushStyleVar(ui.StyleVar.ItemSpacing, 122 * cui.scaleX())
 	ui.beginGroup()
 
 	for i = 2, #settingsPages do
@@ -37,8 +37,8 @@ function pageSelector()
 
 		ui.sameLine()
 		if i == 4 then
-			ui.setCursorX(320)
-			ui.setCursorY(ui.getCursorY() + 422)
+			cui.setCursorX(320)
+			cui.offsetCursorY(422)
 		end
 	end
 
@@ -62,17 +62,8 @@ function SettingsList(sim)
 	local page = settingsPages[storage.settingsTab]
 	page.func()
 
-	ui.setCursor(vec2(230, 24))
-	local storagePath = storage.settingsTab > 1 and "/" .. page.label or ""
-	ui.dwriteTextAligned(
-		"/Settings" .. storagePath,
-		32,
-		ui.Alignment.Start,
-		ui.Alignment.Center,
-		vec2(450, 100),
-		false,
-		rgbm(1, 1, 1, 1)
-	)
+	local storagePath = storage.settingsTab > 1 and "Settings/" .. page.label or "Settings/"
+	topSubBar(storagePath)
 
 	popMainMenuStyle()
 

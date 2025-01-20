@@ -1,3 +1,5 @@
+local sim = ac.getSim()
+
 local setupsDir = ac.getFolder(ac.FolderID.UserSetups) .. "\\" .. ac.getCarID(0)
 
 local refreshingSetups = false
@@ -72,9 +74,9 @@ end
 loadSetups()
 
 local function savedSetupsWindow()
-	childWindow("saved_setups", vec2(ui.availableSpaceX(), ui.availableSpaceY()), false, ui.WindowFlags.None, function()
+	childWindow("saved_setups", vec2(ui.windowWidth() / 2, ui.windowHeight()), false, ui.WindowFlags.None, function()
 		setCursorX(10)
-		childWindow("saved_setups", vec2(ui.availableSpaceX() - 10, ui.availableSpaceY()), false, function()
+		childWindow("saved_setups", vec2(ui.windowWidth() - 10, ui.windowHeight()), false, function()
 			if refreshingSetups then
 				ui.icon(ui.Icons.LoadingSpinner, ui.availableSpace())
 			else
@@ -92,13 +94,7 @@ local function savedSetupsWindow()
 
 							ui.pushStyleVar(ui.StyleVar.ItemSpacing, 3)
 							ui.pushStyleVar(ui.StyleVar.FramePadding, -25)
-							if
-								ui.modernButtonAdvanced(
-									name,
-									vec2(ui.availableSpaceX() - 20, 30 * UI_SCALE_Y / 100),
-									setupButtonFlags
-								)
-							then
+							if ui.modernButtonAdvanced(name, vec2(ui.windowWidth() - 20, 30), setupButtonFlags) then
 								selectedSetup = {
 									name = name,
 									track = track,
@@ -128,8 +124,6 @@ local function savedSetupsWindow()
 end
 
 local function saveSetupWindow()
-	local availableSpaceY = ui.availableSpaceY()
-
 	ui.textAligned("Save Current Setup", vec2(0.5, 0.5), vec2(ui.availableSpaceX(), 30))
 
 	ui.text("Name:")
@@ -171,148 +165,123 @@ local function saveSetupWindow()
 		ui.InputTextFlags.NoHorizontalScroll,
 		vec2(ui.availableSpaceX(), 250 * UI_SCALE_Y / 100)
 	)
+end
 
-	local availableSpaceX = (ui.availableSpaceX() - 30 * UI_SCALE_X / 100) / 5
+local bottomBarButtonsIO = {
+	{
+		label = "BACK",
+		enabled = true,
+		func = function()
+			storage.setupTab = "Tyres"
+		end,
+	},
+	{
+		label = "Load",
+		enabled = true,
+		func = function()
+			ac.loadSetup(selectedSetup.path)
+			loadedSetup = selectedSetup.track .. " - " .. selectedSetup.name
+			ui.toast(ui.Icons.Download, "Setup loaded: " .. selectedSetup.name)
+		end,
+	},
+	{
+		label = "Compare",
+		enabled = false,
+		func = function() end,
+	},
+	{
+		label = "Reset",
+		enabled = true,
+		func = function()
+			ac.resetSetupToDefault()
+		end,
+	},
+	{
+		label = "Delete",
+		enabled = true,
+		func = function()
+			io.deleteFile(saveSetup.path)
+			io.deleteFile(string.trim(saveSetup.path, ".ini") .. ".sp")
 
-	setCursorY(580)
+			ui.toast(ui.Icons.Download, "Setup deleted: " .. saveSetup.name)
 
-	if
-		ui.modernButtonAdvanced(
-			"##loadsetup",
-			vec2(availableSpaceX, availableSpaceX),
-			ui.ButtonFlags.None,
-			ui.Icons.Download
-		)
-	then
-		ac.loadSetup(selectedSetup.path)
-		loadedSetup = selectedSetup.track .. " - " .. selectedSetup.name
-
-		ui.toast(ui.Icons.Download, "Setup loaded: " .. selectedSetup.name)
-	end
-
-	ui.sameLine()
-	if
-		ui.modernButtonAdvanced(
-			"##comparesetup",
-			vec2(availableSpaceX, availableSpaceX),
-			ui.ButtonFlags.None,
-			ui.Icons.Contrast
-		)
-	then
-		ac.resetSetupToDefault()
-	end
-
-	ui.sameLine()
-	if
-		ui.modernButtonAdvanced(
-			"##resetsetup",
-			vec2(availableSpaceX, availableSpaceX),
-			ui.ButtonFlags.None,
-			ui.Icons.Restart
-		)
-	then
-		ac.resetSetupToDefault()
-	end
-
-	ui.sameLine()
-	if
-		ui.modernButtonAdvanced(
-			"##deletesetup",
-			vec2(availableSpaceX, availableSpaceX),
-			ui.ButtonFlags.None,
-			ui.Icons.Delete
-		)
-	then
-		io.deleteFile(saveSetup.path)
-		io.deleteFile(string.trim(saveSetup.path, ".ini") .. ".sp")
-
-		ui.toast(ui.Icons.Download, "Setup deleted: " .. saveSetup.name)
-
-		saveSetup.name = ""
-		saveSetup.path = ""
-		saveSetup.tags = ""
-		saveSetup.description = ""
-
-		loadSetups()
-	end
-
-	ui.sameLine()
-	if
-		ui.modernButtonAdvanced(
-			"##savesetup",
-			vec2(availableSpaceX, availableSpaceX),
-			ui.ButtonFlags.None,
-			ui.Icons.Save
-		)
-	then
-		if saveSetup.name ~= "" then
-			saveSetup.path = setupsDir .. "\\" .. saveSetup.track .. "\\" .. saveSetup.name .. ".ini"
-			ac.setActiveSetupName(saveSetup.name, saveSetup.track)
-			ac.saveCurrentSetup(saveSetup.path)
-			ui.toast(ui.Icons.Save, "Setup Saved: " .. saveSetup.name)
-			loadedSetup = saveSetup.track .. " - " .. saveSetup.name
-
-			if saveSetup.description ~= "" or saveSetup.tags ~= "" then
-				local descriptionFile =
-					io.open(setupsDir .. "\\" .. saveSetup.track .. "\\" .. saveSetup.name .. ".txt", "w+")
-
-				if saveSetup.tags ~= "" and saveSetup.tags ~= nil then
-					descriptionFile:write("[TAGS]" .. saveSetup.tags .. "\n")
-				end
-				if saveSetup.description ~= "" and saveSetup.description ~= nil then
-					descriptionFile:write(saveSetup.description)
-				end
-
-				descriptionFile:close()
-			end
-
-			selectedSetup = table.clone(saveSetup, true)
+			saveSetup.name = ""
+			saveSetup.path = ""
+			saveSetup.tags = ""
+			saveSetup.description = ""
 
 			loadSetups()
-		end
-	end
-end
+		end,
+	},
+	{
+		label = "Save",
+		enabled = true,
+		func = function()
+			if saveSetup.name ~= "" then
+				saveSetup.path = setupsDir .. "\\" .. saveSetup.track .. "\\" .. saveSetup.name .. ".ini"
+				ac.setActiveSetupName(saveSetup.name, saveSetup.track)
+				ac.saveCurrentSetup(saveSetup.path)
+				ui.toast(ui.Icons.Save, "Setup Saved: " .. saveSetup.name)
+				loadedSetup = saveSetup.track .. " - " .. saveSetup.name
+
+				if saveSetup.description ~= "" or saveSetup.tags ~= "" then
+					local descriptionFile =
+						io.open(setupsDir .. "\\" .. saveSetup.track .. "\\" .. saveSetup.name .. ".txt", "w+")
+
+					if saveSetup.tags ~= "" and saveSetup.tags ~= nil then
+						descriptionFile:write("[TAGS]" .. saveSetup.tags .. "\n")
+					end
+					if saveSetup.description ~= "" and saveSetup.description ~= nil then
+						descriptionFile:write(saveSetup.description)
+					end
+
+					descriptionFile:close()
+				end
+
+				selectedSetup = table.clone(saveSetup, true)
+
+				loadSetups()
+			end
+		end,
+	},
+}
 
 function ioTab()
 	setCursorY(50)
 	setCursorX(10)
 
-	childWindow(
-		"setup_io",
-		vec2(ui.availableSpaceX() / 2 - 2.5, ui.availableSpaceY() - 10),
-		false,
+	contentWindow(
+		"car_setup_window",
+		storage.setupTab,
+		vec2(sim.windowWidth / 4, 140),
+		vec2(sim.windowWidth / 2, sim.windowHeight - 283),
 		ui.WindowFlags.None,
 		function()
 			ui.drawRectFilled(
 				vec2(0, 0),
-				vec2(ui.availableSpaceX(), ui.availableSpaceY()),
+				vec2(ui.windowWidth(), ui.windowHeight()),
 				settings.uiPrimaryColor / 2,
 				0,
 				ui.CornerFlags.None
 			)
-			ui.drawRect(
-				vec2(0, 0),
-				vec2(ui.availableSpaceX(), ui.availableSpaceY()),
-				rgbm(1, 1, 1, 0.25),
-				0,
-				ui.CornerFlags.None
-			)
 
-			setCursorY(0)
-
+			ui.setCursorY(0)
 			ui.textAligned("Current Setup [" .. loadedSetup .. "]", vec2(0.5, 0.5), vec2(ui.availableSpaceX(), 30))
 
 			savedSetupsWindow()
+
+			contentWindow(
+				"saved_setups",
+				"saved_setups",
+				vec2(ui.windowWidth() / 2, 0),
+				vec2(ui.windowWidth() / 2, ui.windowHeight()),
+				ui.WindowFlags.None,
+				function()
+					saveSetupWindow()
+				end
+			)
 		end
 	)
 
-	cui.setCursorX(0)
-	cui.setCursorY(50)
-	cui.setCursorX(410)
-
-	ui.beginGroup(370 * cui.scaleY())
-
-	saveSetupWindow()
-
-	ui.endGroup()
+	bottomBar(bottomBarButtonsIO)
 end

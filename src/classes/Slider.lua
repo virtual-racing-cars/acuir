@@ -24,11 +24,11 @@ function slider(label, value, min, max, round, format, color, size, step, noScro
 	local width, height
 
 	if not size then
-		width = 475 * cui.scaleY()
-		height = 32 * cui.scaleY()
+		width = 475
+		height = 32
 	else
-		width = size.x * cui.scaleY()
-		height = size.y * cui.scaleY()
+		width = size.x
+		height = size.y
 	end
 
 	local sliderWidth = 10 * cui.scaleY()

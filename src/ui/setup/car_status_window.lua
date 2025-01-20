@@ -135,13 +135,13 @@ local sim = ac.getSim()
 function CarStatusWindow()
 	for _, v in ipairs(infoText) do
 		local column, position, label, value = v()
-		ui.setCursorX(-130 + 150 * column)
-		ui.setCursorY(80 + (24 * position))
-		ui.dwriteText(label, 22)
+		cui.setCursorX(-130 + 150 * column)
+		cui.setCursorY(80 + (24 * position))
+		ui.dwriteText(label, 22 * cui.scaleY())
 
 		local x = -170 + 150 * column
-		ui.setCursorX(x + 230)
-		ui.setCursorY(80 + (24 * position))
-		ui.dwriteText(value, 22)
+		cui.setCursorX(x + 230)
+		cui.setCursorY(80 + (24 * position))
+		ui.dwriteText(value, 22 * cui.scaleY())
 	end
 end
