@@ -1,5 +1,48 @@
 local activeItem = ""
 
+local function drawSpinnerButton(setupItem, direction)
+	local changed = false
+
+	ui.pushStyleColor(ui.StyleColor.Button, rgbm(0, 0, 0, 0))
+	ui.pushStyleColor(ui.StyleColor.ButtonHovered, rgbm(0, 0, 0, 0))
+	ui.pushStyleColor(ui.StyleColor.TextHovered, rgbm(1, 0, 0, 1))
+	ui.pushStyleColor(ui.StyleColor.HeaderHovered, rgbm(0, 0, 0, 0))
+	if setupItem.min == setupItem.max then
+		ui.dummy(buttonSize)
+	elseif arrowButton(direction, buttonSize) then
+		setupItem.buttonHeldTimer[direction] = os.clock() + 0.5
+		setupItem.buttonHeldStart = os.clock()
+
+		if direction == SpinnerButtonType.Left then
+			changed = setupItem:decreaseValue()
+		else
+			changed = setupItem:increaseValue()
+		end
+	elseif
+		setupItem.buttonHeldTimer[direction] < os.clock()
+		and ui.itemActive()
+		and ui.mouseDown(ui.MouseButton.Left)
+	then
+		if direction == SpinnerButtonType.Left then
+			changed = setupItem:decreaseValue()
+		else
+			changed = setupItem:increaseValue()
+		end
+
+		setupItem.buttonHeldTimer[direction] = (os.clock() - setupItem.buttonHeldStart) < 2.5 and os.clock() + 0.1
+			or os.clock() + 0.075
+	end
+
+	if setupItem.min ~= setupItem.max and ui.itemHovered(ui.HoveredFlags.None) then
+		setupItem.helpWindowShow = true
+	end
+
+	ui.popStyleColor(4)
+
+	ui.sameLine()
+	return changed
+end
+
 function slider(label, value, min, max, round, format, color, size, step, noScroll, ceil, shiftStep, mult, offset)
 	if not step then
 		step = 1
@@ -39,6 +82,16 @@ function slider(label, value, min, max, round, format, color, size, step, noScro
 	local yPos = ui.getCursorY()
 	local xMax = xPos + width
 
+	cui.dwriteTextAligned({
+		text = label,
+		fontSize = size.y / cui.scaleY() * 0.6,
+		size = vec2(size.x, size.y) / cui.scaleY(),
+	})
+
+	ui.setCursorX(xPos)
+	ui.setCursorY(yPos + height)
+	yPos = ui.getCursorY()
+
 	ui.drawRectFilled(ui.getCursor(), ui.getCursor() + vec2(width, height), rgbm(1, 1, 1, 1))
 
 	ui.invisibleButton("invis" .. label, vec2(width, height))
@@ -63,7 +116,7 @@ function slider(label, value, min, max, round, format, color, size, step, noScro
 	if
 		active
 		or (
-			ui.mouseLocalPos() > vec2(xPos, yPos)
+			ui.mouseLocalPos() > vec2(xPos, yPos - height)
 			and ui.mouseLocalPos() <= vec2(xPos, yPos) + vec2(width, height + height / 6)
 			and (
 				(ui.mouseClicked(ui.MouseButton.Left) and not ui.itemHovered(ui.HoveredFlags.None))

@@ -10,7 +10,7 @@ local topBarHeight = 200 * cui.scaleX()
 
 local menuButtonSize = 56
 
-local fontLol = ui.DWriteFont("Panton-Trial"):weight(ui.DWriteFont.Weight.Black)
+local fontLol = ui.DWriteFont("Noto Sans SC"):weight(ui.DWriteFont.Weight.Black)
 
 local manifestINI = ac.INIConfig.load("manifest.ini", ac.INIFormat.Extended)
 local version = manifestINI:get("ABOUT", "VERSION", "0.0.0")
@@ -91,7 +91,9 @@ function homeBar(buttons)
 				menuButtonSize,
 				ui.Alignment.Center,
 				ui.Alignment.Center,
-				menuButton.enabled and ui.ButtonFlags.None or ui.ButtonFlags.Disabled
+				menuButton.enabled and ui.ButtonFlags.None or ui.ButtonFlags.Disabled,
+				false,
+				i == 1
 			)
 		then
 			menuButton.func()
@@ -109,6 +111,8 @@ local function sessionInfo()
 	local sizeX = 171
 	local sizeY = 35
 	local gap = 1
+
+	ui.pushStyleVar(ui.StyleVar.ItemSpacing, gap)
 
 	ui.setCursor(vec2(startX, startY))
 
@@ -139,7 +143,7 @@ local function sessionInfo()
 	)
 	ui.dwriteTextAligned("Practice", 16, ui.Alignment.Center, ui.Alignment.Center, vec2(sizeX, sizeY))
 
-	ui.setCursor(vec2(startX, startY) + vec2(sizeX, sizeY))
+	ui.setCursor(vec2(startX, startY) + vec2(sizeX + gap, sizeY))
 	ui.drawRectFilled(
 		ui.getCursor() + vec2(sizeX + gap, 0),
 		ui.getCursor() + vec2(-sizeX + gap, 0) + vec2(sizeX, sizeY),
@@ -149,16 +153,31 @@ local function sessionInfo()
 	ui.sameLine()
 
 	ui.popDWriteFont()
+	ui.popStyleVar(1)
 end
 
 function topSubBar(path)
 	cui.setCursorX(60)
 	cui.setCursorY(33)
 	ui.image(acLogo, acLogoSize)
-	ui.drawLine(vec2(227, 105), vec2(1100, 105), rgbm.colors.white, 3)
+	ui.drawLine(
+		vec2(227 * cui.scaleX(), 105 * cui.scaleY()),
+		vec2(1100 * cui.scaleX(), 105 * cui.scaleY()),
+		rgbm.colors.white,
+		3
+	)
 
-	ui.setCursor(vec2(230, 24))
-	ui.dwriteTextAligned(path, 32, ui.Alignment.Start, ui.Alignment.Center, vec2(450, 100), false, rgbm(1, 1, 1, 1))
+	cui.setCursorX(230)
+	cui.setCursorY(24)
+	ui.dwriteTextAligned(
+		path,
+		32 * cui.scaleY(),
+		ui.Alignment.Start,
+		ui.Alignment.Center,
+		vec2(450 * cui.scaleX(), 100 * cui.scaleY()),
+		false,
+		rgbm(1, 1, 1, 1)
+	)
 end
 
 function topBar(showSessionInfo)

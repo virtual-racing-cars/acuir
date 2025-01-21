@@ -1,147 +1,205 @@
 local car = ac.getCar(0)
-
 local carINI = ac.INIConfig.carData(0, "car.ini")
 local kgPerL = carINI:get("FUEL_EXT", "KG_PER_LITER", 0.7339)
 
-local infoText = {
-	function()
-		return 1, 1, "Camber: ", math.round(car.wheels[0].camber, 2)
-	end,
-	function()
-		return 1, 2, "Caster: ", math.round(car.caster, 2)
-	end,
-	function()
-		return 1, 3, "Toe: ", math.round(car.wheels[0].toeIn, 2)
-	end,
-	function()
-		return 1, 4, "Travel: ", math.round(car.wheels[0].suspensionTravel * 1000, 2) .. " mm"
-	end,
-	function()
-		return 1, 5, "Load: ", math.round(car.wheels[0].load, 0) .. " N"
-	end,
-	function()
-		return 1, 6, "Pressure: ", math.round(car.wheels[0].tyreStaticPressure, 2) .. " psi"
-	end,
-	function()
-		return 1, 7, "Pressure (hot): ", math.round(car.wheels[0].tyrePressure, 2) .. " psi"
-	end,
-	function()
-		return 1, 8, "Core Temp: ", math.round(car.wheels[0].tyreCoreTemperature, 2) .. "°C"
-	end,
-	function()
-		return 1, 25, "Camber: ", math.round(car.wheels[2].camber, 2)
-	end,
-	function()
-		return 1, 26, "Toe: ", math.round(car.wheels[2].toeIn, 2)
-	end,
-	function()
-		return 1, 27, "Travel: ", math.round(car.wheels[2].suspensionTravel * 1000, 2) .. " mm"
-	end,
-	function()
-		return 1, 28, "Load: ", math.round(car.wheels[2].load, 0) .. " N"
-	end,
-	function()
-		return 1, 29, "Pressure (cold): ", math.round(car.wheels[2].tyreStaticPressure, 2) .. " psi"
-	end,
-	function()
-		return 1, 30, "Pressure (hot): ", math.round(car.wheels[2].tyrePressure, 2) .. " psi"
-	end,
-	function()
-		return 1, 31, "Core Temp: ", math.round(car.wheels[2].tyreCoreTemperature, 2) .. "°C"
-	end,
-	function()
-		return 2.95, 1, "Camber: ", math.round(car.wheels[1].camber, 2)
-	end,
-	function()
-		return 2.95, 2, "Caster: ", math.round(car.caster, 2)
-	end,
-	function()
-		return 2.95, 3, "Toe: ", -math.round(car.wheels[1].toeIn, 2)
-	end,
-	function()
-		return 2.95, 4, "Travel: ", math.round(car.wheels[1].suspensionTravel * 1000, 2) .. " mm"
-	end,
-	function()
-		return 2.95, 5, "Load: ", math.round(car.wheels[1].load, 0) .. " N"
-	end,
-	function()
-		return 2.95, 6, "Pressure (cold): ", math.round(car.wheels[1].tyreStaticPressure, 2) .. " psi"
-	end,
-	function()
-		return 2.95, 7, "Pressure (hot): ", math.round(car.wheels[1].tyrePressure, 2) .. " psi"
-	end,
-	function()
-		return 2.95, 8, "Core Temp: ", math.round(car.wheels[1].tyreCoreTemperature, 2) .. "°C"
-	end,
-	function()
-		return 2.95, 25, "Camber: ", math.round(car.wheels[3].camber, 2)
-	end,
-	function()
-		return 2.95, 26, "Toe: ", -math.round(car.wheels[3].toeIn, 2)
-	end,
-	function()
-		return 2.95, 27, "Travel: ", math.round(car.wheels[3].suspensionTravel * 1000, 2) .. " mm"
-	end,
-	function()
-		return 2.95, 28, "Load: ", math.round(car.wheels[3].load, 0) .. " N"
-	end,
-	function()
-		return 2.95, 29, "Pressure (cold): ", math.round(car.wheels[3].tyreStaticPressure, 2) .. " psi"
-	end,
-	function()
-		return 2.95, 30, "Pressure (hot): ", math.round(car.wheels[3].tyrePressure, 2) .. " psi"
-	end,
-	function()
-		return 2.95, 31, "Core Temp: ", math.round(car.wheels[3].tyreCoreTemperature, 2) .. "°C"
-	end,
-
-	function()
-		return 1.8, 11, "Front Height: ", "~" .. math.round(car.rideHeight[0] * 1000, 1) .. " mm"
-	end,
-
-	function()
-		return 1.8, 13, "CoG Height: ", math.round(car.cgHeight, 3)
-	end,
-	function()
-		return 1.8,
-			14,
-			"WB Front: ",
-			math.round(
-				(car.wheels[0].load + car.wheels[1].load)
-					/ (car.wheels[0].load + car.wheels[1].load + car.wheels[2].load + car.wheels[3].load)
-					* 100,
-				2
-			) .. "%"
-	end,
-	function()
-		return 1.8, 16, "Mass: ", math.round(car.mass + (car.fuel * kgPerL) + car.ballast, 2) .. " kg"
-	end,
-	function()
-		return 1.8, 17, "", "(" .. math.round(car.fuel * kgPerL, 2) .. " kg from fuel)"
-	end,
-	function()
-		return 1.8, 18, "", "(" .. math.round(car.ballast, 2) .. " kg from ballast)"
-	end,
-	function()
-		return 1.8, 20, "Plank Wear: ", "~" .. math.round(car.maxRelativePlankWear * 1000, 1) .. " mm"
-	end,
-	function()
-		return 1.8, 22, "Rear Height: ", "~" .. math.round(car.rideHeight[1] * 1000, 1) .. " mm"
-	end,
+local cornerStatusLabels = { "FRONT LEFT", "FRONT RIGHT", "REAR LEFT", "REAR RIGHT" }
+local cornerStatusInfo = {
+	[0] = {
+		label = "Camber",
+		value = function(i)
+			return car.wheels[i].camber
+		end,
+		round = 2,
+		unit = "",
+	},
+	{
+		label = "Camber",
+		value = function(i)
+			return car.wheels[i].camber
+		end,
+		round = 2,
+		unit = "",
+	},
+	{
+		label = "Caster",
+		value = function(i)
+			return car.caster
+		end,
+		round = 2,
+		unit = "",
+	},
+	{
+		label = "Toe",
+		value = function(i)
+			return car.wheels[i].toeIn
+		end,
+		round = 2,
+		unit = "",
+	},
+	{
+		label = "Travel",
+		value = function(i)
+			return car.wheels[i].suspensionTravel * 1000
+		end,
+		round = 2,
+		unit = "mm",
+	},
+	{
+		label = "Load",
+		value = function(i)
+			return car.wheels[i].load
+		end,
+		round = 0,
+		unit = "N",
+	},
+	{
+		label = "Pressure",
+		value = function(i)
+			return car.wheels[i].tyreStaticPressure
+		end,
+		round = 2,
+		unit = "psi",
+	},
+	{
+		label = "Pressure (hot)",
+		value = function(i)
+			return car.wheels[i].tyrePressure
+		end,
+		round = 2,
+		unit = "psi",
+	},
+	{
+		label = "Core Temp",
+		value = function(i)
+			return car.wheels[i].tyreCoreTemperature
+		end,
+		round = 2,
+		unit = "°C",
+	},
 }
 
-local sim = ac.getSim()
+local centerStatusInfo = {
+	{
+		label = "Front Ride Height",
+		value = function(i)
+			return car.rideHeight[0] * 1000
+		end,
+		round = 1,
+		unit = "mm",
+	},
+	{
+		label = "Sprung CoG Height",
+		value = function(i)
+			return car.cgHeight
+		end,
+		round = 3,
+		unit = "",
+	},
+	{
+		label = "Frong Weight Balance",
+		value = function(i)
+			return (car.wheels[0].load + car.wheels[1].load)
+				/ (car.wheels[0].load + car.wheels[1].load + car.wheels[2].load + car.wheels[3].load)
+				* 100
+		end,
+		round = 2,
+		unit = "%",
+	},
+	{
+		label = "Total Mass",
+		value = function(i)
+			return car.mass + (car.fuel * kgPerL) + car.ballast
+		end,
+		round = 2,
+		unit = "kg",
+	},
+	{
+		label = "Fuel Mass",
+		value = function(i)
+			return car.fuel * kgPerL
+		end,
+		round = 2,
+		unit = "kg",
+	},
+	{
+		label = "Ballast Mass",
+		value = function(i)
+			return car.ballast
+		end,
+		round = 2,
+		unit = "kg",
+	},
+	{
+		label = "Relative Plank Wear",
+		value = function(i)
+			return car.maxRelativePlankWear * 1000
+		end,
+		round = 2,
+		unit = "mm",
+	},
+	{
+		label = "Rear Ride Height",
+		value = function(i)
+			return car.rideHeight[1] * 1000
+		end,
+		round = 1,
+		unit = "mm",
+	},
+}
 
 function CarStatusWindow()
-	for _, v in ipairs(infoText) do
-		local column, position, label, value = v()
-		cui.setCursorX(-130 + 150 * column)
-		cui.setCursorY(80 + (24 * position))
-		ui.dwriteText(label, 22 * cui.scaleY())
+	for i = 1, #cornerStatusInfo do
+		local infoBlock = cornerStatusInfo[i]
+		for j = 0, 3 do
+			local xPos = (j % 2 == 0) and 20 or 350
+			local yPos = j < 2 and 20 or 760
+			local row = (i > 1 and j > 1) and i - 1 or i
 
-		local x = -170 + 150 * column
-		cui.setCursorX(x + 230)
-		cui.setCursorY(80 + (24 * position))
-		ui.dwriteText(value, 22 * cui.scaleY())
+			if i == 2 and j > 1 then
+				infoBlock = cornerStatusInfo[0]
+			end
+
+			if i == 1 then
+				cui.dwriteText({
+					text = cornerStatusLabels[j + 1],
+					fontSize = 24,
+					xPos = xPos,
+					yPos = yPos,
+				})
+			end
+
+			cui.dwriteText({
+				text = infoBlock.label .. ":",
+				fontSize = 24,
+				xPos = xPos,
+				yPos = yPos + row * 28,
+			})
+			cui.dwriteText({
+				text = math.round(infoBlock.value(j), infoBlock.round) .. " " .. infoBlock.unit,
+				fontSize = 24,
+				xPos = xPos + 150,
+				yPos = yPos + row * 28,
+			})
+		end
+	end
+
+	for i = 1, #centerStatusInfo do
+		local infoBlock = centerStatusInfo[i]
+		local xPos = 130
+		local yPos = 250
+		local row = i
+
+		cui.dwriteText({
+			text = infoBlock.label .. ":",
+			fontSize = 24,
+			xPos = xPos,
+			yPos = yPos + row * 56,
+		})
+		cui.dwriteText({
+			text = math.round(infoBlock.value(i), infoBlock.round) .. " " .. infoBlock.unit,
+			fontSize = 24,
+			xPos = xPos + 250,
+			yPos = yPos + row * 56,
+		})
 	end
 end

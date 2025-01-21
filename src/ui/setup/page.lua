@@ -15,6 +15,13 @@ local bottomBarButtons = {
 		end,
 	},
 	{
+		label = "APPS",
+		enabled = false,
+		func = function()
+			storage.setupTab = "SETUP I/O"
+		end,
+	},
+	{
 		label = "SETUP PRESETS",
 		enabled = true,
 		func = function()
@@ -65,11 +72,12 @@ function SetupPage()
 		ui.WindowFlags.None,
 		function()
 			-- ui.drawRectFilled(vec2(0, 0), ui.availableSpace(), rgbm.colors.aqua)
+			storage.setupTab = setupTabBar(sm.setupTabs)
 
 			contentWindow(
 				"car_setup_window2",
 				storage.setupTab .. "2",
-				vec2(ui.windowWidth() / 4, 0),
+				vec2(ui.windowWidth() / 4, 56 * cui.scaleY()),
 				vec2(ui.windowWidth() / 2, ui.availableSpaceY()),
 				ui.WindowFlags.None,
 				function()
@@ -94,11 +102,11 @@ function SetupPage()
 
 					if HELP_TEXT ~= "NULL" and HELP_TEXT ~= "" then
 						ui.dummy(vec2(230 * cui.scaleY(), 0))
-						ui.bringWindowToFront()
+						-- ui.bringWindowToFront()
 						local helpSections = string.split(HELP_TEXT, "\\n\\n")
 
 						for i in ipairs(helpSections) do
-							ui.dwriteTextWrapped(helpSections[i], 24 * cui.scaleY())
+							cui.dwriteTextWrapped(helpSections[i], 24)
 						end
 					end
 

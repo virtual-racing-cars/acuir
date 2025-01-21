@@ -1,19 +1,6 @@
-local max = math.max
-
-UI_SCALE_Y = 1
-UI_SCALE_X = 1
-
 local setupINI = ac.INIConfig.carData(0, "setup.ini")
 
-local setupPageFontSize = { -20, 0, ui.Font.Title, 0.75 }
--- if UI_SCALE_Y < 75 then
--- 	setupPageFontSize = { 14, 44, ui.Font.Tiny, 1 }
--- elseif UI_SCALE_Y < 100 then
--- 	setupPageFontSize = { 0, 10, ui.Font.Small, 1 }
--- end
-
 local acHelpTags = {}
-
 local acHelpTagFile = io.open(ac.getFolder(ac.FolderID.Root) .. "\\system\\locales\\setup\\en.tag", "r")
 
 local currentSection = ""
@@ -84,8 +71,9 @@ function SetupItem:initialize(
 		self.idMirror = string.replace(self.id, "RR", "LR")
 	end
 
-	if ac.getSetupSpinnerValue(self.idMirror, -12345) == -12345 and #self.idPairs > 1 then
+	if ac.getSetupSpinnerValue(self.idMirror, -12345) == -12345 then
 		self.idMirror = nil
+		self.mirrorAvailable = false
 	else
 		self.mirrored = true
 	end
@@ -98,38 +86,16 @@ function SetupItem:initialize(
 	self.helpWindowShow = false
 end
 
-function SetupItem:helpWindow()
-	-- if self.help ~= "NULL" and self.help ~= "" then
-	-- 	ui.tooltip(function()
-	-- 		ui.dummy(vec2(230 * cui.scaleY(), 0))
-	-- 		ui.bringWindowToFront()
-	-- 		local helpSections = string.split(self.help, "\\n\\n")
-
-	-- 		for i in ipairs(helpSections) do
-	-- 			ui.dwriteTextWrapped(helpSections[i], 14 * cui.scaleY())
-	-- 		end
-	-- 	end)
-
-	-- 	ui.transparentWindow(
-	-- 		"##help" .. self.id,
-	-- 		vec2(
-	-- 			(265 * UI_SCALE_Y / 100) + (1315 + setupPageFontSize[1]) * UI_SCALE_X / 100,
-	-- 			(200 + setupPageFontSize[2]) * UI_SCALE_Y / 100
-	-- 		),
-	-- 		vec2(325 * UI_SCALE_Y / 100, 730 * UI_SCALE_Y / 100 / 2),
-	-- 		true,
-	-- 		false,
-	-- 		function() end
-	-- 	)
-	-- end
-end
-
 function SetupItem:getValue()
 	if self.independentSpinner then
 		return
 	end
 
 	self.value = ac.getSetupSpinnerValue(self.id)
+
+	for _, id in pairs(self.idPairs) do
+		ac.setSetupSpinnerValue(id, self.value)
+	end
 end
 
 function SetupItem:setValue(value)
@@ -139,6 +105,7 @@ function SetupItem:setValue(value)
 
 	for _, id in pairs(self.idPairs) do
 		ac.setSetupSpinnerValue(id, self.value)
+		ui.toast(ui.Icons.AppWindow, id)
 	end
 
 	if self.mirrored then

@@ -67,7 +67,59 @@ function cui.offsetCursorY(v)
 	ui.offsetCursorY(v * scaleY)
 end
 
-local fontLol = ui.DWriteFont("Panton-Trial"):weight(ui.DWriteFont.Weight.Regular)
+local fontRegular = ui.DWriteFont("Rajdhani"):weight(ui.DWriteFont.Weight.SemiBold)
+local fontBold = ui.DWriteFont("Rajdhani"):weight(ui.DWriteFont.Weight.Bold)
+local fontSemiBold = ui.DWriteFont("Noto Sans SC"):weight(ui.DWriteFont.Weight.SemiBold)
+
+function cui.dwriteTextWrapped(text, font)
+	ui.pushDWriteFont(fontRegular)
+	ui.dwriteTextWrapped(text, font * cui.scaleY())
+	ui.popDWriteFont()
+end
+
+function cui.dwriteText(params)
+	if not params.size then
+		params.size = vec2Temp1:set(350, 100)
+	end
+
+	if params.xPos then
+		ui.setCursorX(params.xPos * cui.scaleX())
+	end
+
+	if params.yPos then
+		ui.setCursorY(params.yPos * cui.scaleY())
+	end
+
+	ui.pushDWriteFont(fontRegular)
+	ui.dwriteText(params.text, params.fontSize * cui.scaleY(), params.color)
+	ui.popDWriteFont()
+end
+
+function cui.dwriteTextAligned(params)
+	if not params.size then
+		params.size = vec2Temp1:set(350, 100)
+	end
+
+	if params.xPos then
+		ui.setCursorX(params.xPos * cui.scaleX())
+	end
+
+	if params.yPos then
+		ui.setCursorY(params.yPos * cui.scaleY())
+	end
+
+	ui.pushDWriteFont(fontRegular)
+	ui.dwriteTextAligned(
+		params.text,
+		params.fontSize * cui.scaleY(),
+		params.xAlign,
+		params.yAlign,
+		vec2Temp1:set(params.size.x * cui.scaleX(), params.size.y * cui.scaleY()),
+		false,
+		params.color
+	)
+	ui.popDWriteFont()
+end
 
 function cui.button(label, sizeX, sizeY, fontSize, horizontalAligment, verticalAlignment, flags, fontColor)
 	if not horizontalAligment then
@@ -106,7 +158,7 @@ function cui.button(label, sizeX, sizeY, fontSize, horizontalAligment, verticalA
 	ui.offsetCursorY(1)
 	ui.setCursor(tempCursor)
 
-	ui.pushDWriteFont(fontLol)
+	ui.pushDWriteFont(fontRegular)
 
 	ui.dwriteTextAligned(
 		string.upper(label),
@@ -153,7 +205,7 @@ function cui.settingsButton(label, sizeX, sizeY, flags)
 	ui.offsetCursorY(1)
 	ui.setCursor(tempCursor)
 
-	ui.pushDWriteFont(fontLol)
+	ui.pushDWriteFont(fontBold)
 
 	ui.dwriteTextAligned(
 		string.upper(label),
@@ -170,7 +222,13 @@ function cui.settingsButton(label, sizeX, sizeY, flags)
 	return clicked
 end
 
-function cui.menuButton(label, size, horizontalAligment, verticalAlignment, flags, active)
+function cui.menuButton(label, size, horizontalAligment, verticalAlignment, flags, active, bold)
+	if bold then
+		ui.pushDWriteFont(fontBold)
+	else
+		ui.pushDWriteFont(fontRegular)
+	end
+
 	if not horizontalAligment then
 		horizontalAligment = ui.Alignment.Center
 	end
@@ -187,8 +245,8 @@ function cui.menuButton(label, size, horizontalAligment, verticalAlignment, flag
 
 	local clicked = false
 
-	local fontSize = size / 3
-	local textWidth = ui.measureDWriteText(string.upper(label), fontSize).x + 40 * scaleY
+	local fontSize = size / 2.5
+	local textWidth = ui.measureDWriteText(string.upper(label), fontSize).x + 100 * scaleY
 
 	local fontColor = active and rgbm(0, 0, 0, 1) or nil
 
@@ -214,7 +272,6 @@ function cui.menuButton(label, size, horizontalAligment, verticalAlignment, flag
 
 	ui.offsetCursorY(1)
 	ui.setCursor(tempCursor)
-	ui.pushDWriteFont(fontLol)
 	ui.dwriteTextAligned(
 		string.upper(label),
 		fontSize,

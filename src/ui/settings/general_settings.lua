@@ -25,19 +25,22 @@ local bottomBarButtons = {
 	-- },
 }
 
+local but1 = ac.ControlButton("Lol")
+local but2 = ac.ControlButton("Lol2")
+
 function generalSettings()
 	contentWindow(
 		"car_setup_window",
 		storage.setupTab,
-		vec2(60, 240),
-		vec2(sim.windowWidth - 120, sim.windowHeight - 383),
+		vec2(60 * cui.scaleX(), 240 * cui.scaleY()),
+		vec2(sim.windowWidth - 120 * cui.scaleX(), sim.windowHeight - 383 * cui.scaleY()),
 		ui.WindowFlags.None,
 		function()
-			ui.drawLine(vec2(0, 2), vec2(ui.windowWidth(), 2), rgbm.colors.gray, 2)
-			ui.drawRectFilled(vec2(0, 2), vec2(ui.windowWidth(), ui.windowHeight()), rgbm(0, 0, 0, 0.2))
+			ui.drawLine(vec2(0, 2 * cui.scaleY()), vec2(ui.windowWidth(), 2 * cui.scaleY()), rgbm.colors.gray, 2)
+			ui.drawRectFilled(vec2(0, 2 * cui.scaleY()), vec2(ui.windowWidth(), ui.windowHeight()), rgbm(0, 0, 0, 0.2))
 
-			ui.setCursorX(50)
-			ui.setCursorY(100)
+			cui.setCursorX(50)
+			cui.setCursorY(100)
 
 			ui.beginGroup(0)
 
@@ -45,12 +48,20 @@ function generalSettings()
 				settings.autoStart = not settings.autoStart
 			end
 
-			local value, changed = ui.slider(
+			local value, changed, active = slider(
 				"##afkhideui",
 				settings.uiHideonIdleTime,
 				0,
 				300,
-				settings.uiHideonIdleTime > 0 and "Hide UI after idle: %.0f seconds" or "Hide UI after idle: Disabled"
+				0,
+				"%s",
+				nil,
+				vec2(1000, 32),
+				1,
+				false,
+				true,
+				1,
+				1
 			)
 
 			if changed then
@@ -64,6 +75,9 @@ function generalSettings()
 			if ui.checkbox("Developer Mode", settings.showVersions) then
 				settings.showVersions = not settings.showVersions
 			end
+
+			but1:control()
+			but2:control()
 
 			ui.endGroup()
 

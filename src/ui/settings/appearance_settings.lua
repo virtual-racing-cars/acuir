@@ -32,8 +32,8 @@ function appearanceSettings()
 	contentWindow(
 		"car_setup_window",
 		storage.setupTab,
-		vec2(60, 240),
-		vec2(sim.windowWidth - 120, sim.windowHeight - 383),
+		vec2(60 * cui.scaleX(), 240 * cui.scaleY()),
+		vec2(sim.windowWidth - 120 * cui.scaleX(), sim.windowHeight - 383 * cui.scaleY()),
 		ui.WindowFlags.None,
 		function()
 			ui.drawLine(vec2(0, 2), vec2(ui.windowWidth(), 2), rgbm.colors.gray, 2)

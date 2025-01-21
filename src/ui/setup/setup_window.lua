@@ -7,38 +7,6 @@ require("src.classes.SetupMgr")
 require("src.classes.Button")
 require("src.classes.Slider")
 
--- local function setupItemSpinners()
--- 	storage.helpOpen = false
-
--- 	if storage.setupTab == "SETUP I/O" then
--- 		ioTab()
--- 	end
-
--- 	if storage.setupTab == "PITSTOP STRATEGY" then
--- 		pitstopStrategyWindow()
--- 	end
-
--- 	if storage.setupTab == "GEARS" then
--- 		gearWindow()
--- 	end
-
--- 	ui.beginScale()
--- 	for k, v in pairs(setupSpinners) do
--- 		local tab = v.tab
-
--- 		if mirrorSetupTabs[tab] ~= nil then
--- 			v:run(tab == storage.setupTab, mirrorSetupStorage[tab])
-
--- 			if not mirrorButtonsInitialized then
--- 				if v.idMirror then
--- 					mirrorButtonShow[tab] = true
--- 				end
--- 			end
--- 		end
--- 	end
--- 	ui.endScale(1)
--- end
-
 local currentApp = 0
 
 local function tabItem(tabCount, index, title)
@@ -72,7 +40,7 @@ local tabItemPositions = { [0] = 0 }
 
 local sim = ac.getSim()
 
-local function tabBar(apps)
+function setupTabBar(apps)
 	ui.pushFont(ui.Font.Title)
 	ui.pushStyleVar(ui.StyleVar.ItemSpacing, 0)
 
@@ -109,31 +77,10 @@ local function tabBar(apps)
 	ui.popStyleVar(1)
 	ui.popFont()
 
-	-- currentApp = 11
-
 	return currentApp + 1
 end
 
-local sim = ac.getSim()
-
-local SpinnerButtonType = { Reset = -1, Left = 0, Right = 1 }
-
-local _l_button_alignment = vec2(0.5, 0.1)
-
-local function myButton(text, size, hovercolor, backcolor, thumbnail)
-	ui.invisibleButton("##dummyButton", size)
-	local r1, r2 = ui.itemRect()
-	local hovered = ui.itemHovered()
-	ui.drawRectFilled(r1, r2, hovered and hovercolor or backcolor, 4)
-
-	if thumbnail ~= nil then
-		ui.drawImage(thumbnail, r1, r2, rgbm.colors.white)
-	end
-
-	ui.drawRect(r1, r2, hovered and hovercolor or backcolor, 4, nil, 4)
-	ui.drawTextClipped(text, r1, r2, rgbm.colors.white, _l_button_alignment, true)
-	return hovered and ac.getUI().isMouseLeftKeyClicked
-end
+local SpinnerButtonType = { Left = 0, Right = 1 }
 
 local function arrowButton(direction, size)
 	local tmpPos = ui.getCursor()
@@ -141,18 +88,36 @@ local function arrowButton(direction, size)
 	local hovered = ui.itemHovered()
 	ui.setCursor(tmpPos)
 
-	if hovered then
-		ui.popup(function()
-			ui.text("hi")
-		end)
-	end
-
 	ui.icon(
 		direction == SpinnerButtonType.Left and ui.Icons.Skip or ui.Icons.Skip,
 		size,
 		hovered and rgbm.colors.red or rgbm.colors.white,
 		direction == SpinnerButtonType.Left and -size or size
 	)
+
+	return clicked
+end
+
+local function linkButton(name, size, linked)
+	ui.pushStyleColor(ui.StyleColor.Button, rgbm(0, 0, 0, 0))
+	ui.pushStyleColor(ui.StyleColor.ButtonHovered, rgbm(0, 0, 0, 0))
+	ui.pushStyleColor(ui.StyleColor.ButtonActive, rgbm(0, 0, 0, 0))
+
+	local tmpPos = ui.getCursor()
+	local clicked = ui.button("##linkButton" .. name, size, ui.ButtonFlags.PressedOnClick)
+	local hovered = ui.itemHovered()
+	ui.setCursor(tmpPos)
+
+	ui.beginRotation()
+	ui.icon(
+		linked and ui.Icons.Link or ui.Icons.LinkBroken,
+		size,
+		hovered and rgbm.colors.red or rgbm.colors.white,
+		size
+	)
+	ui.endRotation(0)
+
+	ui.popStyleColor(3)
 
 	return clicked
 end
@@ -170,18 +135,6 @@ function drawSpinnerButton(setupItem, direction)
 	ui.pushStyleColor(ui.StyleColor.HeaderHovered, rgbm(0, 0, 0, 0))
 	if setupItem.min == setupItem.max then
 		ui.dummy(buttonSize)
-	elseif direction == SpinnerButtonType.Reset then
-		if
-			ui.modernButtonAdvanced(
-				"##" .. direction .. setupItem.id,
-				buttonSize,
-				ui.ButtonFlags.PressedOnClick,
-				ui.Icons.Stay,
-				spinnerHeight / 2
-			)
-		then
-			changed = setupItem:resetValue()
-		end
 	elseif arrowButton(direction, buttonSize) then
 		setupItem.buttonHeldTimer[direction] = os.clock() + 0.5
 		setupItem.buttonHeldStart = os.clock()
@@ -227,7 +180,7 @@ function drawSlider(setupItem, pos)
 	local sliderHeight = spinnerHeight
 
 	local value, changed, active = slider(
-		"##" .. setupItem.id .. setupItem.name,
+		setupItem.name,
 		setupItem.value,
 		setupItem.min,
 		setupItem.max,
@@ -260,19 +213,22 @@ function drawSlider(setupItem, pos)
 end
 
 local function drawSetupSpinner(sm, setupItem)
+	if setupItem.child then
+		return
+	end
+
 	local changed = false
 
 	setupItem:run(true)
 
-	local padding = ui.windowWidth() * 0.017
 	local positions = {
-		[0] = padding,
-		[0.5] = ui.windowWidth() / 2 - spinnerWidth / 2 - padding,
-		[1] = (ui.windowWidth() - spinnerWidth - padding),
+		[0] = 0,
+		[0.5] = ui.windowWidth() / 2 - spinnerWidth / 2,
+		[1] = (ui.windowWidth() - spinnerWidth),
 	}
 
 	local xPos = positions[setupItem.xPos]
-	local yPos = (setupItem.yPos * 98 + 115) * cui.scaleY()
+	local yPos = (setupItem.yPos * (ui.windowHeight() / spinnerHeight + 67) + 60) * cui.scaleY()
 
 	ui.setCursorX(xPos)
 	ui.setCursorY(yPos)
@@ -287,32 +243,6 @@ local function drawSetupSpinner(sm, setupItem)
 		and ui.mouseLocalPos() < ui.getCursor() + vec2(spinnerWidth, spinnerHeight * 2)
 
 	local sliderPos = ui.getCursor()
-
-	ui.dwriteTextAligned(
-		setupItem.name,
-		spinnerHeight * 0.6,
-		ui.Alignment.Center,
-		ui.Alignment.Center,
-		vec2(spinnerWidth, spinnerHeight)
-	)
-
-	if setupItem.mirrorAvailable then
-		ui.sameLine()
-		ui.offsetCursorX(-spinnerHeight * 2)
-		if
-			ui.modernButtonAdvanced(
-				"##mirror" .. setupItem.name,
-				buttonSize,
-				ui.ButtonFlags.None,
-				setupItem.mirrored and ui.Icons.Link or ui.Icons.LinkBroken,
-				15 * cui.scaleY()
-			)
-		then
-			setupItem.mirrored = not setupItem.mirrored
-		end
-	end
-
-	ui.setCursorX(xPos)
 
 	if setupItemHovered then
 		if drawSpinnerButton(setupItem, SpinnerButtonType.Left) then
@@ -341,7 +271,14 @@ local function drawSetupSpinner(sm, setupItem)
 		and ui.mouseLocalPos() <= vec2(xPos, yPos) + vec2(spinnerWidth, spinnerHeight * 2 + spinnerHeight / 6)
 	then
 		HELP_TEXT = setupItem.help
-		setupItem:helpWindow()
+	end
+
+	if setupItem.mirrorAvailable then
+		ui.setCursorX(ui.windowWidth() / 2 - spinnerHeight / 2)
+		ui.offsetCursorY(-spinnerHeight / 2)
+		if linkButton(setupItem.name, buttonSize, setupItem.mirrored) then
+			setupItem.mirrored = not setupItem.mirrored
+		end
 	end
 
 	ui.popStyleVar(1)
@@ -350,14 +287,9 @@ local function drawSetupSpinner(sm, setupItem)
 end
 
 function car_setup(sm)
-	-- spinnerWidth = ui.windowWidth() / 2.15
-	-- spinnerHeight = spinnerWidth / 12
-	-- buttonSize = vec2(spinnerHeight, spinnerHeight)
-	storage.setupTab = tabBar(sm.setupTabs)
 	ui.newLine()
 
 	local changed = false
-
 	local tab = sm.setupTabs[tonumber(storage.setupTab)]
 
 	for _, v in pairs(tab.setupSpinners) do
