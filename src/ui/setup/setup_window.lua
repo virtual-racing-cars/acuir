@@ -80,24 +80,6 @@ function setupTabBar(apps)
 	return currentApp + 1
 end
 
-local SpinnerButtonType = { Left = 0, Right = 1 }
-
-local function arrowButton(direction, size)
-	local tmpPos = ui.getCursor()
-	local clicked = ui.button("##dummyButton" .. direction, size, ui.ButtonFlags.PressedOnClick)
-	local hovered = ui.itemHovered()
-	ui.setCursor(tmpPos)
-
-	ui.icon(
-		direction == SpinnerButtonType.Left and ui.Icons.Skip or ui.Icons.Skip,
-		size,
-		hovered and rgbm.colors.red or rgbm.colors.white,
-		direction == SpinnerButtonType.Left and -size or size
-	)
-
-	return clicked
-end
-
 local function linkButton(name, size, linked)
 	ui.pushStyleColor(ui.StyleColor.Button, rgbm(0, 0, 0, 0))
 	ui.pushStyleColor(ui.StyleColor.ButtonHovered, rgbm(0, 0, 0, 0))
@@ -123,103 +105,14 @@ local function linkButton(name, size, linked)
 end
 
 local spinnerWidth = 580 * cui.scaleX()
-local spinnerHeight = 34 * cui.scaleY()
-local buttonSize = vec2(spinnerHeight, spinnerHeight)
+local spinnerHeight = 64 * cui.scaleY()
 
-function drawSpinnerButton(setupItem, direction)
-	local changed = false
-
-	ui.pushStyleColor(ui.StyleColor.Button, rgbm(0, 0, 0, 0))
-	ui.pushStyleColor(ui.StyleColor.ButtonHovered, rgbm(0, 0, 0, 0))
-	ui.pushStyleColor(ui.StyleColor.TextHovered, rgbm(1, 0, 0, 1))
-	ui.pushStyleColor(ui.StyleColor.HeaderHovered, rgbm(0, 0, 0, 0))
-	if setupItem.min == setupItem.max then
-		ui.dummy(buttonSize)
-	elseif arrowButton(direction, buttonSize) then
-		setupItem.buttonHeldTimer[direction] = os.clock() + 0.5
-		setupItem.buttonHeldStart = os.clock()
-
-		if direction == SpinnerButtonType.Left then
-			changed = setupItem:decreaseValue()
-		else
-			changed = setupItem:increaseValue()
-		end
-	elseif
-		setupItem.buttonHeldTimer[direction] < os.clock()
-		and ui.itemActive()
-		and ui.mouseDown(ui.MouseButton.Left)
-	then
-		if direction == SpinnerButtonType.Left then
-			changed = setupItem:decreaseValue()
-		else
-			changed = setupItem:increaseValue()
-		end
-
-		setupItem.buttonHeldTimer[direction] = (os.clock() - setupItem.buttonHeldStart) < 2.5 and os.clock() + 0.1
-			or os.clock() + 0.075
-	end
-
-	if setupItem.min ~= setupItem.max and ui.itemHovered(ui.HoveredFlags.None) then
-		setupItem.helpWindowShow = true
-	end
-
-	ui.popStyleColor(4)
-
-	ui.sameLine()
-	return changed
-end
-
-function drawSlider(setupItem, pos)
-	if #setupItem.items > 0 then
-		setupItem.format = (
-			setupItem.items[setupItem.value + 1] and setupItem.items[setupItem.value + 1] or setupItem.value
-		)
-	end
-
-	local sliderWidth = spinnerWidth - (2 * spinnerHeight)
-	local sliderHeight = spinnerHeight
-
-	local value, changed, active = slider(
-		setupItem.name,
-		setupItem.value,
-		setupItem.min,
-		setupItem.max,
-		0,
-		setupItem.format,
-		nil,
-		vec2(sliderWidth, sliderHeight),
-		setupItem.step,
-		false,
-		true,
-		1,
-		setupItem.multiplier
-	)
-
-	if changed then
-		changed = setupItem:setValue(value)
-	end
-
-	if ui.mouseDown(ui.MouseButton.Left) then
-		changed = false
-	end
-
-	if setupItem.itemActive and ui.mouseReleased(ui.MouseButton.Left) then
-		changed = true
-	end
-	setupItem.itemActive = active
-
-	ui.sameLine()
-	return changed
-end
-
-local function drawSetupSpinner(sm, setupItem)
-	if setupItem.child then
+local function drawSetupSpinner(sm, si)
+	if si.child then
 		return
 	end
 
-	local changed = false
-
-	setupItem:run(true)
+	si:run(true)
 
 	local positions = {
 		[0] = 0,
@@ -227,68 +120,44 @@ local function drawSetupSpinner(sm, setupItem)
 		[1] = (ui.windowWidth() - spinnerWidth),
 	}
 
-	local xPos = positions[setupItem.xPos]
-	local yPos = (setupItem.yPos * (ui.windowHeight() / spinnerHeight + 67) + 60) * cui.scaleY()
+	local xPos = positions[si.xPos]
+	local yPos = (si.yPos * (ui.windowHeight() / spinnerHeight + 67) + 60) * cui.scaleY()
 
-	ui.setCursorX(xPos)
-	ui.setCursorY(yPos)
+	if #si.items > 0 then
+		si.format = si.items[si.value + 1]
+	end
 
-	ui.drawRectFilled(
-		ui.getCursor() + vec2(spinnerHeight, 0),
-		ui.getCursor() + vec2(spinnerWidth - spinnerHeight, spinnerHeight),
-		rgbm.new("#3a3842")
+	local value, changed, active, hovered = drawSpinner(
+		si.name,
+		xPos,
+		yPos,
+		spinnerWidth,
+		spinnerHeight,
+		si.min == si.max,
+		si.value,
+		si.min,
+		si.max,
+		si.step,
+		1,
+		0,
+		si.format,
+		si.multiplier,
+		0,
+		false
 	)
 
-	local setupItemHovered = ui.mouseLocalPos() >= ui.getCursor() - vec2(0, spinnerHeight * 1.1)
-		and ui.mouseLocalPos() < ui.getCursor() + vec2(spinnerWidth, spinnerHeight * 2)
-
-	local sliderPos = ui.getCursor()
-
-	if setupItemHovered then
-		if drawSpinnerButton(setupItem, SpinnerButtonType.Left) then
-			changed = true
-		end
-	else
-		ui.dummy(buttonSize)
-		ui.sameLine()
+	if changed or active then
+		si:setValue(value)
 	end
 
-	if drawSlider(setupItem, sliderPos) then
-		changed = true
+	if active then
+		changed = false
 	end
-
-	if setupItemHovered then
-		if drawSpinnerButton(setupItem, SpinnerButtonType.Right) then
-			changed = true
-		end
-	else
-		ui.dummy(buttonSize)
-		ui.sameLine()
-	end
-
-	if
-		ui.mouseLocalPos() > vec2(xPos, yPos)
-		and ui.mouseLocalPos() <= vec2(xPos, yPos) + vec2(spinnerWidth, spinnerHeight * 2 + spinnerHeight / 6)
-	then
-		HELP_TEXT = setupItem.help
-	end
-
-	if setupItem.mirrorAvailable then
-		ui.setCursorX(ui.windowWidth() / 2 - spinnerHeight / 2)
-		ui.offsetCursorY(-spinnerHeight / 2)
-		if linkButton(setupItem.name, buttonSize, setupItem.mirrored) then
-			setupItem.mirrored = not setupItem.mirrored
-		end
-	end
-
-	ui.popStyleVar(1)
 
 	return changed
 end
 
 function car_setup(sm)
-	ui.newLine()
-
 	local changed = false
 	local tab = sm.setupTabs[tonumber(storage.setupTab)]
 

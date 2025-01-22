@@ -94,7 +94,10 @@ function SetupItem:getValue()
 	self.value = ac.getSetupSpinnerValue(self.id)
 
 	for _, id in pairs(self.idPairs) do
-		ac.setSetupSpinnerValue(id, self.value)
+		local pairValue = ac.getSetupSpinnerValue(id)
+		if pairValue ~= self.value then
+			ac.setSetupSpinnerValue(id, self.value)
+		end
 	end
 end
 
@@ -105,7 +108,6 @@ function SetupItem:setValue(value)
 
 	for _, id in pairs(self.idPairs) do
 		ac.setSetupSpinnerValue(id, self.value)
-		ui.toast(ui.Icons.AppWindow, id)
 	end
 
 	if self.mirrored then
@@ -113,24 +115,6 @@ function SetupItem:setValue(value)
 	end
 
 	return changed
-end
-
-function SetupItem:increaseValue()
-	if self.value == self.max then
-		return false
-	else
-		self:setValue(self.value + self.step)
-		return true
-	end
-end
-
-function SetupItem:decreaseValue()
-	if self.value == self.min then
-		return false
-	else
-		self:setValue(self.value - self.step)
-		return true
-	end
 end
 
 function SetupItem:resetValue()
