@@ -66,24 +66,18 @@ function script.main()
 	if not storage.hasAppOpened then
 		storage.hasAppOpened = true
 	end
-
-	setCursorX(0)
-	setCursorY(0)
-
-	if
-		ui.modernButtonAdvanced(
-			storage.appOpen and "Deactivate Advanced Setup" or "Activate Advanced Setup",
-			vec2(300, 50),
-			ui.ButtonFlags.None
-		)
-	then
-		storage.appOpen = not storage.appOpen
-	end
 end
+
+local uic = ac.getUI()
 
 function script.update(dt)
 	if sim.isInMainMenu and settings.autoStart and not storage.hasAppOpened then
 		ac.tryToOpenRaceMenu("race")
 		ac.tryToOpenRaceMenu("setup")
+	end
+
+	if uic.ctrlDown and uic.shiftDown and ui.keyboardButtonPressed(ui.KeyIndex.F5) then
+		settings.autoStart = not storage.appOpen
+		storage.appOpen = not storage.appOpen
 	end
 end

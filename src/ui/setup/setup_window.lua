@@ -122,6 +122,7 @@ local function drawSetupSpinner(sm, si)
 
 	local xPos = positions[si.xPos]
 	local yPos = (si.yPos * (ui.windowHeight() / spinnerHeight + 67) + 60) * cui.scaleY()
+	local locked = si.min == si.max
 
 	if #si.items > 0 then
 		si.format = si.items[si.value + 1]
@@ -133,7 +134,7 @@ local function drawSetupSpinner(sm, si)
 		yPos,
 		spinnerWidth,
 		spinnerHeight,
-		si.min == si.max,
+		locked,
 		si.value,
 		si.min,
 		si.max,
@@ -146,7 +147,7 @@ local function drawSetupSpinner(sm, si)
 		false
 	)
 
-	if si.mirrorAvailable then
+	if si.mirrorAvailable and not locked then
 		ui.setCursorX(ui.windowWidth() / 2 - spinnerHeight / 4)
 		ui.setCursorY(yPos + spinnerHeight / 4)
 		if linkButton(si.name, vec2(spinnerHeight / 2, spinnerHeight / 2), si.mirrored) then
@@ -158,7 +159,7 @@ local function drawSetupSpinner(sm, si)
 		si:setValue(value)
 	end
 
-	if active then
+	if active or locked then
 		changed = false
 	end
 

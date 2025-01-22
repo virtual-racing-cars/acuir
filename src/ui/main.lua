@@ -33,6 +33,8 @@ local timer = os.clock() + settings.uiHideonIdleTime
 local exclusiveHudMode = ""
 
 function MainWindow()
+	local perfTime = os.preciseClock()
+
 	if settings.uiHideonIdleTime > 0 then
 		if (ui.mouseDelta() ~= vec2(0, 0) and sim.isWindowForeground) or ui.mouseClicked(ui.MouseButton.Left) then
 			timer = os.clock() + settings.uiHideonIdleTime
@@ -89,6 +91,8 @@ function MainWindow()
 			audioDriver()
 		end
 	)
+
+	ac.debug("perfTime", (os.preciseClock() - perfTime) * 1000)
 
 	-- exclusiveHudMode = "apps"
 

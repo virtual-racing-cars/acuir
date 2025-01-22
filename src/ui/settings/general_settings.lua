@@ -48,25 +48,25 @@ function generalSettings()
 				settings.autoStart = not settings.autoStart
 			end
 
-			local value, changed, active = slider(
-				"##afkhideui",
-				settings.uiHideonIdleTime,
-				0,
-				300,
-				0,
-				"%s",
-				nil,
-				vec2(1000, 32),
-				1,
-				false,
-				true,
-				1,
-				1
-			)
+			-- local value, changed, active = slider(
+			-- 	"##afkhideui",
+			-- 	settings.uiHideonIdleTime,
+			-- 	0,
+			-- 	300,
+			-- 	0,
+			-- 	"%s",
+			-- 	nil,
+			-- 	vec2(1000, 32),
+			-- 	1,
+			-- 	false,
+			-- 	true,
+			-- 	1,
+			-- 	1
+			-- )
 
-			if changed then
-				settings.uiHideonIdleTime = math.floor(value / 5 + 0.5) * 5
-			end
+			-- if changed then
+			-- 	settings.uiHideonIdleTime = math.floor(value / 5 + 0.5) * 5
+			-- end
 
 			if ui.checkbox("Show app and CSP versions on bottom right of the screen", settings.showVersions) then
 				settings.showVersions = not settings.showVersions
