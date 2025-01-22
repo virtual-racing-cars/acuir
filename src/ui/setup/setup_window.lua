@@ -146,6 +146,14 @@ local function drawSetupSpinner(sm, si)
 		false
 	)
 
+	if si.mirrorAvailable then
+		ui.setCursorX(ui.windowWidth() / 2 - spinnerHeight / 4)
+		ui.setCursorY(yPos + spinnerHeight / 4)
+		if linkButton(si.name, vec2(spinnerHeight / 2, spinnerHeight / 2), si.mirrored) then
+			si.mirrored = not si.mirrored
+		end
+	end
+
 	if changed or active then
 		si:setValue(value)
 	end
