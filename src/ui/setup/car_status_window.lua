@@ -96,7 +96,7 @@ local centerStatusInfo = {
 		unit = "",
 	},
 	{
-		label = "Frong Weight Balance",
+		label = "Front Weight Balance",
 		value = function(i)
 			return (car.wheels[0].load + car.wheels[1].load)
 				/ (car.wheels[0].load + car.wheels[1].load + car.wheels[2].load + car.wheels[3].load)

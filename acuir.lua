@@ -24,6 +24,7 @@ storage = ac.storage({
 })
 
 -- storage.setupTab = "SETUP I/O"
+-- storage.page = MenuPages.Home
 storage.settingsTab = 1
 
 -- storage.page = MenuPages.Home
@@ -33,9 +34,16 @@ settings = ac.storage({
 	showVersions = true,
 	hideOtherTrackSetups = true,
 	uiHideonIdleTime = 150,
-	uiPrimaryColor = rgbm(0, 0, 0, 0.75),
-	uiSecondaryColor = rgbm(0.74, 0, 0, 1),
+	uiColor1 = rgbm.new("#3e3c46"),
+	uiColor2 = rgbm(0.74, 0, 0, 1),
+	uiColor3 = rgbm(1, 1, 1, 1),
 })
+
+for v, v in pairs(settings) do
+	for _k, _v in pairs(v) do
+		settings[_k] = _v.default
+	end
+end
 
 storage.appOpen = settings.autoStart
 storage.hasAppOpened = false

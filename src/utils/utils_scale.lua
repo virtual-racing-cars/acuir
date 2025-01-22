@@ -14,7 +14,7 @@ contentWindow = function(id, title, position, size, flags, content, showTitle, h
 	cui.pushWindow(id .. "test", position.x, position.y, size.x, size.y)
 
 	if not hideBackground then
-		ui.drawRectFilled(vec2(0, 0), size, settings.uiPrimaryColor)
+		ui.drawRectFilled(vec2(0, 0), size, settings.uiColor1 / 2)
 	end
 
 	-- ui.drawRectFilled(vec2(0, 0), size, rgbm(0.1, 0.1, 0.1, 0.25), 10, ui.CornerFlags.Top)

@@ -19,7 +19,7 @@ function bottomBar(buttons)
 	ui.drawRectFilled(
 		vec2(uiStartX, sim.windowHeight - 96 * cui.scaleY()),
 		vec2(sim.windowWidth - uiStartX, sim.windowHeight - 40 * cui.scaleY()),
-		settings.uiPrimaryColor
+		settings.uiColor1 / 3
 	)
 
 	ui.setCursor(0)
@@ -50,10 +50,11 @@ function bottomBar(buttons)
 		rgbm.colors.orange
 	)
 
-	ui.pushStyleVar(ui.StyleVar.ItemSpacing, 0)
-
 	ui.setCursorX(uiStartX)
 	ui.setCursorY(sim.windowHeight - 96 * cui.scaleY())
+
+	ui.pushStyleColor(ui.StyleColor.Button, rgbm.colors.transparent)
+	ui.pushStyleVar(ui.StyleVar.ItemSpacing, 0)
 
 	for i in ipairs(buttons) do
 		local menuButton = buttons[i]
@@ -72,6 +73,7 @@ function bottomBar(buttons)
 
 		ui.sameLine()
 	end
+	ui.popStyleColor(1)
 	ui.popStyleVar(1)
 end
 
@@ -81,6 +83,7 @@ function homeBar(buttons)
 	ui.setCursorY(uiStartY + topBarHeight)
 
 	ui.pushStyleVar(ui.StyleVar.ItemSpacing, 0)
+	ui.pushStyleColor(ui.StyleColor.Button, settings.uiColor1)
 
 	for i in ipairs(buttons) do
 		local menuButton = buttons[i]
@@ -102,6 +105,7 @@ function homeBar(buttons)
 		ui.sameLine()
 	end
 
+	ui.popStyleColor(1)
 	ui.popStyleVar(1)
 end
 
@@ -169,28 +173,31 @@ function topSubBar(path)
 
 	cui.setCursorX(230)
 	cui.setCursorY(24)
+
+	ui.pushDWriteFont(ui.DWriteFont("Rajdhani"):weight(ui.DWriteFont.Weight.SemiBold))
 	ui.dwriteTextAligned(
 		path,
-		32 * cui.scaleY(),
+		38 * cui.scaleY(),
 		ui.Alignment.Start,
 		ui.Alignment.Center,
 		vec2(450 * cui.scaleX(), 100 * cui.scaleY()),
 		false,
 		rgbm(1, 1, 1, 1)
 	)
+	ui.popDWriteFont()
 end
 
 function topBar(showSessionInfo)
 	ui.drawRectFilled(
 		vec2(uiStartX, uiStartY),
 		vec2(sim.windowWidth - uiStartX, (uiStartY + topBarHeight)),
-		settings.uiPrimaryColor
+		settings.uiColor1 / 2
 	)
 
 	ui.drawRectFilled(
 		vec2(uiStartX, (uiStartY + topBarHeight)),
 		vec2(sim.windowWidth - uiStartX, (uiStartY + topBarHeight + menuButtonSize * cui.scaleY())),
-		rgbm(0.231373, 0.223529, 0.262745, 0.85)
+		settings.uiColor1 / 1.5
 	)
 	ui.setCursorX(sim.windowWidth / 2 - acLogoSize.x / 2)
 	ui.setCursorY((uiStartY + topBarHeight) * 0.32)

@@ -34,8 +34,8 @@ end
 local activeLabel = ""
 function ui.buttonAdvanced(label, size, flags)
 	if activeLabel == label then
-		ui.pushStyleColor(ui.StyleColor.Button, settings.uiSecondaryColor)
-		ui.pushStyleColor(ui.StyleColor.ButtonHovered, settings.uiSecondaryColor)
+		ui.pushStyleColor(ui.StyleColor.Button, settings.uiColor2)
+		ui.pushStyleColor(ui.StyleColor.ButtonHovered, settings.uiColor2)
 	end
 	local clicked = ui.button(label, size, flags)
 

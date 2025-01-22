@@ -254,7 +254,7 @@ function ioTab()
 			ui.drawRectFilled(
 				vec2(0, 0),
 				vec2(ui.windowWidth(), ui.windowHeight()),
-				settings.uiPrimaryColor / 2,
+				settings.uiColor1 / 2,
 				0,
 				ui.CornerFlags.None
 			)

@@ -27,6 +27,7 @@ local bottomBarButtons = {
 
 local primaryActive = false
 local secondaryActive = false
+local tertiaryActive = false
 
 function appearanceSettings()
 	contentWindow(
@@ -51,16 +52,16 @@ function appearanceSettings()
 			ui.sameLine()
 			setCursorX(210)
 			ui.setNextItemWidth(275)
-			local primaryColor, primaryOpacity = settings.uiPrimaryColor:unpack()
+			local primaryColor, primaryOpacity = settings.uiColor1:unpack()
 			local newPrimaryOpacity, primaryOpacityChanged =
 				ui.slider("##ui_primary_slider", primaryOpacity * 100, 0, 100, "Opacity: %.0f%%")
 
 			if primaryOpacityChanged then
-				settings.uiPrimaryColor = settings.uiPrimaryColor:set(primaryColor, newPrimaryOpacity / 100)
+				settings.uiColor1 = settings.uiColor1:set(primaryColor, newPrimaryOpacity / 100)
 			end
 
 			ui.sameLine()
-			if ui.colorButton("##primary", settings.uiPrimaryColor, ui.ColorPickerFlags.None) then
+			if ui.colorButton("##primary", settings.uiColor1, ui.ColorPickerFlags.None) then
 				primaryActive = not primaryActive
 				secondaryActive = false
 			end
@@ -74,11 +75,11 @@ function appearanceSettings()
 				if
 					ui.colorPicker(
 						"##ui_primary_picker",
-						settings.uiPrimaryColor,
+						settings.uiColor1,
 						ui.ColorPickerFlags.DisplayRGB + ui.ColorPickerFlags.NoAlpha + ui.ColorPickerFlags.NoSidePreview
 					)
 				then
-					settings.uiPrimaryColor = settings.uiPrimaryColor
+					settings.uiColor1 = settings.uiColor1
 				end
 			end
 
@@ -87,16 +88,16 @@ function appearanceSettings()
 			ui.sameLine()
 			setCursorX(210)
 			ui.setNextItemWidth(275)
-			local secondaryColor, secondaryOpacity = settings.uiSecondaryColor:unpack()
+			local secondaryColor, secondaryOpacity = settings.uiColor2:unpack()
 			local newSecondaryOpacity, secondaryOpacityChanged =
 				ui.slider("##ui_secondary_slider", secondaryOpacity * 100, 0, 100, "Opacity: %.0f%%")
 
 			if secondaryOpacityChanged then
-				settings.uiSecondaryColor = settings.uiSecondaryColor:set(secondaryColor, newSecondaryOpacity / 100)
+				settings.uiColor2 = settings.uiColor2:set(secondaryColor, newSecondaryOpacity / 100)
 			end
 
 			ui.sameLine()
-			if ui.colorButton("##secondary", settings.uiSecondaryColor, ui.ColorPickerFlags.None) then
+			if ui.colorButton("##secondary", settings.uiColor2, ui.ColorPickerFlags.None) then
 				secondaryActive = not secondaryActive
 				primaryActive = false
 			end
@@ -110,11 +111,47 @@ function appearanceSettings()
 				if
 					ui.colorPicker(
 						"##ui_secondary_picker",
-						settings.uiSecondaryColor,
+						settings.uiColor2,
 						ui.ColorPickerFlags.DisplayRGB + ui.ColorPickerFlags.NoAlpha + ui.ColorPickerFlags.NoSidePreview
 					)
 				then
-					settings.uiSecondaryColor = settings.uiSecondaryColor
+					settings.uiColor2 = settings.uiColor2
+				end
+			end
+
+			setCursorX(10)
+			ui.text("Tertiary Theme Color:")
+			ui.sameLine()
+			setCursorX(210)
+			ui.setNextItemWidth(275)
+			local tertiaryColor, tertiaryOpacity = settings.uiColor3:unpack()
+			local newtertiaryOpacity, tertiaryOpacityChanged =
+				ui.slider("##ui_tertiary_slider", tertiaryOpacity * 100, 0, 100, "Opacity: %.0f%%")
+
+			if tertiaryOpacityChanged then
+				settings.uiColor3 = settings.uiColor3:set(tertiaryColor, newtertiaryOpacity / 100)
+			end
+
+			ui.sameLine()
+			if ui.colorButton("##tertiary", settings.uiColor3, ui.ColorPickerFlags.None) then
+				tertiaryActive = not tertiaryActive
+				primaryActive = false
+			end
+
+			if tertiaryActive then
+				ui.sameLine()
+				local currentXPos = ui.getCursorX()
+				ui.newLine()
+				setCursorX(currentXPos - 304)
+				ui.setNextItemWidth(300)
+				if
+					ui.colorPicker(
+						"##ui_tertiary_picker",
+						settings.uiColor3,
+						ui.ColorPickerFlags.DisplayRGB + ui.ColorPickerFlags.NoAlpha + ui.ColorPickerFlags.NoSidePreview
+					)
+				then
+					settings.uiColor3 = settings.uiColor3
 				end
 			end
 

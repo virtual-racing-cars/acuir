@@ -9,7 +9,7 @@ function pushSetupListStyle(padding)
 	end
 
 	ui.pushStyleColor(ui.StyleColor.Button, rgbm(0, 0, 0, 0))
-	ui.pushStyleColor(ui.StyleColor.ButtonHovered, settings.uiSecondaryColor / 2)
+	ui.pushStyleColor(ui.StyleColor.ButtonHovered, settings.uiColor2 / 2)
 	ui.pushStyleColor(ui.StyleColor.ButtonActive, rgbm(0, 0, 0, 0))
 	ui.pushStyleVar(ui.StyleVar.FramePadding, padding)
 end
@@ -22,11 +22,11 @@ end
 function pushMainMenuStyle()
 	ui.pushStyleColor(ui.StyleColor.SliderGrab, rgbm(0.5, 0.5, 0.5, 1))
 	ui.pushStyleColor(ui.StyleColor.FrameBg, rgbm(0.1, 0.1, 0.1, 0.75))
-	ui.pushStyleColor(ui.StyleColor.FrameBgHovered, settings.uiSecondaryColor / 2)
-	ui.pushStyleColor(ui.StyleColor.FrameBgActive, settings.uiSecondaryColor)
+	ui.pushStyleColor(ui.StyleColor.FrameBgHovered, settings.uiColor2 / 2)
+	ui.pushStyleColor(ui.StyleColor.FrameBgActive, settings.uiColor2)
 	ui.pushStyleColor(ui.StyleColor.Button, rgbm(0.1, 0.1, 0.1, 0.75))
-	ui.pushStyleColor(ui.StyleColor.ButtonHovered, settings.uiSecondaryColor / 2)
-	ui.pushStyleColor(ui.StyleColor.ButtonActive, settings.uiSecondaryColor)
+	ui.pushStyleColor(ui.StyleColor.ButtonHovered, settings.uiColor2 / 2)
+	ui.pushStyleColor(ui.StyleColor.ButtonActive, settings.uiColor2)
 end
 
 function popMainMenuStyle()
