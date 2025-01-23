@@ -31,7 +31,10 @@ local cornerStatusInfo = {
 	{
 		label = "Toe",
 		value = function(i)
-			return car.wheels[i].toeIn
+			local rightSide = i % 2 == 0
+			local sign = rightSide and -1 or 1
+
+			return car.wheels[i].toeIn * sign
 		end,
 		round = 2,
 		unit = "",
@@ -90,10 +93,10 @@ local centerStatusInfo = {
 	{
 		label = "Sprung CoG Height",
 		value = function(i)
-			return car.cgHeight
+			return car.cgHeight * 1000
 		end,
-		round = 3,
-		unit = "",
+		round = 1,
+		unit = "mm",
 	},
 	{
 		label = "Front Weight Balance",
