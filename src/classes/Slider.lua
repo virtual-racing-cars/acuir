@@ -6,6 +6,9 @@ local itemHeld = ""
 
 local SpinnerButtonType = { Left = 0, Right = 1 }
 
+local spinnerButtonTimer = 0
+local spinnerButtonTime = 0
+
 local function drawSpinnerButton(direction, size)
 	size = size / 2
 
@@ -20,27 +23,19 @@ local function drawSpinnerButton(direction, size)
 	local hovered = ui.itemHovered()
 	ui.setCursor(tmpPos)
 	ui.icon(
-		direction == SpinnerButtonType.Left and ui.Icons.Skip or ui.Icons.Skip,
+		ui.Icons.Skip,
 		size,
 		hovered and rgbm.colors.red or rgbm.colors.white,
 		direction == SpinnerButtonType.Left and -size or size
 	)
 
-	-- if arrowButton(direction, size / 2) then
-	-- 	-- setupItem.buttonHeldTimer[direction] = os.clock() + 0.5
-	-- 	-- setupItem.buttonHeldStart = os.clock()
-
-	-- 	clicked = true
-	-- elseif
-	-- 	-- setupItem.buttonHeldTimer[direction] < os.clock()
-	-- 	-- and
-	-- 	ui.itemActive() and ui.mouseDown(ui.MouseButton.Left)
-	-- then
-	-- 	-- clicked = true
-
-	-- 	-- setupItem.buttonHeldTimer[direction] = (os.clock() - setupItem.buttonHeldStart) < 2.5 and os.clock() + 0.1
-	-- 	-- 	or os.clock() + 0.075
-	-- end
+	if clicked then
+		spinnerButtonTimer = os.clock() + 0.5
+		spinnerButtonTime = os.clock()
+	elseif spinnerButtonTimer < os.clock() and ui.itemActive() and ui.mouseDown(ui.MouseButton.Left) then
+		clicked = true
+		spinnerButtonTimer = (os.clock() - spinnerButtonTime) < 2.5 and os.clock() + 0.1 or os.clock() + 0.075
+	end
 
 	ui.popStyleColor(4)
 
