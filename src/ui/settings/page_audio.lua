@@ -46,7 +46,7 @@ local bottomBarButtons = {
 }
 
 function page.draw()
-	contentWindow(
+	cui.contentWindow(
 		"car_setup_window",
 		STORAGE.setupTab,
 		vec2(60 * cui.scaleX(), 240 * cui.scaleY()),

@@ -57,7 +57,7 @@ local bottomBarButtons = {
 function page.draw()
 	topBar(false)
 
-	contentWindow(
+	cui.contentWindow(
 		"car_setup_window",
 		STORAGE.setupTab,
 		vec2(60 * cui.scaleX(), 240 * cui.scaleY()),
@@ -67,7 +67,7 @@ function page.draw()
 			-- ui.drawRectFilled(vec2(0, 0), ui.availableSpace(), rgbm.colors.aqua)
 			STORAGE.setupTab = setupTabBar(sm.setupTabs)
 
-			contentWindow(
+			cui.contentWindow(
 				"car_setup_window2",
 				STORAGE.setupTab .. "2",
 				vec2(ui.windowWidth() / 4, 56 * cui.scaleY()),
@@ -83,7 +83,7 @@ function page.draw()
 			)
 
 			ui.setCursor(0)
-			contentWindow(
+			cui.contentWindow(
 				"help_window42",
 				STORAGE.setupTab .. "42",
 				vec2((ui.windowWidth() / 4) * 3, 56 * cui.scaleY()),
@@ -110,7 +110,7 @@ function page.draw()
 			)
 
 			ui.setCursor(0)
-			contentWindow(
+			cui.contentWindow(
 				"help_window432",
 				STORAGE.setupTab .. "423",
 				vec2(0, 56 * cui.scaleY()),

@@ -26,7 +26,7 @@ function TimeTablePage(sim)
 	setCursorX(15)
 	setCursorY(15)
 
-	childWindow(
+	cui.childWindow(
 		"leaderboard_page",
 		setupSpinnersWindowSize,
 		false,

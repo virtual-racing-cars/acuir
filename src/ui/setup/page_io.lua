@@ -76,53 +76,59 @@ end
 loadSetups()
 
 local function savedSetupsWindow()
-	childWindow("saved_setups", vec2(ui.windowWidth() / 2, ui.windowHeight()), false, ui.WindowFlags.None, function()
-		setCursorX(10)
-		childWindow("saved_setups", vec2(ui.windowWidth() - 10, ui.windowHeight()), false, function()
-			if refreshingSetups then
-				ui.icon(ui.Icons.LoadingSpinner, ui.availableSpace())
-			else
-				for track, setups in pairs(savedSetups) do
-					ui.treeNode(track, function()
-						for i in ipairs(setups) do
-							local setup = setups[i]
-							local setupButtonFlags = ui.ButtonFlags.None
+	cui.childWindow(
+		"saved_setups",
+		vec2(ui.windowWidth() / 2, ui.windowHeight()),
+		false,
+		ui.WindowFlags.None,
+		function()
+			setCursorX(10)
+			cui.childWindow("saved_setups", vec2(ui.windowWidth() - 10, ui.windowHeight()), false, function()
+				if refreshingSetups then
+					ui.icon(ui.Icons.LoadingSpinner, ui.availableSpace())
+				else
+					for track, setups in pairs(savedSetups) do
+						ui.treeNode(track, function()
+							for i in ipairs(setups) do
+								local setup = setups[i]
+								local setupButtonFlags = ui.ButtonFlags.None
 
-							if selectedSetup.path == setup.path then
-								setupButtonFlags = ui.ButtonFlags.Active
+								if selectedSetup.path == setup.path then
+									setupButtonFlags = ui.ButtonFlags.Active
+								end
+
+								local name = string.replace(setup.name, ".ini", "")
+
+								ui.pushStyleVar(ui.StyleVar.ItemSpacing, 3)
+								ui.pushStyleVar(ui.StyleVar.FramePadding, -25)
+								if ui.modernButtonAdvanced(name, vec2(ui.windowWidth() - 20, 30), setupButtonFlags) then
+									selectedSetup = {
+										name = name,
+										track = track,
+										path = setup.path,
+										description = setup.description,
+										tags = setup.tags,
+										creation = setup.creationTime,
+									}
+
+									saveSetup = {
+										name = name,
+										track = track,
+										path = setup.path,
+										description = setup.description,
+										tags = setup.tags,
+										creation = setup.creationTime,
+									}
+								end
+
+								ui.popStyleVar(2)
 							end
-
-							local name = string.replace(setup.name, ".ini", "")
-
-							ui.pushStyleVar(ui.StyleVar.ItemSpacing, 3)
-							ui.pushStyleVar(ui.StyleVar.FramePadding, -25)
-							if ui.modernButtonAdvanced(name, vec2(ui.windowWidth() - 20, 30), setupButtonFlags) then
-								selectedSetup = {
-									name = name,
-									track = track,
-									path = setup.path,
-									description = setup.description,
-									tags = setup.tags,
-									creation = setup.creationTime,
-								}
-
-								saveSetup = {
-									name = name,
-									track = track,
-									path = setup.path,
-									description = setup.description,
-									tags = setup.tags,
-									creation = setup.creationTime,
-								}
-							end
-
-							ui.popStyleVar(2)
-						end
-					end)
+						end)
+					end
 				end
-			end
-		end)
-	end)
+			end)
+		end
+	)
 end
 
 local function saveSetupWindow()
@@ -246,7 +252,7 @@ function page.draw()
 	setCursorY(50)
 	setCursorX(10)
 
-	contentWindow(
+	cui.contentWindow(
 		"car_setup_window",
 		STORAGE.setupTab,
 		vec2(sim.windowWidth / 4, 140),
@@ -271,7 +277,7 @@ function page.draw()
 
 			savedSetupsWindow()
 
-			contentWindow(
+			cui.contentWindow(
 				"saved_setups",
 				"saved_setups",
 				vec2(ui.windowWidth() / 2, 0),

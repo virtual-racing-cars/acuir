@@ -31,7 +31,7 @@ local but1 = ac.ControlButton("Lol")
 local but2 = ac.ControlButton("Lol2")
 
 function page.draw()
-	contentWindow(
+	cui.contentWindow(
 		"car_setup_window",
 		STORAGE.setupTab,
 		vec2(60 * cui.scaleX(), 240 * cui.scaleY()),

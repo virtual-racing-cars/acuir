@@ -54,7 +54,7 @@ function page.draw()
 	topBar(true)
 	homeBar(menuButtonList)
 
-	contentWindow(
+	cui.contentWindow(
 		"car_setup_window",
 		STORAGE.setupTab,
 		vec2(60 * cui.scaleX(), 316 * cui.scaleY()),
@@ -69,7 +69,7 @@ function page.draw()
 		true
 	)
 
-	-- contentWindow(
+	-- cui.contentWindow(
 	-- 	"car_setup_window22",
 	-- 	STORAGE.setupTab,
 	-- 	vec2(sim.windowWidth - (800 + 60) * cui.scaleX(), 316 * cui.scaleY()),

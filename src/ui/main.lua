@@ -83,7 +83,7 @@ function MainWindow()
 	end
 
 	ui.setCursor(0)
-	childWindow(
+	cui.childWindow(
 		"main_window",
 		vec2(sim.windowWidth, sim.windowHeight),
 		false,

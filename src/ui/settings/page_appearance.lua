@@ -32,7 +32,7 @@ local secondaryActive = false
 local tertiaryActive = false
 
 function page.draw()
-	contentWindow(
+	cui.contentWindow(
 		"car_setup_window",
 		STORAGE.setupTab,
 		vec2(60 * cui.scaleX(), 240 * cui.scaleY()),
@@ -49,10 +49,10 @@ function page.draw()
 				SETTINGS.hideOtherTrackSetups = not SETTINGS.hideOtherTrackSetups
 			end
 
-			setCursorX(10)
+			cui.setCursorX(10)
 			ui.text("Primary Theme Color:")
 			ui.sameLine()
-			setCursorX(210)
+			cui.setCursorX(210)
 			ui.setNextItemWidth(275)
 			local primaryColor, primaryOpacity = SETTINGS.uiColor1:unpack()
 			local newPrimaryOpacity, primaryOpacityChanged =
@@ -72,7 +72,7 @@ function page.draw()
 				ui.sameLine()
 				local currentXPos = ui.getCursorX()
 				ui.newLine()
-				setCursorX(currentXPos - 304)
+				cui.setCursorX(currentXPos - 304)
 				ui.setNextItemWidth(300)
 				if
 					ui.colorPicker(
@@ -85,10 +85,10 @@ function page.draw()
 				end
 			end
 
-			setCursorX(10)
+			cui.setCursorX(10)
 			ui.text("Secondary Theme Color:")
 			ui.sameLine()
-			setCursorX(210)
+			cui.setCursorX(210)
 			ui.setNextItemWidth(275)
 			local secondaryColor, secondaryOpacity = SETTINGS.uiColor2:unpack()
 			local newSecondaryOpacity, secondaryOpacityChanged =
@@ -108,7 +108,7 @@ function page.draw()
 				ui.sameLine()
 				local currentXPos = ui.getCursorX()
 				ui.newLine()
-				setCursorX(currentXPos - 304)
+				cui.setCursorX(currentXPos - 304)
 				ui.setNextItemWidth(300)
 				if
 					ui.colorPicker(
@@ -121,10 +121,10 @@ function page.draw()
 				end
 			end
 
-			setCursorX(10)
+			cui.setCursorX(10)
 			ui.text("Tertiary Theme Color:")
 			ui.sameLine()
-			setCursorX(210)
+			cui.setCursorX(210)
 			ui.setNextItemWidth(275)
 			local tertiaryColor, tertiaryOpacity = SETTINGS.uiColor3:unpack()
 			local newtertiaryOpacity, tertiaryOpacityChanged =
@@ -144,7 +144,7 @@ function page.draw()
 				ui.sameLine()
 				local currentXPos = ui.getCursorX()
 				ui.newLine()
-				setCursorX(currentXPos - 304)
+				cui.setCursorX(currentXPos - 304)
 				ui.setNextItemWidth(300)
 				if
 					ui.colorPicker(
