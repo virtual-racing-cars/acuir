@@ -32,11 +32,11 @@ STORAGE.appOpen = SETTINGS.autoStart
 STORAGE.hasAppOpened = false
 
 package.add("src")
-cui = require("utils\\utils_cui")
-require("classes\\button")
-require("utils\\utils_scale")
-require("ui\\main")
-require("ui\\audio")
+cui = require("utils.utils_cui")
+require("classes.button")
+require("utils.utils_scale")
+require("ui.main")
+require("ui.audio")
 
 ac.setWindowOpen("main", true)
 

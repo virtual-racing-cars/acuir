@@ -1,6 +1,5 @@
-require("src\\ui\\setup\\pitstop_strategy_window")
-require("src\\ui\\setup\\gear_window")
-
+require("src.ui.setup.pitstop_strategy_window")
+require("src.ui.setup.gear_window")
 require("src.classes.SetupManager")
 require("src.classes.Button")
 require("src.classes.Slider")

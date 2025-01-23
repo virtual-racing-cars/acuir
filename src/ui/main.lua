@@ -1,4 +1,4 @@
-require("ui\\common")
+require("ui.common")
 require("classes.PageManager")
 
 local HomePage = require("ui.home.page")
