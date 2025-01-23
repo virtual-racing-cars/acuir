@@ -127,6 +127,10 @@ local function drawSetupSpinner(sm, si)
 		false
 	)
 
+	if hovered then
+		HELP_TEXT = si.help
+	end
+
 	if si.mirrorAvailable and not locked then
 		ui.setCursorX(ui.windowWidth() / 2 - spinnerHeight / 4)
 		ui.setCursorY(yPos + spinnerHeight / 4)
@@ -158,10 +162,5 @@ function car_setup(sm)
 
 	if changed then
 		sm:makeUndo()
-	end
-end
-
-function SetupWindow(sm)
-	if ui.keyboardButtonPressed(ui.KeyIndex.Escape) then
 	end
 end

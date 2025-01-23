@@ -69,7 +69,7 @@ function drawSlider(
 	ui.setCursorY(yPos)
 	ui.pushDWriteFont(ui.DWriteFont("Rajdhani"):weight(ui.DWriteFont.Weight.SemiBold))
 	ui.dwriteTextAligned(
-		name,
+		name:gsub("->            ", ""):gsub("             %?", ""),
 		fontSize,
 		ui.Alignment.Center,
 		ui.Alignment.Center,
