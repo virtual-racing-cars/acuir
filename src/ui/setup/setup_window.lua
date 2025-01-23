@@ -6,7 +6,7 @@ require("src.classes.Slider")
 
 local currentApp = 0
 
-local function tabItem(tabCount, index, title)
+local function tabItem(index, title)
 	if
 		cui.menuButton(title, 56, ui.Alignment.Center, ui.Alignment.Center, ui.ButtonFlags.None, currentApp == index)
 	then
@@ -22,9 +22,6 @@ local tabItemPositions = { [0] = 0 }
 local sim = ac.getSim()
 
 function setupTabBar(apps)
-	ui.pushFont(ui.Font.Title)
-	ui.pushStyleVar(ui.StyleVar.ItemSpacing, 0)
-
 	if
 		ui.mouseLocalPos() >= vec2(0, 0)
 		and ui.mouseLocalPos() < vec2(sim.windowWidth - 120 * cui.scaleX(), 56 * cui.scaleY())
@@ -47,16 +44,18 @@ function setupTabBar(apps)
 
 	ui.setCursorX(tabBarPosition)
 	ui.setCursorY(0)
+	ui.pushStyleVar(ui.StyleVar.ItemSpacing, 0)
+	ui.pushStyleColor(ui.StyleColor.Button, SETTINGS.uiColor1)
 	for i in ipairs(apps) do
-		tabItem(#apps, i - 1, apps[i].name)
+		tabItem(i - 1, apps[i].name)
 
 		if not tabItemPositions[i - 1] then
 			tabItemPositions[i - 1] = ui.getCursorX()
 		end
 	end
 
+	ui.popStyleColor(1)
 	ui.popStyleVar(1)
-	ui.popFont()
 
 	return currentApp + 1
 end
