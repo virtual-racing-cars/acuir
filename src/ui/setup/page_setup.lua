@@ -135,7 +135,7 @@ function page.draw()
 		goToHomePage()
 	end
 
-	return ""
+	return "debug"
 end
 
 return page

@@ -43,6 +43,7 @@ local function drawSpinnerButton(direction, size)
 end
 
 function drawSlider(
+	id,
 	name,
 	xPos,
 	yPos,
@@ -80,9 +81,9 @@ function drawSlider(
 
 	ui.setCursorX(xPos)
 	ui.setCursorY(yPos)
-	ui.invisibleButton("invis" .. name, vec2Temp1:set(width, height))
+	ui.invisibleButton("invis" .. id, vec2Temp1:set(width, height))
 
-	local active = ui.itemActive() or (itemHeld == name and ui.mouseDown(ui.MouseButton.Left))
+	local active = ui.itemActive() or (itemHeld == id and ui.mouseDown(ui.MouseButton.Left))
 	local sliderHovered = ui.mouseLocalPos() > vec2Temp1:set(xPos, yPos)
 		and ui.mouseLocalPos() <= vec2Temp2:set(xPos + width, yPos + height)
 	local sliderClicked = ui.mouseClicked(ui.MouseButton.Left) and not ui.itemHovered(ui.HoveredFlags.None)
@@ -96,7 +97,7 @@ function drawSlider(
 
 			audioTrigger()
 		else
-			itemHeld = name
+			itemHeld = id
 			value = (ui.mouseLocalPos().x - xPos) / (xMax - xPos) * (max - min) + min
 		end
 
@@ -129,19 +130,20 @@ function drawSlider(
 	if ui.mouseDown(ui.MouseButton.Left) then
 		changed = false
 	end
-	if itemActive == name and ui.mouseReleased(ui.MouseButton.Left) then
+	if itemActive == id and ui.mouseReleased(ui.MouseButton.Left) then
 		changed = true
 		itemHeld = ""
 		itemActive = ""
 	end
 	if active then
-		itemActive = name
+		itemActive = id
 	end
 
 	return value, changed, active
 end
 
 function drawSpinner(
+	id,
 	name,
 	xPos,
 	yPos,
@@ -194,6 +196,7 @@ function drawSpinner(
 	end
 
 	local _value, _changed, active = drawSlider(
+		id,
 		name,
 		xPos + height,
 		yPos,

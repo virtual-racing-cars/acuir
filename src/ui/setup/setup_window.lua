@@ -108,7 +108,10 @@ local function drawSetupSpinner(sm, si)
 		si.format = si.items[si.value + 1]
 	end
 
+	ac.debug(si.uid, si.name)
+
 	local value, changed, active, hovered = drawSpinner(
+		si.uid,
 		si.name,
 		xPos,
 		yPos,
