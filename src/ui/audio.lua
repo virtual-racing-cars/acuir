@@ -47,7 +47,6 @@ function audioDriver()
 		audioBlip:setVolume(0.5)
 		audioBlip:setPitch(1)
 		playAudio()
-		ac.log("hi")
 	end
 	focuseItem = ui.getHoveredID()
 
