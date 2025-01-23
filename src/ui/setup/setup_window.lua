@@ -118,7 +118,7 @@ local function drawSetupSpinner(sm, si)
 	}
 
 	local xPos = positions[si.xPos]
-	local yPos = (si.yPos * (ui.windowHeight() / spinnerHeight + 67) + 60) * cui.scaleY()
+	local yPos = (si.yPos * 97 + 60) * cui.scaleY()
 	local locked = si.min == si.max
 
 	if #si.items > 0 then
