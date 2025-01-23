@@ -41,7 +41,7 @@ local settingsPages = {
 function page.draw()
 	-- ui.drawLine(vec2(220, 64), vec2(600, 64), rgbm.colors.white, 1)
 	-- ui.drawLine(vec2(220, 90), vec2(600, 90), rgbm.colors.white, 1)
-	ui.drawRectFilled(vec2(0, 0), vec2(sim.windowWidth, sim.windowHeight), settings.uiColor1 / 1.1)
+	ui.drawRectFilled(vec2(0, 0), vec2(sim.windowWidth, sim.windowHeight), SETTINGS.uiColor1 / 1.1)
 
 	cui.setCursorX(320)
 	cui.setCursorY(366)
@@ -78,7 +78,7 @@ function page.draw()
 		},
 	})
 
-	-- local storagePath = storage.settingsTab > 1 and "Settings/" .. page.label or "Settings/"
+	-- local storagePath = STORAGE.settingsTab > 1 and "Settings/" .. page.label or "Settings/"
 	topSubBar("Settings/")
 
 	if ui.keyboardButtonPressed(ui.KeyIndex.Escape) then

@@ -5,12 +5,12 @@ local HomePage = require("ui.home.page")
 local SetupPage = require("ui.setup.page_setup")
 local SetupAppsPage = require("ui.setup.page_apps")
 local SetupIoPage = require("ui.setup.page_io")
-local SettingsPage = require("ui.settings.page_settings")
-local SettingsGeneralPage = require("ui.settings.page_general")
-local SettingsControls = require("ui.settings.page_controls")
-local SettingsAudioPage = require("ui.settings.page_audio")
-local SettingsAppearancePage = require("ui.settings.page_appearance")
-local SettingsAiPage = require("ui.settings.page_ai")
+local SettingsPage = require("ui.SETTINGS.page_settings")
+local SettingsGeneralPage = require("ui.SETTINGS.page_general")
+local SettingsControls = require("ui.SETTINGS.page_controls")
+local SettingsAudioPage = require("ui.SETTINGS.page_audio")
+local SettingsAppearancePage = require("ui.SETTINGS.page_appearance")
+local SettingsAiPage = require("ui.SETTINGS.page_ai")
 
 local pageManager = PageManager()
 pageManager:registerPage("HomePage", nil, HomePage)
@@ -65,15 +65,15 @@ function goToSettingsAiPage()
 end
 
 local sim = ac.getSim()
-local timer = os.clock() + settings.uiHideonIdleTime
+local timer = os.clock() + SETTINGS.uiHideonIdleTime
 local exclusiveHudMode = ""
 
 function MainWindow()
 	local perfTime = os.preciseClock()
 
-	if settings.uiHideonIdleTime > 0 then
+	if SETTINGS.uiHideonIdleTime > 0 then
 		if (ui.mouseDelta() ~= vec2(0, 0) and sim.isWindowForeground) or ui.mouseClicked(ui.MouseButton.Left) then
-			timer = os.clock() + settings.uiHideonIdleTime
+			timer = os.clock() + SETTINGS.uiHideonIdleTime
 		end
 
 		if timer < os.clock() then
@@ -91,7 +91,7 @@ function MainWindow()
 		function()
 			exclusiveHudMode = ""
 
-			if not storage.appOpen then
+			if not STORAGE.appOpen then
 				exclusiveHudMode = nil
 				return
 			end

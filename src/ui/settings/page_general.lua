@@ -33,7 +33,7 @@ local but2 = ac.ControlButton("Lol2")
 function page.draw()
 	contentWindow(
 		"car_setup_window",
-		storage.setupTab,
+		STORAGE.setupTab,
 		vec2(60 * cui.scaleX(), 240 * cui.scaleY()),
 		vec2(sim.windowWidth - 120 * cui.scaleX(), sim.windowHeight - 383 * cui.scaleY()),
 		ui.WindowFlags.None,
@@ -46,13 +46,13 @@ function page.draw()
 
 			ui.beginGroup(0)
 
-			if ui.checkbox("Auto-Start new UI", settings.autoStart) then
-				settings.autoStart = not settings.autoStart
+			if ui.checkbox("Auto-Start new UI", SETTINGS.autoStart) then
+				SETTINGS.autoStart = not SETTINGS.autoStart
 			end
 
 			-- local value, changed, active = slider(
 			-- 	"##afkhideui",
-			-- 	settings.uiHideonIdleTime,
+			-- 	SETTINGS.uiHideonIdleTime,
 			-- 	0,
 			-- 	300,
 			-- 	0,
@@ -67,15 +67,15 @@ function page.draw()
 			-- )
 
 			-- if changed then
-			-- 	settings.uiHideonIdleTime = math.floor(value / 5 + 0.5) * 5
+			-- 	SETTINGS.uiHideonIdleTime = math.floor(value / 5 + 0.5) * 5
 			-- end
 
-			if ui.checkbox("Show app and CSP versions on bottom right of the screen", settings.showVersions) then
-				settings.showVersions = not settings.showVersions
+			if ui.checkbox("Show app and CSP versions on bottom right of the screen", SETTINGS.showVersions) then
+				SETTINGS.showVersions = not SETTINGS.showVersions
 			end
 
-			if ui.checkbox("Developer Mode", settings.showVersions) then
-				settings.showVersions = not settings.showVersions
+			if ui.checkbox("Developer Mode", SETTINGS.showVersions) then
+				SETTINGS.showVersions = not SETTINGS.showVersions
 			end
 
 			but1:control()

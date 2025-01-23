@@ -22,7 +22,7 @@ local function loadSetups()
 	end
 
 	io.scanDir(setupsDir, function(dirName)
-		if settings.hideOtherTrackSetups then
+		if SETTINGS.hideOtherTrackSetups then
 			if dirName ~= ac.getTrackID() and dirName ~= "generic" then
 				return
 			end
@@ -248,7 +248,7 @@ function page.draw()
 
 	contentWindow(
 		"car_setup_window",
-		storage.setupTab,
+		STORAGE.setupTab,
 		vec2(sim.windowWidth / 4, 140),
 		vec2(sim.windowWidth / 2, sim.windowHeight - 283),
 		ui.WindowFlags.None,
@@ -256,13 +256,13 @@ function page.draw()
 			ui.drawRectFilled(
 				vec2(0, 0),
 				vec2(ui.windowWidth(), ui.windowHeight()),
-				settings.uiColor1 / 2,
+				SETTINGS.uiColor1 / 2,
 				0,
 				ui.CornerFlags.None
 			)
 
-			if ui.checkbox("Hide other track setups", settings.hideOtherTrackSetups) then
-				settings.hideOtherTrackSetups = not settings.hideOtherTrackSetups
+			if ui.checkbox("Hide other track setups", SETTINGS.hideOtherTrackSetups) then
+				SETTINGS.hideOtherTrackSetups = not SETTINGS.hideOtherTrackSetups
 				loadSetups()
 			end
 

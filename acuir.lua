@@ -3,25 +3,16 @@ local sim = ac.getSim()
 UI_SCALE_X = sim.windowWidth / 2560 * 100
 UI_SCALE_Y = sim.windowHeight / 1440 * 100
 
-MenuPages = {
-	Home = 0,
-	Setup = 1,
-	Replay = 2,
-	Settings = 3,
-	Manual = 4,
-}
-
-storage = ac.storage({
+STORAGE = ac.storage({
 	appOpen = false,
 	hasAppOpened = false,
 	setupTab = "SETUP I/O",
 	helpOpen = false,
-	page = MenuPages.Home,
 })
 
--- storage.setupTab = "SETUP I/O"
+-- STORAGE.setupTab = "SETUP I/O"
 
-settings = ac.storage({
+SETTINGS = ac.storage({
 	autoStart = true,
 	showVersions = true,
 	hideOtherTrackSetups = true,
@@ -31,14 +22,14 @@ settings = ac.storage({
 	uiColor3 = rgbm(1, 1, 1, 1),
 })
 
-for v, v in pairs(settings) do
+for v, v in pairs(SETTINGS) do
 	for _k, _v in pairs(v) do
-		settings[_k] = _v.default
+		SETTINGS[_k] = _v.default
 	end
 end
 
-storage.appOpen = settings.autoStart
-storage.hasAppOpened = false
+STORAGE.appOpen = SETTINGS.autoStart
+STORAGE.hasAppOpened = false
 
 package.add("src")
 cui = require("utils\\utils_cui")
@@ -50,7 +41,7 @@ require("ui\\audio")
 ac.setWindowOpen("main", true)
 
 ui.onExclusiveHUD(function(mode)
-	if not storage.appOpen then
+	if not STORAGE.appOpen then
 		return
 	end
 
@@ -62,21 +53,21 @@ end)
 ac.setWindowOpen("main", true)
 
 function script.main()
-	if not storage.hasAppOpened then
-		storage.hasAppOpened = true
+	if not STORAGE.hasAppOpened then
+		STORAGE.hasAppOpened = true
 	end
 end
 
 local uic = ac.getUI()
 
 function script.update(dt)
-	if sim.isInMainMenu and settings.autoStart and not storage.hasAppOpened then
+	if sim.isInMainMenu and SETTINGS.autoStart and not STORAGE.hasAppOpened then
 		ac.tryToOpenRaceMenu("race")
 		ac.tryToOpenRaceMenu("setup")
 	end
 
 	if uic.ctrlDown and uic.shiftDown and ui.keyboardButtonPressed(ui.KeyIndex.F5) then
-		settings.autoStart = not storage.appOpen
-		storage.appOpen = not storage.appOpen
+		SETTINGS.autoStart = not STORAGE.appOpen
+		STORAGE.appOpen = not STORAGE.appOpen
 	end
 end

@@ -18,21 +18,17 @@ local menuButtonList = {
 		enabled = true,
 		func = function()
 			goToSetupPage()
-			storage.page = MenuPages.Setup
 		end,
 	},
 	{
 		label = "TIME TABLE",
 		enabled = false,
-		func = function()
-			storage.page = MenuPages.Setup
-		end,
+		func = function() end,
 	},
 	{
 		label = "REPLAY",
 		enabled = false,
 		func = function()
-			storage.page = MenuPages.Replay
 			ac.tryToToggleReplay(true)
 		end,
 	},
@@ -60,7 +56,7 @@ function page.draw()
 
 	contentWindow(
 		"car_setup_window",
-		storage.setupTab,
+		STORAGE.setupTab,
 		vec2(60 * cui.scaleX(), 316 * cui.scaleY()),
 		vec2(650 * cui.scaleX(), sim.windowHeight - 459 * cui.scaleY()),
 		ui.WindowFlags.None,
@@ -75,7 +71,7 @@ function page.draw()
 
 	-- contentWindow(
 	-- 	"car_setup_window22",
-	-- 	storage.setupTab,
+	-- 	STORAGE.setupTab,
 	-- 	vec2(sim.windowWidth - (800 + 60) * cui.scaleX(), 316 * cui.scaleY()),
 	-- 	vec2(650 * cui.scaleX(), sim.windowHeight - 459 * cui.scaleY()),
 	-- 	ui.WindowFlags.None,

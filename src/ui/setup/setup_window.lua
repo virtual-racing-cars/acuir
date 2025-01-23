@@ -167,7 +167,7 @@ end
 
 function car_setup(sm)
 	local changed = false
-	local tab = sm.setupTabs[tonumber(storage.setupTab)]
+	local tab = sm.setupTabs[tonumber(STORAGE.setupTab)]
 
 	for _, v in pairs(tab.setupSpinners) do
 		if drawSetupSpinner(sm, v) then
@@ -182,6 +182,5 @@ end
 
 function SetupWindow(sm)
 	if ui.keyboardButtonPressed(ui.KeyIndex.Escape) then
-		storage.page = MenuPages.Home
 	end
 end

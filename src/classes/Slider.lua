@@ -113,7 +113,7 @@ function drawSlider(
 	ui.drawRectFilled(
 		vec2Temp1:set(xPos, yPos + height),
 		vec2Temp2:set(xPos + (((value - min) / (max - min)) * width), yPos + height * 1.083),
-		settings.uiColor2
+		SETTINGS.uiColor2
 	)
 
 	ui.setCursorX(xPos)
@@ -173,12 +173,12 @@ function drawSpinner(
 	ui.drawRectFilled(
 		vec2Temp1:set(xPos + height, yPos),
 		vec2Temp2:set(xPos + width - height, yPos + buttonSize),
-		settings.uiColor1
+		SETTINGS.uiColor1
 	)
 	ui.drawRectFilled(
 		vec2Temp1:set(xPos + height, yPos + buttonSize),
 		vec2Temp2:set(xPos + width - height, yPos + height),
-		settings.uiColor3
+		SETTINGS.uiColor3
 	)
 
 	local hovered = ui.mouseLocalPos() >= vec2Temp1:set(xPos + buttonSize, yPos)

@@ -32,8 +32,8 @@ function TimeTablePage(sim)
 		false,
 		ui.WindowFlags.NoScrollbar + ui.WindowFlags.NoScrollWithMouse,
 		function()
-			ui.drawRectFilled(vec2(0, 0), ui.availableSpace(), settings.uiColor1, 0, ui.CornerFlags.None)
-			ui.drawRectFilled(vec2(0, 0), setupSpinnersWindowHeaderSize, settings.uiColor1, 0, ui.CornerFlags.None)
+			ui.drawRectFilled(vec2(0, 0), ui.availableSpace(), SETTINGS.uiColor1, 0, ui.CornerFlags.None)
+			ui.drawRectFilled(vec2(0, 0), setupSpinnersWindowHeaderSize, SETTINGS.uiColor1, 0, ui.CornerFlags.None)
 
 			setCursorY(0)
 			ui.dwriteTextAligned(

@@ -13,13 +13,13 @@ function playerListButton(car, xPos, yPos, width, height)
 	ui.drawRectFilled(
 		vec2(xPos, yPos),
 		vec2(xPos + width, yPos + height),
-		evenCar and settings.uiColor1 / 4 or settings.uiColor1 / 2
+		evenCar and SETTINGS.uiColor1 / 4 or SETTINGS.uiColor1 / 2
 	)
 
 	ui.drawRectFilled(
 		vec2(xPos, yPos),
 		vec2(xPos + width / 15, yPos + height),
-		sim.focusedCar == car.index and settings.uiColor2 or settings.uiColor1
+		sim.focusedCar == car.index and SETTINGS.uiColor2 or SETTINGS.uiColor1
 	)
 
 	ui.setCursorX(xPos)
@@ -40,7 +40,7 @@ function playerListButton(car, xPos, yPos, width, height)
 		ui.setCursorX(xPos + width - width / 15)
 		ui.setCursorY(yPos)
 
-		ui.drawRectFilled(vec2(xPos + width - width / 15, yPos), vec2(xPos + width, yPos + height), settings.uiColor3)
+		ui.drawRectFilled(vec2(xPos + width - width / 15, yPos), vec2(xPos + width, yPos + height), SETTINGS.uiColor3)
 
 		ui.dwriteTextAligned(
 			"P",

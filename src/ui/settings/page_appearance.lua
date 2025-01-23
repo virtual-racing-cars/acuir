@@ -34,19 +34,19 @@ local tertiaryActive = false
 function page.draw()
 	contentWindow(
 		"car_setup_window",
-		storage.setupTab,
+		STORAGE.setupTab,
 		vec2(60 * cui.scaleX(), 240 * cui.scaleY()),
 		vec2(sim.windowWidth - 120 * cui.scaleX(), sim.windowHeight - 383 * cui.scaleY()),
 		ui.WindowFlags.None,
 		function()
-			ui.drawRectFilled(vec2(0, 0), vec2(ui.windowWidth(), ui.windowHeight()), settings.uiColor1 / 1.1)
+			ui.drawRectFilled(vec2(0, 0), vec2(ui.windowWidth(), ui.windowHeight()), SETTINGS.uiColor1 / 1.1)
 			ui.drawLine(vec2(0, 2), vec2(ui.windowWidth(), 2), rgbm.colors.gray, 2)
 			ui.drawRectFilled(vec2(0, 2), vec2(ui.windowWidth(), ui.windowHeight()), rgbm(0, 0, 0, 0.2))
 
 			ui.setCursorY(60)
 			ui.setCursorX(50)
-			if ui.checkbox("Show 'Car Info' window on the setup page", settings.hideOtherTrackSetups) then
-				settings.hideOtherTrackSetups = not settings.hideOtherTrackSetups
+			if ui.checkbox("Show 'Car Info' window on the setup page", SETTINGS.hideOtherTrackSetups) then
+				SETTINGS.hideOtherTrackSetups = not SETTINGS.hideOtherTrackSetups
 			end
 
 			setCursorX(10)
@@ -54,16 +54,16 @@ function page.draw()
 			ui.sameLine()
 			setCursorX(210)
 			ui.setNextItemWidth(275)
-			local primaryColor, primaryOpacity = settings.uiColor1:unpack()
+			local primaryColor, primaryOpacity = SETTINGS.uiColor1:unpack()
 			local newPrimaryOpacity, primaryOpacityChanged =
 				ui.slider("##ui_primary_slider", primaryOpacity * 100, 0, 100, "Opacity: %.0f%%")
 
 			if primaryOpacityChanged then
-				settings.uiColor1 = settings.uiColor1:set(primaryColor, newPrimaryOpacity / 100)
+				SETTINGS.uiColor1 = SETTINGS.uiColor1:set(primaryColor, newPrimaryOpacity / 100)
 			end
 
 			ui.sameLine()
-			if ui.colorButton("##primary", settings.uiColor1, ui.ColorPickerFlags.None) then
+			if ui.colorButton("##primary", SETTINGS.uiColor1, ui.ColorPickerFlags.None) then
 				primaryActive = not primaryActive
 				secondaryActive = false
 			end
@@ -77,11 +77,11 @@ function page.draw()
 				if
 					ui.colorPicker(
 						"##ui_primary_picker",
-						settings.uiColor1,
+						SETTINGS.uiColor1,
 						ui.ColorPickerFlags.DisplayRGB + ui.ColorPickerFlags.NoAlpha + ui.ColorPickerFlags.NoSidePreview
 					)
 				then
-					settings.uiColor1 = settings.uiColor1
+					SETTINGS.uiColor1 = SETTINGS.uiColor1
 				end
 			end
 
@@ -90,16 +90,16 @@ function page.draw()
 			ui.sameLine()
 			setCursorX(210)
 			ui.setNextItemWidth(275)
-			local secondaryColor, secondaryOpacity = settings.uiColor2:unpack()
+			local secondaryColor, secondaryOpacity = SETTINGS.uiColor2:unpack()
 			local newSecondaryOpacity, secondaryOpacityChanged =
 				ui.slider("##ui_secondary_slider", secondaryOpacity * 100, 0, 100, "Opacity: %.0f%%")
 
 			if secondaryOpacityChanged then
-				settings.uiColor2 = settings.uiColor2:set(secondaryColor, newSecondaryOpacity / 100)
+				SETTINGS.uiColor2 = SETTINGS.uiColor2:set(secondaryColor, newSecondaryOpacity / 100)
 			end
 
 			ui.sameLine()
-			if ui.colorButton("##secondary", settings.uiColor2, ui.ColorPickerFlags.None) then
+			if ui.colorButton("##secondary", SETTINGS.uiColor2, ui.ColorPickerFlags.None) then
 				secondaryActive = not secondaryActive
 				primaryActive = false
 			end
@@ -113,11 +113,11 @@ function page.draw()
 				if
 					ui.colorPicker(
 						"##ui_secondary_picker",
-						settings.uiColor2,
+						SETTINGS.uiColor2,
 						ui.ColorPickerFlags.DisplayRGB + ui.ColorPickerFlags.NoAlpha + ui.ColorPickerFlags.NoSidePreview
 					)
 				then
-					settings.uiColor2 = settings.uiColor2
+					SETTINGS.uiColor2 = SETTINGS.uiColor2
 				end
 			end
 
@@ -126,16 +126,16 @@ function page.draw()
 			ui.sameLine()
 			setCursorX(210)
 			ui.setNextItemWidth(275)
-			local tertiaryColor, tertiaryOpacity = settings.uiColor3:unpack()
+			local tertiaryColor, tertiaryOpacity = SETTINGS.uiColor3:unpack()
 			local newtertiaryOpacity, tertiaryOpacityChanged =
 				ui.slider("##ui_tertiary_slider", tertiaryOpacity * 100, 0, 100, "Opacity: %.0f%%")
 
 			if tertiaryOpacityChanged then
-				settings.uiColor3 = settings.uiColor3:set(tertiaryColor, newtertiaryOpacity / 100)
+				SETTINGS.uiColor3 = SETTINGS.uiColor3:set(tertiaryColor, newtertiaryOpacity / 100)
 			end
 
 			ui.sameLine()
-			if ui.colorButton("##tertiary", settings.uiColor3, ui.ColorPickerFlags.None) then
+			if ui.colorButton("##tertiary", SETTINGS.uiColor3, ui.ColorPickerFlags.None) then
 				tertiaryActive = not tertiaryActive
 				primaryActive = false
 			end
@@ -149,11 +149,11 @@ function page.draw()
 				if
 					ui.colorPicker(
 						"##ui_tertiary_picker",
-						settings.uiColor3,
+						SETTINGS.uiColor3,
 						ui.ColorPickerFlags.DisplayRGB + ui.ColorPickerFlags.NoAlpha + ui.ColorPickerFlags.NoSidePreview
 					)
 				then
-					settings.uiColor3 = settings.uiColor3
+					SETTINGS.uiColor3 = SETTINGS.uiColor3
 				end
 			end
 

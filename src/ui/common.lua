@@ -19,7 +19,7 @@ function bottomBar(buttons)
 	ui.drawRectFilled(
 		vec2(uiStartX, sim.windowHeight - 96 * cui.scaleY()),
 		vec2(sim.windowWidth - uiStartX, sim.windowHeight - 40 * cui.scaleY()),
-		settings.uiColor1 / 3
+		SETTINGS.uiColor1 / 3
 	)
 
 	ui.setCursor(0)
@@ -83,7 +83,7 @@ function homeBar(buttons)
 	ui.setCursorY(uiStartY + topBarHeight)
 
 	ui.pushStyleVar(ui.StyleVar.ItemSpacing, 0)
-	ui.pushStyleColor(ui.StyleColor.Button, settings.uiColor1)
+	ui.pushStyleColor(ui.StyleColor.Button, SETTINGS.uiColor1)
 
 	for i in ipairs(buttons) do
 		local menuButton = buttons[i]
@@ -243,13 +243,13 @@ function topBar(showSessionInfo)
 	ui.drawRectFilled(
 		vec2(uiStartX, uiStartY),
 		vec2(sim.windowWidth - uiStartX, (uiStartY + topBarHeight)),
-		settings.uiColor1 / 2
+		SETTINGS.uiColor1 / 2
 	)
 
 	ui.drawRectFilled(
 		vec2(uiStartX, (uiStartY + topBarHeight)),
 		vec2(sim.windowWidth - uiStartX, (uiStartY + topBarHeight + menuButtonSize * cui.scaleY())),
-		settings.uiColor1 / 1.5
+		SETTINGS.uiColor1 / 1.5
 	)
 	ui.setCursorX(sim.windowWidth / 2 - acLogoSize.x / 2)
 	ui.setCursorY((uiStartY + topBarHeight) * 0.32)

@@ -13,7 +13,6 @@ local bottomBarButtons = {
 		enabled = true,
 		func = function()
 			goToHomePage()
-			storage.page = MenuPages.Home
 		end,
 	},
 	{
@@ -21,7 +20,7 @@ local bottomBarButtons = {
 		enabled = false,
 		func = function()
 			goToSetupAppsPage()
-			storage.setupTab = "SETUP I/O"
+			STORAGE.setupTab = "SETUP I/O"
 		end,
 	},
 	{
@@ -29,7 +28,7 @@ local bottomBarButtons = {
 		enabled = true,
 		func = function()
 			goToSetupIoPage()
-			storage.setupTab = "SETUP I/O"
+			STORAGE.setupTab = "SETUP I/O"
 		end,
 	},
 	{
@@ -60,17 +59,17 @@ function page.draw()
 
 	contentWindow(
 		"car_setup_window",
-		storage.setupTab,
+		STORAGE.setupTab,
 		vec2(60 * cui.scaleX(), 240 * cui.scaleY()),
 		vec2(sim.windowWidth - 120 * cui.scaleX(), sim.windowHeight - 383 * cui.scaleY()),
 		ui.WindowFlags.None,
 		function()
 			-- ui.drawRectFilled(vec2(0, 0), ui.availableSpace(), rgbm.colors.aqua)
-			storage.setupTab = setupTabBar(sm.setupTabs)
+			STORAGE.setupTab = setupTabBar(sm.setupTabs)
 
 			contentWindow(
 				"car_setup_window2",
-				storage.setupTab .. "2",
+				STORAGE.setupTab .. "2",
 				vec2(ui.windowWidth() / 4, 56 * cui.scaleY()),
 				vec2(ui.windowWidth() / 2, ui.availableSpaceY()),
 				ui.WindowFlags.None,
@@ -86,7 +85,7 @@ function page.draw()
 			ui.setCursor(0)
 			contentWindow(
 				"help_window42",
-				storage.setupTab .. "42",
+				STORAGE.setupTab .. "42",
 				vec2((ui.windowWidth() / 4) * 3, 56 * cui.scaleY()),
 				vec2(ui.windowWidth() / 4, ui.availableSpaceY()),
 				ui.WindowFlags.None,
@@ -113,7 +112,7 @@ function page.draw()
 			ui.setCursor(0)
 			contentWindow(
 				"help_window432",
-				storage.setupTab .. "423",
+				STORAGE.setupTab .. "423",
 				vec2(0, 56 * cui.scaleY()),
 				vec2(ui.windowWidth() / 4, ui.availableSpaceY()),
 				ui.WindowFlags.None,
