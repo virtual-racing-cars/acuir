@@ -1,6 +1,3 @@
--- if true then
--- 	return
--- end
 local sim = ac.getSim()
 
 UI_SCALE_X = sim.windowWidth / 2560 * 100
@@ -47,7 +44,6 @@ package.add("src")
 cui = require("utils\\utils_cui")
 require("classes\\button")
 require("utils\\utils_scale")
-require("ui\\styles")
 require("ui\\main")
 require("ui\\audio")
 

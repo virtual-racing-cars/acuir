@@ -165,7 +165,7 @@ local function saveSetupWindow()
 		"##SetupDesc",
 		saveSetup.description,
 		ui.InputTextFlags.NoHorizontalScroll,
-		vec2(ui.availableSpaceX(), 250 * UI_SCALE_Y / 100)
+		vec2(ui.availableSpaceX(), 250 * cui.scaleX() / 100)
 	)
 end
 
