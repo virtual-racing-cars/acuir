@@ -54,7 +54,7 @@ function playerListButton(car, xPos, yPos, width, height)
 	end
 
 	ui.drawLine(vec2(xPos, yPos), vec2(xPos + width, yPos), rgbm.colors.black)
-	ui.drawLine(vec2(xPos, yPos + height), vec2(xPos + width, yPos + height), rgbm.colors.black, 2)
+	ui.drawLine(vec2(xPos, yPos + height), vec2(xPos + width, yPos + height), rgbm.colors.black)
 
 	ui.popDWriteFont()
 end

@@ -33,7 +33,7 @@ local bottomBarButtons = {
 	},
 	{
 		label = "RESET",
-		enabled = true,
+		enabled = false,
 		func = function()
 			ac.resetSetupToDefault("")
 		end,

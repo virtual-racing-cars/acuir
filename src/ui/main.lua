@@ -68,7 +68,7 @@ local sim = ac.getSim()
 local timer = os.clock() + SETTINGS.uiHideonIdleTime
 local exclusiveHudMode = ""
 
-function MainWindow()
+function MainMenuWindow()
 	local perfTime = os.preciseClock()
 
 	if SETTINGS.uiHideonIdleTime > 0 then

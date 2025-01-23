@@ -82,7 +82,7 @@ local function savedSetupsWindow()
 		false,
 		ui.WindowFlags.None,
 		function()
-			setCursorX(10)
+			cui.setCursorX(10)
 			cui.childWindow("saved_setups", vec2(ui.windowWidth() - 10, ui.windowHeight()), false, function()
 				if refreshingSetups then
 					ui.icon(ui.Icons.LoadingSpinner, ui.availableSpace())
@@ -249,8 +249,8 @@ local bottomBarButtonsIO = {
 }
 
 function page.draw()
-	setCursorY(50)
-	setCursorX(10)
+	cui.setCursorY(50)
+	cui.setCursorX(10)
 
 	cui.contentWindow(
 		"car_setup_window",

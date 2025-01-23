@@ -1,5 +1,3 @@
-local sim = ac.getSim()
-
 STORAGE = ac.storage({
 	appOpen = false,
 	hasAppOpened = false,
@@ -28,24 +26,21 @@ STORAGE.hasAppOpened = false
 
 package.add("src")
 cui = require("ui.cui")
-require("classes.button")
 require("ui.main")
 require("ui.audio")
 
 ac.setWindowOpen("main", true)
-
 ui.onExclusiveHUD(function(mode)
 	if not STORAGE.appOpen then
 		return
 	end
 
 	if mode == "menu" then
-		return MainWindow(sim)
+		return MainMenuWindow()
 	end
 end)
 
 ac.setWindowOpen("main", true)
-
 function script.main()
 	if not STORAGE.hasAppOpened then
 		STORAGE.hasAppOpened = true
@@ -53,6 +48,7 @@ function script.main()
 end
 
 local uic = ac.getUI()
+local sim = ac.getSim()
 
 function script.update(dt)
 	if sim.isInMainMenu and SETTINGS.autoStart and not STORAGE.hasAppOpened then
