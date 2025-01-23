@@ -120,9 +120,9 @@ function SetupTab:initialize(name)
 	self.setupSpinners = {}
 end
 
-SetupMgr = class("SetupMgr")
+SetupManager = class("SetupManager")
 
-function SetupMgr:initialize()
+function SetupManager:initialize()
 	self._setupSpinners = loadSetupSpinners()
 	self._defaultTabNames = { "ELECTRONICS", "FUEL", "TYRES" } --, "GEARS" }
 	self._tabNames = {}
@@ -176,11 +176,11 @@ function SetupMgr:initialize()
 	self:makeUndo()
 end
 
-function SetupMgr:tabCount()
+function SetupManager:tabCount()
 	return self._tabCount
 end
 
-function SetupMgr:LoadStuff(tbl)
+function SetupManager:LoadStuff(tbl)
 	ac.loadSetup(tbl)
 
 	for _, v in pairs(self._setupSpinners) do
@@ -188,42 +188,42 @@ function SetupMgr:LoadStuff(tbl)
 	end
 end
 
-function SetupMgr:undo()
+function SetupManager:undo()
 	if self._history_pos > 1 then
 		self._history_pos = self._history_pos - 1
 		self:LoadStuff(self._history[self._history_pos])
 	end
 end
 
-function SetupMgr:isUndoAvailable()
+function SetupManager:isUndoAvailable()
 	if self._history_pos > 1 then
 		return true
 	end
 	return false
 end
 
-function SetupMgr:redo()
+function SetupManager:redo()
 	if self._history_pos < #self._history then
 		self._history_pos = self._history_pos + 1
 		self:LoadStuff(self._history[self._history_pos])
 	end
 end
 
-function SetupMgr:isRedoAvailable()
+function SetupManager:isRedoAvailable()
 	if self._history_pos < #self._history then
 		return true
 	end
 	return false
 end
 
-function SetupMgr:cleanUndoHistory()
+function SetupManager:cleanUndoHistory()
 	-- delete higher undo steps
 	for i = #self._history, self._history_pos + 1, -1 do
 		table.remove(self._history, i)
 	end
 end
 
-function SetupMgr:makeUndo()
+function SetupManager:makeUndo()
 	local tmp = ac.stringifyCurrentSetup()
 
 	self:cleanUndoHistory()
@@ -232,7 +232,7 @@ function SetupMgr:makeUndo()
 	self._history_pos = #self._history
 end
 
-function SetupMgr:resetUndo()
+function SetupManager:resetUndo()
 	self._history = {}
 	self._history_pos = 0
 	self:makeUndo()

@@ -1,5 +1,4 @@
-local audioBlip = ui.MediaPlayer(ac.dirname() .. "\\menu_nav_2.mp3")
-
+local audioBlip = ui.MediaPlayer("assets\\audio\\menu_nav.mp3")
 local focuseItem = ""
 
 audioBlip:setLooping(false)

@@ -1,11 +1,11 @@
 local page = {}
 
-require("classes.SetupMgr")
+require("classes.SetupManager")
 require("ui.setup.setup_window")
 require("ui.setup.car_status_window")
 
 local sim = ac.getSim()
-local sm = SetupMgr()
+local sm = SetupManager()
 
 local bottomBarButtons = {
 	{
