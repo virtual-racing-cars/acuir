@@ -108,6 +108,7 @@ function drawSlider(
 		changed = true
 	end
 
+	value = math.floor((value + step / 2) / step) * step
 	value = math.round(math.clamp(value, min, max), round)
 
 	ui.drawRectFilled(

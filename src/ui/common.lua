@@ -13,6 +13,7 @@ local bottomBarHeight = sim.windowHeight - 96 * cui.scaleY()
 local menuButtonSize = 56
 local manifestINI = ac.INIConfig.load("manifest.ini", ac.INIFormat.Extended)
 local version = manifestINI:get("ABOUT", "VERSION", "0.0.0")
+local versionString = "v " .. version .. ", CSP: " .. ac.getPatchVersion() .. " (" .. ac.getPatchVersionCode() .. ")"
 
 function bottomBar(buttons)
 	ui.drawRectFilled(
@@ -24,7 +25,7 @@ function bottomBar(buttons)
 	ui.pushDWriteFont(fontRegular)
 	ui.setCursor(0)
 	ui.dwriteTextAligned(
-		"v" .. version .. ", CSP: " .. ac.getPatchVersion() .. " (" .. ac.getPatchVersionCode() .. ")",
+		versionString,
 		26 * cui.scaleY(),
 		ui.Alignment.End,
 		ui.Alignment.End,
