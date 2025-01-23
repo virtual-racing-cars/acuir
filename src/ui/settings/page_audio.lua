@@ -84,6 +84,10 @@ function page.draw()
 
 	bottomBar(bottomBarButtons)
 
+	if ui.keyboardButtonPressed(ui.KeyIndex.Escape) then
+		goToSettingsPage()
+	end
+
 	return "debug"
 end
 
