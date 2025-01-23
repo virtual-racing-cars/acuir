@@ -1,3 +1,5 @@
+local page = {}
+
 local sim = ac.getSim()
 
 local channels = {
@@ -23,7 +25,7 @@ local bottomBarButtons = {
 		label = "BACK",
 		enabled = true,
 		func = function()
-			storage.settingsTab = 1
+			goToSettingsPage()
 		end,
 	},
 	{
@@ -43,7 +45,7 @@ local bottomBarButtons = {
 	-- },
 }
 
-function audioSettings()
+function page.draw()
 	contentWindow(
 		"car_setup_window",
 		storage.setupTab,
@@ -81,4 +83,8 @@ function audioSettings()
 	)
 
 	bottomBar(bottomBarButtons)
+
+	return "debug"
 end
+
+return page

@@ -1,5 +1,4 @@
 require("src\\utils\\utils_setup")
-require("src\\ui\\setup\\io_window")
 require("src\\ui\\setup\\pitstop_strategy_window")
 require("src\\ui\\setup\\gear_window")
 

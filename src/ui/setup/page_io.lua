@@ -1,3 +1,5 @@
+local page = {}
+
 local sim = ac.getSim()
 
 local setupsDir = ac.getFolder(ac.FolderID.UserSetups) .. "\\" .. ac.getCarID(0)
@@ -172,7 +174,7 @@ local bottomBarButtonsIO = {
 		label = "BACK",
 		enabled = true,
 		func = function()
-			storage.setupTab = "Tyres"
+			goToSetupPage()
 		end,
 	},
 	{
@@ -240,7 +242,7 @@ local bottomBarButtonsIO = {
 	},
 }
 
-function ioTab()
+function page.draw()
 	setCursorY(50)
 	setCursorX(10)
 
@@ -281,6 +283,15 @@ function ioTab()
 			)
 		end
 	)
+	topSubBar("/Vehicle Setup Presets")
 
 	bottomBar(bottomBarButtonsIO)
+
+	if ui.keyboardButtonPressed(ui.KeyIndex.Escape) then
+		goToSetupPage()
+	end
+
+	return "debug"
 end
+
+return page

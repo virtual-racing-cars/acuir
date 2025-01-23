@@ -18,16 +18,11 @@ storage = ac.storage({
 	appOpen = false,
 	hasAppOpened = false,
 	setupTab = "SETUP I/O",
-	settingsTab = 1,
 	helpOpen = false,
 	page = MenuPages.Home,
 })
 
 -- storage.setupTab = "SETUP I/O"
--- storage.page = MenuPages.Home
-storage.settingsTab = 1
-
--- storage.page = MenuPages.Home
 
 settings = ac.storage({
 	autoStart = true,
@@ -35,7 +30,7 @@ settings = ac.storage({
 	hideOtherTrackSetups = true,
 	uiHideonIdleTime = 150,
 	uiColor1 = rgbm.new("#3e3c46"),
-	uiColor2 = rgbm(0.74, 0, 0, 1),
+	uiColor2 = rgbm(1, 0, 0, 1),
 	uiColor3 = rgbm(1, 1, 1, 1),
 })
 

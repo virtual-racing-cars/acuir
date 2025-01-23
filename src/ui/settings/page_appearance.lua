@@ -1,3 +1,5 @@
+local page = {}
+
 local sim = ac.getSim()
 
 local bottomBarButtons = {
@@ -5,7 +7,7 @@ local bottomBarButtons = {
 		label = "BACK",
 		enabled = true,
 		func = function()
-			storage.settingsTab = 1
+			goToSettingsPage()
 		end,
 	},
 	{
@@ -29,7 +31,7 @@ local primaryActive = false
 local secondaryActive = false
 local tertiaryActive = false
 
-function appearanceSettings()
+function page.draw()
 	contentWindow(
 		"car_setup_window",
 		storage.setupTab,
@@ -37,12 +39,12 @@ function appearanceSettings()
 		vec2(sim.windowWidth - 120 * cui.scaleX(), sim.windowHeight - 383 * cui.scaleY()),
 		ui.WindowFlags.None,
 		function()
+			ui.drawRectFilled(vec2(0, 0), vec2(ui.windowWidth(), ui.windowHeight()), settings.uiColor1 / 1.1)
 			ui.drawLine(vec2(0, 2), vec2(ui.windowWidth(), 2), rgbm.colors.gray, 2)
 			ui.drawRectFilled(vec2(0, 2), vec2(ui.windowWidth(), ui.windowHeight()), rgbm(0, 0, 0, 0.2))
 
 			ui.setCursorY(60)
 			ui.setCursorX(50)
-
 			if ui.checkbox("Show 'Car Info' window on the setup page", settings.hideOtherTrackSetups) then
 				settings.hideOtherTrackSetups = not settings.hideOtherTrackSetups
 			end
@@ -167,4 +169,8 @@ function appearanceSettings()
 	)
 
 	bottomBar(bottomBarButtons)
+
+	return "debug"
 end
+
+return page

@@ -1,3 +1,5 @@
+local page = {}
+
 local sim = ac.getSim()
 
 local bottomBarButtons = {
@@ -5,7 +7,7 @@ local bottomBarButtons = {
 		label = "BACK",
 		enabled = true,
 		func = function()
-			storage.settingsTab = 1
+			goToSettingsPage()
 		end,
 	},
 	{
@@ -28,7 +30,7 @@ local bottomBarButtons = {
 local but1 = ac.ControlButton("Lol")
 local but2 = ac.ControlButton("Lol2")
 
-function generalSettings()
+function page.draw()
 	contentWindow(
 		"car_setup_window",
 		storage.setupTab,
@@ -93,4 +95,8 @@ function generalSettings()
 	)
 
 	bottomBar(bottomBarButtons)
+
+	return "debug"
 end
+
+return page

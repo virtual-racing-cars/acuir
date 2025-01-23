@@ -1,9 +1,10 @@
+local page = {}
+
+require("classes.SetupMgr")
+require("ui.setup.setup_window")
+require("ui.setup.car_status_window")
+
 local sim = ac.getSim()
-
-require("src\\ui\\setup\\setup_window")
-require("src\\ui\\setup\\help_window")
-require("src\\ui\\setup\\car_status_window")
-
 local sm = SetupMgr()
 
 local bottomBarButtons = {
@@ -11,6 +12,7 @@ local bottomBarButtons = {
 		label = "BACK",
 		enabled = true,
 		func = function()
+			goToHomePage()
 			storage.page = MenuPages.Home
 		end,
 	},
@@ -18,6 +20,7 @@ local bottomBarButtons = {
 		label = "APPS",
 		enabled = false,
 		func = function()
+			goToSetupAppsPage()
 			storage.setupTab = "SETUP I/O"
 		end,
 	},
@@ -25,6 +28,7 @@ local bottomBarButtons = {
 		label = "SETUP PRESETS",
 		enabled = true,
 		func = function()
+			goToSetupIoPage()
 			storage.setupTab = "SETUP I/O"
 		end,
 	},
@@ -51,17 +55,7 @@ local bottomBarButtons = {
 	},
 }
 
-function SetupPage()
-	if storage.setupTab == "SETUP I/O" then
-		if ui.keyboardButtonPressed(ui.KeyIndex.Escape) then
-			storage.setupTab = "Tyres"
-		end
-		topSubBar("/Vehicle Setup Presets")
-		ioTab()
-
-		return
-	end
-
+function page.draw()
 	topBar(false)
 
 	contentWindow(
@@ -100,15 +94,15 @@ function SetupPage()
 					ui.drawRectFilled(vec2(0, 0), ui.availableSpace(), rgbm(0, 0, 0, 0.25))
 					ui.setCursor(0)
 
-					if HELP_TEXT ~= "NULL" and HELP_TEXT ~= "" then
-						ui.dummy(vec2(230 * cui.scaleY(), 0))
-						-- ui.bringWindowToFront()
-						local helpSections = string.split(HELP_TEXT, "\\n\\n")
+					-- if HELP_TEXT ~= "NULL" and HELP_TEXT ~= "" then
+					-- 	ui.dummy(vec2(230 * cui.scaleY(), 0))
+					-- 	-- ui.bringWindowToFront()
+					-- 	local helpSections = string.split(HELP_TEXT, "\\n\\n")
 
-						for i in ipairs(helpSections) do
-							cui.dwriteTextWrapped(helpSections[i], 24)
-						end
-					end
+					-- 	for i in ipairs(helpSections) do
+					-- 		cui.dwriteTextWrapped(helpSections[i], 24)
+					-- 	end
+					-- end
 
 					HELP_TEXT = ""
 				end,
@@ -137,4 +131,12 @@ function SetupPage()
 	bottomBarButtons[#bottomBarButtons].enabled = sm:isRedoAvailable()
 
 	bottomBar(bottomBarButtons)
+
+	if ui.keyboardButtonPressed(ui.KeyIndex.Escape) then
+		goToHomePage()
+	end
+
+	return "debug"
 end
+
+return page

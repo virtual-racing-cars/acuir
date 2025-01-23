@@ -109,6 +109,52 @@ function homeBar(buttons)
 	ui.popStyleVar(1)
 end
 
+local function findClosestIndex(input, numbers)
+	local trackGripString = nil
+
+	local smallestDifference = math.huge -- Start with a very large number
+
+	for i, num in ipairs(numbers) do
+		local difference = math.abs(input - num[1])
+		if difference < smallestDifference then
+			smallestDifference = difference
+			trackGripString = num[2]
+		end
+	end
+
+	return trackGripString
+end
+
+local trackGrip = {
+	{ 86, "DUSTY" },
+	{ 89, "OLD" },
+	{ 95, "GREEN" },
+	{ 98, "RUBBERED" },
+	{ 100, "OPTIMUM" },
+}
+
+local windDirection = {
+	"N",
+	"NE",
+	"E",
+	"SE",
+	"S",
+	"SW",
+	"W",
+	"NW",
+}
+
+local raceSessiontTypeString = {
+	"Undefined",
+	"Practice",
+	"Qualify",
+	"Race",
+	"Hotlap",
+	"TimeAttack",
+	"Drift",
+	"Drag",
+}
+
 local function sessionInfo()
 	local startX = 1918
 	local startY = 100
@@ -153,7 +199,13 @@ local function sessionInfo()
 		ui.getCursor() + vec2(-sizeX + gap, 0) + vec2(sizeX, sizeY),
 		rgbm(0.1, 0.1, 0.1, 0.5)
 	)
-	ui.dwriteTextAligned("OPTIMUM", 16, ui.Alignment.Center, ui.Alignment.Center, vec2(sizeX, sizeY))
+	ui.dwriteTextAligned(
+		findClosestIndex(sim.roadGrip * 100, trackGrip),
+		16,
+		ui.Alignment.Center,
+		ui.Alignment.Center,
+		vec2(sizeX, sizeY)
+	)
 	ui.sameLine()
 
 	ui.popDWriteFont()
@@ -172,7 +224,7 @@ function topSubBar(path)
 	)
 
 	cui.setCursorX(230)
-	cui.setCursorY(24)
+	cui.setCursorY(28)
 
 	ui.pushDWriteFont(ui.DWriteFont("Rajdhani"):weight(ui.DWriteFont.Weight.SemiBold))
 	ui.dwriteTextAligned(
