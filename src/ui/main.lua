@@ -64,6 +64,8 @@ function goToSettingsAiPage()
 	pageManager:setPage("SettingsAiPage")
 end
 
+goToSetupPage()
+
 local sim = ac.getSim()
 local timer = os.clock() + SETTINGS.uiHideonIdleTime
 local exclusiveHudMode = ""

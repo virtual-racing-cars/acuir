@@ -20,7 +20,6 @@ local bottomBarButtons = {
 		enabled = false,
 		func = function()
 			goToSetupAppsPage()
-			STORAGE.setupTab = "SETUP I/O"
 		end,
 	},
 	{
@@ -28,7 +27,6 @@ local bottomBarButtons = {
 		enabled = true,
 		func = function()
 			goToSetupIoPage()
-			STORAGE.setupTab = "SETUP I/O"
 		end,
 	},
 	{

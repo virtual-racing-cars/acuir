@@ -101,8 +101,8 @@ local function linkButton(name, size, linked)
 	return clicked
 end
 
-local spinnerWidth = 580 * cui.scaleX()
-local spinnerHeight = 64 * cui.scaleY()
+local spinnerWidth = 600 * cui.scaleX()
+local spinnerHeight = 70 * cui.scaleY()
 
 local function drawSetupSpinner(sm, si)
 	if si.child then

@@ -287,9 +287,9 @@ function cui.menuButton(label, size, horizontalAligment, verticalAlignment, flag
 
 	local clicked = false
 
-	local fontSize = size / 2.5
-	local textWidth = ui.measureDWriteText(string.upper(label), fontSize).x + 100 * scaleY
-
+	local fontSize = math.floor(size * 0.45)
+	fontSize = (fontSize % 2 ~= 0) and fontSize or fontSize + 1
+	local textWidth = ui.measureDWriteText(string.upper(label), fontSize).x + 100
 	local fontColor = active and rgbm(0, 0, 0, 1) or nil
 
 	ui.pushStyleColor(ui.StyleColor.ButtonHovered, rgbm(1, 0, 0, 1))
