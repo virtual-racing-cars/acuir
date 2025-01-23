@@ -1,22 +1,27 @@
 local sim = ac.getSim()
 
-local fontLol = ui.DWriteFont("Noto Sans SC"):weight(ui.DWriteFont.Weight.Black)
+local fontRegular = ui.DWriteFont("Rajdhani"):weight(ui.DWriteFont.Weight.SemiBold)
+local fontBold = ui.DWriteFont("Rajdhani"):weight(ui.DWriteFont.Weight.Bold)
+
 local acLogo = ac.getFolder(ac.FolderID.Root) .. "\\launcher\\themes\\default\\graphics\\btn_AC_logo.png"
 local acLogoSize = ui.imageSize(acLogo) * cui.scaleX()
 local uiStartY = 40 * cui.scaleX()
 local uiStartX = 60 * cui.scaleX()
 local topBarHeight = 200 * cui.scaleX()
+local bottomBarHeight = sim.windowHeight - 96 * cui.scaleY()
+
 local menuButtonSize = 56
 local manifestINI = ac.INIConfig.load("manifest.ini", ac.INIFormat.Extended)
 local version = manifestINI:get("ABOUT", "VERSION", "0.0.0")
 
 function bottomBar(buttons)
 	ui.drawRectFilled(
-		vec2(uiStartX, sim.windowHeight - 96 * cui.scaleY()),
+		vec2(uiStartX, bottomBarHeight),
 		vec2(sim.windowWidth - uiStartX, sim.windowHeight - 40 * cui.scaleY()),
 		SETTINGS.uiColor1 / 3
 	)
 
+	ui.pushDWriteFont(fontRegular)
 	ui.setCursor(0)
 	ui.dwriteTextAligned(
 		"v" .. version .. ", CSP: " .. ac.getPatchVersion() .. " (" .. ac.getPatchVersionCode() .. ")",
@@ -38,6 +43,7 @@ function bottomBar(buttons)
 		false,
 		rgbm(1, 0.9, 0, 1)
 	)
+	ui.popDWriteFont()
 
 	ui.drawCircleFilled(
 		vec2(sim.windowWidth - 95 * cui.scaleX(), sim.windowHeight - 68 * cui.scaleY()),
@@ -45,12 +51,10 @@ function bottomBar(buttons)
 		rgbm.colors.orange
 	)
 
-	ui.setCursorX(uiStartX)
-	ui.setCursorY(sim.windowHeight - 96 * cui.scaleY())
-
 	ui.pushStyleColor(ui.StyleColor.Button, rgbm.colors.transparent)
 	ui.pushStyleVar(ui.StyleVar.ItemSpacing, 0)
-
+	ui.setCursorX(uiStartX)
+	ui.setCursorY(bottomBarHeight)
 	for i in ipairs(buttons) do
 		local menuButton = buttons[i]
 
@@ -106,8 +110,7 @@ end
 
 local function findClosestIndex(input, numbers)
 	local trackGripString = nil
-
-	local smallestDifference = math.huge -- Start with a very large number
+	local smallestDifference = math.huge
 
 	for i, num in ipairs(numbers) do
 		local difference = math.abs(input - num[1])
@@ -157,16 +160,17 @@ local function sessionInfo()
 	local sizeY = 35
 	local gap = 1
 
+	local fontSize = math.floor(sizeY * 0.55)
+	fontSize = (fontSize % 2 ~= 0) and fontSize or fontSize + 1
+
 	ui.pushStyleVar(ui.StyleVar.ItemSpacing, gap)
+	ui.pushDWriteFont(fontBold)
 
 	ui.setCursor(vec2(startX, startY))
-
-	ui.pushDWriteFont(fontLol)
-
 	ui.drawRectFilled(ui.getCursor(), ui.getCursor() + vec2(sizeX, sizeY), rgbm(0, 0, 0, 0.6))
 	ui.dwriteTextAligned(
 		string.format("%02d:%02d", sim.timeHours, sim.timeMinutes),
-		16,
+		fontSize,
 		ui.Alignment.Center,
 		ui.Alignment.Center,
 		vec2(sizeX, sizeY)
@@ -178,7 +182,7 @@ local function sessionInfo()
 		ui.getCursor() + vec2(gap, 0) + vec2(sizeX, sizeY),
 		rgbm(0, 0, 0, 0.6)
 	)
-	ui.dwriteTextAligned("Track", 16, ui.Alignment.Center, ui.Alignment.Center, vec2(sizeX, sizeY))
+	ui.dwriteTextAligned("Track", fontSize, ui.Alignment.Center, ui.Alignment.Center, vec2(sizeX, sizeY))
 	ui.sameLine()
 
 	ui.drawRectFilled(
@@ -186,7 +190,13 @@ local function sessionInfo()
 		ui.getCursor() + vec2(gap, 0) + vec2(sizeX, sizeY),
 		rgbm(0, 0, 0, 0.6)
 	)
-	ui.dwriteTextAligned("Practice", 16, ui.Alignment.Center, ui.Alignment.Center, vec2(sizeX, sizeY))
+	ui.dwriteTextAligned(
+		raceSessiontTypeString[sim.raceSessionType + 1],
+		fontSize,
+		ui.Alignment.Center,
+		ui.Alignment.Center,
+		vec2(sizeX, sizeY)
+	)
 
 	ui.setCursor(vec2(startX, startY) + vec2(sizeX + gap, sizeY))
 	ui.drawRectFilled(
@@ -196,7 +206,7 @@ local function sessionInfo()
 	)
 	ui.dwriteTextAligned(
 		findClosestIndex(sim.roadGrip * 100, trackGrip),
-		16,
+		fontSize,
 		ui.Alignment.Center,
 		ui.Alignment.Center,
 		vec2(sizeX, sizeY)
