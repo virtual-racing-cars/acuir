@@ -210,7 +210,7 @@ function cui.button(label, sizeX, sizeY, fontSize, horizontalAligment, verticalA
 
 	ui.popDWriteFont()
 
-	return hovered and ac.getUI().isMouseLeftKeyClicked
+	return hovered and ac.getUI().isMouseLeftKeyClicked and not (flags == ui.ButtonFlags.Disabled)
 end
 
 function cui.settingsButton(label, sizeX, sizeY, flags)
@@ -254,7 +254,7 @@ function cui.settingsButton(label, sizeX, sizeY, flags)
 
 	ui.popDWriteFont()
 
-	return hovered and ac.getUI().isMouseLeftKeyClicked
+	return hovered and ac.getUI().isMouseLeftKeyClicked and not (flags == ui.ButtonFlags.Disabled)
 end
 
 function cui.menuButton(label, size, horizontalAligment, verticalAlignment, flags, active, bold)
@@ -329,13 +329,13 @@ function cui.menuButton(label, size, horizontalAligment, verticalAlignment, flag
 
 	ui.popDWriteFont()
 
-	return hovered and ac.getUI().isMouseLeftKeyClicked
+	return hovered and ac.getUI().isMouseLeftKeyClicked and not (flags == ui.ButtonFlags.Disabled)
 end
 
 function cui.modernButton(label, sizeX, sizeY, flags, icon)
 	ui.modernButton(label, vec2(sizeX, sizeY) * scaleY, flags, icon, 16 * scaleY)
 	local hovered = ui.itemHovered()
-	return hovered and ac.getUI().isMouseLeftKeyClicked
+	return hovered and ac.getUI().isMouseLeftKeyClicked and not (flags == ui.ButtonFlags.Disabled)
 end
 
 function cui.iconButton(label, icon, sizeX, sizeY, flags)
@@ -367,7 +367,7 @@ function cui.iconButton(label, icon, sizeX, sizeY, flags)
 
 	ui.popStyleColor(1)
 
-	return hovered and ac.getUI().isMouseLeftKeyClicked
+	return hovered and ac.getUI().isMouseLeftKeyClicked and not (flags == ui.ButtonFlags.Disabled)
 end
 
 function cui.dummy(x, y)
