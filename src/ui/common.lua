@@ -1,17 +1,12 @@
 local sim = ac.getSim()
 
+local fontLol = ui.DWriteFont("Noto Sans SC"):weight(ui.DWriteFont.Weight.Black)
 local acLogo = ac.getFolder(ac.FolderID.Root) .. "\\launcher\\themes\\default\\graphics\\btn_AC_logo.png"
 local acLogoSize = ui.imageSize(acLogo) * cui.scaleX()
-
 local uiStartY = 40 * cui.scaleX()
 local uiStartX = 60 * cui.scaleX()
-
 local topBarHeight = 200 * cui.scaleX()
-
 local menuButtonSize = 56
-
-local fontLol = ui.DWriteFont("Noto Sans SC"):weight(ui.DWriteFont.Weight.Black)
-
 local manifestINI = ac.INIConfig.load("manifest.ini", ac.INIFormat.Extended)
 local version = manifestINI:get("ABOUT", "VERSION", "0.0.0")
 
