@@ -297,7 +297,7 @@ function page.draw()
 		goToSetupPage()
 	end
 
-	return "debug"
+	return ""
 end
 
 return page

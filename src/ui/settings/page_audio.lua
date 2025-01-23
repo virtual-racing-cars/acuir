@@ -84,7 +84,7 @@ function page.draw()
 		true
 	)
 
-	return "debug"
+	return ""
 end
 
 return page

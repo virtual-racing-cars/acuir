@@ -92,7 +92,7 @@ function page.draw()
 		},
 	})
 
-	return "debug"
+	return ""
 end
 
 return page
