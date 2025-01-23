@@ -60,4 +60,6 @@ function script.update(dt)
 		SETTINGS.autoStart = not STORAGE.appOpen
 		STORAGE.appOpen = not STORAGE.appOpen
 	end
+
+	ac.redirectVirtualMirror(sim.isInMainMenu and ac.isWindowOpen("main"))
 end
