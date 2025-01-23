@@ -6,8 +6,8 @@ local lapCount = 0
 
 local lapTimes = {}
 
-local setupSpinnersWindowSize = vec2(830 * UI_SCALE_X / 100, 605 * UI_SCALE_Y / 100)
-local setupSpinnersWindowHeaderSize = vec2(830 * UI_SCALE_X / 100, 25 * UI_SCALE_Y / 100)
+local setupSpinnersWindowSize = vec2(830 * cui.scaleX() / 100, 605 * cui.scaleY() / 100)
+local setupSpinnersWindowHeaderSize = vec2(830 * cui.scaleX() / 100, 25 * cui.scaleY() / 100)
 
 local countryFlagImages = {}
 local countryFlagDir = ac.getFolder(ac.FolderID.Root) .. "\\content\\gui\\NationFlags"
@@ -38,7 +38,7 @@ function TimeTablePage(sim)
 			setCursorY(0)
 			ui.dwriteTextAligned(
 				"Driver",
-				18 * UI_SCALE_Y / 100,
+				18 * cui.scaleY() / 100,
 				ui.Alignment.Start,
 				ui.Alignment.Start,
 				ui.availableSpace(),
@@ -67,7 +67,7 @@ function TimeTablePage(sim)
 
 				ui.dwriteTextAligned(
 					ac.getDriverName(c.index),
-					18 * UI_SCALE_Y / 100,
+					18 * cui.scaleY() / 100,
 					ui.Alignment.Start,
 					ui.Alignment.Start,
 					vec2(ui.availableSpaceX() / 5, 20),
@@ -78,7 +78,7 @@ function TimeTablePage(sim)
 				ui.sameLine()
 				ui.dwriteTextAligned(
 					carShortName,
-					18 * UI_SCALE_Y / 100,
+					18 * cui.scaleY() / 100,
 					ui.Alignment.Start,
 					ui.Alignment.Start,
 					vec2(ui.availableSpaceX() / 4, 20),
@@ -89,7 +89,7 @@ function TimeTablePage(sim)
 				ui.sameLine()
 				ui.dwriteTextAligned(
 					ac.getTyresName(c.index, c.compoundIndex),
-					18 * UI_SCALE_Y / 100,
+					18 * cui.scaleY() / 100,
 					ui.Alignment.Start,
 					ui.Alignment.Start,
 					vec2(ui.availableSpaceX() / 3, 20),
@@ -100,7 +100,7 @@ function TimeTablePage(sim)
 				ui.sameLine()
 				ui.dwriteTextAligned(
 					c.lapCount,
-					18 * UI_SCALE_Y / 100,
+					18 * cui.scaleY() / 100,
 					ui.Alignment.Start,
 					ui.Alignment.Start,
 					vec2(ui.availableSpaceX() / 2, 20),
@@ -111,7 +111,7 @@ function TimeTablePage(sim)
 				ui.sameLine()
 				ui.dwriteTextAligned(
 					ac.lapTimeToString(c.bestLapTimeMs),
-					18 * UI_SCALE_Y / 100,
+					18 * cui.scaleY() / 100,
 					ui.Alignment.Start,
 					ui.Alignment.Start,
 					vec2(ui.availableSpaceX() / 1, 20),

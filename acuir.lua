@@ -1,16 +1,11 @@
 local sim = ac.getSim()
 
-UI_SCALE_X = sim.windowWidth / 2560 * 100
-UI_SCALE_Y = sim.windowHeight / 1440 * 100
-
 STORAGE = ac.storage({
 	appOpen = false,
 	hasAppOpened = false,
 	setupTab = "SETUP I/O",
 	helpOpen = false,
 })
-
--- STORAGE.setupTab = "SETUP I/O"
 
 SETTINGS = ac.storage({
 	autoStart = true,
