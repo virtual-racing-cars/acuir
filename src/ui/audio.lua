@@ -17,14 +17,17 @@ local focuseItem = ""
 -- audioEvent:setDistanceMax(500)
 -- audioEvent:setVolumeChannel(ac.AudioChannel.Main)
 
--- audioBlip:setLooping(false)
--- audioBlip:setVolume(0.2)
--- audioBlip:setPlaybackRate(2)
+audioBlip:setLooping(false)
+audioBlip:setVolume(0.5)
+audioBlip:setPlaybackRate(3)
+audioBlip:setLooping(false)
 
 -- local state = true
 
 local function playAudio()
-	audioBlip:play()
+	if audioBlip:ended() or not audioBlip:playing() then
+		audioBlip:play()
+	end
 	-- audioEvent:start()
 	-- state = not state
 
@@ -41,15 +44,16 @@ end
 
 function audioDriver()
 	if ui.getHoveredID() ~= focuseItem and ui.getHoveredID() ~= 0 and not ui.mouseClicked(ui.MouseButton.Left) then
-		audioBlip:setVolume(0.2)
-		audioBlip:setPlaybackRate(2)
+		audioBlip:setVolume(0.5)
+		audioBlip:setPitch(1)
 		playAudio()
+		ac.log("hi")
 	end
 	focuseItem = ui.getHoveredID()
 
 	if ui.anyItemHovered() and ui.mouseClicked(ui.MouseButton.Left) then
-		audioBlip:setVolume(1)
-		audioBlip:setPlaybackRate(0.5)
+		audioBlip:setVolume(2)
+		audioBlip:setPitch(0.2)
 		playAudio()
 	end
 
@@ -58,7 +62,6 @@ function audioDriver()
 end
 
 function audioTrigger()
-	audioBlip:setVolume(0.2)
-	audioBlip:setPlaybackRate(2)
+	audioBlip:setVolume(0.5)
 	playAudio()
 end
