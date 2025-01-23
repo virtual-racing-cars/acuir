@@ -176,10 +176,7 @@ function cui.button(label, sizeX, sizeY, fontSize, horizontalAligment, verticalA
 		flags = ui.ButtonFlags.None
 	end
 
-	local clicked = false
-
 	local textWidth = ui.measureDWriteText(string.upper(label), fontSize * scaleX).x
-
 	local fontColor = fontColor
 
 	if flags == ui.ButtonFlags.Disabled then
@@ -188,9 +185,8 @@ function cui.button(label, sizeX, sizeY, fontSize, horizontalAligment, verticalA
 	end
 
 	local tempCursor = ui.getCursor()
-	if ui.button("##" .. label, vec2Temp1:set(textWidth + 30 * scaleX, sizeY * scaleY), flags) then
-		clicked = true
-	end
+	ui.button("##" .. label, vec2Temp1:set(textWidth + 30 * scaleX, sizeY * scaleY), flags)
+	local hovered = ui.itemHovered()
 
 	if flags == ui.ButtonFlags.Disabled then
 		ui.popStyleColor(1)
@@ -214,14 +210,12 @@ function cui.button(label, sizeX, sizeY, fontSize, horizontalAligment, verticalA
 
 	ui.popDWriteFont()
 
-	return clicked
+	return hovered and ac.getUI().isMouseLeftKeyClicked
 end
 
 function cui.settingsButton(label, sizeX, sizeY, flags)
 	sizeX = sizeX * scaleX
 	sizeY = sizeY * scaleY
-
-	local clicked = false
 
 	local fontSize = 35 * scaleY
 
@@ -232,9 +226,8 @@ function cui.settingsButton(label, sizeX, sizeY, flags)
 	ui.pushStyleColor(ui.StyleColor.ButtonActive, rgbm(1, 0, 0, 1))
 
 	local tempCursor = ui.getCursor()
-	if ui.button("##" .. label, vec2Temp1:set(sizeX, sizeY), flags) then
-		clicked = true
-	end
+	ui.button("##" .. label, vec2Temp1:set(sizeX, sizeY), flags)
+	local hovered = ui.itemHovered()
 	local r1, r2 = ui.itemRect()
 
 	if not ui.itemHovered() or disabled then
@@ -261,7 +254,7 @@ function cui.settingsButton(label, sizeX, sizeY, flags)
 
 	ui.popDWriteFont()
 
-	return clicked
+	return hovered and ac.getUI().isMouseLeftKeyClicked
 end
 
 function cui.menuButton(label, size, horizontalAligment, verticalAlignment, flags, active, bold)
@@ -285,8 +278,6 @@ function cui.menuButton(label, size, horizontalAligment, verticalAlignment, flag
 
 	size = size * scaleY
 
-	local clicked = false
-
 	local fontSize = math.floor(size * 0.45)
 	fontSize = (fontSize % 2 ~= 0) and fontSize or fontSize + 1
 	local textWidth = ui.measureDWriteText(string.upper(label), fontSize).x + 100
@@ -305,9 +296,8 @@ function cui.menuButton(label, size, horizontalAligment, verticalAlignment, flag
 	end
 
 	local tempCursor = ui.getCursor()
-	if ui.button("##" .. label, vec2Temp1:set(textWidth, size), flags) then
-		clicked = true
-	end
+	ui.button("##" .. label, vec2Temp1:set(textWidth, size), flags)
+	local hovered = ui.itemHovered()
 
 	if flags == ui.ButtonFlags.Disabled then
 		ui.popStyleColor(1)
@@ -339,15 +329,13 @@ function cui.menuButton(label, size, horizontalAligment, verticalAlignment, flag
 
 	ui.popDWriteFont()
 
-	return clicked
+	return hovered and ac.getUI().isMouseLeftKeyClicked
 end
 
 function cui.modernButton(label, sizeX, sizeY, flags, icon)
-	if ui.modernButton(label, vec2(sizeX, sizeY) * scaleY, flags, icon, 16 * scaleY) then
-		return true
-	end
-
-	return false
+	ui.modernButton(label, vec2(sizeX, sizeY) * scaleY, flags, icon, 16 * scaleY)
+	local hovered = ui.itemHovered()
+	return hovered and ac.getUI().isMouseLeftKeyClicked
 end
 
 function cui.iconButton(label, icon, sizeX, sizeY, flags)
@@ -357,13 +345,10 @@ function cui.iconButton(label, icon, sizeX, sizeY, flags)
 
 	ui.pushStyleColor(ui.StyleColor.Button, rgbm(0.25, 0.25, 0.25, 0.5))
 
-	local clicked = false
-
 	local tempCursorX = ui.getCursorX()
 
-	if ui.button("##" .. label, vec2(sizeX, sizeY) * scaleY, flags) then
-		clicked = true
-	end
+	ui.button("##" .. label, vec2(sizeX, sizeY) * scaleY, flags)
+	local hovered = ui.itemHovered()
 
 	ui.sameLine()
 	ui.setCursorX(tempCursorX + 15 * scaleY)
@@ -382,7 +367,7 @@ function cui.iconButton(label, icon, sizeX, sizeY, flags)
 
 	ui.popStyleColor(1)
 
-	return clicked
+	return hovered and ac.getUI().isMouseLeftKeyClicked
 end
 
 function cui.dummy(x, y)

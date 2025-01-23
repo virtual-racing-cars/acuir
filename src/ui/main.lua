@@ -68,6 +68,12 @@ local sim = ac.getSim()
 local timer = os.clock() + SETTINGS.uiHideonIdleTime
 local exclusiveHudMode = ""
 
+local mousePos = vec2(-1, -1)
+
+setInterval(function()
+	mousePos:set(-1, -1)
+end)
+
 function MainMenuWindow()
 	local perfTime = os.preciseClock()
 
@@ -111,6 +117,10 @@ function MainMenuWindow()
 			-- 	vec2(sim.windowWidth, sim.windowHeight / 2 + 1),
 			-- 	rgbm.colors.lime
 			-- )
+
+			if mousePos.x ~= -1 then
+				ui.drawCircle(mousePos, 4, rgbm.colors.red)
+			end
 
 			audioDriver()
 		end
