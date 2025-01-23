@@ -32,7 +32,7 @@ STORAGE.appOpen = SETTINGS.autoStart
 STORAGE.hasAppOpened = false
 
 package.add("src")
-cui = require("utils.utils_cui")
+cui = require("ui.cui")
 require("classes.button")
 require("ui.main")
 require("ui.audio")
