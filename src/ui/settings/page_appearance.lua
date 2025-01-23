@@ -32,6 +32,8 @@ local secondaryActive = false
 local tertiaryActive = false
 
 function page.draw()
+	settingsMenuCommon("/UI", bottomBarButtons, goToSettingsPage)
+
 	cui.contentWindow(
 		"car_setup_window",
 		STORAGE.setupTab,
@@ -167,12 +169,6 @@ function page.draw()
 		false,
 		true
 	)
-
-	bottomBar(bottomBarButtons)
-
-	if ui.keyboardButtonPressed(ui.KeyIndex.Escape) then
-		goToSettingsPage()
-	end
 
 	return "debug"
 end

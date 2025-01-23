@@ -7,20 +7,6 @@ require("src.classes.Slider")
 local currentApp = 0
 
 local function tabItem(tabCount, index, title)
-	ui.pushStyleColor(
-		ui.StyleColor.ButtonHovered,
-		currentApp == index and rgbm(0.74, 0, 0, 1) or rgbm(0.25, 0.25, 0.25, 0.4)
-	)
-	ui.pushStyleColor(
-		ui.StyleColor.Button,
-		currentApp == index and rgbm(1, 1, 1, 1) or rgbm(0.227451, 0.219608, 0.258824, 1)
-	)
-
-	ui.pushStyleColor(
-		ui.StyleColor.ButtonActive,
-		currentApp == index and rgbm(0.74, 0, 0, 1) or rgbm.colors.transparent
-	)
-
 	if
 		cui.menuButton(title, 56, ui.Alignment.Center, ui.Alignment.Center, ui.ButtonFlags.None, currentApp == index)
 	then
@@ -28,8 +14,6 @@ local function tabItem(tabCount, index, title)
 	end
 
 	ui.sameLine()
-
-	ui.popStyleColor(2)
 end
 
 local tabBarPosition = 0

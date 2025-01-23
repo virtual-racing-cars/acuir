@@ -46,6 +46,8 @@ local bottomBarButtons = {
 }
 
 function page.draw()
+	settingsMenuCommon("/Audio", bottomBarButtons, goToSettingsPage)
+
 	cui.contentWindow(
 		"car_setup_window",
 		STORAGE.setupTab,
@@ -81,12 +83,6 @@ function page.draw()
 		false,
 		true
 	)
-
-	bottomBar(bottomBarButtons)
-
-	if ui.keyboardButtonPressed(ui.KeyIndex.Escape) then
-		goToSettingsPage()
-	end
 
 	return "debug"
 end

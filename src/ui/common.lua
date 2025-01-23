@@ -259,3 +259,15 @@ function topBar(showSessionInfo)
 		sessionInfo()
 	end
 end
+
+function settingsMenuCommon(path, bottomBarButtons, escapeAction)
+	ui.drawRectFilled(vec2(0, 0), vec2(sim.windowWidth, sim.windowHeight), SETTINGS.uiColor1 / 1.1)
+
+	-- local storagePath = STORAGE.settingsTab > 1 and "Settings/" .. page.label or "Settings/"
+	topSubBar("/Settings" .. path)
+	bottomBar(bottomBarButtons)
+
+	if ui.keyboardButtonPressed(ui.KeyIndex.Escape) then
+		escapeAction()
+	end
+end

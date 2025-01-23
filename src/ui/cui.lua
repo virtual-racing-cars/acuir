@@ -292,7 +292,12 @@ function cui.menuButton(label, size, horizontalAligment, verticalAlignment, flag
 	local textWidth = ui.measureDWriteText(string.upper(label), fontSize).x + 100
 	local fontColor = active and rgbm(0, 0, 0, 1) or nil
 
-	ui.pushStyleColor(ui.StyleColor.ButtonHovered, rgbm(1, 0, 0, 1))
+	ui.pushStyleColor(ui.StyleColor.ButtonHovered, SETTINGS.uiColor2)
+	ui.pushStyleColor(ui.StyleColor.ButtonActive, SETTINGS.uiColor2)
+
+	if active then
+		ui.pushStyleColor(ui.StyleColor.Button, SETTINGS.uiColor3)
+	end
 
 	if flags == ui.ButtonFlags.Disabled then
 		fontColor = rgbm(0.6, 0.6, 0.6, 1)
@@ -308,7 +313,15 @@ function cui.menuButton(label, size, horizontalAligment, verticalAlignment, flag
 		ui.popStyleColor(1)
 	end
 
-	ui.popStyleColor(1)
+	if active then
+		ui.popStyleColor(1)
+
+		if ui.itemHovered() then
+			ui.drawRect(tempCursor, tempCursor + vec2Temp1:set(textWidth, size), SETTINGS.uiColor3)
+		end
+	end
+
+	ui.popStyleColor(2)
 
 	ui.sameLine()
 

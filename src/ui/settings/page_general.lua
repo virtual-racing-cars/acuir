@@ -31,6 +31,8 @@ local but1 = ac.ControlButton("Lol")
 local but2 = ac.ControlButton("Lol2")
 
 function page.draw()
+	settingsMenuCommon("/General", bottomBarButtons, goToSettingsPage)
+
 	cui.contentWindow(
 		"car_setup_window",
 		STORAGE.setupTab,
@@ -93,12 +95,6 @@ function page.draw()
 		false,
 		true
 	)
-
-	bottomBar(bottomBarButtons)
-
-	if ui.keyboardButtonPressed(ui.KeyIndex.Escape) then
-		goToSettingsPage()
-	end
 
 	return "debug"
 end

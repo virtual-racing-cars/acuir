@@ -41,7 +41,16 @@ local settingsPages = {
 function page.draw()
 	-- ui.drawLine(vec2(220, 64), vec2(600, 64), rgbm.colors.white, 1)
 	-- ui.drawLine(vec2(220, 90), vec2(600, 90), rgbm.colors.white, 1)
-	ui.drawRectFilled(vec2(0, 0), vec2(sim.windowWidth, sim.windowHeight), SETTINGS.uiColor1 / 1.1)
+
+	settingsMenuCommon("", {
+		{
+			label = "BACK",
+			enabled = true,
+			func = function()
+				goToHomePage()
+			end,
+		},
+	}, goToHomePage)
 
 	cui.setCursorX(320)
 	cui.setCursorY(366)
@@ -67,23 +76,6 @@ function page.draw()
 
 	ui.endGroup()
 	ui.popStyleVar(1)
-
-	bottomBar({
-		{
-			label = "BACK",
-			enabled = true,
-			func = function()
-				goToHomePage()
-			end,
-		},
-	})
-
-	-- local storagePath = STORAGE.settingsTab > 1 and "Settings/" .. page.label or "Settings/"
-	topSubBar("Settings/")
-
-	if ui.keyboardButtonPressed(ui.KeyIndex.Escape) then
-		goToHomePage()
-	end
 
 	return ""
 end
