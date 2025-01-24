@@ -74,7 +74,7 @@ setInterval(function()
 	mousePos:set(-1, -1)
 end)
 
-function MainMenuWindow()
+function MainMenuWindow(dt)
 	local perfTime = os.preciseClock()
 
 	if SETTINGS.uiHideonIdleTime > 0 then
@@ -123,7 +123,7 @@ function MainMenuWindow()
 				ui.drawCircle(mousePos, 4, rgbm.colors.red)
 			end
 
-			audioDriver()
+			audioDriver(dt)
 		end
 	)
 

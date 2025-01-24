@@ -16,6 +16,11 @@ local itemSpacing = 5
 local scaleX = sim.windowWidth / 2560
 local scaleY = sim.windowHeight / 1440
 
+ac.onResolutionChange(function(newSize, makingScreenshot)
+	scaleX = newSize.x / 2560
+	scaleY = newSize.y / 1440
+end)
+
 function cui.bestFit()
 	windowMaxWidth = math.clamp(ui.windowWidth(), 0, ui.windowHeight() * ratio)
 	windowMaxHeight = math.clamp(ui.windowHeight(), 0, ui.windowWidth() / ratio)

@@ -35,8 +35,10 @@ ui.onExclusiveHUD(function(mode)
 		return
 	end
 
+	local dt = ac.getScriptDeltaT()
+
 	if mode == "menu" then
-		return MainMenuWindow()
+		return MainMenuWindow(dt)
 	end
 end)
 
