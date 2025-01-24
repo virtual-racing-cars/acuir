@@ -104,7 +104,7 @@ end
 function SetupItem:setValue(value)
 	local changed = self.value ~= value
 
-	self.value = math.clamp(math.floor(value / self.step + 0.5) * self.step, self.min, self.max)
+	self.value = value
 
 	for _, id in pairs(self.idPairs) do
 		ac.setSetupSpinnerValue(id, self.value)

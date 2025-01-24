@@ -39,7 +39,7 @@ local function loadSetupSpinners()
 		local multiplier = v["displayMultiplier"] or 1
 		local units = v["units"] or ""
 		-- local format = name .. (multiplier == 1 and ": %.0f " or ": %.1f ") .. (units == "%" and "%%" or units)
-		local format = (multiplier == 1 and "%.0f " or "%.1f ") .. (units == "%" and "%%" or units)
+		local format = (multiplier == 1 and "%.0f " or "%.2f ") .. (units == "%" and "%%" or units)
 		local items = v["items"] or {}
 		local xPos = setupINI:get(id, "POS_X", 0.5)
 		local yPos = setupINI:get(id, "POS_Y", 0)

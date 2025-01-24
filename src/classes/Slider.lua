@@ -61,7 +61,9 @@ function drawSlider(
 	offset,
 	noScroll
 )
-	local value, changed = value, false
+	local value = (value - min) / step
+	local max = (max - min) / step
+	local changed = false
 	local xMax = xPos + width
 	local fontSize = math.floor(height * 0.36)
 	fontSize = (fontSize % 2 ~= 0) and fontSize or fontSize + 1
@@ -91,27 +93,28 @@ function drawSlider(
 
 	if active or (sliderHovered and (sliderClicked or sliderScrolling)) then
 		if sliderScrolling then
-			local valueChangeAmount = (ui.keyboardButtonDown(ui.KeyIndex.Shift) and shiftStep or step)
-			value = ui.mouseWheel() < 0 and (math.round(value) - valueChangeAmount)
-				or (math.round(value) + valueChangeAmount)
+			local valueChangeAmount = (ui.keyboardButtonDown(ui.KeyIndex.Shift) and shiftStep or 1)
+			value = ui.mouseWheel() < 0 and (value - valueChangeAmount) or (value + valueChangeAmount)
 
 			audioTrigger()
 		else
 			itemHeld = id
-			value = (ui.mouseLocalPos().x - xPos) / (xMax - xPos) * (max - min) + min
+			value = (ui.mouseLocalPos().x - xPos) / (xMax - xPos) * max
+			ac.debug("value", value)
 		end
 
 		changed = true
 	end
 
-	value = math.floor((value + step / 2) / step) * step
-	value = math.round(math.clamp(value, min, max), round)
+	value = math.round(math.clamp(value, 0, max))
 
 	ui.drawRectFilled(
 		vec2Temp1:set(xPos, yPos + height),
-		vec2Temp2:set(xPos + (((value - min) / (max - min)) * width), yPos + height * 1.083),
+		vec2Temp2:set(xPos + ((value / max) * width), yPos + height * 1.083),
 		SETTINGS.uiColor2
 	)
+
+	value = value * step + min
 
 	ui.setCursorX(xPos)
 	ui.setCursorY(yPos + height / 2)
