@@ -7,7 +7,12 @@ local function playAudio(file)
 	if delayTimer > os.clock() then
 		return
 	end
-	ac.AudioEvent.fromFile({ filename = "assets\\sfx\\%s.mp3" % file, use3D = false, loop = false }, false):resume()
+	local audioEvent =
+		ac.AudioEvent.fromFile({ filename = "assets\\sfx\\%s.mp3" % file, use3D = false, loop = false }, false)
+
+	local mediaPeak = ac.mediaCurrentPeak()
+	audioEvent.volume = 0.5 * (1 + 16 * math.max(mediaPeak.x, mediaPeak.y))
+	audioEvent:resume()
 	delayTimer = os.clock() + delayTime
 end
 

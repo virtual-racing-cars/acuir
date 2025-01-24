@@ -2,7 +2,7 @@ local page = {}
 
 local sim = ac.getSim()
 
-require("src.ui.home.map")
+-- require("src.ui.home.map")
 require("src.classes.PlayerListButton")
 
 local menuButtonList = {
