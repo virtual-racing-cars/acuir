@@ -99,7 +99,7 @@ local centerStatusInfo = {
 		unit = "mm",
 	},
 	{
-		label = "Front Weight Balance",
+		label = "Front WB",
 		value = function(i)
 			return (car.wheels[0].load + car.wheels[1].load)
 				/ (car.wheels[0].load + car.wheels[1].load + car.wheels[2].load + car.wheels[3].load)
@@ -133,7 +133,7 @@ local centerStatusInfo = {
 		unit = "kg",
 	},
 	{
-		label = "Relative Plank Wear",
+		label = "Plank Wear",
 		value = function(i)
 			return car.maxRelativePlankWear * 1000
 		end,

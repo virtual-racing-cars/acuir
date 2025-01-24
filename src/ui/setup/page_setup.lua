@@ -116,7 +116,10 @@ function page.draw()
 						"help_window49",
 						STORAGE.setupTab .. "42",
 						vec2(0, ui.availableSpaceY() / 20),
-						vec2(ui.windowWidth(), ui.availableSpaceY() - ui.availableSpaceY() / 20) - 56 * cui.scaleY(),
+						vec2(
+							ui.windowWidth() + 20,
+							ui.availableSpaceY() - ui.availableSpaceY() / 20 - 56 * cui.scaleY()
+						),
 						ui.WindowFlags.None,
 						function()
 							CarStatusWindow()

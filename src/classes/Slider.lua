@@ -71,7 +71,6 @@ function drawSlider(
 
 	ui.setCursorX(xPos)
 	ui.setCursorY(yPos)
-	ui.pushDWriteFont(ui.DWriteFont("Rajdhani"):weight(ui.DWriteFont.Weight.SemiBold))
 	ui.dwriteTextAligned(
 		name:gsub("->            ", ""):gsub("             %?", ""),
 		fontSize,
@@ -130,8 +129,6 @@ function drawSlider(
 		false,
 		rgbm.colors.black
 	)
-
-	ui.popDWriteFont()
 
 	if ui.mouseDown(ui.MouseButton.Left) then
 		changed = false
