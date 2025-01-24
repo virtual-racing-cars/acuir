@@ -1,7 +1,7 @@
 local focuseItem = 0
 
 local delayTimer = 0
-local delayTime = 0.15
+local delayTime = 0.12
 
 local function playAudio(file)
 	if delayTimer > os.clock() then
