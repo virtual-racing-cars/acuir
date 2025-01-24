@@ -1,66 +1,29 @@
-local audioBlip = ui.MediaPlayer("assets\\audio\\menu_nav.mp3")
-local focuseItem = ""
+local focuseItem = 0
 
--- ac.loadSoundbank("assets\\audio\\tatuusfa1.bank")
+local delayTimer = 0
+local delayTime = 0.1
 
--- local audioEvent = ac.AudioEvent("cars/tatuusfa1/horn", false)
-
--- ac.loadSoundbank(
--- 	ac.getFolder(ac.FolderID.ContentCars) .. "\\" .. ac.getCarID(0) .. "\\sfx\\vrc_formula_alpha_2024_csp.bank"
--- )
--- local audioEvent = ac.AudioEvent("cars/vrc_formula_alpha_2024_csp/tones_int", false)
--- audioEvent.volume = 0.2
--- audioEvent.pitch = 0.2
--- audioEvent.cameraInteriorMultiplier = 1
--- audioEvent.cameraExteriorMultiplier = 1
--- audioEvent.cameraTrackMultiplier = 1
--- audioEvent:setDistanceMax(500)
--- audioEvent:setVolumeChannel(ac.AudioChannel.Main)
-
-audioBlip:setLooping(false)
-audioBlip:setVolume(0.5)
-audioBlip:setPlaybackRate(3)
-audioBlip:setLooping(false)
-
--- local state = true
-
-local function playAudio()
-	if audioBlip:ended() or not audioBlip:playing() then
-		audioBlip:play()
+local function playAudio(file)
+	if delayTimer > os.clock() then
+		return
 	end
-	-- audioEvent:start()
-	-- state = not state
-
-	-- audioEvent:setPosition(ac.getCar(0).position)
-	-- audioEvent:setParam("state", 1)
-	-- audioEvent:setParam("variation", 0.5)
-	-- audioEvent:setParam("stateWheel", 1)
-	-- audioEvent:setParam("state", 1)
-
-	-- audioEvent:stop()
-	-- audioEvent:start()
-	-- ac.log(audioEvent:isPlaying())
+	ac.AudioEvent.fromFile({ filename = "assets\\sfx\\%s.mp3" % file, use3D = false, loop = false }, false):resume()
+	delayTimer = os.clock() + delayTime
+	ac.log("hi")
 end
 
 function audioDriver()
+	if ui.anyItemHovered() and ui.mouseClicked(ui.MouseButton.Left) then
+		playAudio("gui_click")
+		return
+	end
+
 	if ui.getHoveredID() ~= focuseItem and ui.getHoveredID() ~= 0 and not ui.mouseClicked(ui.MouseButton.Left) then
-		audioBlip:setVolume(0.5)
-		audioBlip:setPitch(1)
-		playAudio()
+		playAudio("gui_nav")
 	end
 	focuseItem = ui.getHoveredID()
-
-	if ui.anyItemHovered() and ui.mouseClicked(ui.MouseButton.Left) then
-		audioBlip:setVolume(2)
-		audioBlip:setPitch(0.2)
-		playAudio()
-	end
-
-	-- ac.log(audioEvent:isPaused())
-	-- ac.log(audioEvent:isValid())
 end
 
 function audioTrigger()
-	audioBlip:setVolume(0.5)
-	playAudio()
+	playAudio("gui_nav")
 end
