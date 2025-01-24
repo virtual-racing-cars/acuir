@@ -68,7 +68,9 @@ setInterval(function()
 	mousePos:set(-1, -1)
 end)
 
-goToSetupPage()
+local fontRegular = ui.DWriteFont("Rajdhani"):weight(ui.DWriteFont.Weight.SemiBold)
+local fontBold = ui.DWriteFont("Rajdhani"):weight(ui.DWriteFont.Weight.Bold)
+local fontSemiBold = ui.DWriteFont("Noto Sans SC"):weight(ui.DWriteFont.Weight.SemiBold)
 
 function MainMenuWindow(dt)
 	local perfTime = os.preciseClock()
@@ -84,6 +86,8 @@ function MainMenuWindow(dt)
 		-- 	return ""
 		-- end
 	end
+
+	ui.pushDWriteFont(fontRegular)
 
 	cui.contentWindow(
 		"main_window",
@@ -124,6 +128,8 @@ function MainMenuWindow(dt)
 		false,
 		true
 	)
+
+	ui.popDWriteFont()
 
 	ac.debug("cameraMode", sim.cameraMode)
 	ac.debug("carCameraIndex", sim.carCameraIndex)

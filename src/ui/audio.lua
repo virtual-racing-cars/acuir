@@ -13,7 +13,7 @@ local function playAudio(file)
 		ac.AudioEvent.fromFile({ filename = "assets\\sfx\\%s.mp3" % file, use3D = false, loop = false }, false)
 
 	local mediaPeak = ac.mediaCurrentPeak()
-	audioEvent.volume = 0.25 * (1 + 20 * peak)
+	audioEvent.volume = 0.25 * (1 + 30 * peak)
 	audioEvent:resume()
 	delayTimer = os.clock() + delayTime
 end
