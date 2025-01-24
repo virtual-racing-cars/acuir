@@ -117,6 +117,8 @@ function drawSlider(
 
 	if sliderScrolling and value ~= _value then
 		audioTrigger()
+	else
+		changed = false
 	end
 
 	ui.setCursorX(xPos)
