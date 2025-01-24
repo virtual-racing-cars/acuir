@@ -64,7 +64,6 @@ function page.draw()
 		function()
 			-- ui.drawRectFilled(vec2(0, 0), ui.availableSpace(), rgbm.colors.aqua)
 			STORAGE.setupTab = setupTabBar(sm.setupTabs)
-			STORAGE.setupTab = 16
 
 			cui.contentWindow(
 				"car_setup_window2",
