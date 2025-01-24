@@ -141,7 +141,9 @@ local function drawSetupSpinner(sm, si)
 	end
 
 	if changed or active then
-		si:setValue(value)
+		if si:setValue(value) then
+			audioTrigger()
+		end
 	end
 
 	if active or locked then

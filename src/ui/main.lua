@@ -78,14 +78,15 @@ function MainMenuWindow()
 	local perfTime = os.preciseClock()
 
 	if SETTINGS.uiHideonIdleTime > 0 then
-		if (ui.mouseDelta() ~= vec2(0, 0) and sim.isWindowForeground) or ui.mouseClicked(ui.MouseButton.Left) then
-			timer = os.clock() + SETTINGS.uiHideonIdleTime
-		end
+		-- if (ui.mouseDelta() ~= vec2(0, 0) and sim.isWindowForeground) or ui.mouseClicked(ui.MouseButton.Left) then
+		-- 	timer = os.clock() + SETTINGS.uiHideonIdleTime
+		-- end
 
-		if timer < os.clock() then
-			ac.setCurrentCamera(ac.CameraMode.Start)
-			return ""
-		end
+		-- if timer < os.clock() then
+		-- 	-- ac.setOrbitOnboardCamera(true)
+		-- 	-- ac.setCurrentCamera(ac.CameraMode.Start)
+		-- 	return ""
+		-- end
 	end
 
 	ui.setCursor(0)
@@ -126,9 +127,13 @@ function MainMenuWindow()
 		end
 	)
 
+	ac.debug("cameraMode", sim.cameraMode)
+	ac.debug("carCameraIndex", sim.carCameraIndex)
+	ac.debug("driveableCameraMode", sim.driveableCameraMode)
+
 	ac.debug("perfTime", (os.preciseClock() - perfTime) * 1000)
 
-	-- exclusiveHudMode = "apps"
+	exclusiveHudMode = "debug"
 
 	return exclusiveHudMode
 end

@@ -115,9 +115,7 @@ function drawSlider(
 
 	value = value * step + min
 
-	if sliderScrolling and value ~= _value then
-		audioTrigger()
-	else
+	if not sliderScrolling or value == _value then
 		changed = false
 	end
 
