@@ -221,9 +221,9 @@ function cui.settingsButton(label, sizeX, sizeY, flags)
 
 	local disabled = flags == ui.ButtonFlags.Disabled
 
-	ui.pushStyleColor(ui.StyleColor.Button, rgbm(0.231373, 0.223529, 0.262745, 1))
-	ui.pushStyleColor(ui.StyleColor.ButtonHovered, rgbm(1, 0, 0, 1))
-	ui.pushStyleColor(ui.StyleColor.ButtonActive, rgbm(1, 0, 0, 1))
+	ui.pushStyleColor(ui.StyleColor.Button, SETTINGS.uiColor1)
+	ui.pushStyleColor(ui.StyleColor.ButtonHovered, SETTINGS.uiColor2)
+	ui.pushStyleColor(ui.StyleColor.ButtonActive, SETTINGS.uiColor2)
 
 	local tempCursor = ui.getCursor()
 	ui.button("##" .. label, vec2Temp1:set(sizeX, sizeY), flags)

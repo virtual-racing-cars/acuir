@@ -4,10 +4,10 @@ local fontRegular = ui.DWriteFont("Rajdhani"):weight(ui.DWriteFont.Weight.SemiBo
 local fontBold = ui.DWriteFont("Rajdhani"):weight(ui.DWriteFont.Weight.Bold)
 
 local acLogo = ac.getFolder(ac.FolderID.Root) .. "\\launcher\\themes\\default\\graphics\\btn_AC_logo.png"
-local acLogoSize = ui.imageSize(acLogo) * cui.scaleX()
-local uiStartY = 40 * cui.scaleX()
+local acLogoSize = ui.imageSize(acLogo) * cui.scaleY()
 local uiStartX = 60 * cui.scaleX()
-local topBarHeight = 200 * cui.scaleX()
+local uiStartY = 40 * cui.scaleY()
+local topBarHeight = 200 * cui.scaleY()
 local bottomBarHeight = sim.windowHeight - 96 * cui.scaleY()
 
 local menuButtonSize = 56
@@ -155,10 +155,10 @@ local raceSessiontTypeString = {
 }
 
 local function sessionInfo()
-	local startX = 1918
-	local startY = 100
-	local sizeX = 171
-	local sizeY = 35
+	local startX = 1918 * cui.scaleX()
+	local startY = 100 * cui.scaleY()
+	local sizeX = 171 * cui.scaleX()
+	local sizeY = 35 * cui.scaleY()
 	local gap = 1
 
 	local fontSize = math.floor(sizeY * 0.55)
