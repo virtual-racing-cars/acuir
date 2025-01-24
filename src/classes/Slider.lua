@@ -61,6 +61,7 @@ function drawSlider(
 	offset,
 	noScroll
 )
+	local _value = value
 	local value = (value - min) / step
 	local max = (max - min) / step
 	local changed = false
@@ -95,8 +96,6 @@ function drawSlider(
 		if sliderScrolling then
 			local valueChangeAmount = (ui.keyboardButtonDown(ui.KeyIndex.Shift) and shiftStep or 1)
 			value = ui.mouseWheel() < 0 and (value - valueChangeAmount) or (value + valueChangeAmount)
-
-			audioTrigger()
 		else
 			itemHeld = id
 			value = (ui.mouseLocalPos().x - xPos) / (xMax - xPos) * max
@@ -115,6 +114,10 @@ function drawSlider(
 	)
 
 	value = value * step + min
+
+	if sliderScrolling and value ~= _value then
+		audioTrigger()
+	end
 
 	ui.setCursorX(xPos)
 	ui.setCursorY(yPos + height / 2)
