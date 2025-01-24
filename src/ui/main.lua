@@ -4,7 +4,6 @@ require("classes.PageManager")
 local HomePage = require("ui.home.page")
 local SetupPage = require("ui.setup.page_setup")
 local SetupAppsPage = require("ui.setup.page_apps")
-local SetupIoPage = require("ui.setup.page_io")
 local SettingsPage = require("ui.SETTINGS.page_settings")
 local SettingsGeneralPage = require("ui.SETTINGS.page_general")
 local SettingsControls = require("ui.SETTINGS.page_controls")
@@ -17,7 +16,6 @@ pageManager:registerPage("HomePage", nil, HomePage)
 pageManager:registerPage("SetupPage", "HomePage", SetupPage)
 pageManager:registerPage("SettingsPage", "HomePage", SettingsPage)
 pageManager:registerPage("SetupAppsPage", "SetupPage", SetupAppsPage)
-pageManager:registerPage("SetupIoPage", "SetupPage", SetupIoPage)
 pageManager:registerPage("SettingsGeneralPage", "SettingsPage", SettingsGeneralPage)
 pageManager:registerPage("SettingsControlsPage", "SettingsPage", SettingsControls)
 pageManager:registerPage("SettingsAudioPage", "SettingsPage", SettingsAudioPage)
@@ -38,10 +36,6 @@ end
 
 function goToSetupAppsPage()
 	pageManager:setPage("SetupAppsPage")
-end
-
-function goToSetupIoPage()
-	pageManager:setPage("SetupIoPage")
 end
 
 function goToSettingsGeneralPage()
@@ -74,6 +68,8 @@ setInterval(function()
 	mousePos:set(-1, -1)
 end)
 
+goToSetupPage()
+
 function MainMenuWindow(dt)
 	local perfTime = os.preciseClock()
 
@@ -89,11 +85,11 @@ function MainMenuWindow(dt)
 		-- end
 	end
 
-	ui.setCursor(0)
-	cui.childWindow(
+	cui.contentWindow(
 		"main_window",
+		"",
+		vec2(0, 0),
 		vec2(sim.windowWidth, sim.windowHeight),
-		false,
 		ui.WindowFlags.NoScrollbar + ui.WindowFlags.NoScrollWithMouse,
 		function()
 			exclusiveHudMode = ""
@@ -124,7 +120,9 @@ function MainMenuWindow(dt)
 			end
 
 			audioDriver(dt)
-		end
+		end,
+		false,
+		true
 	)
 
 	ac.debug("cameraMode", sim.cameraMode)
@@ -133,7 +131,7 @@ function MainMenuWindow(dt)
 
 	ac.debug("perfTime", (os.preciseClock() - perfTime) * 1000)
 
-	exclusiveHudMode = "debug"
+	-- exclusiveHudMode = "debug"
 
 	return exclusiveHudMode
 end

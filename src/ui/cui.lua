@@ -76,8 +76,8 @@ function cui.childWindow(id, size, border, flags, content)
 	ui.childWindow(id, size, false, flags, content)
 end
 
-function cui.contentWindow(id, title, position, size, flags, content, showTitle, hideBackground)
-	cui.pushWindow(id .. "test", position.x, position.y, size.x, size.y)
+function cui.contentWindow(id, title, position, size, flags, content, showTitle, hideBackground, scroll)
+	cui.pushWindow(id .. "test", position.x, position.y, size.x, size.y, scroll)
 
 	if not hideBackground then
 		ui.drawRectFilled(vec2(0, 0), size, SETTINGS.uiColor1 / 2)
@@ -92,20 +92,6 @@ function cui.contentWindow(id, title, position, size, flags, content, showTitle,
 	-- 	rgbm(0, 0, 0, 0),
 	-- 	rgbm(0, 0, 0, 0)
 	-- )
-
-	if showTitle then
-		cui.setCursorX(0)
-		cui.setCursorY(15)
-		ui.dwriteTextAligned(
-			title,
-			25 * cui.scaleY(),
-			ui.Alignment.Center,
-			ui.Alignment.Start,
-			size,
-			false,
-			rgbm.colors.white
-		)
-	end
 
 	content()
 

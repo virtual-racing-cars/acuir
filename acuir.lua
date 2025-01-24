@@ -15,11 +15,11 @@ SETTINGS = ac.storage({
 	uiColor3 = rgbm(1, 1, 1, 1),
 })
 
-for v, v in pairs(SETTINGS) do
-	for _k, _v in pairs(v) do
-		SETTINGS[_k] = _v.default
-	end
-end
+-- for v, v in pairs(SETTINGS) do
+-- 	for _k, _v in pairs(v) do
+-- 		SETTINGS[_k] = _v.default
+-- 	end
+-- end
 
 STORAGE.appOpen = SETTINGS.autoStart
 STORAGE.hasAppOpened = false

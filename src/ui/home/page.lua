@@ -46,6 +46,13 @@ local menuButtonList = {
 			ac.tryToRestartSession()
 		end,
 	},
+	{
+		label = "QUIT",
+		enabled = true,
+		func = function()
+			ac.shutdownAssettoCorsa()
+		end,
+	},
 }
 
 function page.update() end
@@ -83,15 +90,7 @@ function page.draw()
 	-- 	true
 	-- )
 
-	bottomBar({
-		{
-			label = "QUIT",
-			enabled = true,
-			func = function()
-				ac.shutdownAssettoCorsa()
-			end,
-		},
-	})
+	bottomBar({})
 
 	return ""
 end
