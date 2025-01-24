@@ -17,7 +17,7 @@ function audioDriver()
 		return
 	end
 
-	if ui.getHoveredID() ~= focuseItem and ui.getHoveredID() ~= 0 and not ui.mouseClicked(ui.MouseButton.Left) then
+	if ui.getHoveredID() ~= focuseItem and ui.getHoveredID() ~= 0 and not ui.mouseDown(ui.MouseButton.Left) then
 		playAudio("gui_nav")
 	end
 	focuseItem = ui.getHoveredID()
