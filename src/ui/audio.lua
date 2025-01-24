@@ -9,7 +9,6 @@ local function playAudio(file)
 	end
 	ac.AudioEvent.fromFile({ filename = "assets\\sfx\\%s.mp3" % file, use3D = false, loop = false }, false):resume()
 	delayTimer = os.clock() + delayTime
-	ac.log("hi")
 end
 
 function audioDriver()
