@@ -249,13 +249,13 @@ function topBar(showSessionInfo)
 	ui.drawRectFilled(
 		vec2(uiStartX, uiStartY),
 		vec2(sim.windowWidth - uiStartX, (uiStartY + topBarHeight)),
-		SETTINGS.uiColor1 / 2
+		rgbm(0.2, 0.2, 0.2, 0.5)
 	)
 
 	ui.drawRectFilled(
 		vec2(uiStartX, (uiStartY + topBarHeight)),
 		vec2(sim.windowWidth - uiStartX, (uiStartY + topBarHeight + menuButtonSize * cui.scaleY())),
-		SETTINGS.uiColor1 / 1.5
+		SETTINGS.uiColor1 / 1.3
 	)
 	ui.setCursorX(sim.windowWidth / 2 - acLogoSize.x / 2)
 	ui.setCursorY((uiStartY + topBarHeight) * 0.32)

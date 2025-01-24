@@ -89,6 +89,21 @@ function page.draw()
 				ui.WindowFlags.None,
 				function()
 					ui.drawRectFilled(vec2(0, 0), ui.availableSpace(), rgbm(0, 0, 0, 0.25))
+					CarStatusWindow()
+				end,
+				false,
+				true
+			)
+
+			ui.setCursor(0)
+			cui.contentWindow(
+				"help_window432",
+				STORAGE.setupTab .. "423",
+				vec2(0, 56 * cui.scaleY()),
+				vec2(ui.windowWidth() / 4, ui.availableSpaceY()),
+				ui.WindowFlags.None,
+				function()
+					ui.drawRectFilled(vec2(0, 0), ui.availableSpace(), rgbm(0, 0, 0, 0.25))
 					ui.pushTextWrapPosition(ui.windowWidth() - 20)
 
 					if HELP_TEXT and HELP_TEXT ~= "NULL" and HELP_TEXT ~= "" then
@@ -104,21 +119,6 @@ function page.draw()
 					ui.popTextWrapPosition()
 
 					HELP_TEXT = ""
-				end,
-				false,
-				true
-			)
-
-			ui.setCursor(0)
-			cui.contentWindow(
-				"help_window432",
-				STORAGE.setupTab .. "423",
-				vec2(0, 56 * cui.scaleY()),
-				vec2(ui.windowWidth() / 4, ui.availableSpaceY()),
-				ui.WindowFlags.None,
-				function()
-					ui.drawRectFilled(vec2(0, 0), ui.availableSpace(), rgbm(0, 0, 0, 0.25))
-					CarStatusWindow()
 				end,
 				false,
 				true
