@@ -57,7 +57,7 @@ end
 function goToSettingsAiPage()
 	pageManager:setPage("SettingsAiPage")
 end
-
+goToSetupPage()
 local sim = ac.getSim()
 local timer = os.clock() + SETTINGS.uiHideonIdleTime
 local exclusiveHudMode = ""
@@ -137,7 +137,7 @@ function MainMenuWindow(dt)
 
 	ac.debug("perfTime", (os.preciseClock() - perfTime) * 1000)
 
-	-- exclusiveHudMode = "debug"
+	exclusiveHudMode = "debug"
 
 	return exclusiveHudMode
 end

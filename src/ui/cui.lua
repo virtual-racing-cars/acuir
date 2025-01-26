@@ -5,6 +5,8 @@ local vec2Temp2 = vec2()
 
 local cui = {}
 
+local storedBools = {}
+
 local defaultWidth = 2560
 local defaultHeight = 1440
 local ratio = defaultWidth / defaultHeight
@@ -30,6 +32,14 @@ function cui.bestFit()
 
 	currentScale = ui.windowHeight() / defaultHeight
 	itemSpacing = 5 * currentScale
+end
+
+function cui.loadStoredBool(id)
+	return storedBools[id]
+end
+
+function cui.storeBool(id, value)
+	storedBools[id] = value
 end
 
 function cui.windowMaxWidth()
@@ -267,11 +277,22 @@ function cui.menuButton(label, size, horizontalAligment, verticalAlignment, flag
 		flags = ui.ButtonFlags.None
 	end
 
-	size = size * scaleY
+	local sizeX, sizeY, buttonSize, fontSize
 
-	local fontSize = math.floor(size * 0.45)
-	fontSize = (fontSize % 2 ~= 0) and fontSize or fontSize + 1
-	local textWidth = ui.measureDWriteText(string.upper(label), fontSize).x + 100
+	if type(size) == "number" then
+		size = size * scaleY
+		sizeY = size
+		fontSize = math.floor(sizeY * 0.45)
+		fontSize = (fontSize % 2 ~= 0) and fontSize or fontSize + 1
+		buttonSize = vec2Temp1:set(ui.measureDWriteText(string.upper(label), fontSize).x + 100 * cui.scaleY(), size)
+	else
+		sizeX = size.x * scaleX
+		sizeY = size.y * scaleY
+		fontSize = math.floor(sizeY * 0.45)
+		fontSize = (fontSize % 2 ~= 0) and fontSize or fontSize + 1
+		buttonSize = vec2Temp1(sizeX, sizeY)
+	end
+
 	local fontColor = active and rgbm(0, 0, 0, 1) or nil
 
 	ui.pushStyleColor(ui.StyleColor.ButtonHovered, SETTINGS.uiColor2)
@@ -287,7 +308,7 @@ function cui.menuButton(label, size, horizontalAligment, verticalAlignment, flag
 	end
 
 	local tempCursor = ui.getCursor()
-	ui.button("##" .. label, vec2Temp1:set(textWidth, size), flags)
+	ui.button("##" .. label, buttonSize, flags)
 	local hovered = ui.itemHovered()
 
 	if flags == ui.ButtonFlags.Disabled then
@@ -298,7 +319,7 @@ function cui.menuButton(label, size, horizontalAligment, verticalAlignment, flag
 		ui.popStyleColor(1)
 
 		if ui.itemHovered() then
-			ui.drawRect(tempCursor, tempCursor + vec2Temp1:set(textWidth, size), SETTINGS.uiColor3)
+			ui.drawRect(tempCursor, tempCursor + buttonSize, SETTINGS.uiColor3)
 		end
 	end
 
@@ -313,7 +334,7 @@ function cui.menuButton(label, size, horizontalAligment, verticalAlignment, flag
 		fontSize,
 		horizontalAligment,
 		verticalAlignment,
-		vec2Temp1:set(textWidth, size),
+		buttonSize,
 		false,
 		ui.itemHovered() and rgbm(1, 1, 1, 1) or fontColor
 	)
@@ -361,8 +382,96 @@ function cui.iconButton(label, icon, sizeX, sizeY, flags)
 	return hovered and ac.getUI().isMouseLeftKeyClicked and not (flags == ui.ButtonFlags.Disabled)
 end
 
+function cui.treeNodeButton(label, size, active, bold)
+	if bold then
+		ui.pushDWriteFont(fontBold)
+	else
+		ui.pushDWriteFont(fontRegular)
+	end
+
+	size.x = size.x * scaleX
+	size.y = size.y * scaleY
+
+	local fontSize = math.floor(size.y * 0.45)
+	fontSize = (fontSize % 2 ~= 0) and fontSize or fontSize + 1
+	local fontColor = active and rgbm(0, 0, 0, 1) or nil
+
+	ui.pushStyleColor(ui.StyleColor.Button, rgbm.colors.black)
+	ui.pushStyleColor(ui.StyleColor.ButtonHovered, SETTINGS.uiColor2)
+	ui.pushStyleColor(ui.StyleColor.ButtonActive, SETTINGS.uiColor2)
+
+	if active then
+		ui.pushStyleColor(ui.StyleColor.Button, SETTINGS.uiColor3)
+	end
+
+	local tempCursor = ui.getCursor()
+	local clicked = ui.button("##" .. label, size, ui.ButtonFlags.None)
+	local id = ui.getLastID()
+
+	if active then
+		ui.popStyleColor(1)
+
+		if ui.itemHovered() then
+			ui.drawRect(tempCursor, tempCursor + size, SETTINGS.uiColor3)
+		end
+	end
+
+	ui.popStyleColor(3)
+
+	ui.sameLine()
+
+	ui.setCursor(tempCursor)
+	local textOffset = bold and size.x / 60 or size.x / 30
+	ui.offsetCursorX(textOffset)
+	ui.dwriteTextAligned(
+		label,
+		fontSize,
+		ui.Alignment.Start,
+		ui.Alignment.Center,
+		vec2Temp1:set(size.x - textOffset, size.y),
+		false,
+		ui.itemHovered() and rgbm(1, 1, 1, 1) or fontColor
+	)
+
+	ui.popDWriteFont()
+
+	return clicked, id
+end
+
+function cui.treeNode(label, content)
+	local clicked, id = cui.treeNodeButton(label, vec2Temp1:set(ui.availableSpaceX(), 40), false, true)
+
+	local open = cui.loadStoredBool(id)
+	if clicked then
+		cui.storeBool(id, not open)
+	end
+
+	if open then
+		ui.pushStyleVar(ui.StyleVar.ItemSpacing, 0)
+		ui.beginGroup(ui.availableSpaceX())
+		content()
+		ui.endGroup()
+		ui.popStyleVar(1)
+	end
+end
+
+function cui.inputText(label, string, flags, size)
+	local tempCursor = ui.getCursor()
+	ui.pushStyleColor(ui.StyleColor.Text, rgbm.colors.transparent)
+	local string, changed, enterPressed = ui.inputText(label, string, flags, size)
+	ui.popStyleColor(1)
+	local id = ui.getLastID()
+	ui.pushStyleColor(ui.StyleColor.Button, rgbm.colors.black)
+	ui.setCursor(tempCursor)
+	cui.menuButton(string, size, ui.Alignment.Start, ui.Alignment.Center, ui.ButtonFlags.None, false, false)
+
+	ui.popStyleVar(1)
+
+	return string, changed, enterPressed
+end
+
 function cui.dummy(x, y)
-	ui.dummy(x * scaleY, y * scaleY)
+	ui.dummy(vec2Temp1:set(x * scaleY, y * scaleY))
 end
 
 local margins = 15

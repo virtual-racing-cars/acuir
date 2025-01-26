@@ -1,5 +1,8 @@
 local sim = ac.getSim()
 
+local vec2Temp1 = vec2()
+local vec2Temp2 = vec2()
+
 local setupsDir = ac.getFolder(ac.FolderID.UserSetups) .. "\\" .. ac.getCarID(0)
 
 local refreshingSetups = false
@@ -130,12 +133,20 @@ local function savedSetupsWindow()
 end
 
 local function saveSetupWindow()
-	ui.text("Name:")
+	ui.setCursor(0)
+	ui.dwriteTextAligned(
+		"Current Setup [" .. loadedSetup .. "]",
+		24,
+		ui.Alignment.Center,
+		ui.Alignment.Center,
+		vec2(ui.availableSpaceX(), 32)
+	)
+
+	ui.dwriteText("Name", 22)
 	ui.sameLine(60)
-	ui.setNextItemWidth(ui.availableSpaceX())
 	saveSetup.name = ui.inputText("##SetupName", saveSetup.name, ui.InputTextFlags.None)
 
-	ui.text("Track:")
+	ui.dwriteText("Track", 22)
 	ui.sameLine(60)
 	ui.setNextItemWidth(ui.availableSpaceX())
 	ui.combo("##setupcombo", saveSetup.track, ui.ComboFlags.None, function()
@@ -156,12 +167,44 @@ local function saveSetupWindow()
 		end)
 	end)
 
-	ui.text("Tags:")
+	ui.dwriteText("Tags", 22)
 	ui.sameLine(60)
 	ui.setNextItemWidth(ui.availableSpaceX())
 	saveSetup.tags = ui.inputText("##SetupTags", saveSetup.tags, ui.InputTextFlags.None)
 
-	if cui.menuButton("Save", 40) then
+	ui.setCursorX(0)
+	local ioButtonSize = vec2Temp1:set(ui.windowWidth() / 4, 40)
+
+	if cui.menuButton("load", ioButtonSize) then
+		ac.loadSetup(selectedSetup.path)
+		loadedSetup = selectedSetup.track .. " - " .. selectedSetup.name
+		ui.toast(ui.Icons.Download, "Setup loaded: " .. selectedSetup.name)
+	end
+	ui.sameLine()
+
+	if cui.menuButton("Reset", ioButtonSize) then
+		ac.loadSetup(selectedSetup.path)
+		loadedSetup = selectedSetup.track .. " - " .. selectedSetup.name
+		ui.toast(ui.Icons.Download, "Setup loaded: " .. selectedSetup.name)
+	end
+	ui.sameLine()
+
+	if cui.menuButton("delete", ioButtonSize) then
+		io.deleteFile(saveSetup.path)
+		io.deleteFile(string.trim(saveSetup.path, ".ini") .. ".sp")
+
+		ui.toast(ui.Icons.Download, "Setup deleted: " .. saveSetup.name)
+
+		saveSetup.name = ""
+		saveSetup.path = ""
+		saveSetup.tags = ""
+		saveSetup.description = ""
+
+		loadSetups()
+	end
+	ui.sameLine()
+
+	if cui.menuButton("Save", ioButtonSize) then
 		if saveSetup.name ~= "" then
 			saveSetup.path = setupsDir .. "\\" .. saveSetup.track .. "\\" .. saveSetup.name .. ".ini"
 			ac.setActiveSetupName(saveSetup.name, saveSetup.track)
@@ -188,34 +231,27 @@ local function saveSetupWindow()
 			loadSetups()
 		end
 	end
-
-	if cui.menuButton("load", 40) then
-		ac.loadSetup(selectedSetup.path)
-		loadedSetup = selectedSetup.track .. " - " .. selectedSetup.name
-		ui.toast(ui.Icons.Download, "Setup loaded: " .. selectedSetup.name)
-	end
-
-	if cui.menuButton("delete", 40) then
-		io.deleteFile(saveSetup.path)
-		io.deleteFile(string.trim(saveSetup.path, ".ini") .. ".sp")
-
-		ui.toast(ui.Icons.Download, "Setup deleted: " .. saveSetup.name)
-
-		saveSetup.name = ""
-		saveSetup.path = ""
-		saveSetup.tags = ""
-		saveSetup.description = ""
-
-		loadSetups()
-	end
 end
 
 function setupIoDraw()
 	cui.contentWindow(
-		"load_setups",
-		"load_setups",
+		"saved_setups",
+		"saved_setups",
 		vec2(0, 0),
-		vec2(ui.windowWidth(), ui.windowHeight() / 2),
+		vec2(ui.windowWidth(), ui.windowHeight() / 6),
+		ui.WindowFlags.None,
+		function()
+			saveSetupWindow()
+		end,
+		false,
+		true
+	)
+
+	cui.contentWindow(
+		"load_setups",
+		"load_setups",
+		vec2(0, ui.windowHeight() / 6),
+		vec2(ui.windowWidth(), (ui.windowHeight() / 6) * 5),
 		ui.WindowFlags.None,
 		function()
 			if ui.checkbox("Hide other track setups", SETTINGS.hideOtherTrackSetups) then
@@ -227,20 +263,17 @@ function setupIoDraw()
 				ui.icon(ui.Icons.LoadingSpinner, ui.availableSpace())
 			else
 				for track, setups in pairs(savedSetups) do
-					ui.treeNode(track, function()
+					ui.setCursorX(0)
+					cui.treeNode(track, function()
 						for i in ipairs(setups) do
 							local setup = setups[i]
-							local setupButtonFlags = ui.ButtonFlags.None
-
-							if selectedSetup.path == setup.path then
-								setupButtonFlags = ui.ButtonFlags.Active
-							end
+							local setupActive = selectedSetup.path == setup.path
 
 							local name = string.replace(setup.name, ".ini", "")
 
-							ui.pushStyleVar(ui.StyleVar.ItemSpacing, 3)
-							ui.pushStyleVar(ui.StyleVar.FramePadding, -25)
-							if ui.modernButtonAdvanced(name, vec2(ui.windowWidth() - 20, 30), setupButtonFlags) then
+							ui.setCursorX(0)
+
+							if cui.treeNodeButton(name, vec2(ui.windowWidth(), 32), setupActive, false) then
 								selectedSetup = {
 									name = name,
 									track = track,
@@ -259,31 +292,13 @@ function setupIoDraw()
 									creation = setup.creationTime,
 								}
 							end
-
-							ui.popStyleVar(2)
 						end
 					end)
 				end
 			end
-
-			ui.setCursorY(0)
-			ui.textAligned("Current Setup [" .. loadedSetup .. "]", vec2(0.5, 0.5), vec2(ui.availableSpaceX(), 30))
 		end,
 		false,
-		false,
-		true
-	)
-
-	cui.contentWindow(
-		"saved_setups",
-		"saved_setups",
-		vec2(0, ui.windowHeight() / 2),
-		vec2(ui.windowWidth(), ui.windowHeight() / 2),
-		ui.WindowFlags.None,
-		function()
-			saveSetupWindow()
-		end,
-		false,
+		true,
 		true
 	)
 
