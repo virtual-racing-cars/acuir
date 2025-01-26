@@ -1,5 +1,3 @@
-local focuseItem = 0
-
 local delayTimer = 0
 local delayTime = 0.125
 
@@ -12,7 +10,6 @@ local function playAudio(file)
 	local audioEvent =
 		ac.AudioEvent.fromFile({ filename = "assets\\sfx\\%s.mp3" % file, use3D = false, loop = false }, false)
 
-	local mediaPeak = ac.mediaCurrentPeak()
 	audioEvent.volume = 0.25 * (1 + 30 * peak)
 	audioEvent:resume()
 	delayTimer = os.clock() + delayTime
@@ -25,15 +22,14 @@ function audioDriver(dt)
 
 	if ui.anyItemHovered() and ui.mouseClicked(ui.MouseButton.Left) then
 		playAudio("gui_click")
-		return
 	end
-
-	if ui.getHoveredID() ~= focuseItem and ui.getHoveredID() ~= 0 and not ui.mouseDown(ui.MouseButton.Left) then
-		playAudio("gui_nav")
-	end
-	focuseItem = ui.getHoveredID()
 end
 
 function audioTrigger()
+	if ui.anyItemHovered() and ui.mouseClicked(ui.MouseButton.Left) then
+		playAudio("gui_click")
+		return
+	end
+
 	playAudio("gui_nav")
 end

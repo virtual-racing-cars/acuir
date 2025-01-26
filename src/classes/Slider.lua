@@ -9,7 +9,7 @@ local SpinnerButtonType = { Left = 0, Right = 1 }
 local spinnerButtonTimer = 0
 local spinnerButtonTime = 0
 
-local function drawSpinnerButton(direction, size)
+local function drawSpinnerButton(direction, size, disabled)
 	size = size / 2
 
 	ui.pushStyleColor(ui.StyleColor.Button, rgbm(0, 0, 0, 0))
@@ -19,15 +19,16 @@ local function drawSpinnerButton(direction, size)
 
 	local tmpPos = ui.getCursor()
 
-	local clicked = ui.button("##dummyButton" .. direction, size, ui.ButtonFlags.PressedOnClick)
+	local flags = ui.ButtonFlags.PressedOnClick
+	flags = disabled and flags + ui.ButtonFlags.Disabled or flags
+
+	local clicked = ui.button("##dummyButton" .. direction, size, flags)
 	local hovered = ui.itemHovered()
 	ui.setCursor(tmpPos)
-	ui.icon(
-		ui.Icons.Skip,
-		size,
-		hovered and rgbm.colors.red or rgbm.colors.white,
-		direction == SpinnerButtonType.Left and -size or size
-	)
+
+	local iconColor = hovered and rgbm.colors.red or rgbm.colors.white
+	iconColor = disabled and rgbm.colors.gray or iconColor
+	ui.icon(ui.Icons.Skip, size, iconColor, direction == SpinnerButtonType.Left and -size or size)
 
 	if clicked then
 		spinnerButtonTimer = os.clock() + 0.5
@@ -188,7 +189,7 @@ function drawSpinner(
 	ui.setCursorX(xPos + buttonSize)
 	ui.setCursorY(yPos + buttonSize)
 	if hovered and not locked then
-		if drawSpinnerButton(SpinnerButtonType.Left, vec2Temp1:set(height, height)) then
+		if drawSpinnerButton(SpinnerButtonType.Left, vec2Temp1:set(height, height), value <= min) then
 			if value ~= min then
 				value = value - step
 				changed = true
@@ -227,7 +228,7 @@ function drawSpinner(
 	ui.setCursorX(xPos + width - height)
 	ui.setCursorY(yPos + buttonSize)
 	if hovered and not locked then
-		if drawSpinnerButton(SpinnerButtonType.Right, vec2Temp1:set(height, height)) then
+		if drawSpinnerButton(SpinnerButtonType.Right, vec2Temp1:set(height, height), value >= max) then
 			if value ~= max then
 				value = value + step
 				changed = true
