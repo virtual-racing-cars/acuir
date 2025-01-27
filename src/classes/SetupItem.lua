@@ -53,29 +53,21 @@ function SetupItem:initialize(
 	self.uid = uid
 	self.idPairs = { self.id }
 	self.child = false
-	self.idMirror = nil
 	self.independentSpinner = independentSpinner and true or false
 
-	self.mirrorAvailable = false
 	self.mirrored = false
+	self.mirrorAvailable = false
+	self.idMirror = nil
 
 	if string.find(self.id, "LF") then
 		self.idMirror = string.replace(self.id, "LF", "RF")
-		self.mirrorAvailable = true
-	elseif string.find(self.id, "RF") then
-		self.idMirror = string.replace(self.id, "RF", "LF")
 	elseif string.find(self.id, "LR") then
 		self.idMirror = string.replace(self.id, "LR", "RR")
-		self.mirrorAvailable = true
-	elseif string.find(self.id, "RR") then
-		self.idMirror = string.replace(self.id, "RR", "LR")
 	end
 
-	if ac.getSetupSpinnerValue(self.idMirror, -12345) == -12345 then
-		self.idMirror = nil
-		self.mirrorAvailable = false
-	else
+	if self.idMirror ~= nil and ac.getSetupSpinnerValue(self.idMirror, -12345) ~= -12345 then
 		self.mirrored = true
+		self.mirrorAvailable = true
 	end
 
 	self.itemActive = false
@@ -91,7 +83,11 @@ function SetupItem:getValue()
 		return
 	end
 
-	self.value = ac.getSetupSpinnerValue(self.id)
+	if self.mirrored then
+		self.value = ac.getSetupSpinnerValue(self.idMirror)
+	else
+		self.value = ac.getSetupSpinnerValue(self.id)
+	end
 
 	for _, id in pairs(self.idPairs) do
 		local pairValue = ac.getSetupSpinnerValue(id)

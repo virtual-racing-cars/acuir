@@ -24,44 +24,54 @@ pageManager:registerPage("SettingsAiPage", "SettingsPage", SettingsAiPage)
 
 function goToHomePage()
 	pageManager:setPage("HomePage")
+	pageManager:makeUndo()
 end
 
 function goToSetupPage()
 	pageManager:setPage("SetupPage")
+	pageManager:makeUndo()
 end
 
 function goToSettingsPage()
 	pageManager:setPage("SettingsPage")
+	pageManager:makeUndo()
 end
 
 function goToSetupAppsPage()
 	pageManager:setPage("SetupAppsPage")
+	pageManager:makeUndo()
 end
 
 function goToSettingsGeneralPage()
 	pageManager:setPage("SettingsGeneralPage")
+	pageManager:makeUndo()
 end
 
 function goToSettingsControlsPage()
 	pageManager:setPage("SettingsControlsPage")
+	pageManager:makeUndo()
 end
 
 function goToSettingsAudioPage()
 	pageManager:setPage("SettingsAudioPage")
+	pageManager:makeUndo()
 end
 
 function goToSettingsAppearancePage()
 	pageManager:setPage("SettingsAppearancePage")
+	pageManager:makeUndo()
 end
 
 function goToSettingsAiPage()
 	pageManager:setPage("SettingsAiPage")
+	pageManager:makeUndo()
 end
 
-local sim = ac.getSim()
-local timer = os.clock() + SETTINGS.uiHideonIdleTime
-local exclusiveHudMode = ""
+goToHomePage()
+goToSetupPage()
 
+local sim = ac.getSim()
+local exclusiveHudMode = ""
 local mousePos = vec2(-1, -1)
 
 setInterval(function()
@@ -75,25 +85,30 @@ local fontSemiBold = ui.DWriteFont("Noto Sans SC"):weight(ui.DWriteFont.Weight.S
 function MainMenuWindow(dt)
 	local perfTime = os.preciseClock()
 
-	if SETTINGS.uiHideonIdleTime > 0 then
-		-- if (ui.mouseDelta() ~= vec2(0, 0) and sim.isWindowForeground) or ui.mouseClicked(ui.MouseButton.Left) then
-		-- 	timer = os.clock() + SETTINGS.uiHideonIdleTime
-		-- end
-
-		-- if timer < os.clock() then
-		-- 	-- ac.setOrbitOnboardCamera(true)
-		-- 	-- ac.setCurrentCamera(ac.CameraMode.Start)
-		-- 	return ""
-		-- end
+	if ui.keyboardButtonPressed(ui.KeyIndex.Escape) or ac.isKeyPressed(ui.KeyIndex.XButton1) then
+		if pageManager:isUndoAvailable() then
+			pageManager:undo()
+		end
 	end
 
+	if ac.isKeyPressed(ui.KeyIndex.XButton2) then
+		if pageManager:isRedoAvailable() then
+			pageManager:redo()
+		end
+	end
+
+	ac.debug("History", pageManager._history)
+
 	ui.pushDWriteFont(fontRegular)
+
+	local childWindowWith = (2560 - 120) * cui.scaleX()
+	local childWindowHeight = (1440 - 80) * cui.scaleX()
 
 	cui.contentWindow(
 		"main_window",
 		"",
-		vec2(0, 0),
-		vec2(sim.windowWidth, sim.windowHeight),
+		vec2((ui.windowWidth() - childWindowWith) / 2, (ui.windowHeight() - childWindowHeight) / 2),
+		vec2(childWindowWith, childWindowHeight),
 		ui.WindowFlags.NoScrollbar + ui.WindowFlags.NoScrollWithMouse,
 		function()
 			exclusiveHudMode = ""
@@ -103,11 +118,16 @@ function MainMenuWindow(dt)
 				return
 			end
 
+			updateCommon()
+
 			ui.bringWindowToFront()
 
+			ui.pushStyleColor(ui.StyleColor.ScrollbarGrab, SETTINGS.uiColor2)
+			ui.pushStyleVar(ui.StyleVar.ScrollbarSize, 3)
 			ui.pushStyleVar(ui.StyleVar.ItemSpacing, 0)
 			exclusiveHudMode = pageManager:draw()
-			ui.popStyleVar(1)
+			ui.popStyleVar(2)
+			ui.popStyleColor(1)
 			-- ui.drawRectFilled(
 			-- 	vec2(sim.windowWidth / 2 - 1, 0),
 			-- 	vec2(sim.windowWidth / 2 + 1, sim.windowHeight),
@@ -129,7 +149,6 @@ function MainMenuWindow(dt)
 		false,
 		true
 	)
-
 	ui.popDWriteFont()
 
 	ac.debug("cameraMode", sim.cameraMode)

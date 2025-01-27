@@ -5,6 +5,8 @@ require("src.classes.Button")
 require("src.classes.Slider")
 
 local currentApp = 0
+local tabBarPosition = 0
+local tabItemPositions = { [0] = 0 }
 
 local function tabItem(index, title)
 	if
@@ -16,16 +18,19 @@ local function tabItem(index, title)
 	ui.sameLine()
 end
 
-local tabBarPosition = 0
-local tabItemPositions = { [0] = 0 }
+ac.onResolutionChange(function(newSize, makingScreenshot)
+	for i in ipairs(tabItemPositions) do
+		tabItemPositions[i] = nil
+	end
+	currentApp = 0
+	tabBarPosition = 0
+end)
 
 local sim = ac.getSim()
+local tabBarScrollDisabled = false
 
 function setupTabBar(apps)
-	if
-		ui.mouseLocalPos() >= vec2(0, 0)
-		and ui.mouseLocalPos() < vec2(sim.windowWidth - 120 * cui.scaleX(), 56 * cui.scaleY())
-	then
+	if ui.mouseLocalPos() >= vec2(0, 0) and ui.mouseLocalPos() < vec2(ui.windowWidth(), 56 * cui.scaleY()) then
 		if ui.mouseWheel() > 0 then
 			currentApp = currentApp >= #apps - 1 and 0 or currentApp + 1
 			audioTrigger()
@@ -35,12 +40,14 @@ function setupTabBar(apps)
 		end
 	end
 
-	tabBarPosition = math.applyLag(
-		tabBarPosition,
-		-math.max(tabItemPositions[currentApp] - ui.windowWidth() / 2, 0),
-		0.4,
-		ac.getScriptDeltaT()
-	)
+	if not tabBarScrollDisabled and tabItemPositions[currentApp] then
+		tabBarPosition = math.applyLag(
+			tabBarPosition,
+			-math.max(tabItemPositions[currentApp] - ui.windowWidth() / 2, 0),
+			0.4,
+			ac.getScriptDeltaT()
+		)
+	end
 
 	ui.setCursorX(tabBarPosition)
 	ui.setCursorY(0)
@@ -51,6 +58,10 @@ function setupTabBar(apps)
 		if not tabItemPositions[i - 1] then
 			tabItemPositions[i - 1] = ui.getCursorX()
 		end
+	end
+
+	if tabItemPositions[#apps - 1] <= ui.windowWidth() then
+		tabBarScrollDisabled = true
 	end
 
 	ui.popStyleColor(1)
@@ -152,6 +163,9 @@ local function drawSetupSpinner(sm, si)
 end
 
 function car_setup(sm)
+	spinnerWidth = 600 * cui.scaleX()
+	spinnerHeight = 70 * cui.scaleY()
+
 	local changed = false
 	local tab = sm.setupTabs[tonumber(STORAGE.setupTab)]
 

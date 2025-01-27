@@ -15,12 +15,12 @@ local windowMaxHeight = 0
 local currentScale = 1
 local itemSpacing = 5
 
-local scaleX = sim.windowWidth / 2560
-local scaleY = sim.windowHeight / 1440
+local scaleY = math.min(sim.windowHeight / 1440, sim.windowWidth / 2560)
+local scaleX = scaleY
 
 ac.onResolutionChange(function(newSize, makingScreenshot)
-	scaleX = newSize.x / 2560
-	scaleY = newSize.y / 1440
+	scaleY = math.min(newSize.y / 1440, newSize.x / 2560)
+	scaleX = scaleY
 end)
 
 function cui.bestFit()
@@ -420,6 +420,7 @@ function cui.treeNodeButton(label, size, active, bold)
 
 	local textOffset = bold and size.x / 60 or size.x / 30
 	ui.setCursor(tempCursor)
+	ui.offsetCursorX(textOffset)
 	ui.dwriteTextAligned(
 		" " .. label,
 		fontSize,
@@ -444,7 +445,7 @@ function cui.treeNodeButton(label, size, active, bold)
 end
 
 function cui.treeNode(label, content)
-	local clicked, id = cui.treeNodeButton(label, vec2Temp1:set(ui.availableSpaceX(), 40 * cui.scaleY()), false, true)
+	local clicked, id = cui.treeNodeButton(label, vec2Temp1:set(ui.availableSpaceX(), 50 * cui.scaleY()), false, true)
 
 	local open = cui.loadStoredBool(id)
 	if clicked then

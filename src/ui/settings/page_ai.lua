@@ -16,8 +16,4 @@ function viewSettings()
 	if ui.modernButton("##reset_fpv_fov", vec2(30, 30), ui.ButtonFlags.None, ui.Icons.Restart) then
 		ac.resetFirstPersonCameraFOV()
 	end
-
-	if ui.keyboardButtonPressed(ui.KeyIndex.Escape) then
-		goToSettingsPage()
-	end
 end

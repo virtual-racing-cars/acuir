@@ -5,10 +5,10 @@ local setupsDir = ac.getFolder(ac.FolderID.UserSetups) .. "\\" .. ac.getCarID(0)
 local refreshingSetups = false
 
 local loadedSetups = {}
+local trackSortedSetups = {}
 local selectedSetup = { name = "", track = "", path = "", creation = "" }
 local saveSetup = { name = "", track = ac.getTrackID(), path = "", creation = "" }
 local currentSetup = "generic/default"
-local trackSortedSetups = {}
 
 local function loadSetups()
 	refreshingSetups = true
@@ -25,11 +25,11 @@ local function loadSetups()
 	loadedSetups[ac.getTrackID()] = {}
 
 	io.scanDir(setupsDir, function(dirName)
-		if SETTINGS.hideOtherTrackSetups then
-			if dirName ~= ac.getTrackID() and dirName ~= "generic" then
-				return
-			end
-		end
+		-- if SETTINGS.hideOtherTrackSetups then
+		-- 	if dirName ~= ac.getTrackID() and dirName ~= "generic" then
+		-- 		return
+		-- 	end
+		-- end
 
 		io.scanDir(setupsDir .. "\\" .. dirName, function(fileName, fileAttributes)
 			if string.find(fileName, ".sp") or string.find(fileName, ".txt") then
@@ -133,8 +133,8 @@ end
 
 function setupIoDraw()
 	cui.contentWindow(
-		"saved_setups",
-		"saved_setups",
+		"setup_io_saved_setups",
+		"setup_io_saved_setups",
 		vec2(0, 0),
 		vec2(ui.windowWidth(), ui.windowHeight() / 5),
 		ui.WindowFlags.None,
@@ -178,7 +178,6 @@ function setupIoDraw()
 					ui.setCursorX(0)
 					if
 						cui.treeNode(track, function()
-							ui.pushStyleVar(ui.StyleVar.ItemSpacing, 1)
 							for i in ipairs(loadedSetups[track]) do
 								local setup = loadedSetups[track][i]
 								local setupActive = selectedSetup.path == setup.path
@@ -188,7 +187,7 @@ function setupIoDraw()
 								if
 									cui.treeNodeButton(
 										name,
-										vec2(ui.windowWidth(), 32 * cui.scaleY()),
+										vec2(ui.windowWidth(), 40 * cui.scaleY()),
 										setupActive,
 										false
 									)
@@ -208,7 +207,6 @@ function setupIoDraw()
 									}
 								end
 							end
-							ui.popStyleVar(1)
 						end)
 					then
 						saveSetup.track = track

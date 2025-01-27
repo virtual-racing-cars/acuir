@@ -8,7 +8,6 @@ require("src.ui.setup.setup_io")
 local vec2Temp1 = vec2()
 local vec2Temp2 = vec2()
 
-local sim = ac.getSim()
 local sm = SetupManager()
 
 local bottomBarButtons = {
@@ -26,20 +25,7 @@ local bottomBarButtons = {
 			goToSetupAppsPage()
 		end,
 	},
-	-- {
-	-- 	label = "SETUP PRESETS",
-	-- 	enabled = true,
-	-- 	func = function()
-	-- 		goToSetupIoPage()
-	-- 	end,
-	-- },
-	{
-		label = "RESET",
-		enabled = false,
-		func = function()
-			ac.resetSetupToDefault("")
-		end,
-	},
+
 	{
 		label = "UNDO",
 		enabled = true,
@@ -62,21 +48,21 @@ function page.draw()
 	cui.contentWindow(
 		"car_setup_window",
 		STORAGE.setupTab,
-		vec2(60 * cui.scaleX(), 240 * cui.scaleY()),
-		vec2(ui.windowWidth() - 120 * cui.scaleX(), ui.windowHeight() - 383 * cui.scaleY()),
+		vec2(0, 200 * cui.scaleY()),
+		vec2(ui.windowWidth(), ui.windowHeight() - 303 * cui.scaleY()),
 		ui.WindowFlags.None,
 		function()
-			-- ui.drawRectFilled(vec2(0, 0), ui.availableSpace(), rgbm.colors.aqua)
+			ui.setCursor(0)
 			STORAGE.setupTab = setupTabBar(sm.setupTabs)
 
+			ui.setCursor(0)
 			cui.contentWindow(
-				"car_setup_window2",
+				"car_setup_items_window",
 				STORAGE.setupTab .. "2",
 				vec2(ui.windowWidth() / 4, 56 * cui.scaleY()),
-				vec2(ui.windowWidth() / 2, ui.availableSpaceY()),
+				vec2(ui.windowWidth() / 2, ui.windowHeight() - 56 * cui.scaleY()),
 				ui.WindowFlags.None,
 				function()
-					-- ui.drawRectFilled(vec2(0, 0), ui.availableSpace(), rgbm.colors.aqua)
 					ui.setCursor(0)
 					car_setup(sm)
 				end,
@@ -86,10 +72,10 @@ function page.draw()
 
 			ui.setCursor(0)
 			cui.contentWindow(
-				"help_window42",
+				"car_status_window",
 				STORAGE.setupTab .. "42",
 				vec2((ui.windowWidth() / 4) * 3, 56 * cui.scaleY()),
-				vec2(ui.windowWidth() / 4, ui.availableSpaceY()),
+				vec2(ui.windowWidth() / 4, ui.windowHeight() - 56 * cui.scaleY()),
 				ui.WindowFlags.None,
 				function()
 					ui.setCursor(0)
@@ -148,7 +134,7 @@ function page.draw()
 
 			ui.setCursor(0)
 			cui.contentWindow(
-				"help_window432",
+				"setup_io_window",
 				STORAGE.setupTab .. "423",
 				vec2(0, 56 * cui.scaleY()),
 				vec2(ui.windowWidth() / 4, ui.windowHeight() - 56 * cui.scaleY()),
@@ -170,7 +156,7 @@ function page.draw()
 
 					ui.setCursor(0)
 					cui.contentWindow(
-						"help_window320",
+						"setup_io_track_list_window",
 						STORAGE.setupTab .. "42",
 						vec2(0, ui.availableSpaceY() / 20),
 						vec2(ui.windowWidth(), ui.windowHeight() - ui.windowHeight() / 20),
@@ -192,10 +178,6 @@ function page.draw()
 	bottomBarButtons[#bottomBarButtons].enabled = sm:isRedoAvailable()
 
 	bottomBar(bottomBarButtons)
-
-	if ui.keyboardButtonPressed(ui.KeyIndex.Escape) then
-		goToHomePage()
-	end
 
 	return ""
 end

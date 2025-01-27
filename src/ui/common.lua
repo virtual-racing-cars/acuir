@@ -5,8 +5,7 @@ local fontBold = ui.DWriteFont("Rajdhani"):weight(ui.DWriteFont.Weight.Bold)
 
 local acLogo = ac.getFolder(ac.FolderID.Root) .. "\\launcher\\themes\\default\\graphics\\btn_AC_logo.png"
 local acLogoSize = ui.imageSize(acLogo) * cui.scaleY()
-local uiStartX = 60 * cui.scaleX()
-local uiStartY = 40 * cui.scaleY()
+
 local topBarHeight = 200 * cui.scaleY()
 local bottomBarHeight = sim.windowHeight - 96 * cui.scaleY()
 
@@ -16,44 +15,43 @@ local version = manifestINI:get("ABOUT", "VERSION", "0.0.0")
 local versionString = "v " .. version .. ", CSP: " .. ac.getPatchVersion() .. " (" .. ac.getPatchVersionCode() .. ")"
 
 function bottomBar(buttons)
-	ui.drawRectFilled(
-		vec2(uiStartX, bottomBarHeight),
-		vec2(sim.windowWidth - uiStartX, sim.windowHeight - 40 * cui.scaleY()),
-		SETTINGS.uiColor1 / 3
-	)
+	ui.drawRectFilled(vec2(0, bottomBarHeight), vec2(ui.windowWidth(), ui.windowHeight()), SETTINGS.uiColor1 / 3)
 
 	ui.pushDWriteFont(fontRegular)
-	ui.setCursor(0)
+	ui.setCursorX(0)
+	ui.setCursorY(10)
 	ui.dwriteTextAligned(
 		versionString,
 		26 * cui.scaleY(),
 		ui.Alignment.End,
 		ui.Alignment.End,
-		ui.availableSpace() - vec2(250 * cui.scaleX(), 52 * cui.scaleY()),
+		ui.availableSpace() - vec2(220 * cui.scaleX(), 10 * cui.scaleY()),
 		false,
 		rgbm(0.8, 0.8, 0.8, 1)
 	)
 
-	ui.setCursor(0)
+	ui.setCursorX(0)
+	ui.setCursorY(0)
+
 	ui.dwriteTextAligned(
 		"OFFLINE",
 		26 * cui.scaleY(),
 		ui.Alignment.End,
 		ui.Alignment.End,
-		ui.availableSpace() - vec2(125 * cui.scaleX(), 52 * cui.scaleY()),
+		ui.availableSpace() - vec2(100 * cui.scaleX(), 10 * cui.scaleY()),
 		false,
 		rgbm(1, 0.9, 0, 1)
 	)
 	ui.popDWriteFont()
 
 	ui.drawCircleFilled(
-		vec2(sim.windowWidth - 95 * cui.scaleX(), sim.windowHeight - 68 * cui.scaleY()),
-		10,
+		vec2(ui.windowWidth() - 30 * cui.scaleX(), ui.windowHeight() - 30 * cui.scaleY()),
+		10 * cui.scaleX(),
 		rgbm.colors.orange
 	)
 
 	ui.pushStyleColor(ui.StyleColor.Button, rgbm.colors.transparent)
-	ui.setCursorX(uiStartX)
+	ui.setCursorX(0)
 	ui.setCursorY(bottomBarHeight)
 	for i in ipairs(buttons) do
 		local menuButton = buttons[i]
@@ -76,9 +74,8 @@ function bottomBar(buttons)
 end
 
 function homeBar(buttons)
-	local xPos = uiStartX
-	ui.setCursorX(xPos)
-	ui.setCursorY(uiStartY + topBarHeight)
+	ui.setCursorX(0)
+	ui.setCursorY(topBarHeight)
 
 	ui.pushStyleColor(ui.StyleColor.Button, SETTINGS.uiColor1)
 
@@ -151,7 +148,7 @@ local raceSessiontTypeString = {
 }
 
 local function sessionInfo()
-	local startX = 1918 * cui.scaleX()
+	local startX = ui.windowWidth() - 642 * cui.scaleX()
 	local startY = 100 * cui.scaleY()
 	local sizeX = 171 * cui.scaleX()
 	local sizeY = 35 * cui.scaleY()
@@ -241,19 +238,15 @@ function topSubBar(path)
 end
 
 function topBar(showSessionInfo)
-	ui.drawRectFilled(
-		vec2(uiStartX, uiStartY),
-		vec2(sim.windowWidth - uiStartX, (uiStartY + topBarHeight)),
-		rgbm(0.2, 0.2, 0.2, 0.5)
-	)
+	ui.drawRectFilled(vec2(0, 0), vec2(ui.windowWidth(), topBarHeight), rgbm(0.2, 0.2, 0.2, 0.5))
 
 	ui.drawRectFilled(
-		vec2(uiStartX, (uiStartY + topBarHeight)),
-		vec2(sim.windowWidth - uiStartX, (uiStartY + topBarHeight + menuButtonSize * cui.scaleY())),
+		vec2(0, topBarHeight),
+		vec2(ui.windowWidth(), (topBarHeight + menuButtonSize * cui.scaleY())),
 		SETTINGS.uiColor1 / 1.3
 	)
-	ui.setCursorX(sim.windowWidth / 2 - acLogoSize.x / 2)
-	ui.setCursorY((uiStartY + topBarHeight) * 0.32)
+	ui.setCursorX(ui.windowWidth() / 2 - acLogoSize.x / 2)
+	ui.setCursorY(topBarHeight * 0.2)
 	ui.image(acLogo, acLogoSize)
 
 	if showSessionInfo then
@@ -267,8 +260,10 @@ function settingsMenuCommon(path, bottomBarButtons, escapeAction)
 	-- local storagePath = STORAGE.settingsTab > 1 and "Settings/" .. page.label or "Settings/"
 	topSubBar("/Settings" .. path)
 	bottomBar(bottomBarButtons)
+end
 
-	if ui.keyboardButtonPressed(ui.KeyIndex.Escape) then
-		escapeAction()
-	end
+function updateCommon()
+	acLogoSize = ui.imageSize(acLogo) * cui.scaleY()
+	topBarHeight = 200 * cui.scaleY()
+	bottomBarHeight = ui.windowHeight() - 56 * cui.scaleY()
 end

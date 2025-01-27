@@ -53,6 +53,19 @@ function playerListButton(car, xPos, yPos, width, height)
 		)
 	end
 
+	ui.setCursorX(xPos + width - (width / 15) * 2)
+	ui.setCursorY(yPos)
+
+	ui.dwriteTextAligned(
+		ac.getTyresName(car.index, car.compoundIndex),
+		height / 2,
+		ui.Alignment.Center,
+		ui.Alignment.Center,
+		vec2(width / 15, height),
+		false,
+		rgbm.colors.white
+	)
+
 	ui.drawLine(vec2(xPos, yPos), vec2(xPos + width, yPos), rgbm.colors.black)
 	ui.drawLine(vec2(xPos, yPos + height), vec2(xPos + width, yPos + height), rgbm.colors.black)
 
