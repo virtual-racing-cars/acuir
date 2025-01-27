@@ -68,6 +68,7 @@ function goToSettingsAiPage()
 end
 
 goToHomePage()
+goToSetupPage()
 
 local sim = ac.getSim()
 local exclusiveHudMode = ""
@@ -97,10 +98,12 @@ function MainMenuWindow(dt)
 	end
 
 	ui.pushDWriteFont(fontRegular)
+	ui.pushStyleColor(ui.StyleColor.ScrollbarGrab, SETTINGS.uiColor2)
+	ui.pushStyleVar(ui.StyleVar.ScrollbarSize, 3)
+	ui.pushStyleVar(ui.StyleVar.ItemSpacing, 0)
 
 	local childWindowWith = (2560 - 120) * cui.scaleX()
 	local childWindowHeight = (1440 - 80) * cui.scaleX()
-
 	cui.contentWindow(
 		"main_window",
 		"",
@@ -108,8 +111,6 @@ function MainMenuWindow(dt)
 		vec2(childWindowWith, childWindowHeight),
 		ui.WindowFlags.NoScrollbar + ui.WindowFlags.NoScrollWithMouse,
 		function()
-			exclusiveHudMode = ""
-
 			if not STORAGE.appOpen then
 				exclusiveHudMode = nil
 				return
@@ -119,12 +120,9 @@ function MainMenuWindow(dt)
 
 			ui.bringWindowToFront()
 
-			ui.pushStyleColor(ui.StyleColor.ScrollbarGrab, SETTINGS.uiColor2)
-			ui.pushStyleVar(ui.StyleVar.ScrollbarSize, 3)
-			ui.pushStyleVar(ui.StyleVar.ItemSpacing, 0)
+			exclusiveHudMode = ""
 			exclusiveHudMode = pageManager:draw()
-			ui.popStyleVar(2)
-			ui.popStyleColor(1)
+
 			-- ui.drawRectFilled(
 			-- 	vec2(sim.windowWidth / 2 - 1, 0),
 			-- 	vec2(sim.windowWidth / 2 + 1, sim.windowHeight),
@@ -147,6 +145,8 @@ function MainMenuWindow(dt)
 		true
 	)
 	ui.popDWriteFont()
+	ui.popStyleVar(2)
+	ui.popStyleColor(1)
 
 	ac.debug("perfTime", (os.preciseClock() - perfTime) * 1000)
 

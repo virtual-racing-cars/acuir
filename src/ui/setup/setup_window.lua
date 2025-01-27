@@ -1,6 +1,4 @@
-require("src.ui.setup.pitstop_strategy_window")
 require("src.ui.setup.gear_window")
-require("src.classes.SetupManager")
 require("src.classes.Button")
 require("src.classes.Slider")
 
@@ -149,6 +147,11 @@ local function drawSetupSpinner(sm, si)
 		end
 	end
 
+	if hovered and ui.mouseClicked(ui.MouseButton.Right) then
+		si:resetValue()
+		audioTrigger()
+	end
+
 	if changed or active then
 		if si:setValue(value) then
 			audioTrigger()
@@ -162,7 +165,15 @@ local function drawSetupSpinner(sm, si)
 	return changed
 end
 
+local tempSpFile = ac.INIConfig.load(ac.getFolder(ac.FolderID.UserSetups) .. "\\" .. ac.getCarID(0) .. "\\_temp.sp")
+tempSpFile:setAndSave("PRESET_0", "COMPOUND", -1)
+
+local pitstopStrategyUpdated = false
+local pitstopStrategyPreset = 1
+
 function car_setup(sm)
+	pitstopStrategyUpdated = false
+
 	spinnerWidth = 600 * cui.scaleX()
 	spinnerHeight = 70 * cui.scaleY()
 
@@ -170,9 +181,32 @@ function car_setup(sm)
 	local tab = sm.setupTabs[tonumber(STORAGE.setupTab)]
 
 	for _, v in pairs(tab.setupSpinners) do
-		if drawSetupSpinner(sm, v) then
-			changed = true
+		if v.tab == "PITSTOP STRATEGY" then
+			if v.id == "PRESET" then
+				pitstopStrategyPreset = v.value - 1
+				drawSetupSpinner(sm, v)
+			end
+
+			if string.find(v.id, "_PRESET_" .. pitstopStrategyPreset) then
+				if drawSetupSpinner(sm, v) then
+					tempSpFile:setAndSave(
+						"PRESET_" .. pitstopStrategyPreset,
+						v.id:gsub("_PRESET_" .. pitstopStrategyPreset, ""),
+						v.id == "COMPOUND" and v.value - 1 or v.value
+					)
+					pitstopStrategyUpdated = true
+				end
+			end
+		else
+			if drawSetupSpinner(sm, v) then
+				changed = true
+			end
 		end
+	end
+
+	if pitstopStrategyUpdated then
+		ac.saveCurrentSetup("_temp.ini")
+		ac.loadSetup("_temp.ini")
 	end
 
 	if changed then

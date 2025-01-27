@@ -29,7 +29,7 @@ function SetupItem:initialize(
 	yPos,
 	uid,
 	independentSpinner,
-	zeroDefault
+	default
 )
 	self.id = id
 	self.tab = tab
@@ -38,7 +38,7 @@ function SetupItem:initialize(
 	self.max = max
 	self.step = step
 	self.multiplier = multiplier
-	self.value = zeroDefault and 0 or ac.getSetupSpinnerValue(self.id)
+	self.value = default and default or ac.getSetupSpinnerValue(self.id)
 	self.default = self.value
 	self.items = items
 	self.format = format

@@ -1,8 +1,23 @@
-local setupINI = ac.INIConfig.carData(0, "setup.ini")
-
 require("classes.SetupItem")
 
-setupINI = ac.INIConfig.carData(0, "setup.ini")
+local setupINI = ac.INIConfig.carData(0, "setup.ini")
+
+local pitstopsINI =
+	ac.INIConfig.load(string.format("%s\\%s", ac.getFolder(ac.FolderID.Root), "system\\cfg\\pitstop.ini"))
+local presetsCount = pitstopsINI:get("SETTINGS", "PRESETS_COUNT", 1)
+
+local pitstopSetupSpinners = {
+	["FUEL"] = { xPos = 0.5, yPos = 2, zeroDefault = true, label = "Add Liters" },
+	["COMPOUND"] = { xPos = 0.5, yPos = 3.5, zeroDefault = true },
+	["PRESSURE_LF"] = { xPos = 0, yPos = 5, zeroDefault = false },
+	["PRESSURE_RF"] = { xPos = 1, yPos = 5, zeroDefault = false },
+	["PRESSURE_LR"] = { xPos = 0, yPos = 6, zeroDefault = false },
+	["PRESSURE_RR"] = { xPos = 1, yPos = 6, zeroDefault = false },
+	-- ["WING_1"] = { xPos = 1, yPos = 8, zeroDefault = true },
+	-- ["WING_2"] = { xPos = 0, yPos = 8, zeroDefault = true },
+}
+
+ac.debug("s", ac.getSetupSpinners())
 
 local function loadSetupSpinners()
 	local populatedTabs = {}
@@ -89,12 +104,77 @@ local function loadSetupSpinners()
 			SetupItem(id, tab, name, min, max, step, multiplier, items, format, xPos, yPos, uid)
 		)
 
+		local insertedNoChange = false
+		if pitstopSetupSpinners[id] then
+			for i = 1, presetsCount do
+				if not insertedNoChange and id == "COMPOUND" then
+					items = table.clone(items, true)
+					table.insert(items, 1, "No Change")
+					max = #items - 1
+					insertedNoChange = true
+				end
+
+				if id == "WING_1" or id == "WING_2" then
+					min = -(max - min) * 2
+					max = -min
+				end
+
+				table.insert(
+					setupSpinners,
+					SetupItem(
+						id .. "_PRESET_" .. i - 1,
+						"PITSTOP STRATEGY",
+						name,
+						min,
+						max,
+						step,
+						multiplier,
+						items,
+						format,
+						pitstopSetupSpinners[v.name].xPos,
+						pitstopSetupSpinners[v.name].yPos,
+						bit.tohex(ac.checksumXXH(stringify({
+							"PITSTOP STRATEGY",
+							pitstopSetupSpinners[v.name].xPos,
+							pitstopSetupSpinners[v.name].yPos,
+						}))),
+						true,
+						pitstopSetupSpinners[v.name].zeroDefault and 0 or v.value
+					)
+				)
+			end
+		end
+
 		if not pairedItems[uid] then
 			pairedItems[uid] = { id }
 		else
 			table.insert(pairedItems[uid], 1, id)
 		end
 	end
+
+	table.insert(
+		setupSpinners,
+		SetupItem(
+			"PRESET",
+			"PITSTOP STRATEGY",
+			"PRESET",
+			1,
+			5,
+			1,
+			1,
+			{},
+			"%.0f",
+			0.5,
+			0,
+			bit.tohex(ac.checksumXXH(stringify({
+				"PITSTOP STRATEGY",
+				0.5,
+				0,
+			}))),
+			true,
+			1
+		)
+	)
 
 	for uid, uidPairs in pairs(pairedItems) do
 		if #uidPairs > 1 then
@@ -124,9 +204,10 @@ SetupManager = class("SetupManager")
 
 function SetupManager:initialize()
 	self._setupSpinners = loadSetupSpinners()
-	self._defaultTabNames = { "ELECTRONICS", "FUEL", "TYRES" } --, "GEARS" }
+	self._defaultTabNames = { "PITSTOP STRATEGY", "ELECTRONICS", "FUEL", "TYRES" } --, "GEARS" }
 	self._tabNames = {}
 	self._tabCount = 0
+	self._defaultSetup = ac.stringifyCurrentSetup()
 
 	for k, _ in pairs(setupINI.sections) do
 		local tabName = setupINI:get(k, "TAB", "")
@@ -170,10 +251,11 @@ function SetupManager:initialize()
 	self._history = {}
 	self._history_pos = 0
 
-	-- table.insert(self.setupTabNames, 1, "PITSTOP STRATEGY")
-	-- table.insert(self.setupTabNames, 1, "SETUP I/O")
-
 	self:makeUndo()
+end
+
+function SetupManager:resetSetup()
+	self:LoadStuff(self._defaultSetup)
 end
 
 function SetupManager:tabCount()

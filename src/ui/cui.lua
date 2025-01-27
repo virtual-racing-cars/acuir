@@ -1,38 +1,23 @@
+local cui = {}
+
 local sim = ac.getSim()
 
 local vec2Temp1 = vec2()
 local vec2Temp2 = vec2()
 
-local cui = {}
-
 local storedBools = {}
-
 local defaultWidth = 2560
 local defaultHeight = 1440
-local ratio = defaultWidth / defaultHeight
 local windowMaxWidth = 0
 local windowMaxHeight = 0
-local currentScale = 1
-local itemSpacing = 5
 
-local scaleY = math.min(sim.windowHeight / 1440, sim.windowWidth / 2560)
+local scaleY = math.min(sim.windowHeight / defaultHeight, sim.windowWidth / defaultWidth)
 local scaleX = scaleY
 
 ac.onResolutionChange(function(newSize, makingScreenshot)
-	scaleY = math.min(newSize.y / 1440, newSize.x / 2560)
+	scaleY = math.min(newSize.y / defaultHeight, newSize.x / defaultWidth)
 	scaleX = scaleY
 end)
-
-function cui.bestFit()
-	windowMaxWidth = math.clamp(ui.windowWidth(), 0, ui.windowHeight() * ratio)
-	windowMaxHeight = math.clamp(ui.windowHeight(), 0, ui.windowWidth() / ratio)
-
-	scaleX = windowMaxWidth / defaultHeight
-	scaleY = windowMaxHeight / defaultHeight
-
-	currentScale = ui.windowHeight() / defaultHeight
-	itemSpacing = 5 * currentScale
-end
 
 function cui.loadStoredBool(id)
 	return storedBools[id]
@@ -93,19 +78,7 @@ function cui.contentWindow(id, title, position, size, flags, content, showTitle,
 		ui.drawRectFilled(vec2(0, 0), size, SETTINGS.uiColor1 / 2)
 	end
 
-	-- ui.drawRectFilled(vec2(0, 0), size, rgbm(0.1, 0.1, 0.1, 0.25), 10, ui.CornerFlags.Top)
-	-- ui.drawRectFilledMultiColor(
-	-- 	vec2(0, 38),
-	-- 	size,
-	-- 	rgbm(1, 1, 1, 0.2),
-	-- 	rgbm(1, 1, 1, 0.2),
-	-- 	rgbm(0, 0, 0, 0),
-	-- 	rgbm(0, 0, 0, 0)
-	-- )
-
 	content()
-
-	-- ui.drawRect(vec2(0, 0), size, rgbm(0.3, 0.3, 0.3, 1), 10, ui.CornerFlags.All)
 
 	cui.popWindow()
 end

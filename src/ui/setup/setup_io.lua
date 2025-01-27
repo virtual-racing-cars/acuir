@@ -73,7 +73,7 @@ end
 
 loadSetups()
 
-local function saveSetupWindow()
+local function saveSetupWindow(sm)
 	local fontSize = ui.windowHeight() / 6
 
 	ui.setCursorX(0)
@@ -96,9 +96,8 @@ local function saveSetupWindow()
 	ui.sameLine()
 
 	if cui.menuButton("Reset", ioButtonSize) then
-		ac.loadSetup(selectedSetup.path)
-		currentSetup = selectedSetup.track .. "/" .. selectedSetup.name
-		ui.toast(ui.Icons.Download, "Setup loaded: " .. selectedSetup.name)
+		currentSetup = "generic/default"
+		sm:resetSetup()
 	end
 	ui.sameLine()
 
@@ -131,7 +130,7 @@ local function saveSetupWindow()
 	end
 end
 
-function setupIoDraw()
+function setupIoDraw(sm)
 	cui.contentWindow(
 		"setup_io_saved_setups",
 		"setup_io_saved_setups",
@@ -157,7 +156,7 @@ function setupIoDraw()
 				vec2(ui.availableSpaceX(), 40 * cui.scaleY())
 			)
 
-			saveSetupWindow()
+			saveSetupWindow(sm)
 		end,
 		false,
 		true

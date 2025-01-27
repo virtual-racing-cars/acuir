@@ -162,7 +162,7 @@ function page.draw()
 						vec2(ui.windowWidth(), ui.windowHeight() - ui.windowHeight() / 20),
 						ui.WindowFlags.None,
 						function()
-							setupIoDraw()
+							setupIoDraw(sm)
 						end,
 						false,
 						true
