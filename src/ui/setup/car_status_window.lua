@@ -175,6 +175,11 @@ local centerStatusInfo = {
 -- ac.log(weighted_sum / total_mass)
 
 function CarStatusWindow()
+	if car == nil then
+		car = ac.getCar(0)
+		return
+	end
+
 	for i = 1, #cornerStatusInfo do
 		local infoBlock = cornerStatusInfo[i]
 		for j = 0, 3 do

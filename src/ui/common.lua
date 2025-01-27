@@ -53,7 +53,6 @@ function bottomBar(buttons)
 	)
 
 	ui.pushStyleColor(ui.StyleColor.Button, rgbm.colors.transparent)
-	ui.pushStyleVar(ui.StyleVar.ItemSpacing, 0)
 	ui.setCursorX(uiStartX)
 	ui.setCursorY(bottomBarHeight)
 	for i in ipairs(buttons) do
@@ -74,7 +73,6 @@ function bottomBar(buttons)
 		ui.sameLine()
 	end
 	ui.popStyleColor(1)
-	ui.popStyleVar(1)
 end
 
 function homeBar(buttons)
@@ -82,7 +80,6 @@ function homeBar(buttons)
 	ui.setCursorX(xPos)
 	ui.setCursorY(uiStartY + topBarHeight)
 
-	ui.pushStyleVar(ui.StyleVar.ItemSpacing, 0)
 	ui.pushStyleColor(ui.StyleColor.Button, SETTINGS.uiColor1)
 
 	for i in ipairs(buttons) do
@@ -106,7 +103,6 @@ function homeBar(buttons)
 	end
 
 	ui.popStyleColor(1)
-	ui.popStyleVar(1)
 end
 
 local function findClosestIndex(input, numbers)
@@ -164,7 +160,6 @@ local function sessionInfo()
 	local fontSize = math.floor(sizeY * 0.55)
 	fontSize = (fontSize % 2 ~= 0) and fontSize or fontSize + 1
 
-	ui.pushStyleVar(ui.StyleVar.ItemSpacing, gap)
 	ui.pushDWriteFont(fontBold)
 
 	ui.setCursor(vec2(startX, startY))
@@ -199,12 +194,13 @@ local function sessionInfo()
 		vec2(sizeX, sizeY)
 	)
 
-	ui.setCursor(vec2(startX, startY) + vec2(sizeX + gap, sizeY))
+	ui.setCursor(vec2(startX, startY) + vec2(sizeX, sizeY))
 	ui.drawRectFilled(
 		ui.getCursor() + vec2(sizeX + gap, 0),
 		ui.getCursor() + vec2(-sizeX + gap, 0) + vec2(sizeX, sizeY),
 		rgbm(0.1, 0.1, 0.1, 0.5)
 	)
+
 	ui.dwriteTextAligned(
 		findClosestIndex(sim.roadGrip * 100, trackGrip),
 		fontSize,
@@ -215,7 +211,6 @@ local function sessionInfo()
 	ui.sameLine()
 
 	ui.popDWriteFont()
-	ui.popStyleVar(1)
 end
 
 function topSubBar(path)

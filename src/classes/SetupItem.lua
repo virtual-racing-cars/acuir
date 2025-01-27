@@ -141,8 +141,6 @@ function SetupItem:mirror()
 end
 
 function SetupItem:run()
-	ui.pushStyleVar(ui.StyleVar.ItemSpacing, 0)
-
 	if self.name == "" or self.child then
 		return
 	end

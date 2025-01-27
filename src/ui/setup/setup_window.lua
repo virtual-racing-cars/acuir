@@ -44,7 +44,6 @@ function setupTabBar(apps)
 
 	ui.setCursorX(tabBarPosition)
 	ui.setCursorY(0)
-	ui.pushStyleVar(ui.StyleVar.ItemSpacing, 0)
 	ui.pushStyleColor(ui.StyleColor.Button, SETTINGS.uiColor1)
 	for i in ipairs(apps) do
 		tabItem(i - 1, apps[i].name)
@@ -55,7 +54,6 @@ function setupTabBar(apps)
 	end
 
 	ui.popStyleColor(1)
-	ui.popStyleVar(1)
 
 	return currentApp + 1
 end

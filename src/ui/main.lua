@@ -57,7 +57,7 @@ end
 function goToSettingsAiPage()
 	pageManager:setPage("SettingsAiPage")
 end
-goToSetupPage()
+
 local sim = ac.getSim()
 local timer = os.clock() + SETTINGS.uiHideonIdleTime
 local exclusiveHudMode = ""
@@ -105,8 +105,9 @@ function MainMenuWindow(dt)
 
 			ui.bringWindowToFront()
 
+			ui.pushStyleVar(ui.StyleVar.ItemSpacing, 0)
 			exclusiveHudMode = pageManager:draw()
-
+			ui.popStyleVar(1)
 			-- ui.drawRectFilled(
 			-- 	vec2(sim.windowWidth / 2 - 1, 0),
 			-- 	vec2(sim.windowWidth / 2 + 1, sim.windowHeight),

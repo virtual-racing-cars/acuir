@@ -34,7 +34,7 @@ local menuButtonList = {
 	},
 	{
 		label = "SETTINGS",
-		enabled = true,
+		enabled = false,
 		func = function()
 			goToSettingsPage()
 		end,
@@ -68,7 +68,7 @@ function page.draw()
 		vec2(650 * cui.scaleX(), sim.windowHeight - 459 * cui.scaleY()),
 		ui.WindowFlags.None,
 		function()
-			local height = 80 * cui.scaleY()
+			local height = 50 * cui.scaleY()
 			for i, car in ac.iterateCars.leaderboard() do
 				playerListButton(car, 0, (i - 1) * height, ui.windowWidth(), height)
 			end

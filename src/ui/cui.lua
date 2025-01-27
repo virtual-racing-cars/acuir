@@ -286,8 +286,8 @@ function cui.menuButton(label, size, horizontalAligment, verticalAlignment, flag
 		fontSize = (fontSize % 2 ~= 0) and fontSize or fontSize + 1
 		buttonSize = vec2Temp1:set(ui.measureDWriteText(string.upper(label), fontSize).x + 100 * cui.scaleY(), size)
 	else
-		sizeX = size.x * scaleX
-		sizeY = size.y * scaleY
+		sizeX = size.x
+		sizeY = size.y
 		fontSize = math.floor(sizeY * 0.45)
 		fontSize = (fontSize % 2 ~= 0) and fontSize or fontSize + 1
 		buttonSize = vec2Temp1(sizeX, sizeY)
@@ -389,14 +389,11 @@ function cui.treeNodeButton(label, size, active, bold)
 		ui.pushDWriteFont(fontRegular)
 	end
 
-	size.x = size.x * scaleX
-	size.y = size.y * scaleY
-
 	local fontSize = math.floor(size.y * 0.45)
 	fontSize = (fontSize % 2 ~= 0) and fontSize or fontSize + 1
 	local fontColor = active and rgbm(0, 0, 0, 1) or nil
 
-	ui.pushStyleColor(ui.StyleColor.Button, rgbm.colors.black)
+	ui.pushStyleColor(ui.StyleColor.Button, bold and rgbm.colors.black or rgbm(0.1, 0.1, 0.1, 1))
 	ui.pushStyleColor(ui.StyleColor.ButtonHovered, SETTINGS.uiColor2)
 	ui.pushStyleColor(ui.StyleColor.ButtonActive, SETTINGS.uiColor2)
 
@@ -405,13 +402,14 @@ function cui.treeNodeButton(label, size, active, bold)
 	end
 
 	local tempCursor = ui.getCursor()
-	local clicked = ui.button("##" .. label, size, ui.ButtonFlags.None)
+	ui.button("##" .. label, size, ui.ButtonFlags.None)
+	local hovered = ui.itemHovered()
 	local id = ui.getLastID()
 
 	if active then
 		ui.popStyleColor(1)
 
-		if ui.itemHovered() then
+		if hovered then
 			ui.drawRect(tempCursor, tempCursor + size, SETTINGS.uiColor3)
 		end
 	end
@@ -420,26 +418,33 @@ function cui.treeNodeButton(label, size, active, bold)
 
 	ui.sameLine()
 
-	ui.setCursor(tempCursor)
 	local textOffset = bold and size.x / 60 or size.x / 30
-	ui.offsetCursorX(textOffset)
+	ui.setCursor(tempCursor)
 	ui.dwriteTextAligned(
-		label,
+		" " .. label,
 		fontSize,
 		ui.Alignment.Start,
 		ui.Alignment.Center,
 		vec2Temp1:set(size.x - textOffset, size.y),
 		false,
-		ui.itemHovered() and rgbm(1, 1, 1, 1) or fontColor
+		hovered and rgbm(1, 1, 1, 1) or fontColor
 	)
+	if bold then
+		ui.addIcon(
+			cui.loadStoredBool(id) and ui.Icons.Minus or ui.Icons.Plus,
+			vec2Temp1:set(size.y / 2, size.y / 2),
+			vec2Temp2:set(0.98, 0.5),
+			nil
+		)
+	end
 
 	ui.popDWriteFont()
 
-	return clicked, id
+	return (hovered and ac.getUI().isMouseLeftKeyClicked), id
 end
 
 function cui.treeNode(label, content)
-	local clicked, id = cui.treeNodeButton(label, vec2Temp1:set(ui.availableSpaceX(), 40), false, true)
+	local clicked, id = cui.treeNodeButton(label, vec2Temp1:set(ui.availableSpaceX(), 40 * cui.scaleY()), false, true)
 
 	local open = cui.loadStoredBool(id)
 	if clicked then
@@ -453,21 +458,81 @@ function cui.treeNode(label, content)
 		ui.endGroup()
 		ui.popStyleVar(1)
 	end
+
+	return clicked
 end
 
-function cui.inputText(label, string, flags, size)
+function cui.inputTextBox(label, stringInput, size)
+	ui.pushDWriteFont(fontRegular)
+
+	local fontSize = math.floor(size.y * 0.9)
+	fontSize = (fontSize % 2 ~= 0) and fontSize or fontSize + 1
+
 	local tempCursor = ui.getCursor()
-	ui.pushStyleColor(ui.StyleColor.Text, rgbm.colors.transparent)
-	local string, changed, enterPressed = ui.inputText(label, string, flags, size)
-	ui.popStyleColor(1)
+
+	ui.pushStyleColor(ui.StyleColor.Button, rgbm.colors.white)
+	ui.pushStyleColor(ui.StyleColor.ButtonHovered, rgbm.colors.white)
+	ui.pushStyleColor(ui.StyleColor.ButtonActive, rgbm.colors.white)
+	local clicked = ui.button("##" .. label, size, ui.ButtonFlags.None)
+	ui.popStyleColor(3)
+
 	local id = ui.getLastID()
-	ui.pushStyleColor(ui.StyleColor.Button, rgbm.colors.black)
+	local itemActive = cui.loadStoredBool(id)
+
+	if itemActive == nil then
+		cui.storeBool(id, false)
+	end
+
+	if clicked or ui.mouseClicked(ui.MouseButton.Left) then
+		cui.storeBool(id, clicked)
+	end
+
 	ui.setCursor(tempCursor)
-	cui.menuButton(string, size, ui.Alignment.Start, ui.Alignment.Center, ui.ButtonFlags.None, false, false)
+	local textOffset = size.x / 60
+	ui.offsetCursorX(textOffset)
+	ui.offsetCursorY(2)
 
-	ui.popStyleVar(1)
+	local text = (itemActive and math.floor(os.clock()) % 2 == 0) and stringInput .. "|" or stringInput
+	ui.dwriteTextAligned(
+		text,
+		fontSize,
+		ui.Alignment.Start,
+		ui.Alignment.Center,
+		vec2Temp1:set(size.x - textOffset, size.y),
+		false,
+		rgbm(0, 0, 0, 1)
+	)
 
-	return string, changed, enterPressed
+	ui.popDWriteFont()
+
+	return clicked, itemActive
+end
+
+function cui.inputText(label, stringPrefix, stringInput, flags, size)
+	local clicked, itemActive = cui.inputTextBox(label, stringPrefix .. stringInput, size)
+
+	if not itemActive then
+		return stringInput
+	end
+
+	local captured = ui.captureKeyboard(true, true, true)
+	local charToAdd = nil
+
+	if ui.keyPressed(ui.Key.Backspace) and #stringInput > 0 then
+		stringInput = stringInput:sub(1, -2)
+		audioTrigger()
+	elseif #captured > 0 then
+		charToAdd = captured:queue()
+
+		if #charToAdd == 1 and charToAdd:match("[%w_ .;,><]") then
+			stringInput = stringInput .. charToAdd
+			audioTrigger()
+		end
+	end
+
+	stringInput = stringInput:gsub("\n", "")
+
+	return stringInput
 end
 
 function cui.dummy(x, y)
