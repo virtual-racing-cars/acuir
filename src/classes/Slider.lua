@@ -99,7 +99,6 @@ function drawSlider(
 		else
 			itemHeld = id
 			value = (ui.mouseLocalPos().x - xPos) / (xMax - xPos) * max
-			ac.debug("value", value)
 		end
 
 		changed = true

@@ -64,7 +64,7 @@ function page.draw()
 	cui.contentWindow(
 		"home_leaderboard_window",
 		STORAGE.setupTab,
-		vec2(60 * cui.scaleX(), 316 * cui.scaleY()),
+		vec2(0, 286 * cui.scaleY()),
 		vec2(650 * cui.scaleX(), sim.windowHeight - 459 * cui.scaleY()),
 		ui.WindowFlags.None,
 		function()

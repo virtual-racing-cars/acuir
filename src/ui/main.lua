@@ -68,7 +68,6 @@ function goToSettingsAiPage()
 end
 
 goToHomePage()
-goToSetupPage()
 
 local sim = ac.getSim()
 local exclusiveHudMode = ""
@@ -96,8 +95,6 @@ function MainMenuWindow(dt)
 			pageManager:redo()
 		end
 	end
-
-	ac.debug("History", pageManager._history)
 
 	ui.pushDWriteFont(fontRegular)
 
@@ -150,10 +147,6 @@ function MainMenuWindow(dt)
 		true
 	)
 	ui.popDWriteFont()
-
-	ac.debug("cameraMode", sim.cameraMode)
-	ac.debug("carCameraIndex", sim.carCameraIndex)
-	ac.debug("driveableCameraMode", sim.driveableCameraMode)
 
 	ac.debug("perfTime", (os.preciseClock() - perfTime) * 1000)
 

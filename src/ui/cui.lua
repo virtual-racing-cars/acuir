@@ -434,7 +434,7 @@ function cui.treeNodeButton(label, size, active, bold)
 		ui.addIcon(
 			cui.loadStoredBool(id) and ui.Icons.Minus or ui.Icons.Plus,
 			vec2Temp1:set(size.y / 2, size.y / 2),
-			vec2Temp2:set(0.98, 0.5),
+			vec2Temp2:set(0.95, 0.5),
 			nil
 		)
 	end

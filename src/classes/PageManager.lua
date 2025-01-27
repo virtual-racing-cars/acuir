@@ -37,7 +37,6 @@ end
 
 function PageManager:LoadStuff(name)
 	self:setPage(name)
-	ac.log(name)
 end
 
 function PageManager:undo()
