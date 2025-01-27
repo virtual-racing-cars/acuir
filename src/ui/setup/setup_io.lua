@@ -134,19 +134,10 @@ function setupIoDraw(sm)
 	cui.contentWindow(
 		"setup_io_saved_setups",
 		"setup_io_saved_setups",
-		vec2(0, 0),
-		vec2(ui.windowWidth(), ui.windowHeight() / 5),
+		vec2(0, (ui.windowHeight() / 6) * 5),
+		vec2(ui.windowWidth(), ui.windowHeight() / 6),
 		ui.WindowFlags.None,
 		function()
-			ui.setCursor(0)
-			ui.dwriteTextAligned(
-				"Saved Setups",
-				20 * cui.scaleY(),
-				ui.Alignment.Center,
-				ui.Alignment.End,
-				ui.availableSpace()
-			)
-
 			ui.setCursor(0)
 			ui.dwriteTextAligned(
 				"Current Setup [" .. currentSetup .. "]",
@@ -165,7 +156,7 @@ function setupIoDraw(sm)
 	cui.contentWindow(
 		"load_setups",
 		"load_setups",
-		vec2(0, (ui.windowHeight() / 5)),
+		vec2(0, 0),
 		vec2(ui.windowWidth(), (ui.windowHeight() / 5) * 4),
 		ui.WindowFlags.None,
 		function()
@@ -213,11 +204,11 @@ function setupIoDraw(sm)
 				end
 			end
 
-			if ui.getScrollY() < 10 then
+			if ui.getScrollY() < 5 * cui.scaleY() then
 				ui.setScrollY(0)
 			end
 
-			if ui.getScrollMaxY() - ui.getScrollY() < 10 then
+			if ui.getScrollMaxY() - ui.getScrollY() < 5 * cui.scaleY() then
 				ui.setScrollY(ui.getScrollMaxY())
 			end
 		end,

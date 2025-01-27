@@ -204,7 +204,7 @@ SetupManager = class("SetupManager")
 
 function SetupManager:initialize()
 	self._setupSpinners = loadSetupSpinners()
-	self._defaultTabNames = { "PITSTOP STRATEGY", "ELECTRONICS", "FUEL", "TYRES" } --, "GEARS" }
+	self._defaultTabNames = { "ELECTRONICS", "PITSTOP STRATEGY", "FUEL", "TYRES" } --, "GEARS" }
 	self._tabNames = {}
 	self._tabCount = 0
 	self._defaultSetup = ac.stringifyCurrentSetup()
