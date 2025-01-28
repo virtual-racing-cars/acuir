@@ -26,7 +26,8 @@ STORAGE.hasAppOpened = false
 
 package.add("src")
 cui = require("ui.cui")
-require("ui.main")
+require("ui.main_window")
+require("ui.pause.pause_window")
 require("ui.audio")
 
 ac.setWindowOpen("main", true)
@@ -39,6 +40,10 @@ ui.onExclusiveHUD(function(mode)
 
 	if mode == "menu" then
 		return MainMenuWindow(dt)
+	end
+
+	if mode == "pause" then
+		return PauseMenuWindow()
 	end
 end)
 
@@ -55,7 +60,6 @@ local sim = ac.getSim()
 
 function script.update(dt)
 	if sim.isInMainMenu and SETTINGS.autoStart and not STORAGE.hasAppOpened then
-		ac.tryToOpenRaceMenu("race")
 		ac.tryToOpenRaceMenu("setup")
 	end
 
@@ -64,5 +68,6 @@ function script.update(dt)
 		STORAGE.appOpen = not STORAGE.appOpen
 	end
 
-	ac.redirectVirtualMirror(sim.isInMainMenu and ac.isWindowOpen("main"))
+	local redirectVM = (sim.isInMainMenu and ac.isWindowOpen("main")) or sim.isPaused
+	ac.redirectVirtualMirror(redirectVM)
 end

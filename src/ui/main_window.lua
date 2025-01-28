@@ -76,6 +76,8 @@ local fontBold = ui.DWriteFont("Rajdhani"):weight(ui.DWriteFont.Weight.Bold)
 local fontSemiBold = ui.DWriteFont("Noto Sans SC"):weight(ui.DWriteFont.Weight.SemiBold)
 
 function MainMenuWindow(dt)
+	ui.pushAllowKeyboardFocus(false)
+
 	if not STORAGE.appOpen then
 		exclusiveHudMode = nil
 		return
@@ -168,10 +170,11 @@ function MainMenuWindow(dt)
 	ui.popDWriteFont()
 	ui.popStyleVar(2)
 	ui.popStyleColor(1)
+	ui.popAllowKeyboardFocus()
 
 	ac.debug("perfTime", (os.preciseClock() - perfTime) * 1000)
 
-	exclusiveHudMode = "debug"
+	exclusiveHudMode = ""
 
 	return exclusiveHudMode
 end

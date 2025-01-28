@@ -43,10 +43,6 @@ local menuButtonList = {
 		label = "RESTART SESSION",
 		enabled = true,
 		func = function()
-			cui.modalDialog(function()
-				ac.log(os.clock())
-			end)
-
 			ac.tryToRestartSession()
 		end,
 	},
