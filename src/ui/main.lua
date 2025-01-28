@@ -68,15 +68,8 @@ function goToSettingsAiPage()
 end
 
 goToHomePage()
-goToSetupPage()
 
-local sim = ac.getSim()
 local exclusiveHudMode = ""
-local mousePos = vec2(-1, -1)
-
-setInterval(function()
-	mousePos:set(-1, -1)
-end)
 
 local fontRegular = ui.DWriteFont("Rajdhani"):weight(ui.DWriteFont.Weight.SemiBold)
 local fontBold = ui.DWriteFont("Rajdhani"):weight(ui.DWriteFont.Weight.Bold)
@@ -134,10 +127,6 @@ function MainMenuWindow(dt)
 			-- 	vec2(sim.windowWidth, sim.windowHeight / 2 + 1),
 			-- 	rgbm.colors.lime
 			-- )
-
-			if mousePos.x ~= -1 then
-				ui.drawCircle(mousePos, 4, rgbm.colors.red)
-			end
 
 			audioDriver(dt)
 		end,

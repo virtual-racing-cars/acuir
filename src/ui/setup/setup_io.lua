@@ -73,55 +73,87 @@ end
 
 loadSetups()
 
-local function saveSetupWindow(sm)
-	local fontSize = ui.windowHeight() / 6
+local function deleteSetup()
+	io.deleteFile(saveSetup.path)
+	io.deleteFile(string.trim(saveSetup.path, ".ini") .. ".sp")
 
+	saveSetup.name = ""
+	saveSetup.path = ""
+
+	loadSetups()
+end
+
+local function promptDeleteSetup(force)
+	local mouseMoved = false
+
+	ui.modalDialog("Delete Setup", function()
+		ui.text(string.format("%s/%s", selectedSetup.track, selectedSetup.name))
+		ui.newLine()
+
+		ui.pushStyleVar(ui.StyleVar.ItemSpacing, 0)
+		if cui.treeNodeButton("Cancel", vec2(ui.availableSpaceX() / 2, 40), false, false) then
+			return true
+		end
+		ui.sameLine()
+
+		if not mouseMoved then
+			ac.setMousePosition(ui.cursorScreenPos() + vec2(ui.availableSpaceX() / 2, 20))
+			mouseMoved = true
+		end
+
+		if cui.treeNodeButton("Delete", vec2(ui.availableSpaceX(), 40), false, false) then
+			deleteSetup()
+			return true
+		end
+		ui.popStyleVar(1)
+	end, false)
+end
+
+local function saveSetupWindow(sm)
 	ui.setCursorX(0)
 	saveSetup.name = cui.inputText(
 		"##SetupName",
 		saveSetup.track .. "/",
 		saveSetup.name,
 		ui.InputTextFlags.None,
-		vec2(ui.windowWidth(), 32 * cui.scaleY())
+		vec2(ui.windowWidth(), ui.windowHeight() / 6)
 	)
 
-	ui.setCursorX(0)
-	local ioButtonSize = vec2Temp1:set(ui.windowWidth() / 4, fontSize * 1.5)
+	local ioButtonSize = vec2Temp1:set(ui.windowWidth(), ui.windowHeight() / 6)
 
-	if cui.menuButton("load", ioButtonSize) then
+	ui.setCursorX(0)
+	if cui.menuButton("Load Setup", ioButtonSize) then
 		ac.loadSetup(selectedSetup.path)
 		currentSetup = selectedSetup.track .. "/" .. selectedSetup.name
-		ui.toast(ui.Icons.Download, "Setup loaded: " .. selectedSetup.name)
 	end
-	ui.sameLine()
 
-	if cui.menuButton("Reset", ioButtonSize) then
+	ui.setCursorX(0)
+	if cui.menuButton("Reset to Default", ioButtonSize) then
 		currentSetup = "generic/default"
 		sm:resetSetup()
 	end
-	ui.sameLine()
 
-	if cui.menuButton("delete", ioButtonSize) then
-		io.deleteFile(saveSetup.path)
-		io.deleteFile(string.trim(saveSetup.path, ".ini") .. ".sp")
-
-		ui.toast(ui.Icons.Download, "Setup deleted: " .. saveSetup.name)
-
-		saveSetup.name = ""
-		saveSetup.path = ""
-		saveSetup.tags = ""
-		saveSetup.description = ""
-
-		loadSetups()
+	ui.setCursorX(0)
+	if
+		cui.menuButton(
+			"Delete Setup",
+			ioButtonSize,
+			nil,
+			nil,
+			#selectedSetup.name > 0 and ui.ButtonFlags.None or ui.ButtonFlags.Disabled
+		)
+	then
+		if #selectedSetup.name > 0 then
+			promptDeleteSetup()
+		end
 	end
-	ui.sameLine()
 
-	if cui.menuButton("Save", ioButtonSize) then
+	ui.setCursorX(0)
+	if cui.menuButton("Save Setup", ioButtonSize) then
 		if saveSetup.name ~= "" then
 			saveSetup.path = setupsDir .. "\\" .. saveSetup.track .. "\\" .. saveSetup.name .. ".ini"
 			ac.setActiveSetupName(saveSetup.name, saveSetup.track)
 			ac.saveCurrentSetup(saveSetup.path)
-			ui.toast(ui.Icons.Save, "Setup Saved: " .. saveSetup.name)
 			currentSetup = saveSetup.track .. "/" .. saveSetup.name
 			selectedSetup = table.clone(saveSetup, true)
 
@@ -131,11 +163,15 @@ local function saveSetupWindow(sm)
 end
 
 function setupIoDraw(sm)
+	if ui.keyPressed(ui.Key.Delete) then
+		deleteSetup()
+	end
+
 	cui.contentWindow(
 		"setup_io_saved_setups",
 		"setup_io_saved_setups",
-		vec2(0, (ui.windowHeight() / 6) * 5),
-		vec2(ui.windowWidth(), ui.windowHeight() / 6),
+		vec2(0, (ui.windowHeight() / 4) * 3),
+		vec2(ui.windowWidth(), ui.windowHeight() / 4),
 		ui.WindowFlags.None,
 		function()
 			ui.setCursor(0)
@@ -144,7 +180,7 @@ function setupIoDraw(sm)
 				20 * cui.scaleY(),
 				ui.Alignment.Center,
 				ui.Alignment.Center,
-				vec2(ui.availableSpaceX(), 40 * cui.scaleY())
+				vec2(ui.availableSpaceX(), ui.windowHeight() / 6)
 			)
 
 			saveSetupWindow(sm)
@@ -157,7 +193,7 @@ function setupIoDraw(sm)
 		"load_setups",
 		"load_setups",
 		vec2(0, 0),
-		vec2(ui.windowWidth(), (ui.windowHeight() / 5) * 4),
+		vec2(ui.windowWidth(), (ui.windowHeight() / 4) * 3),
 		ui.WindowFlags.None,
 		function()
 			ui.setCursor(0)

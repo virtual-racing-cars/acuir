@@ -439,7 +439,7 @@ end
 function cui.inputTextBox(label, stringInput, size)
 	ui.pushDWriteFont(fontRegular)
 
-	local fontSize = math.floor(size.y * 0.9)
+	local fontSize = math.floor(size.y * 0.75)
 	fontSize = (fontSize % 2 ~= 0) and fontSize or fontSize + 1
 
 	local tempCursor = ui.getCursor()

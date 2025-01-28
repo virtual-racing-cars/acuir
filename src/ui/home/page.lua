@@ -50,7 +50,29 @@ local menuButtonList = {
 		label = "QUIT",
 		enabled = true,
 		func = function()
-			ac.shutdownAssettoCorsa()
+			local mouseMoved = false
+
+			ui.modalDialog("Quit", function()
+				ui.newLine()
+
+				ui.pushStyleVar(ui.StyleVar.ItemSpacing, 0)
+				if cui.treeNodeButton("Cancel", vec2(ui.availableSpaceX() / 2, 40), false, false) then
+					return true
+				end
+				ui.sameLine()
+
+				if not mouseMoved then
+					ac.setMousePosition(ui.cursorScreenPos() + vec2(ui.availableSpaceX() / 2, 20))
+					mouseMoved = true
+				end
+
+				if cui.treeNodeButton("Confirm", vec2(ui.availableSpaceX(), 40), false, false) then
+					ac.shutdownAssettoCorsa()
+
+					return true
+				end
+				ui.popStyleVar(1)
+			end, false)
 		end,
 	},
 }

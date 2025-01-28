@@ -17,8 +17,6 @@ local pitstopSetupSpinners = {
 	-- ["WING_2"] = { xPos = 0, yPos = 8, zeroDefault = true },
 }
 
-ac.debug("s", ac.getSetupSpinners())
-
 local function loadSetupSpinners()
 	local populatedTabs = {}
 	local pairedItems = {}
