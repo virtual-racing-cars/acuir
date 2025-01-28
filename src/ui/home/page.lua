@@ -60,11 +60,18 @@ local menuButtonList = {
 				ui.pushStyleVar(ui.StyleVar.ItemSpacing, 0)
 				local textBoxHeight = ui.windowHeight() / 4
 
-				ui.dwriteTextAligned("QUIT", textBoxHeight / 2, nil, nil, vec2(ui.availableSpaceX(), textBoxHeight))
+				ui.setCursor(0)
+				ui.dwriteTextAligned("Quit Session", textBoxHeight / 2, nil, nil, vec2(ui.windowWidth(), textBoxHeight))
+				local titleTextWidth = ui.measureDWriteText(" Quit Session ", textBoxHeight / 2).x
+
+				ui.drawSimpleLine(
+					vec2(ui.windowWidth() / 2 - titleTextWidth / 2, ui.getCursorY()),
+					vec2(ui.windowWidth() / 2 + titleTextWidth / 2, ui.getCursorY()),
+					SETTINGS.uiColor2,
+					3
+				)
 
 				ui.setCursorX(0)
-				ui.drawSimpleLine(ui.getCursor(), vec2(ui.windowWidth(), ui.getCursorY()), rgbm.colors.white, 3)
-
 				ui.dwriteTextAligned(
 					"Abandon the current session and return to Content Manager?",
 					textBoxHeight / 4,
@@ -73,8 +80,9 @@ local menuButtonList = {
 					vec2(ui.availableSpaceX(), textBoxHeight)
 				)
 
-				ui.setCursorX(0)
-				if cui.treeNodeButton("Cancel", vec2(ui.availableSpaceX() / 2, 40 * cui.scaleY()), false, false) then
+				local buttonWidth = ui.windowWidth() / 3
+				ui.setCursorX(ui.windowWidth() / 2 - buttonWidth - 5 * cui.scaleY())
+				if cui.modalButton("Cancel", ui.windowWidth() / 3, 50, ui.ButtonFlags.None) then
 					ui.popStyleVar(1)
 
 					return true
@@ -86,7 +94,8 @@ local menuButtonList = {
 					mouseMoved = true
 				end
 
-				if cui.treeNodeButton("Confirm", vec2(ui.availableSpaceX(), 40 * cui.scaleY()), false, false) then
+				ui.setCursorX(ui.windowWidth() / 2 + 5 * cui.scaleY())
+				if cui.modalButton("Confirm", ui.windowWidth() / 3, 50, ui.ButtonFlags.None) then
 					ac.shutdownAssettoCorsa()
 					ui.popStyleVar(1)
 

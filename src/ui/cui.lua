@@ -165,7 +165,7 @@ function cui.button(label, sizeX, sizeY, fontSize, horizontalAligment, verticalA
 	end
 
 	local tempCursor = ui.getCursor()
-	ui.button("##" .. label, vec2Temp1:set(textWidth + 30 * scaleX, sizeY * scaleY), flags)
+	local clicked = ui.button("##" .. label, vec2Temp1:set(textWidth + 30 * scaleX, sizeY * scaleY), flags)
 	local hovered = ui.itemHovered()
 
 	if flags == ui.ButtonFlags.Disabled then
@@ -190,14 +190,11 @@ function cui.button(label, sizeX, sizeY, fontSize, horizontalAligment, verticalA
 
 	ui.popDWriteFont()
 
-	return hovered and ac.getUI().isMouseLeftKeyClicked and not (flags == ui.ButtonFlags.Disabled)
+	return clicked and not (flags == ui.ButtonFlags.Disabled)
 end
 
-function cui.settingsButton(label, sizeX, sizeY, flags)
-	sizeX = sizeX * scaleX
-	sizeY = sizeY * scaleY
-
-	local fontSize = 35 * scaleY
+function cui.modalButton(label, sizeX, sizeY, flags)
+	local fontSize = sizeY / 2
 
 	local disabled = flags == ui.ButtonFlags.Disabled
 
@@ -206,7 +203,7 @@ function cui.settingsButton(label, sizeX, sizeY, flags)
 	ui.pushStyleColor(ui.StyleColor.ButtonActive, SETTINGS.uiColor2)
 
 	local tempCursor = ui.getCursor()
-	ui.button("##" .. label, vec2Temp1:set(sizeX, sizeY), flags)
+	local clicked = ui.button("##" .. label, vec2Temp1:set(sizeX, sizeY), flags)
 	local hovered = ui.itemHovered()
 	local r1, r2 = ui.itemRect()
 
@@ -234,7 +231,7 @@ function cui.settingsButton(label, sizeX, sizeY, flags)
 
 	ui.popDWriteFont()
 
-	return hovered and ac.getUI().isMouseLeftKeyClicked and not (flags == ui.ButtonFlags.Disabled)
+	return clicked and not (flags == ui.ButtonFlags.Disabled)
 end
 
 function cui.menuButton(label, size, horizontalAligment, verticalAlignment, flags, active, bold)
@@ -287,11 +284,13 @@ function cui.menuButton(label, size, horizontalAligment, verticalAlignment, flag
 	end
 
 	local tempCursor = ui.getCursor()
-	ui.button("##" .. label, buttonSize, flags)
+	local clicked = ui.button("##" .. label, buttonSize, flags)
 	local hovered = ui.itemHovered()
 
 	if flags == ui.ButtonFlags.Disabled then
 		ui.popStyleColor(1)
+	elseif hovered then
+		fontColor = rgbm(1, 1, 1, 1)
 	end
 
 	if active then
@@ -315,18 +314,18 @@ function cui.menuButton(label, size, horizontalAligment, verticalAlignment, flag
 		verticalAlignment,
 		buttonSize,
 		false,
-		ui.itemHovered() and rgbm(1, 1, 1, 1) or fontColor
+		fontColor
 	)
 
 	ui.popDWriteFont()
 
-	return hovered and ac.getUI().isMouseLeftKeyClicked and not (flags == ui.ButtonFlags.Disabled)
+	return clicked and not (flags == ui.ButtonFlags.Disabled)
 end
 
 function cui.modernButton(label, sizeX, sizeY, flags, icon)
-	ui.modernButton(label, vec2(sizeX, sizeY) * scaleY, flags, icon, 16 * scaleY)
+	local clicked = ui.modernButton(label, vec2(sizeX, sizeY) * scaleY, flags, icon, 16 * scaleY)
 	local hovered = ui.itemHovered()
-	return hovered and ac.getUI().isMouseLeftKeyClicked and not (flags == ui.ButtonFlags.Disabled)
+	return clicked and not (flags == ui.ButtonFlags.Disabled)
 end
 
 function cui.iconButton(label, icon, sizeX, sizeY, flags)
@@ -338,7 +337,7 @@ function cui.iconButton(label, icon, sizeX, sizeY, flags)
 
 	local tempCursorX = ui.getCursorX()
 
-	ui.button("##" .. label, vec2(sizeX, sizeY) * scaleY, flags)
+	local clicked = ui.button("##" .. label, vec2(sizeX, sizeY) * scaleY, flags)
 	local hovered = ui.itemHovered()
 
 	ui.sameLine()
@@ -358,7 +357,7 @@ function cui.iconButton(label, icon, sizeX, sizeY, flags)
 
 	ui.popStyleColor(1)
 
-	return hovered and ac.getUI().isMouseLeftKeyClicked and not (flags == ui.ButtonFlags.Disabled)
+	return clicked and not (flags == ui.ButtonFlags.Disabled)
 end
 
 function cui.treeNodeButton(label, size, active, bold)
@@ -381,7 +380,7 @@ function cui.treeNodeButton(label, size, active, bold)
 	end
 
 	local tempCursor = ui.getCursor()
-	ui.button("##" .. label, size, ui.ButtonFlags.None)
+	local clicked = ui.button("##" .. label, size, ui.ButtonFlags.None)
 	local hovered = ui.itemHovered()
 	local id = ui.getLastID()
 
@@ -420,7 +419,7 @@ function cui.treeNodeButton(label, size, active, bold)
 
 	ui.popDWriteFont()
 
-	return (hovered and ac.getUI().isMouseLeftKeyClicked), id
+	return clicked, id
 end
 
 function cui.treeNode(label, content)

@@ -184,6 +184,7 @@ function drawSpinner(
 
 	local hovered = ui.mouseLocalPos() >= vec2Temp1:set(xPos + buttonSize, yPos)
 		and ui.mouseLocalPos() < vec2Temp2:set(xPos + width - buttonSize, yPos + height)
+		and not cui.modalDialogCallback
 
 	ui.setCursorX(xPos + buttonSize)
 	ui.setCursorY(yPos + buttonSize)
@@ -226,6 +227,7 @@ function drawSpinner(
 
 	ui.setCursorX(xPos + width - height)
 	ui.setCursorY(yPos + buttonSize)
+
 	if hovered and not locked then
 		if drawSpinnerButton(SpinnerButtonType.Right, vec2Temp1:set(height, height), value >= max) then
 			if value ~= max then

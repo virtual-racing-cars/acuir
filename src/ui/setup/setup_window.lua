@@ -24,7 +24,6 @@ ac.onResolutionChange(function(newSize, makingScreenshot)
 	tabBarPosition = 0
 end)
 
-local sim = ac.getSim()
 local tabBarScrollDisabled = false
 
 function setupTabBar(apps)
@@ -74,7 +73,7 @@ local function linkButton(name, size, linked)
 
 	local tmpPos = ui.getCursor()
 	local clicked = ui.button("##linkButton" .. name, size, ui.ButtonFlags.PressedOnClick)
-	local hovered = ui.itemHovered()
+	local hovered = ui.itemHovered() and not cui.modalDialogCallback
 	ui.setCursor(tmpPos)
 
 	ui.beginRotation()

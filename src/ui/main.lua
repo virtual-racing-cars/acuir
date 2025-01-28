@@ -76,6 +76,11 @@ local fontBold = ui.DWriteFont("Rajdhani"):weight(ui.DWriteFont.Weight.Bold)
 local fontSemiBold = ui.DWriteFont("Noto Sans SC"):weight(ui.DWriteFont.Weight.SemiBold)
 
 function MainMenuWindow(dt)
+	if not STORAGE.appOpen then
+		exclusiveHudMode = nil
+		return
+	end
+
 	local perfTime = os.preciseClock()
 
 	if ui.keyboardButtonPressed(ui.KeyIndex.Escape) or ac.isKeyPressed(ui.KeyIndex.XButton1) then
@@ -113,27 +118,10 @@ function MainMenuWindow(dt)
 		vec2(childWindowWith, childWindowHeight),
 		mainWindowFlags,
 		function()
-			if not STORAGE.appOpen then
-				exclusiveHudMode = nil
-				return
-			end
-
 			updateCommon()
 
 			exclusiveHudMode = ""
 			exclusiveHudMode = pageManager:draw()
-
-			-- ui.drawRectFilled(
-			-- 	vec2(sim.windowWidth / 2 - 1, 0),
-			-- 	vec2(sim.windowWidth / 2 + 1, sim.windowHeight),
-			-- 	rgbm.colors.lime
-			-- )
-
-			-- ui.drawRectFilled(
-			-- 	vec2(0, sim.windowHeight / 2 - 1),
-			-- 	vec2(sim.windowWidth, sim.windowHeight / 2 + 1),
-			-- 	rgbm.colors.lime
-			-- )
 
 			audioDriver(dt)
 		end,

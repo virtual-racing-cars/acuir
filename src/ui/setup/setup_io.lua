@@ -90,18 +90,31 @@ local function promptDeleteSetup(force)
 		-- ui.text(string.format("%s/%s", selectedSetup.track, selectedSetup.name))
 
 		ui.pushStyleVar(ui.StyleVar.ItemSpacing, 0)
-		local textBoxHeight = ui.windowHeight() - 40 * cui.scaleY()
+		local textBoxHeight = ui.windowHeight() / 4
 
-		ui.dwriteTextAligned(
-			"DELETE SETUP",
-			textBoxHeight / 3,
-			nil,
-			nil,
-			vec2(ui.availableSpaceX(), ui.windowHeight() - 40 * cui.scaleY())
+		ui.setCursor(0)
+		ui.dwriteTextAligned("Delete Setup", textBoxHeight / 2, nil, nil, vec2(ui.windowWidth(), textBoxHeight))
+		local titleTextWidth = ui.measureDWriteText(" Delete Setup ", textBoxHeight / 2).x
+
+		ui.drawSimpleLine(
+			vec2(ui.windowWidth() / 2 - titleTextWidth / 2, ui.getCursorY()),
+			vec2(ui.windowWidth() / 2 + titleTextWidth / 2, ui.getCursorY()),
+			SETTINGS.uiColor2,
+			3
 		)
 
 		ui.setCursorX(0)
-		if cui.treeNodeButton("Cancel", vec2(ui.availableSpaceX() / 2, 40 * cui.scaleY()), false, false) then
+		ui.dwriteTextAligned(
+			string.format("%s/%s", selectedSetup.track, selectedSetup.name),
+			textBoxHeight / 4,
+			nil,
+			nil,
+			vec2(ui.availableSpaceX(), textBoxHeight)
+		)
+
+		local buttonWidth = ui.windowWidth() / 3
+		ui.setCursorX(ui.windowWidth() / 2 - buttonWidth - 5 * cui.scaleY())
+		if cui.modalButton("Cancel", ui.windowWidth() / 3, 50, ui.ButtonFlags.None) then
 			ui.popStyleVar(1)
 
 			return true
@@ -113,9 +126,9 @@ local function promptDeleteSetup(force)
 			mouseMoved = true
 		end
 
-		if cui.treeNodeButton("Delete", vec2(ui.availableSpaceX(), 40 * cui.scaleY()), false, false) then
+		ui.setCursorX(ui.windowWidth() / 2 + 5 * cui.scaleY())
+		if cui.modalButton("Confirm", ui.windowWidth() / 3, 50, ui.ButtonFlags.None) then
 			deleteSetup()
-
 			ui.popStyleVar(1)
 
 			return true
