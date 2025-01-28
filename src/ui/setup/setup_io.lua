@@ -236,7 +236,7 @@ local function saveSetupWindow(sm)
 			setupFileExists and ui.ButtonFlags.None or ui.ButtonFlags.Disabled
 		)
 	then
-		ac.loadSetup(selectedSetup.path)
+		sm:LoadStuff(selectedSetup.path)
 		currentSetup = selectedSetup.track .. "/" .. selectedSetup.name
 	end
 

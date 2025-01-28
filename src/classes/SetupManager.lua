@@ -264,6 +264,13 @@ function SetupManager:LoadStuff(tbl)
 	ac.loadSetup(tbl)
 
 	for _, v in pairs(self._setupSpinners) do
+		if v.mirrored then
+			if ac.getSetupSpinnerValue(v.idMirror) ~= ac.getSetupSpinnerValue(v.id) then
+				v.mirrored = false
+				ac.log(v.id)
+			end
+		end
+
 		v:setValue(ac.getSetupSpinnerValue(v.id))
 	end
 end
