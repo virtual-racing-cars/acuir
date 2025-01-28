@@ -5,6 +5,8 @@ local sim = ac.getSim()
 local acLogo = ac.getFolder(ac.FolderID.Root) .. "\\launcher\\themes\\default\\graphics\\btn_AC_logo.png"
 local acLogoSize = ui.imageSize(acLogo)
 
+local teleportPitsCallback = nil
+
 local pauseButtons = {
 	{
 		label = "Resume",
@@ -35,8 +37,12 @@ local pauseButtons = {
 		label = "Back To Pitlane",
 		enabled = true,
 		func = function()
-			ac.tryToPause(false)
 			ac.tryToTeleportToPits()
+			ac.tryToPause(false)
+
+			teleportPitsCallback = function()
+				return ac.tryToOpenRaceMenu("setup")
+			end
 		end,
 	},
 	{
@@ -56,14 +62,8 @@ local pauseButtons = {
 	},
 }
 
-ac.onCarJumped(0, function(carIndex)
-	if not sim.isInMainMenu then
-		ac.tryToOpenRaceMenu()
-	end
-end)
-
 function page.draw(dt)
-	acLogoSize = ui.imageSize(acLogo) * 1.5 * cui.scaleY()
+	acLogoSize = ui.imageSize(acLogo) * 1.25 * cui.scaleY()
 	ui.setCursorX(ui.windowWidth() / 2 - acLogoSize.x / 2)
 	ui.image(acLogo, acLogoSize)
 	ui.newLine()
@@ -74,7 +74,7 @@ function page.draw(dt)
 
 	local menuButtonSize = vec2(ui.availableSpaceX(), 40)
 
-	ui.pushStyleColor(ui.StyleColor.Button, rgbm.colors.transparent)
+	ui.pushStyleColor(ui.StyleColor.Button, SETTINGS.uiColor1)
 	for i in ipairs(pauseButtons) do
 		local menuButton = pauseButtons[i]
 
@@ -95,6 +95,12 @@ function page.draw(dt)
 	ui.popStyleVar(1)
 
 	ui.endGroup()
+
+	if teleportPitsCallback then
+		if teleportPitsCallback() then
+			teleportPitsCallback = nil
+		end
+	end
 end
 
 return page

@@ -208,7 +208,7 @@ function cui.modalButton(label, sizeX, sizeY, flags)
 	local r1, r2 = ui.itemRect()
 
 	if not ui.itemHovered() or disabled then
-		ui.drawRect(r1, r2, disabled and rgbm.colors.gray or rgbm.colors.white, 0, ui.CornerFlags.None, 2)
+		ui.drawRect(r1, r2, disabled and rgbm.colors.gray or rgbm.colors.white, 0, ui.CornerFlags.None, 1)
 	end
 
 	ui.popStyleColor(3)

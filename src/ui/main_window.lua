@@ -174,7 +174,7 @@ function MainMenuWindow(dt)
 
 	ac.debug("perfTime", (os.preciseClock() - perfTime) * 1000)
 
-	exclusiveHudMode = ""
+	exclusiveHudMode = "debug"
 
 	return exclusiveHudMode
 end

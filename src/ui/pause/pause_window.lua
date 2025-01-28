@@ -120,13 +120,15 @@ function PauseMenuWindow(dt)
 		vec2(childWindowWith, childWindowHeight),
 		mainWindowFlags,
 		function()
+			ui.drawRectFilled(vec2(0, 0), ui.availableSpace(), SETTINGS.uiColor1 / 1.5)
+
 			exclusiveHudMode = ""
 			exclusiveHudMode = pageManager:draw()
 
 			audioDriver(dt)
 		end,
 		false,
-		false
+		true
 	)
 
 	if cui.modalDialogCallback then

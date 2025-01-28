@@ -48,18 +48,24 @@ ui.onExclusiveHUD(function(mode)
 end)
 
 ac.setWindowOpen("main", true)
+
+local windowTimeSync = 0
+
 function script.main()
 	if not STORAGE.hasAppOpened then
 		STORAGE.hasAppOpened = true
 		ac.setMousePosition(ui.cursorScreenPos())
 	end
+
+	windowTimeSync = os.clock()
 end
 
 local uic = ac.getUI()
 local sim = ac.getSim()
 
 function script.update(dt)
-	if sim.isInMainMenu and SETTINGS.autoStart and not STORAGE.hasAppOpened then
+	if sim.isInMainMenu and SETTINGS.autoStart and windowTimeSync < os.clock() - 1 then
+		ac.tryToOpenRaceMenu("race")
 		ac.tryToOpenRaceMenu("setup")
 	end
 

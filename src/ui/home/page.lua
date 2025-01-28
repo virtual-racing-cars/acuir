@@ -73,7 +73,7 @@ local menuButtonList = {
 					textBoxHeight / 4,
 					nil,
 					nil,
-					vec2(ui.availableSpaceX(), textBoxHeight)
+					vec2(ui.windowWidth(), textBoxHeight)
 				)
 
 				local buttonWidth = ui.windowWidth() / 3
