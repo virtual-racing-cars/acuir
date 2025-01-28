@@ -131,12 +131,9 @@ local function drawSetupSpinner(sm, si)
 		si.format,
 		si.multiplier,
 		0,
-		false
+		false,
+		si.help
 	)
-
-	if hovered then
-		HELP_TEXT = si.help
-	end
 
 	if si.mirrorAvailable and not locked then
 		ui.setCursorX(ui.windowWidth() / 2 - spinnerHeight / 4)

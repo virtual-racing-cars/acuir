@@ -162,7 +162,8 @@ function drawSpinner(
 	format,
 	multiplier,
 	offset,
-	noScroll
+	noScroll,
+	helpText
 )
 	local buttonSize = height / 2
 	local value = value
@@ -176,6 +177,21 @@ function drawSpinner(
 		vec2Temp2:set(xPos + width - height, yPos + buttonSize),
 		SETTINGS.uiColor1
 	)
+
+	local hoveredHelp = ui.mouseLocalPos() >= vec2Temp1:set(xPos + height, yPos)
+		and ui.mouseLocalPos() < vec2Temp2:set(xPos + width - height, yPos + buttonSize)
+		and not cui.modalDialogCallback
+
+	if hoveredHelp and helpText and helpText ~= "NULL" and helpText ~= "" then
+		ui.tooltip(function()
+			local helpSections = string.split(helpText, "\\n\\n")
+
+			for i in ipairs(helpSections) do
+				ui.dwriteText(helpSections[i], 14 * cui.scaleY())
+			end
+		end)
+	end
+
 	ui.drawRectFilled(
 		vec2Temp1:set(xPos + height, yPos + buttonSize),
 		vec2Temp2:set(xPos + width - height, yPos + height),
