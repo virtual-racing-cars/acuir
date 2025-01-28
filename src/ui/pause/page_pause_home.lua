@@ -57,7 +57,7 @@ local pauseButtons = {
 		label = "Quit",
 		enabled = true,
 		func = function()
-			ac.shutdownAssettoCorsa()
+			promptShutdownAC()
 		end,
 	},
 }
@@ -72,7 +72,7 @@ function page.draw(dt)
 	ui.beginGroup(ui.windowWidth() - (ui.windowWidth() / 8) * 2)
 	ui.pushStyleVar(ui.StyleVar.ItemSpacing, ui.windowHeight() / 50)
 
-	local menuButtonSize = vec2(ui.availableSpaceX(), 40)
+	local menuButtonSize = vec2(ui.availableSpaceX(), ui.availableSpaceY() / 10)
 
 	ui.pushStyleColor(ui.StyleColor.Button, SETTINGS.uiColor1)
 	for i in ipairs(pauseButtons) do

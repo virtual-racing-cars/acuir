@@ -19,13 +19,12 @@ local bottomBarButtons = {
 		end,
 	},
 	{
-		label = "APPS",
+		label = "RESET",
 		enabled = false,
 		func = function()
-			goToSetupAppsPage()
+			sm:resetSetup()
 		end,
 	},
-
 	{
 		label = "UNDO",
 		enabled = true,
@@ -86,20 +85,31 @@ function page.draw()
 						rgbm(0, 0, 0, 1)
 					)
 
-					ui.dwriteTextAligned(
-						"CAR STATUS",
-						ui.availableSpaceY() / 20 / 2,
-						ui.Alignment.Center,
-						ui.Alignment.Center,
-						vec2Temp1:set(ui.windowWidth(), ui.availableSpaceY() / 20),
+					cui.menuButton(
+						"Car Status",
+						vec2Temp1:set(ui.windowWidth() / 2, ui.windowHeight() / 20),
+						0,
+						0,
+						0,
 						false,
-						rgbm.colors.white
+						false
+					)
+					ui.sameLine()
+
+					cui.menuButton(
+						"Last Outing",
+						vec2Temp1:set(ui.windowWidth() / 2, ui.windowHeight() / 20),
+						0,
+						0,
+						ui.ButtonFlags.Disabled,
+						false,
+						false
 					)
 
 					ui.setCursor(0)
 
 					cui.contentWindow(
-						"help_window49",
+						"car_status_subwindow",
 						STORAGE.setupTab .. "42",
 						vec2(0, ui.availableSpaceY() / 20),
 						vec2(
@@ -144,19 +154,30 @@ function page.draw()
 					ui.drawRectFilled(vec2(0, 0), ui.availableSpace(), rgbm(0, 0, 0, 0.25))
 					ui.drawRectFilled(vec2(0, 0), vec2(ui.availableSpaceX(), ui.windowHeight() / 20), rgbm(0, 0, 0, 1))
 
-					ui.dwriteTextAligned(
-						"SETUP I/O",
-						ui.windowHeight() / 20 / 2,
-						ui.Alignment.Center,
-						ui.Alignment.Center,
-						vec2Temp1:set(ui.windowWidth(), ui.windowHeight() / 20),
+					cui.menuButton(
+						"Local Setups",
+						vec2Temp1:set(ui.windowWidth() / 2, ui.windowHeight() / 20),
+						0,
+						0,
+						0,
 						false,
-						rgbm.colors.white
+						false
+					)
+					ui.sameLine()
+
+					cui.menuButton(
+						"Setup Exchange",
+						vec2Temp1:set(ui.windowWidth() / 2, ui.windowHeight() / 20),
+						0,
+						0,
+						ui.ButtonFlags.Disabled,
+						false,
+						false
 					)
 
 					ui.setCursor(0)
 					cui.contentWindow(
-						"setup_io_track_list_window",
+						"setup_io_track_subwindow",
 						STORAGE.setupTab .. "42",
 						vec2(0, ui.availableSpaceY() / 20),
 						vec2(ui.windowWidth(), ui.windowHeight() - ui.windowHeight() / 20),

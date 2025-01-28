@@ -98,8 +98,9 @@ function MainMenuWindow(dt)
 	end
 
 	ui.pushDWriteFont(fontRegular)
-	ui.pushStyleColor(ui.StyleColor.ScrollbarGrab, SETTINGS.uiColor2)
-	ui.pushStyleVar(ui.StyleVar.ScrollbarSize, 3)
+	ui.pushStyleColor(ui.StyleColor.ScrollbarGrab, SETTINGS.uiColor3)
+	ui.pushStyleColor(ui.StyleColor.ScrollbarBg, rgbm.colors.black)
+	ui.pushStyleVar(ui.StyleVar.ScrollbarSize, 5)
 	ui.pushStyleVar(ui.StyleVar.ItemSpacing, 0)
 
 	local childWindowWith = (2560 - 120) * cui.scaleX()
@@ -169,12 +170,12 @@ function MainMenuWindow(dt)
 
 	ui.popDWriteFont()
 	ui.popStyleVar(2)
-	ui.popStyleColor(1)
+	ui.popStyleColor(2)
 	ui.popAllowKeyboardFocus()
 
 	ac.debug("perfTime", (os.preciseClock() - perfTime) * 1000)
 
-	exclusiveHudMode = "debug"
+	exclusiveHudMode = ""
 
 	return exclusiveHudMode
 end

@@ -157,7 +157,7 @@ local function loadSetupSpinners()
 			"PITSTOP STRATEGY",
 			"PRESET",
 			1,
-			5,
+			presetsCount,
 			1,
 			1,
 			{},

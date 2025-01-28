@@ -372,7 +372,7 @@ function cui.treeNodeButton(label, size, active, bold)
 	fontSize = (fontSize % 2 ~= 0) and fontSize or fontSize + 1
 	local fontColor = active and rgbm(0, 0, 0, 1) or nil
 
-	ui.pushStyleColor(ui.StyleColor.Button, bold and rgbm.colors.black or rgbm(0.1, 0.1, 0.1, 1))
+	ui.pushStyleColor(ui.StyleColor.Button, bold and SETTINGS.uiColor1 or rgbm(0.1, 0.1, 0.1, 1))
 	ui.pushStyleColor(ui.StyleColor.ButtonHovered, SETTINGS.uiColor2)
 	ui.pushStyleColor(ui.StyleColor.ButtonActive, SETTINGS.uiColor2)
 
@@ -446,19 +446,25 @@ end
 function cui.inputTextBox(label, stringInput, size)
 	ui.pushDWriteFont(fontRegular)
 
-	local fontSize = math.floor(size.y * 0.75)
+	local fontSize = math.floor(size.y * 0.7)
 	fontSize = (fontSize % 2 ~= 0) and fontSize or fontSize + 1
 
 	local tempCursor = ui.getCursor()
 
-	ui.pushStyleColor(ui.StyleColor.Button, rgbm.colors.white)
-	ui.pushStyleColor(ui.StyleColor.ButtonHovered, rgbm.colors.white)
-	ui.pushStyleColor(ui.StyleColor.ButtonActive, rgbm.colors.white)
+	ui.pushStyleColor(ui.StyleColor.Button, SETTINGS.uiColor1)
+	ui.pushStyleColor(ui.StyleColor.ButtonHovered, SETTINGS.uiColor1)
+	ui.pushStyleColor(ui.StyleColor.ButtonActive, SETTINGS.uiColor1)
 	local clicked = ui.button("##" .. label, size, ui.ButtonFlags.None)
 	ui.popStyleColor(3)
 
+	local r1, r2 = ui.itemRect()
+	local hovered = ui.itemHovered()
 	local id = ui.getLastID()
 	local itemActive = cui.loadStoredBool(id)
+
+	if hovered then
+		ui.setMouseCursor(ui.MouseCursor.TextInput)
+	end
 
 	if itemActive == nil then
 		cui.storeBool(id, false)
@@ -467,6 +473,8 @@ function cui.inputTextBox(label, stringInput, size)
 	if clicked or ui.mouseClicked(ui.MouseButton.Left) then
 		cui.storeBool(id, clicked)
 	end
+
+	ui.drawRect(r1, r2, rgbm.colors.white, 0, ui.CornerFlags.None, 2)
 
 	ui.setCursor(tempCursor)
 	local textOffset = size.x / 60
@@ -481,7 +489,7 @@ function cui.inputTextBox(label, stringInput, size)
 		ui.Alignment.Center,
 		vec2Temp1:set(size.x - textOffset, size.y),
 		false,
-		rgbm(0, 0, 0, 1)
+		rgbm.colors.white
 	)
 
 	ui.popDWriteFont()

@@ -80,6 +80,8 @@ local function deleteSetup()
 	saveSetup.name = ""
 	saveSetup.path = ""
 
+	selectedSetup = { name = "", track = "", path = "", creation = "" }
+
 	loadSetups()
 end
 
@@ -87,8 +89,6 @@ local function promptDeleteSetup()
 	local mouseMoved = false
 
 	cui.modalDialog(function()
-		-- ui.text(string.format("%s/%s", selectedSetup.track, selectedSetup.name))
-
 		ui.pushStyleVar(ui.StyleVar.ItemSpacing, 0)
 		local textBoxHeight = ui.windowHeight() / 4
 
@@ -114,7 +114,7 @@ local function promptDeleteSetup()
 
 		local buttonWidth = ui.windowWidth() / 3
 		ui.setCursorX(ui.windowWidth() / 2 - buttonWidth - 5 * cui.scaleY())
-		if cui.modalButton("Cancel", ui.windowWidth() / 3, 50, ui.ButtonFlags.None) then
+		if cui.modalButton("Cancel", ui.windowWidth() / 3, 50 * cui.scaleY(), ui.ButtonFlags.None) then
 			ui.popStyleVar(1)
 
 			return true
@@ -127,7 +127,7 @@ local function promptDeleteSetup()
 		end
 
 		ui.setCursorX(ui.windowWidth() / 2 + 5 * cui.scaleY())
-		if cui.modalButton("Confirm", ui.windowWidth() / 3, 50, ui.ButtonFlags.None) then
+		if cui.modalButton("Confirm", ui.windowWidth() / 3, 50 * cui.scaleY(), ui.ButtonFlags.None) then
 			deleteSetup()
 			ui.popStyleVar(1)
 
@@ -178,7 +178,7 @@ local function promptOverwriteSetup()
 
 		local buttonWidth = ui.windowWidth() / 3
 		ui.setCursorX(ui.windowWidth() / 2 - buttonWidth - 5 * cui.scaleY())
-		if cui.modalButton("Cancel", ui.windowWidth() / 3, 50, ui.ButtonFlags.None) then
+		if cui.modalButton("Cancel", ui.windowWidth() / 3, 50 * cui.scaleY(), ui.ButtonFlags.None) then
 			ui.popStyleVar(1)
 
 			return true
@@ -191,7 +191,7 @@ local function promptOverwriteSetup()
 		end
 
 		ui.setCursorX(ui.windowWidth() / 2 + 5 * cui.scaleY())
-		if cui.modalButton("Confirm", ui.windowWidth() / 3, 50, ui.ButtonFlags.None) then
+		if cui.modalButton("Confirm", ui.windowWidth() / 3, 50 * cui.scaleY(), ui.ButtonFlags.None) then
 			saveSetupFile()
 			ui.popStyleVar(1)
 
@@ -203,54 +203,64 @@ local function promptOverwriteSetup()
 end
 
 local function saveSetupWindow(sm)
-	ui.setCursorX(0)
+	local iconButtonHeight = ui.windowHeight() / 5
+	local buttonWidth = (ui.windowWidth() / 12) * 10
+	local groupBegin = (ui.windowWidth() / 12)
+
+	ui.setCursorX(groupBegin)
+	ui.setCursorY(0)
+	ui.dummy(iconButtonHeight)
+
+	ui.setCursorX(groupBegin)
 	saveSetup.name = cui.inputText(
 		"##SetupName",
 		saveSetup.track .. "/",
 		saveSetup.name,
 		ui.InputTextFlags.None,
-		vec2(ui.windowWidth(), ui.windowHeight() / 6)
+		vec2Temp1:set(buttonWidth, iconButtonHeight)
 	)
 
-	local ioButtonSize = vec2Temp1:set(ui.windowWidth(), ui.windowHeight() / 6)
+	local setupFileExists = false
+	if saveSetup.name ~= "" then
+		saveSetup.path = setupsDir .. "\\" .. saveSetup.track .. "\\" .. saveSetup.name .. ".ini"
+		setupFileExists = io.fileExists(saveSetup.path)
+	end
 
-	ui.setCursorX(0)
-	if cui.menuButton("Load Setup", ioButtonSize) then
+	ui.setCursorX(groupBegin)
+	if
+		cui.menuButton(
+			"Load Setup",
+			vec2Temp1:set(buttonWidth, iconButtonHeight),
+			nil,
+			nil,
+			setupFileExists and ui.ButtonFlags.None or ui.ButtonFlags.Disabled
+		)
+	then
 		ac.loadSetup(selectedSetup.path)
 		currentSetup = selectedSetup.track .. "/" .. selectedSetup.name
 	end
 
-	ui.setCursorX(0)
-	if cui.menuButton("Reset to Default", ioButtonSize) then
-		currentSetup = "generic/default"
-		sm:resetSetup()
-	end
-
-	ui.setCursorX(0)
+	ui.setCursorX(groupBegin)
 	if
 		cui.menuButton(
 			"Delete Setup",
-			ioButtonSize,
+			vec2Temp1:set(buttonWidth / 2, iconButtonHeight),
 			nil,
 			nil,
-			#selectedSetup.name > 0 and ui.ButtonFlags.None or ui.ButtonFlags.Disabled
+			setupFileExists and ui.ButtonFlags.None or ui.ButtonFlags.Disabled
 		)
 	then
 		if #selectedSetup.name > 0 then
 			promptDeleteSetup()
 		end
 	end
+	ui.sameLine()
 
-	ui.setCursorX(0)
-	if cui.menuButton("Save Setup", ioButtonSize) then
-		if saveSetup.name ~= "" then
-			saveSetup.path = setupsDir .. "\\" .. saveSetup.track .. "\\" .. saveSetup.name .. ".ini"
-
-			if io.fileExists(saveSetup.path) then
-				promptOverwriteSetup()
-			else
-				saveSetupFile()
-			end
+	if cui.menuButton("Save Setup", vec2Temp1:set(buttonWidth / 2, iconButtonHeight)) then
+		if setupFileExists then
+			promptOverwriteSetup()
+		else
+			saveSetupFile()
 		end
 	end
 end
@@ -268,13 +278,6 @@ function setupIoDraw(sm)
 		ui.WindowFlags.None,
 		function()
 			ui.setCursor(0)
-			ui.dwriteTextAligned(
-				"Current Setup [" .. currentSetup .. "]",
-				20 * cui.scaleY(),
-				ui.Alignment.Center,
-				ui.Alignment.Center,
-				vec2(ui.availableSpaceX(), ui.windowHeight() / 6)
-			)
 
 			saveSetupWindow(sm)
 		end,
@@ -290,6 +293,14 @@ function setupIoDraw(sm)
 		ui.WindowFlags.None,
 		function()
 			ui.setCursor(0)
+			ui.dwriteTextAligned(
+				"Current Setup [" .. currentSetup .. "]",
+				24 * cui.scaleY(),
+				ui.Alignment.Center,
+				ui.Alignment.Center,
+				vec2(ui.availableSpaceX(), 40 * cui.scaleY())
+			)
+
 			if refreshingSetups then
 				ui.icon(ui.Icons.LoadingSpinner, ui.availableSpace())
 			else

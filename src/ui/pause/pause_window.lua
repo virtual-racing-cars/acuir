@@ -67,8 +67,6 @@ pageManager:registerPage("HomePage", nil, HomePage)
 -- 	pageManager:makeUndo()
 -- end
 
-goToHomePage()
-
 local exclusiveHudMode = ""
 
 local fontRegular = ui.DWriteFont("Rajdhani"):weight(ui.DWriteFont.Weight.SemiBold)
@@ -102,8 +100,8 @@ function PauseMenuWindow(dt)
 	ui.pushStyleVar(ui.StyleVar.ScrollbarSize, 3)
 	ui.pushStyleVar(ui.StyleVar.ItemSpacing, 0)
 
-	local childWindowWith = (2560 / 5) * cui.scaleX()
-	local childWindowHeight = (1440 / 2) * cui.scaleX()
+	local childWindowWith = (2560 * cui.scaleX()) / 5
+	local childWindowHeight = (1440 * cui.scaleY()) / 2
 	local mainWindowFlags = ui.WindowFlags.NoScrollbar + ui.WindowFlags.NoScrollWithMouse
 
 	if cui.modalDialogCallback then

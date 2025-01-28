@@ -5,6 +5,59 @@ local sim = ac.getSim()
 -- require("src.ui.home.map")
 require("src.classes.PlayerListButton")
 
+function promptShutdownAC()
+	local mouseMoved = false
+
+	cui.modalDialog(function()
+		ui.pushStyleVar(ui.StyleVar.ItemSpacing, 0)
+		local textBoxHeight = ui.windowHeight() / 4
+
+		ui.setCursor(0)
+		ui.dwriteTextAligned("Quit Session", textBoxHeight / 2, nil, nil, vec2(ui.windowWidth(), textBoxHeight))
+		local titleTextWidth = ui.measureDWriteText(" Quit Session ", textBoxHeight / 2).x
+
+		ui.drawSimpleLine(
+			vec2(ui.windowWidth() / 2 - titleTextWidth / 2, ui.getCursorY()),
+			vec2(ui.windowWidth() / 2 + titleTextWidth / 2, ui.getCursorY()),
+			SETTINGS.uiColor2,
+			3
+		)
+
+		ui.setCursorX(0)
+		ui.dwriteTextAligned(
+			"Abandon the current session and return to Content Manager?",
+			textBoxHeight / 4,
+			nil,
+			nil,
+			vec2(ui.windowWidth(), textBoxHeight)
+		)
+
+		local buttonWidth = ui.windowWidth() / 3
+		ui.setCursorX(ui.windowWidth() / 2 - buttonWidth - 5 * cui.scaleY())
+		if cui.modalButton("Cancel", ui.windowWidth() / 3, 50 * cui.scaleY(), ui.ButtonFlags.None) then
+			ui.popStyleVar(1)
+
+			return true
+		end
+		ui.sameLine()
+
+		if not mouseMoved then
+			ac.setMousePosition(ui.cursorScreenPos() + vec2(ui.availableSpaceX() / 2, 20))
+			mouseMoved = true
+		end
+
+		ui.setCursorX(ui.windowWidth() / 2 + 5 * cui.scaleY())
+		if cui.modalButton("Confirm", ui.windowWidth() / 3, 50 * cui.scaleY(), ui.ButtonFlags.None) then
+			ac.shutdownAssettoCorsa()
+			ui.popStyleVar(1)
+
+			return true
+		end
+
+		ui.popStyleVar(1)
+	end)
+end
+
 local menuButtonList = {
 	{
 		label = "DRIVE",
@@ -50,56 +103,7 @@ local menuButtonList = {
 		label = "QUIT",
 		enabled = true,
 		func = function()
-			local mouseMoved = false
-
-			cui.modalDialog(function()
-				ui.pushStyleVar(ui.StyleVar.ItemSpacing, 0)
-				local textBoxHeight = ui.windowHeight() / 4
-
-				ui.setCursor(0)
-				ui.dwriteTextAligned("Quit Session", textBoxHeight / 2, nil, nil, vec2(ui.windowWidth(), textBoxHeight))
-				local titleTextWidth = ui.measureDWriteText(" Quit Session ", textBoxHeight / 2).x
-
-				ui.drawSimpleLine(
-					vec2(ui.windowWidth() / 2 - titleTextWidth / 2, ui.getCursorY()),
-					vec2(ui.windowWidth() / 2 + titleTextWidth / 2, ui.getCursorY()),
-					SETTINGS.uiColor2,
-					3
-				)
-
-				ui.setCursorX(0)
-				ui.dwriteTextAligned(
-					"Abandon the current session and return to Content Manager?",
-					textBoxHeight / 4,
-					nil,
-					nil,
-					vec2(ui.windowWidth(), textBoxHeight)
-				)
-
-				local buttonWidth = ui.windowWidth() / 3
-				ui.setCursorX(ui.windowWidth() / 2 - buttonWidth - 5 * cui.scaleY())
-				if cui.modalButton("Cancel", ui.windowWidth() / 3, 50, ui.ButtonFlags.None) then
-					ui.popStyleVar(1)
-
-					return true
-				end
-				ui.sameLine()
-
-				if not mouseMoved then
-					ac.setMousePosition(ui.cursorScreenPos() + vec2(ui.availableSpaceX() / 2, 20))
-					mouseMoved = true
-				end
-
-				ui.setCursorX(ui.windowWidth() / 2 + 5 * cui.scaleY())
-				if cui.modalButton("Confirm", ui.windowWidth() / 3, 50, ui.ButtonFlags.None) then
-					ac.shutdownAssettoCorsa()
-					ui.popStyleVar(1)
-
-					return true
-				end
-
-				ui.popStyleVar(1)
-			end)
+			promptShutdownAC()
 		end,
 	},
 }
@@ -121,6 +125,11 @@ function page.draw()
 			for i, car in ac.iterateCars.leaderboard() do
 				playerListButton(car, 0, (i - 1) * height, ui.windowWidth(), height)
 			end
+
+			-- for i = 0, 24 do
+			-- 	local car = ac.getCar(0)
+			-- 	playerListButton(car, 0, (i - 1) * height, ui.windowWidth() - ui.windowWidth() / 50, height)
+			-- end
 		end,
 		false,
 		true,
