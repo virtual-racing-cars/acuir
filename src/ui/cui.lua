@@ -360,6 +360,7 @@ function cui.iconButton(label, icon, sizeX, sizeY, flags)
 	return clicked and not (flags == ui.ButtonFlags.Disabled)
 end
 
+local treeNodeParent = ""
 function cui.treeNodeButton(label, size, active, bold)
 	if bold then
 		ui.pushDWriteFont(fontBold)
@@ -380,8 +381,8 @@ function cui.treeNodeButton(label, size, active, bold)
 	end
 
 	local tempCursor = ui.getCursor()
-	local clicked = ui.button("##" .. label, size, ui.ButtonFlags.None)
-	local hovered = ui.itemHovered()
+	local clicked = ui.button("##" .. label .. treeNodeParent, size, ui.ButtonFlags.None)
+	local hovered = ui.itemHovered() and not cui.modalDialogCallback
 	local id = ui.getLastID()
 
 	if active then
@@ -424,6 +425,7 @@ end
 
 function cui.treeNode(label, content)
 	local clicked, id = cui.treeNodeButton(label, vec2Temp1:set(ui.availableSpaceX(), 50 * cui.scaleY()), false, true)
+	treeNodeParent = label
 
 	local open = cui.loadStoredBool(id)
 	if clicked then

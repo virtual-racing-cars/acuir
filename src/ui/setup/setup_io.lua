@@ -83,7 +83,7 @@ local function deleteSetup()
 	loadSetups()
 end
 
-local function promptDeleteSetup(force)
+local function promptDeleteSetup()
 	local mouseMoved = false
 
 	cui.modalDialog(function()
@@ -138,6 +138,70 @@ local function promptDeleteSetup(force)
 	end, false)
 end
 
+local function saveSetupFile()
+	ac.setActiveSetupName(saveSetup.name, saveSetup.track)
+	ac.saveCurrentSetup(saveSetup.path)
+	currentSetup = saveSetup.track .. "/" .. saveSetup.name
+	selectedSetup = table.clone(saveSetup, true)
+
+	loadSetups()
+end
+
+local function promptOverwriteSetup()
+	local mouseMoved = false
+
+	cui.modalDialog(function()
+		-- ui.text(string.format("%s/%s", selectedSetup.track, selectedSetup.name))
+
+		ui.pushStyleVar(ui.StyleVar.ItemSpacing, 0)
+		local textBoxHeight = ui.windowHeight() / 4
+
+		ui.setCursor(0)
+		ui.dwriteTextAligned("Overwrite Setup", textBoxHeight / 2, nil, nil, vec2(ui.windowWidth(), textBoxHeight))
+		local titleTextWidth = ui.measureDWriteText(" Overwrite Setup ", textBoxHeight / 2).x
+
+		ui.drawSimpleLine(
+			vec2(ui.windowWidth() / 2 - titleTextWidth / 2, ui.getCursorY()),
+			vec2(ui.windowWidth() / 2 + titleTextWidth / 2, ui.getCursorY()),
+			SETTINGS.uiColor2,
+			3
+		)
+
+		ui.setCursorX(0)
+		ui.dwriteTextAligned(
+			string.format("%s/%s", selectedSetup.track, selectedSetup.name),
+			textBoxHeight / 4,
+			nil,
+			nil,
+			vec2(ui.availableSpaceX(), textBoxHeight)
+		)
+
+		local buttonWidth = ui.windowWidth() / 3
+		ui.setCursorX(ui.windowWidth() / 2 - buttonWidth - 5 * cui.scaleY())
+		if cui.modalButton("Cancel", ui.windowWidth() / 3, 50, ui.ButtonFlags.None) then
+			ui.popStyleVar(1)
+
+			return true
+		end
+		ui.sameLine()
+
+		if not mouseMoved then
+			ac.setMousePosition(ui.cursorScreenPos() + vec2(ui.availableSpaceX() / 2, 20))
+			mouseMoved = true
+		end
+
+		ui.setCursorX(ui.windowWidth() / 2 + 5 * cui.scaleY())
+		if cui.modalButton("Confirm", ui.windowWidth() / 3, 50, ui.ButtonFlags.None) then
+			saveSetupFile()
+			ui.popStyleVar(1)
+
+			return true
+		end
+
+		ui.popStyleVar(1)
+	end, false)
+end
+
 local function saveSetupWindow(sm)
 	ui.setCursorX(0)
 	saveSetup.name = cui.inputText(
@@ -181,12 +245,12 @@ local function saveSetupWindow(sm)
 	if cui.menuButton("Save Setup", ioButtonSize) then
 		if saveSetup.name ~= "" then
 			saveSetup.path = setupsDir .. "\\" .. saveSetup.track .. "\\" .. saveSetup.name .. ".ini"
-			ac.setActiveSetupName(saveSetup.name, saveSetup.track)
-			ac.saveCurrentSetup(saveSetup.path)
-			currentSetup = saveSetup.track .. "/" .. saveSetup.name
-			selectedSetup = table.clone(saveSetup, true)
 
-			loadSetups()
+			if io.fileExists(saveSetup.path) then
+				promptOverwriteSetup()
+			else
+				saveSetupFile()
+			end
 		end
 	end
 end
