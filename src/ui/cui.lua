@@ -87,6 +87,12 @@ local fontRegular = ui.DWriteFont("Rajdhani"):weight(ui.DWriteFont.Weight.SemiBo
 local fontBold = ui.DWriteFont("Rajdhani"):weight(ui.DWriteFont.Weight.Bold)
 local fontSemiBold = ui.DWriteFont("Noto Sans SC"):weight(ui.DWriteFont.Weight.SemiBold)
 
+cui.modalDialogCallback = nil
+
+function cui.modalDialog(callback)
+	cui.modalDialogCallback = callback
+end
+
 function cui.dwriteTextWrapped(text, font)
 	ui.pushDWriteFont(fontRegular)
 	ui.dwriteTextWrapped(text, font * cui.scaleY())

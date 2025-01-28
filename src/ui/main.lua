@@ -97,12 +97,21 @@ function MainMenuWindow(dt)
 
 	local childWindowWith = (2560 - 120) * cui.scaleX()
 	local childWindowHeight = (1440 - 80) * cui.scaleX()
+	local mainWindowFlags = ui.WindowFlags.NoScrollbar + ui.WindowFlags.NoScrollWithMouse
+
+	if cui.modalDialogCallback then
+		mainWindowFlags = mainWindowFlags
+			+ ui.WindowFlags.NoInputs
+			+ ui.WindowFlags.NoMouseInputs
+			+ ui.WindowFlags.NoFocusOnAppearing
+	end
+
 	cui.contentWindow(
 		"main_window",
 		"",
 		vec2((ui.windowWidth() - childWindowWith) / 2, (ui.windowHeight() - childWindowHeight) / 2),
 		vec2(childWindowWith, childWindowHeight),
-		ui.WindowFlags.NoScrollbar + ui.WindowFlags.NoScrollWithMouse,
+		mainWindowFlags,
 		function()
 			if not STORAGE.appOpen then
 				exclusiveHudMode = nil
@@ -110,8 +119,6 @@ function MainMenuWindow(dt)
 			end
 
 			updateCommon()
-
-			ui.bringWindowToFront()
 
 			exclusiveHudMode = ""
 			exclusiveHudMode = pageManager:draw()
@@ -133,6 +140,43 @@ function MainMenuWindow(dt)
 		false,
 		true
 	)
+
+	if cui.modalDialogCallback then
+		cui.contentWindow(
+			"callback_window",
+			"",
+			vec2(0, 0),
+			ui.windowSize(),
+			ui.WindowFlags.NoScrollbar + ui.WindowFlags.NoScrollWithMouse,
+			function()
+				ui.setCursor(0)
+				ui.drawRectFilled(vec2(0, 0), ui.availableSpace(), SETTINGS.uiColor1 / 1.2)
+				local childWindowWith = ui.windowWidth() / 5
+				local childWindowHeight = ui.windowHeight() / 5
+				cui.contentWindow(
+					"callback_subwindow",
+					"",
+					vec2((ui.windowWidth() - childWindowWith) / 2, (ui.windowHeight() - childWindowHeight) / 2),
+					vec2(childWindowWith, childWindowHeight),
+					ui.WindowFlags.NoScrollbar + ui.WindowFlags.NoScrollWithMouse,
+					function()
+						ui.bringWindowToFront()
+						ui.setCursor(0)
+						if cui.modalDialogCallback() then
+							cui.modalDialogCallback = nil
+						end
+					end,
+					false,
+					true,
+					false
+				)
+			end,
+			false,
+			true,
+			false
+		)
+	end
+
 	ui.popDWriteFont()
 	ui.popStyleVar(2)
 	ui.popStyleColor(1)

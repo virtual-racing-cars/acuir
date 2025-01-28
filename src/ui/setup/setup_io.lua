@@ -86,12 +86,24 @@ end
 local function promptDeleteSetup(force)
 	local mouseMoved = false
 
-	ui.modalDialog("Delete Setup", function()
-		ui.text(string.format("%s/%s", selectedSetup.track, selectedSetup.name))
-		ui.newLine()
+	cui.modalDialog(function()
+		-- ui.text(string.format("%s/%s", selectedSetup.track, selectedSetup.name))
 
 		ui.pushStyleVar(ui.StyleVar.ItemSpacing, 0)
-		if cui.treeNodeButton("Cancel", vec2(ui.availableSpaceX() / 2, 40), false, false) then
+		local textBoxHeight = ui.windowHeight() - 40 * cui.scaleY()
+
+		ui.dwriteTextAligned(
+			"DELETE SETUP",
+			textBoxHeight / 3,
+			nil,
+			nil,
+			vec2(ui.availableSpaceX(), ui.windowHeight() - 40 * cui.scaleY())
+		)
+
+		ui.setCursorX(0)
+		if cui.treeNodeButton("Cancel", vec2(ui.availableSpaceX() / 2, 40 * cui.scaleY()), false, false) then
+			ui.popStyleVar(1)
+
 			return true
 		end
 		ui.sameLine()
@@ -101,10 +113,14 @@ local function promptDeleteSetup(force)
 			mouseMoved = true
 		end
 
-		if cui.treeNodeButton("Delete", vec2(ui.availableSpaceX(), 40), false, false) then
+		if cui.treeNodeButton("Delete", vec2(ui.availableSpaceX(), 40 * cui.scaleY()), false, false) then
 			deleteSetup()
+
+			ui.popStyleVar(1)
+
 			return true
 		end
+
 		ui.popStyleVar(1)
 	end, false)
 end

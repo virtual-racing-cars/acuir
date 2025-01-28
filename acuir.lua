@@ -46,6 +46,7 @@ ac.setWindowOpen("main", true)
 function script.main()
 	if not STORAGE.hasAppOpened then
 		STORAGE.hasAppOpened = true
+		ac.setMousePosition(ui.cursorScreenPos())
 	end
 end
 

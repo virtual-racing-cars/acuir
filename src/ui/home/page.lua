@@ -43,6 +43,10 @@ local menuButtonList = {
 		label = "RESTART SESSION",
 		enabled = true,
 		func = function()
+			cui.modalDialog(function()
+				ac.log(os.clock())
+			end)
+
 			ac.tryToRestartSession()
 		end,
 	},
@@ -52,11 +56,27 @@ local menuButtonList = {
 		func = function()
 			local mouseMoved = false
 
-			ui.modalDialog("Quit", function()
-				ui.newLine()
-
+			cui.modalDialog(function()
 				ui.pushStyleVar(ui.StyleVar.ItemSpacing, 0)
-				if cui.treeNodeButton("Cancel", vec2(ui.availableSpaceX() / 2, 40), false, false) then
+				local textBoxHeight = ui.windowHeight() / 4
+
+				ui.dwriteTextAligned("QUIT", textBoxHeight / 2, nil, nil, vec2(ui.availableSpaceX(), textBoxHeight))
+
+				ui.setCursorX(0)
+				ui.drawSimpleLine(ui.getCursor(), vec2(ui.windowWidth(), ui.getCursorY()), rgbm.colors.white, 3)
+
+				ui.dwriteTextAligned(
+					"Abandon the current session and return to Content Manager?",
+					textBoxHeight / 4,
+					nil,
+					nil,
+					vec2(ui.availableSpaceX(), textBoxHeight)
+				)
+
+				ui.setCursorX(0)
+				if cui.treeNodeButton("Cancel", vec2(ui.availableSpaceX() / 2, 40 * cui.scaleY()), false, false) then
+					ui.popStyleVar(1)
+
 					return true
 				end
 				ui.sameLine()
@@ -66,13 +86,15 @@ local menuButtonList = {
 					mouseMoved = true
 				end
 
-				if cui.treeNodeButton("Confirm", vec2(ui.availableSpaceX(), 40), false, false) then
+				if cui.treeNodeButton("Confirm", vec2(ui.availableSpaceX(), 40 * cui.scaleY()), false, false) then
 					ac.shutdownAssettoCorsa()
+					ui.popStyleVar(1)
 
 					return true
 				end
+
 				ui.popStyleVar(1)
-			end, false)
+			end)
 		end,
 	},
 }
