@@ -154,12 +154,56 @@ local raceSessiontTypeString = {
 	"Drag",
 }
 
+local sessionInfoTable = {
+	{
+		label = function()
+			return raceSessiontTypeString[sim.raceSessionType + 1]
+		end,
+		row1 = function()
+			return string.format("%02d:%02d", sim.timeHours, sim.timeMinutes)
+		end,
+		row2 = function()
+			if sim.raceSessionType == ac.SessionType.Race then
+				return string.format("%.1f", sim.timeToSessionStart)
+			else
+				return ""
+			end
+		end,
+	},
+	{
+		label = function()
+			return "Road"
+		end,
+		row1 = function()
+			return string.format("Track - %.1f C", sim.roadTemperature)
+		end,
+		row2 = function()
+			return string.format(
+				"%s - %s %%",
+				findClosestIndex(sim.roadGrip * 100, trackGrip),
+				math.round(sim.roadGrip * 100, 1)
+			)
+		end,
+	},
+	{
+		label = function()
+			return "Ambient"
+		end,
+		row1 = function()
+			return string.format("Air - %.1f C", sim.ambientTemperature)
+		end,
+		row2 = function()
+			return string.format("Humidity - %.0f %%", ac.getAirHumidity(vec3(0, 0, 0)) * 100)
+		end,
+	},
+}
+
 local function sessionInfo()
-	local startX = ui.windowWidth() - 642 * cui.scaleX()
-	local startY = 100 * cui.scaleY()
+	local startX = ui.windowWidth() / 50
+	local startY = 50 * cui.scaleY()
 	local sizeX = 171 * cui.scaleX()
 	local sizeY = 35 * cui.scaleY()
-	local gap = 1
+	local gap = 3
 
 	local fontSize = math.floor(sizeY * 0.55)
 	fontSize = (fontSize % 2 ~= 0) and fontSize or fontSize + 1
@@ -167,52 +211,41 @@ local function sessionInfo()
 	ui.pushDWriteFont(fontBold)
 
 	ui.setCursor(vec2(startX, startY))
-	ui.drawRectFilled(ui.getCursor(), ui.getCursor() + vec2(sizeX, sizeY), rgbm(0, 0, 0, 0.6))
-	ui.dwriteTextAligned(
-		string.format("%02d:%02d", sim.timeHours, sim.timeMinutes),
-		fontSize,
-		ui.Alignment.Center,
-		ui.Alignment.Center,
-		vec2(sizeX, sizeY)
-	)
-	ui.sameLine()
+	for i in ipairs(sessionInfoTable) do
+		ui.beginGroup()
 
-	ui.drawRectFilled(
-		ui.getCursor() + vec2(gap, 0),
-		ui.getCursor() + vec2(gap, 0) + vec2(sizeX, sizeY),
-		rgbm(0, 0, 0, 0.6)
-	)
-	ui.dwriteTextAligned("Track", fontSize, ui.Alignment.Center, ui.Alignment.Center, vec2(sizeX, sizeY))
-	ui.sameLine()
+		ui.offsetCursorX(-1)
+		ui.drawRectFilled(ui.getCursor(), ui.getCursor() + vec2(sizeX, sizeY), rgbm(0, 0, 0, 0.6))
+		ui.dwriteTextAligned(
+			sessionInfoTable[i].label(),
+			fontSize,
+			ui.Alignment.Center,
+			ui.Alignment.Center,
+			vec2(sizeX, sizeY)
+		)
 
-	ui.drawRectFilled(
-		ui.getCursor() + vec2(gap * 2, 0),
-		ui.getCursor() + vec2(gap, 0) + vec2(sizeX, sizeY),
-		rgbm(0, 0, 0, 0.6)
-	)
-	ui.dwriteTextAligned(
-		raceSessiontTypeString[sim.raceSessionType + 1],
-		fontSize,
-		ui.Alignment.Center,
-		ui.Alignment.Center,
-		vec2(sizeX, sizeY)
-	)
+		ui.drawRectFilled(ui.getCursor(), ui.getCursor() + vec2(sizeX, sizeY), rgbm(0.1, 0.1, 0.1, 0.5))
+		ui.dwriteTextAligned(
+			sessionInfoTable[i].row1(),
+			fontSize,
+			ui.Alignment.Center,
+			ui.Alignment.Center,
+			vec2(sizeX, sizeY)
+		)
 
-	ui.setCursor(vec2(startX, startY) + vec2(sizeX, sizeY))
-	ui.drawRectFilled(
-		ui.getCursor() + vec2(sizeX + gap, 0),
-		ui.getCursor() + vec2(-sizeX + gap, 0) + vec2(sizeX, sizeY),
-		rgbm(0.1, 0.1, 0.1, 0.5)
-	)
+		ui.drawRectFilled(ui.getCursor(), ui.getCursor() + vec2(sizeX, sizeY), rgbm(0.1, 0.1, 0.1, 0.5))
 
-	ui.dwriteTextAligned(
-		findClosestIndex(sim.roadGrip * 100, trackGrip),
-		fontSize,
-		ui.Alignment.Center,
-		ui.Alignment.Center,
-		vec2(sizeX, sizeY)
-	)
-	ui.sameLine()
+		ui.dwriteTextAligned(
+			sessionInfoTable[i].row2(),
+			fontSize,
+			ui.Alignment.Center,
+			ui.Alignment.Center,
+			vec2(sizeX, sizeY)
+		)
+
+		ui.endGroup()
+		ui.setCursor(vec2(startX + ((sizeX + gap) * i), startY))
+	end
 
 	ui.popDWriteFont()
 end
