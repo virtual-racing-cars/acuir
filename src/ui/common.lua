@@ -208,21 +208,23 @@ local function sessionInfo()
 	local fontSize = math.floor(sizeY * 0.55)
 	fontSize = (fontSize % 2 ~= 0) and fontSize or fontSize + 1
 
-	ui.pushDWriteFont(fontBold)
-
 	ui.setCursor(vec2(startX, startY))
 	for i in ipairs(sessionInfoTable) do
 		ui.beginGroup()
 
 		ui.offsetCursorX(-1)
+
 		ui.drawRectFilled(ui.getCursor(), ui.getCursor() + vec2(sizeX, sizeY), rgbm(0, 0, 0, 0.6))
+		ui.pushDWriteFont(fontBold)
+
 		ui.dwriteTextAligned(
-			sessionInfoTable[i].label(),
+			string.upper(sessionInfoTable[i].label()),
 			fontSize,
 			ui.Alignment.Center,
 			ui.Alignment.Center,
 			vec2(sizeX, sizeY)
 		)
+		ui.popDWriteFont()
 
 		ui.drawRectFilled(ui.getCursor(), ui.getCursor() + vec2(sizeX, sizeY), rgbm(0.1, 0.1, 0.1, 0.5))
 		ui.dwriteTextAligned(
@@ -246,8 +248,6 @@ local function sessionInfo()
 		ui.endGroup()
 		ui.setCursor(vec2(startX + ((sizeX + gap) * i), startY))
 	end
-
-	ui.popDWriteFont()
 end
 
 function topSubBar(path)
