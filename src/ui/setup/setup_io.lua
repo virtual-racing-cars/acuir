@@ -259,7 +259,6 @@ local function saveSetupWindow(sm)
 	end
 
 	ui.setCursorX(groupBegin)
-	buttonWidth = buttonWidth - 10 * cui.scaleY()
 
 	ui.drawRectFilled(ui.getCursor(), ui.getCursor() + vec2Temp1:set(buttonWidth, iconButtonHeight), SETTINGS.uiColor1)
 	if
@@ -275,6 +274,8 @@ local function saveSetupWindow(sm)
 		currentSetup = selectedSetup.track .. "/" .. selectedSetup.name
 	end
 	ui.newLine()
+
+	buttonWidth = buttonWidth - 10 * cui.scaleY()
 
 	ui.setCursorX(groupBegin)
 	ui.drawRectFilled(
