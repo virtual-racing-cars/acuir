@@ -164,7 +164,7 @@ local function drawSetupSpinner(sm, si)
 	return changed
 end
 
-local pitstopStrategyPreset = 1
+local pitstopStrategyPreset = 0
 
 function car_setup(sm)
 	spinnerWidth = 600 * cui.scaleX()
@@ -185,7 +185,7 @@ function car_setup(sm)
 					sm.presetsNeedSaving = true
 				end
 			end
-		else
+		elseif v.yPos > -2 then
 			if drawSetupSpinner(sm, v) then
 				changed = true
 			end

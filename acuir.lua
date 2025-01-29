@@ -81,6 +81,10 @@ function script.update(dt)
 		STORAGE.appOpen = not STORAGE.appOpen
 	end
 
+	if not STORAGE.appOpen then
+		return
+	end
+
 	local redirectVM = (sim.isInMainMenu and ac.isWindowOpen("main")) or sim.isPaused
 	ac.redirectVirtualMirror(redirectVM)
 
@@ -90,19 +94,5 @@ function script.update(dt)
 		isInMainMenu = sim.isInMainMenu
 	end
 
-	for k, v in ipairs(sm._setupSpinners) do
-		if string.find(v.id, "_PRESET_") then
-			local preset = string.split(v.id, "_PRESET_")[2]
-
-			tempSpFile:setAndSave(
-				"PRESET_" .. preset,
-				v.id:gsub("_PRESET_" .. preset, ""),
-				v.id == "COMPOUND" and v.value - 1 or v.value
-			)
-		end
-	end
-
-	ac.saveCurrentSetup("_temp.ini")
-	ac.loadSetup("_temp.ini")
-	ac.log("hi")
+	sm:applyPitstopStrategy()
 end

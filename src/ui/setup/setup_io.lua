@@ -138,7 +138,8 @@ end
 
 local function saveSetupFile()
 	ac.setActiveSetupName(saveSetup.name, saveSetup.track)
-	ac.saveCurrentSetup(saveSetup.path)
+	sm:saveSetup(saveSetup.path)
+
 	currentSetup = saveSetup.track .. "/" .. saveSetup.name
 	selectedSetup = table.clone(saveSetup, true)
 
@@ -301,9 +302,9 @@ local function saveSetupWindow(sm)
 	)
 	if cui.menuButton("Save Setup", vec2Temp1:set(buttonWidth / 2, iconButtonHeight)) then
 		if setupFileExists then
-			promptOverwriteSetup()
+			promptOverwriteSetup(sm)
 		else
-			saveSetupFile()
+			saveSetupFile(sm)
 		end
 	end
 end

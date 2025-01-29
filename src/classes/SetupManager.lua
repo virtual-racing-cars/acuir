@@ -43,24 +43,16 @@ local function loadSetupSpinners()
 	end
 
 	for _, v in pairs(ac.getSetupSpinners()) do
-		local id = v["name"]
-
-		local ext = setupINI:get(id, "EXT_CONTROLLER", "")
-
-		if id == "" and ext ~= "" then
-			return
-		end
-
+		local id = v.name
 		local tab = setupINI:get(id, "TAB", "")
-		local name = v["label"]
-		local min = v["min"]
-		local max = v["max"]
-		local step = v["step"]
-		local multiplier = v["displayMultiplier"] or 1
-		local units = v["units"] or ""
-		-- local format = name .. (multiplier == 1 and ": %.0f " or ": %.1f ") .. (units == "%" and "%%" or units)
+		local name = v.label
+		local min = v.min
+		local max = v.max
+		local step = v.step
+		local multiplier = v.displayMultiplier or 1
+		local units = v.units or ""
 		local format = (multiplier == 1 and "%.0f " or "%.2f ") .. (units == "%" and "%%" or units)
-		local items = v["items"] or {}
+		local items = v.items or {}
 		local xPos = setupINI:get(id, "POS_X", 0.5)
 		local yPos = setupINI:get(id, "POS_Y", 0)
 
@@ -81,13 +73,13 @@ local function loadSetupSpinners()
 			yPos = math.round(yPos)
 		end
 
-		if v.name == "COMPOUND" then
+		if name == "COMPOUND" then
 			tab = "TYRES"
 			min = 0
 			max = #items - 1
 		end
 
-		if v.name == "GEARSET" then
+		if name == "GEARSET" then
 			name = "GEAR SETS"
 			tab = "GEARS"
 			min = 0
@@ -100,7 +92,7 @@ local function loadSetupSpinners()
 			yPos = gearSetupSpinners[id].yPos
 		end
 
-		if v.name == "FUEL" then
+		if name == "FUEL" then
 			tab = "FUEL"
 		end
 
@@ -259,6 +251,8 @@ function SetupManager:initialize()
 		end
 	end
 
+	self.savedSetupDir = ac.getFolder(ac.FolderID.UserSetups) .. "\\" .. ac.getCarID(0)
+
 	self._history = {}
 	self._history_pos = 0
 
@@ -283,13 +277,51 @@ function SetupManager:LoadStuff(tbl)
 			end
 		end
 
-		v:setValue(ac.getSetupSpinnerValue(v.id))
+		v:setValue(ac.getSetupSpinnerValue(v.id, v.default))
+	end
+
+	self:loadPitstopStrategy(tbl)
+end
+
+function SetupManager:loadPitstopStrategy(file)
+	local spFileString = file:gsub(".ini", ".sp")
+
+	if not io.fileExists(spFileString) then
+		return
+	end
+
+	local tempSpFile = ac.INIConfig.load(spFileString)
+
+	for k, v in ipairs(self._setupSpinners) do
+		if string.find(v.id, "_PRESET_") then
+			local preset = string.split(v.id, "_PRESET_")[2]
+			v:setValue(tempSpFile:get("PRESET_" .. preset, v.id:gsub("_PRESET_" .. preset, ""), v.default))
+		end
 	end
 end
 
-local tempSpFile = ac.INIConfig.load(ac.getFolder(ac.FolderID.UserSetups) .. "\\" .. ac.getCarID(0) .. "\\_temp.sp")
+function SetupManager:saveSetup(file)
+	ac.saveCurrentSetup(file)
 
-function SetupManager:loadPitstopStrategy() end
+	local spFileString = file:gsub(".ini", ".sp")
+	local tempSpFile = ac.INIConfig.load(spFileString)
+
+	for k, v in ipairs(self._setupSpinners) do
+		if string.find(v.id, "_PRESET_") then
+			local preset = string.split(v.id, "_PRESET_")[2]
+			local setValue = string.find(v.id, "COMPOUND") and v.value - 1 or v.value
+
+			tempSpFile:set("PRESET_" .. preset, v.id:gsub("_PRESET_" .. preset, ""), setValue)
+		end
+	end
+
+	tempSpFile:save(spFileString)
+end
+
+function SetupManager:applyPitstopStrategy()
+	sm:saveSetup(self.savedSetupDir .. "\\_temp.ini")
+	ac.loadSetup(self.savedSetupDir .. "\\_temp.ini")
+end
 
 function SetupManager:undo()
 	if self._history_pos > 1 then
