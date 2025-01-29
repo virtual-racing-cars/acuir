@@ -17,6 +17,13 @@ local pitstopSetupSpinners = {
 	-- ["WING_2"] = { xPos = 0, yPos = 8, zeroDefault = true },
 }
 
+local gearSetupSpinners = {}
+
+for i = 1, ac.getCar(0).gearCount do
+	gearSetupSpinners["INTERNAL_GEAR_" .. i] = { xPos = 0.5, yPos = i - 1, zeroDefault = false }
+end
+gearSetupSpinners["FINAL_RATIO"] = { xPos = 0.5, yPos = ac.getCar(0).gearCount, zeroDefault = false }
+
 local function loadSetupSpinners()
 	local populatedTabs = {}
 	local pairedItems = {}
@@ -85,6 +92,12 @@ local function loadSetupSpinners()
 			tab = "GEARS"
 			min = 0
 			max = #items - 1
+		end
+
+		if gearSetupSpinners[id] then
+			tab = "GEARS"
+			xPos = gearSetupSpinners[id].xPos
+			yPos = gearSetupSpinners[id].yPos
 		end
 
 		if v.name == "FUEL" then
@@ -202,7 +215,7 @@ SetupManager = class("SetupManager")
 
 function SetupManager:initialize()
 	self._setupSpinners = loadSetupSpinners()
-	self._defaultTabNames = { "ELECTRONICS", "PITSTOP STRATEGY", "FUEL", "TYRES" } --, "GEARS" }
+	self._defaultTabNames = { "ELECTRONICS", "PITSTOP STRATEGY", "FUEL", "TYRES", "GEARS" }
 	self._tabNames = {}
 	self._tabCount = 0
 	self._defaultSetup = ac.stringifyCurrentSetup()

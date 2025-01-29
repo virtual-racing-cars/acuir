@@ -2,6 +2,9 @@ require("src.ui.setup.gear_window")
 require("src.classes.Button")
 require("src.classes.Slider")
 
+local car = ac.getCar(0)
+local cphys = ac.getCarPhysics(0)
+
 local currentApp = 0
 local tabBarPosition = 0
 local tabItemPositions = { [0] = 0 }
@@ -115,7 +118,7 @@ local function drawSetupSpinner(sm, si)
 	end
 
 	local value, changed, active, hovered = drawSpinner(
-		si.uid,
+		si.id,
 		si.name,
 		xPos,
 		yPos,
@@ -197,6 +200,27 @@ function car_setup(sm)
 			if drawSetupSpinner(sm, v) then
 				changed = true
 			end
+		end
+	end
+
+	if tab.name == "GEARS" and #cphys.gearRatios > 0 then
+		cui.setCursorX(0)
+		cui.setCursorY(134)
+
+		for i = 0, car.gearCount - 1 do
+			cui.setCursorX(0)
+			local maxGearSpeed = math.round(
+				(math.pi * car.wheels[2].tyreRadius * 2 * (car.rpmLimiter - 0))
+					/ (60 * cphys.gearRatios[i + 2] * cphys.finalRatio)
+					* 3.6
+			)
+			ui.dwriteTextAligned(
+				string.format("Gear %s: %s KMH", i + 1, maxGearSpeed),
+				18 * cui.scaleY(),
+				ui.Alignment.Center,
+				ui.Alignment.Start,
+				vec2(ui.windowWidth(), 97 * cui.scaleY())
+			)
 		end
 	end
 
