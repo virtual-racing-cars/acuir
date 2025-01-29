@@ -259,6 +259,8 @@ local function saveSetupWindow(sm)
 	end
 
 	ui.setCursorX(groupBegin)
+	buttonWidth = buttonWidth - 10 * cui.scaleY()
+
 	ui.drawRectFilled(ui.getCursor(), ui.getCursor() + vec2Temp1:set(buttonWidth, iconButtonHeight), SETTINGS.uiColor1)
 	if
 		cui.menuButton(
@@ -295,6 +297,7 @@ local function saveSetupWindow(sm)
 	end
 	ui.sameLine()
 
+	ui.offsetCursorX(10 * cui.scaleY())
 	ui.drawRectFilled(
 		ui.getCursor(),
 		ui.getCursor() + vec2Temp1:set(buttonWidth / 2, iconButtonHeight),
