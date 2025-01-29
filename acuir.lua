@@ -88,11 +88,9 @@ function script.update(dt)
 	local redirectVM = (sim.isInMainMenu and ac.isWindowOpen("main")) or sim.isPaused
 	ac.redirectVirtualMirror(redirectVM)
 
-	if isInMainMenu == sim.isInMainMenu then
-		return
-	else
-		isInMainMenu = sim.isInMainMenu
+	if isInMainMenu and not sim.isInMainMenu then
+		sm:applyPitstopStrategy()
 	end
 
-	sm:applyPitstopStrategy()
+	isInMainMenu = sim.isInMainMenu
 end

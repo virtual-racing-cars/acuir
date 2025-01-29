@@ -181,9 +181,7 @@ function car_setup(sm)
 			end
 
 			if string.find(v.id, "_PRESET_" .. pitstopStrategyPreset) then
-				if drawSetupSpinner(sm, v) then
-					sm.presetsNeedSaving = true
-				end
+				drawSetupSpinner(sm, v)
 			end
 		elseif v.yPos > -2 then
 			if drawSetupSpinner(sm, v) then
