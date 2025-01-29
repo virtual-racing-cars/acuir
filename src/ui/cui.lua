@@ -361,11 +361,15 @@ function cui.iconButton(label, icon, sizeX, sizeY, flags)
 end
 
 local treeNodeParent = ""
-function cui.treeNodeButton(label, size, active, bold)
+function cui.treeNodeButton(label, size, active, bold, count)
 	if bold then
 		ui.pushDWriteFont(fontBold)
 	else
 		ui.pushDWriteFont(fontRegular)
+	end
+
+	if not count then
+		count = 0
 	end
 
 	local fontSize = math.floor(size.y * 0.45)
@@ -400,8 +404,10 @@ function cui.treeNodeButton(label, size, active, bold)
 	local textOffset = bold and size.x / 60 or size.x / 30
 	ui.setCursor(tempCursor)
 	ui.offsetCursorX(textOffset)
+
+	local text = count > 0 and string.format(" %s (%s)", label, count) or string.format(" %s", label)
 	ui.dwriteTextAligned(
-		" " .. label,
+		text,
 		fontSize,
 		ui.Alignment.Start,
 		ui.Alignment.Center,
@@ -409,7 +415,7 @@ function cui.treeNodeButton(label, size, active, bold)
 		false,
 		hovered and rgbm(1, 1, 1, 1) or fontColor
 	)
-	if bold then
+	if bold and count > 0 then
 		ui.addIcon(
 			cui.loadStoredBool(id) and ui.Icons.Minus or ui.Icons.Plus,
 			vec2Temp1:set(size.y / 2, size.y / 2),
@@ -423,9 +429,14 @@ function cui.treeNodeButton(label, size, active, bold)
 	return clicked, id
 end
 
-function cui.treeNode(label, content)
-	local clicked, id = cui.treeNodeButton(label, vec2Temp1:set(ui.availableSpaceX(), 50 * cui.scaleY()), false, true)
+function cui.treeNode(label, count, content)
+	local clicked, id =
+		cui.treeNodeButton(label, vec2Temp1:set(ui.availableSpaceX(), 50 * cui.scaleY()), false, true, count)
 	treeNodeParent = label
+
+	if count < 1 then
+		return clicked
+	end
 
 	local open = cui.loadStoredBool(id)
 	if clicked then
@@ -443,10 +454,42 @@ function cui.treeNode(label, content)
 	return clicked
 end
 
+function cui.combo(label, size, previewValue, content)
+	local cursorXTemp = ui.getCursorX()
+	local clicked, id = cui.treeNodeButton(previewValue, size, false, true)
+	local cursorYTemp = ui.getCursorY()
+
+	local open = cui.loadStoredBool(id)
+	if clicked then
+		cui.storeBool(id, not open)
+	end
+
+	local value = previewValue
+
+	if open then
+		ui.setCursorX(cursorXTemp)
+		ui.setCursorY(cursorYTemp)
+
+		size.y = size.y * 4
+
+		ui.childWindow(label, size, true, ui.WindowFlags.None, function()
+			clicked, value = content(previewValue)
+		end)
+
+		if clicked then
+			cui.storeBool(id, false)
+		end
+	end
+
+	ui.setCursorY(cursorYTemp)
+
+	return value
+end
+
 function cui.inputTextBox(label, stringInput, size)
 	ui.pushDWriteFont(fontRegular)
 
-	local fontSize = math.floor(size.y * 0.7)
+	local fontSize = math.floor(size.y * 0.4)
 	fontSize = (fontSize % 2 ~= 0) and fontSize or fontSize + 1
 
 	local tempCursor = ui.getCursor()

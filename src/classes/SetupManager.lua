@@ -280,7 +280,6 @@ function SetupManager:LoadStuff(tbl)
 		if v.mirrored then
 			if ac.getSetupSpinnerValue(v.idMirror) ~= ac.getSetupSpinnerValue(v.id) then
 				v.mirrored = false
-				ac.log(v.id)
 			end
 		end
 

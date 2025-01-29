@@ -62,6 +62,7 @@ local menuButtonList = {
 	{
 		label = "DRIVE",
 		enabled = true,
+		condition = function() end,
 		func = function()
 			ac.tryToStart()
 		end,
@@ -69,6 +70,7 @@ local menuButtonList = {
 	{
 		label = "VEHICLE SETUP",
 		enabled = true,
+		condition = function() end,
 		func = function()
 			goToSetupPage()
 		end,
@@ -76,25 +78,31 @@ local menuButtonList = {
 	{
 		label = "TIME TABLE",
 		enabled = false,
+		condition = function() end,
 		func = function() end,
-	},
-	{
-		label = "REPLAY",
-		enabled = false,
-		func = function()
-			ac.tryToToggleReplay(true)
-		end,
 	},
 	{
 		label = "SETTINGS",
 		enabled = false,
+		condition = function() end,
 		func = function()
 			goToSettingsPage()
 		end,
 	},
 	{
+		label = "SKIP SESSION",
+		enabled = true,
+		condition = function()
+			return not (sim.sessionsCount > 1 and sim.currentSessionIndex + 1 < sim.sessionsCount)
+		end,
+		func = function()
+			ac.tryToSkipSession()
+		end,
+	},
+	{
 		label = "RESTART SESSION",
 		enabled = true,
+		condition = function() end,
 		func = function()
 			ac.tryToRestartSession()
 		end,
@@ -102,6 +110,7 @@ local menuButtonList = {
 	{
 		label = "QUIT",
 		enabled = true,
+		condition = function() end,
 		func = function()
 			promptShutdownAC()
 		end,

@@ -183,12 +183,11 @@ function drawSpinner(
 		and not cui.modalDialogCallback
 
 	if hoveredHelp and helpText and helpText ~= "NULL" and helpText ~= "" then
-		ui.tooltip(function()
-			local helpSections = string.split(helpText, "\\n\\n")
-
-			for i in ipairs(helpSections) do
-				ui.dwriteText(helpSections[i], 14 * cui.scaleY())
-			end
+		ui.tooltip(vec2(10, 20) * cui.scaleY(), function()
+			ui.pushTextWrapPosition(400 * cui.scaleX())
+			helpText = helpText:gsub("\\n", "\n")
+			ui.dwriteText(helpText, 20 * cui.scaleY())
+			ui.popTextWrapPosition()
 		end)
 	end
 

@@ -25,7 +25,7 @@ function bottomBar(buttons)
 		26 * cui.scaleY(),
 		ui.Alignment.End,
 		ui.Alignment.End,
-		ui.availableSpace() - vec2(220 * cui.scaleX(), 10 * cui.scaleY()),
+		ui.availableSpace() - vec2(40, 10) * cui.scaleY(),
 		false,
 		rgbm(0.8, 0.8, 0.8, 1)
 	)
@@ -33,22 +33,22 @@ function bottomBar(buttons)
 	ui.setCursorX(0)
 	ui.setCursorY(0)
 
-	ui.dwriteTextAligned(
-		"OFFLINE",
-		26 * cui.scaleY(),
-		ui.Alignment.End,
-		ui.Alignment.End,
-		ui.availableSpace() - vec2(100 * cui.scaleX(), 10 * cui.scaleY()),
-		false,
-		rgbm(1, 0.9, 0, 1)
-	)
-	ui.popDWriteFont()
+	-- ui.dwriteTextAligned(
+	-- 	"OFFLINE",
+	-- 	26 * cui.scaleY(),
+	-- 	ui.Alignment.End,
+	-- 	ui.Alignment.End,
+	-- 	ui.availableSpace() - vec2(100 * cui.scaleX(), 10 * cui.scaleY()),
+	-- 	false,
+	-- 	rgbm(1, 0.9, 0, 1)
+	-- )
+	-- ui.popDWriteFont()
 
-	ui.drawCircleFilled(
-		vec2(ui.windowWidth() - 30 * cui.scaleX(), ui.windowHeight() - 30 * cui.scaleY()),
-		10 * cui.scaleX(),
-		rgbm.colors.orange
-	)
+	-- ui.drawCircleFilled(
+	-- 	vec2(ui.windowWidth() - 30 * cui.scaleX(), ui.windowHeight() - 30 * cui.scaleY()),
+	-- 	10 * cui.scaleX(),
+	-- 	rgbm.colors.orange
+	-- )
 
 	ui.pushStyleColor(ui.StyleColor.Button, rgbm.colors.transparent)
 	ui.setCursorX(0)
@@ -81,14 +81,21 @@ function homeBar(buttons)
 
 	for i in ipairs(buttons) do
 		local menuButton = buttons[i]
+		local enabled = menuButton.enabled
+		local hidden = false
+
+		if menuButton.condition() then
+			hidden = true
+		end
 
 		if
-			cui.menuButton(
+			not hidden
+			and cui.menuButton(
 				menuButton.label,
 				menuButtonSize,
 				ui.Alignment.Center,
 				ui.Alignment.Center,
-				menuButton.enabled and ui.ButtonFlags.None or ui.ButtonFlags.Disabled,
+				enabled and ui.ButtonFlags.None or ui.ButtonFlags.Disabled,
 				false,
 				i == 1
 			)
@@ -249,9 +256,7 @@ function topBar(showSessionInfo)
 	ui.setCursorY(topBarHeight * 0.2)
 	ui.image(acLogo, acLogoSize)
 
-	if showSessionInfo then
-		sessionInfo()
-	end
+	sessionInfo()
 end
 
 function settingsMenuCommon(path, bottomBarButtons, escapeAction)

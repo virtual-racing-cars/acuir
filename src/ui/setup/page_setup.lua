@@ -112,10 +112,7 @@ function page.draw()
 						"car_status_subwindow",
 						STORAGE.setupTab .. "42",
 						vec2(0, ui.availableSpaceY() / 20),
-						vec2(
-							ui.windowWidth() + 20,
-							ui.availableSpaceY() - ui.availableSpaceY() / 20 - 56 * cui.scaleY()
-						),
+						vec2(ui.windowWidth() + 20, ui.availableSpaceY() - ui.availableSpaceY() / 20),
 						ui.WindowFlags.None,
 						function()
 							CarStatusWindow()
@@ -186,7 +183,7 @@ function page.draw()
 							setupIoDraw(sm)
 						end,
 						false,
-						true
+						false
 					)
 				end,
 				false,

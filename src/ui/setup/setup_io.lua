@@ -25,19 +25,17 @@ local function loadSetups()
 	loadedSetups[ac.getTrackID()] = {}
 
 	io.scanDir(setupsDir, function(dirName)
-		-- if SETTINGS.hideOtherTrackSetups then
-		-- 	if dirName ~= ac.getTrackID() and dirName ~= "generic" then
-		-- 		return
-		-- 	end
-		-- end
+		if string.find(dirName, ".sp") or string.find(dirName, ".ini") or string.find(dirName, ".txt") then
+			return
+		end
+
+		if loadedSetups[dirName] == nil then
+			loadedSetups[dirName] = {}
+		end
 
 		io.scanDir(setupsDir .. "\\" .. dirName, function(fileName, fileAttributes)
 			if string.find(fileName, ".sp") or string.find(fileName, ".txt") then
 				return
-			end
-
-			if loadedSetups[dirName] == nil then
-				loadedSetups[dirName] = {}
 			end
 
 			table.insert(loadedSetups[dirName], {
@@ -204,12 +202,44 @@ end
 
 local function saveSetupWindow(sm)
 	local iconButtonHeight = ui.windowHeight() / 5
-	local buttonWidth = (ui.windowWidth() / 12) * 10
-	local groupBegin = (ui.windowWidth() / 12)
+	local buttonWidth = (ui.windowWidth() / 24) * 22
+	local groupBegin = (ui.windowWidth() / 24)
 
-	ui.setCursorX(groupBegin)
-	ui.setCursorY(0)
-	ui.dummy(iconButtonHeight)
+	ui.setCursor(0)
+	ui.dwriteTextAligned(
+		"Current Setup - " .. currentSetup,
+		18 * cui.scaleY(),
+		ui.Alignment.Center,
+		ui.Alignment.Center,
+		vec2(ui.availableSpaceX(), iconButtonHeight)
+	)
+
+	-- ui.setCursorX(groupBegin)
+
+	-- saveSetup.track = cui.combo(
+	-- 	"##trackcombobox",
+	-- 	vec2(buttonWidth, iconButtonHeight),
+	-- 	saveSetup.track,
+	-- 	function(previewValue)
+	-- 		local clicked = false
+	-- 		local value = previewValue
+	-- 		io.scanDir(setupsDir, function(dirName)
+	-- 			if cui.treeNodeButton(dirName, vec2(buttonWidth, iconButtonHeight / 2), false, false) then
+	-- 				clicked = true
+	-- 				value = dirName
+	-- 			end
+	-- 		end)
+	-- 		return clicked, value
+	-- 	end
+	-- )
+
+	-- saveSetup.name = cui.inputText(
+	-- 	"##SetupName",
+	-- 	saveSetup.track .. "/",
+	-- 	saveSetup.name,
+	-- 	ui.InputTextFlags.None,
+	-- 	vec2Temp1:set(buttonWidth, iconButtonHeight)
+	-- )
 
 	ui.setCursorX(groupBegin)
 	saveSetup.name = cui.inputText(
@@ -219,6 +249,7 @@ local function saveSetupWindow(sm)
 		ui.InputTextFlags.None,
 		vec2Temp1:set(buttonWidth, iconButtonHeight)
 	)
+	ui.newLine()
 
 	local setupFileExists = false
 	if saveSetup.name ~= "" then
@@ -227,6 +258,7 @@ local function saveSetupWindow(sm)
 	end
 
 	ui.setCursorX(groupBegin)
+	ui.drawRectFilled(ui.getCursor(), ui.getCursor() + vec2Temp1:set(buttonWidth, iconButtonHeight), SETTINGS.uiColor1)
 	if
 		cui.menuButton(
 			"Load Setup",
@@ -239,8 +271,14 @@ local function saveSetupWindow(sm)
 		sm:LoadStuff(selectedSetup.path)
 		currentSetup = selectedSetup.track .. "/" .. selectedSetup.name
 	end
+	ui.newLine()
 
 	ui.setCursorX(groupBegin)
+	ui.drawRectFilled(
+		ui.getCursor(),
+		ui.getCursor() + vec2Temp1:set(buttonWidth / 2, iconButtonHeight),
+		SETTINGS.uiColor1
+	)
 	if
 		cui.menuButton(
 			"Delete Setup",
@@ -256,6 +294,11 @@ local function saveSetupWindow(sm)
 	end
 	ui.sameLine()
 
+	ui.drawRectFilled(
+		ui.getCursor(),
+		ui.getCursor() + vec2Temp1:set(buttonWidth / 2, iconButtonHeight),
+		SETTINGS.uiColor1
+	)
 	if cui.menuButton("Save Setup", vec2Temp1:set(buttonWidth / 2, iconButtonHeight)) then
 		if setupFileExists then
 			promptOverwriteSetup()
@@ -282,7 +325,7 @@ function setupIoDraw(sm)
 			saveSetupWindow(sm)
 		end,
 		false,
-		true
+		false
 	)
 
 	cui.contentWindow(
@@ -293,13 +336,6 @@ function setupIoDraw(sm)
 		ui.WindowFlags.None,
 		function()
 			ui.setCursor(0)
-			ui.dwriteTextAligned(
-				"Current Setup [" .. currentSetup .. "]",
-				24 * cui.scaleY(),
-				ui.Alignment.Center,
-				ui.Alignment.Center,
-				vec2(ui.availableSpaceX(), 40 * cui.scaleY())
-			)
 
 			if refreshingSetups then
 				ui.icon(ui.Icons.LoadingSpinner, ui.availableSpace())
@@ -307,7 +343,7 @@ function setupIoDraw(sm)
 				for _, track in ipairs(trackSortedSetups) do
 					ui.setCursorX(0)
 					if
-						cui.treeNode(track, function()
+						cui.treeNode(track, #loadedSetups[track], function()
 							for i in ipairs(loadedSetups[track]) do
 								local setup = loadedSetups[track][i]
 								local setupActive = selectedSetup.path == setup.path
@@ -353,7 +389,7 @@ function setupIoDraw(sm)
 			end
 		end,
 		false,
-		false,
+		true,
 		true
 	)
 

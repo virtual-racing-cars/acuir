@@ -32,7 +32,7 @@ local cornerStatusInfo = {
 		label = "Toe",
 		value = function(i)
 			local rightSide = i % 2 == 0
-			local sign = rightSide and -1 or 1
+			local sign = rightSide and 1 or -1
 
 			return car.wheels[i].toeIn * sign
 		end,
@@ -50,9 +50,9 @@ local cornerStatusInfo = {
 	{
 		label = "Load",
 		value = function(i)
-			return car.wheels[i].tyreLoadedRadius
+			return car.wheels[i].load
 		end,
-		round = 3,
+		round = 0,
 		unit = "N",
 	},
 	{
@@ -91,7 +91,7 @@ local centerStatusInfo = {
 		unit = "mm",
 	},
 	{
-		label = "Sprung CoG Height",
+		label = "CoG Height",
 		value = function(i)
 			return car.cgHeight * 1000
 		end,
@@ -206,12 +206,15 @@ function CarStatusWindow()
 				xPos = xPos,
 				yPos = yPos + row * 28,
 			})
-			cui.dwriteText({
-				text = math.round(infoBlock.value(j), infoBlock.round) .. " " .. infoBlock.unit,
-				fontSize = 24,
-				xPos = xPos + 150,
-				yPos = yPos + row * 28,
-			})
+
+			if infoBlock.value(j) then
+				cui.dwriteText({
+					text = math.round(infoBlock.value(j), infoBlock.round) .. " " .. infoBlock.unit,
+					fontSize = 24,
+					xPos = xPos + 150,
+					yPos = yPos + row * 28,
+				})
+			end
 		end
 	end
 

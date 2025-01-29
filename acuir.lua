@@ -1,8 +1,7 @@
 STORAGE = ac.storage({
 	appOpen = false,
 	hasAppOpened = false,
-	setupTab = "SETUP I/O",
-	helpOpen = false,
+	setupTab = 1,
 })
 
 SETTINGS = ac.storage({
