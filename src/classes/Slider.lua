@@ -112,6 +112,10 @@ function drawSlider(
 		SETTINGS.uiColor2
 	)
 
+	if locked then
+		ui.addIcon(ui.Icons.Padlock, vec2Temp1:set(height / 4, height / 4), vec2Temp2:set(0.95, 0.1), nil)
+	end
+
 	value = value * step + min
 
 	if not sliderScrolling or value == _value then

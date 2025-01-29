@@ -112,11 +112,11 @@ local function loadSetupSpinners()
 
 		table.insert(
 			setupSpinners,
-			SetupItem(id, tab, name, min, max, step, multiplier, items, format, xPos, yPos, uid)
+			SetupItem(id, tab, name, min, max, step, multiplier, items, format, xPos, yPos, uid, false, nil, v.readOnly)
 		)
 
 		local insertedNoChange = false
-		if pitstopSetupSpinners[id] then
+		if pitstopSetupSpinners[id] and not v.readOnly then
 			for i = 1, presetsCount do
 				if not insertedNoChange and id == "COMPOUND" then
 					items = table.clone(items, true)
@@ -286,6 +286,10 @@ function SetupManager:LoadStuff(tbl)
 		v:setValue(ac.getSetupSpinnerValue(v.id))
 	end
 end
+
+local tempSpFile = ac.INIConfig.load(ac.getFolder(ac.FolderID.UserSetups) .. "\\" .. ac.getCarID(0) .. "\\_temp.sp")
+
+function SetupManager:loadPitstopStrategy() end
 
 function SetupManager:undo()
 	if self._history_pos > 1 then

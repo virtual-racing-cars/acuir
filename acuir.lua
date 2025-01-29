@@ -29,6 +29,9 @@ require("ui.main_window")
 require("ui.pause.pause_window")
 require("ui.audio")
 
+require("classes.SetupManager")
+sm = SetupManager()
+
 ac.setWindowOpen("main", true)
 ui.onExclusiveHUD(function(mode)
 	if not STORAGE.appOpen then
@@ -62,6 +65,11 @@ end
 local uic = ac.getUI()
 local sim = ac.getSim()
 
+local tempSpFile = ac.INIConfig.load(ac.getFolder(ac.FolderID.UserSetups) .. "\\" .. ac.getCarID(0) .. "\\_temp.sp")
+tempSpFile:setAndSave("PRESET_0", "COMPOUND", -1)
+
+local isInMainMenu = false
+
 function script.update(dt)
 	if sim.isInMainMenu and SETTINGS.autoStart and windowTimeSync < os.clock() - 1 then
 		ac.tryToOpenRaceMenu("race")
@@ -75,4 +83,26 @@ function script.update(dt)
 
 	local redirectVM = (sim.isInMainMenu and ac.isWindowOpen("main")) or sim.isPaused
 	ac.redirectVirtualMirror(redirectVM)
+
+	if isInMainMenu == sim.isInMainMenu then
+		return
+	else
+		isInMainMenu = sim.isInMainMenu
+	end
+
+	for k, v in ipairs(sm._setupSpinners) do
+		if string.find(v.id, "_PRESET_") then
+			local preset = string.split(v.id, "_PRESET_")[2]
+
+			tempSpFile:setAndSave(
+				"PRESET_" .. preset,
+				v.id:gsub("_PRESET_" .. preset, ""),
+				v.id == "COMPOUND" and v.value - 1 or v.value
+			)
+		end
+	end
+
+	ac.saveCurrentSetup("_temp.ini")
+	ac.loadSetup("_temp.ini")
+	ac.log("hi")
 end

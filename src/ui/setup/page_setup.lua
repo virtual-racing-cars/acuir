@@ -1,14 +1,11 @@
 local page = {}
 
-require("classes.SetupManager")
 require("ui.setup.setup_window")
 require("ui.setup.car_status_window")
 require("src.ui.setup.setup_io")
 
 local vec2Temp1 = vec2()
 local vec2Temp2 = vec2()
-
-local sm = SetupManager()
 
 local bottomBarButtons = {
 	{

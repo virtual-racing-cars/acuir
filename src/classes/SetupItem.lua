@@ -29,7 +29,8 @@ function SetupItem:initialize(
 	yPos,
 	uid,
 	independentSpinner,
-	default
+	default,
+	fixed
 )
 	self.id = id
 	self.tab = tab
@@ -45,6 +46,12 @@ function SetupItem:initialize(
 	self.xPos = xPos
 	self.yPos = yPos
 	self.help = setupINI:get(self.id, "HELP", "")
+	self.fixed = fixed and true or false
+
+	if self.fixed then
+		self.min = self.value
+		self.max = self.value
+	end
 
 	if string.startsWith(self.help, "HELP") then
 		self.help = acHelpTags[self.help] or ""

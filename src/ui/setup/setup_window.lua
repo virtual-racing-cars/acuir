@@ -164,15 +164,9 @@ local function drawSetupSpinner(sm, si)
 	return changed
 end
 
-local tempSpFile = ac.INIConfig.load(ac.getFolder(ac.FolderID.UserSetups) .. "\\" .. ac.getCarID(0) .. "\\_temp.sp")
-tempSpFile:setAndSave("PRESET_0", "COMPOUND", -1)
-
-local pitstopStrategyUpdated = false
 local pitstopStrategyPreset = 1
 
 function car_setup(sm)
-	pitstopStrategyUpdated = false
-
 	spinnerWidth = 600 * cui.scaleX()
 	spinnerHeight = 70 * cui.scaleY()
 
@@ -188,12 +182,7 @@ function car_setup(sm)
 
 			if string.find(v.id, "_PRESET_" .. pitstopStrategyPreset) then
 				if drawSetupSpinner(sm, v) then
-					tempSpFile:setAndSave(
-						"PRESET_" .. pitstopStrategyPreset,
-						v.id:gsub("_PRESET_" .. pitstopStrategyPreset, ""),
-						v.id == "COMPOUND" and v.value - 1 or v.value
-					)
-					pitstopStrategyUpdated = true
+					sm.presetsNeedSaving = true
 				end
 			end
 		else
@@ -222,11 +211,6 @@ function car_setup(sm)
 				vec2(ui.windowWidth(), 97 * cui.scaleY())
 			)
 		end
-	end
-
-	if pitstopStrategyUpdated then
-		ac.saveCurrentSetup("_temp.ini")
-		ac.loadSetup("_temp.ini")
 	end
 
 	if changed then
