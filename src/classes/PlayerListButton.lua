@@ -36,6 +36,14 @@ function playerListButton(car, xPos, yPos, width, height)
 		vec2(width, height)
 	)
 
+	if not car.isConnected then
+		ui.drawLine(vec2(xPos, yPos), vec2(xPos + width, yPos), rgbm.colors.black)
+		ui.drawLine(vec2(xPos, yPos + height), vec2(xPos + width, yPos + height), rgbm.colors.black)
+
+		ui.popDWriteFont()
+		return
+	end
+
 	if car.isInPitlane then
 		ui.setCursorX(xPos + width - width / 15)
 		ui.setCursorY(yPos)

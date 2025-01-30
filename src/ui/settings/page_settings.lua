@@ -61,9 +61,7 @@ function page.draw()
 	for i = 1, #settingsPages do
 		local page = settingsPages[i]
 
-		if
-			cui.settingsButton(page.label, 560, 300, page.enabled and ui.ButtonFlags.None or ui.ButtonFlags.Disabled)
-		then
+		if cui.modalButton(page.label, 560, 300, page.enabled and ui.ButtonFlags.None or ui.ButtonFlags.Disabled) then
 			page.func()
 		end
 

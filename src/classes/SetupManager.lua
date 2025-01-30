@@ -2,6 +2,8 @@ require("classes.SetupItem")
 
 local setupINI = ac.INIConfig.carData(0, "setup.ini")
 
+local setupFixedINI = ac.INIConfig.load(ac.getFolder(ac.FolderID.UserSetups) .. "\\server_temp.ini")
+
 local pitstopsINI =
 	ac.INIConfig.load(string.format("%s\\%s", ac.getFolder(ac.FolderID.Root), "system\\cfg\\pitstop.ini"))
 local presetsCount = pitstopsINI:get("SETTINGS", "PRESETS_COUNT", 1)
@@ -73,7 +75,7 @@ local function loadSetupSpinners()
 			yPos = math.round(yPos)
 		end
 
-		if name == "COMPOUND" then
+		if id == "COMPOUND" then
 			tab = "TYRES"
 			min = 0
 			max = #items - 1
@@ -92,9 +94,11 @@ local function loadSetupSpinners()
 			yPos = gearSetupSpinners[id].yPos
 		end
 
-		if name == "FUEL" then
+		if id == "FUEL" then
 			tab = "FUEL"
 		end
+
+		local fixed = setupFixedINI:get(id, "VALUE", -12345) ~= -12345 or v.readOnly
 
 		if not table.contains(populatedTabs, tab) then
 			table.insert(populatedTabs, tab)
@@ -104,7 +108,7 @@ local function loadSetupSpinners()
 
 		table.insert(
 			setupSpinners,
-			SetupItem(id, tab, name, min, max, step, multiplier, items, format, xPos, yPos, uid, false, nil, v.readOnly)
+			SetupItem(id, tab, name, min, max, step, multiplier, items, format, xPos, yPos, uid, false, nil, fixed)
 		)
 
 		local insertedNoChange = false
@@ -295,7 +299,8 @@ function SetupManager:loadPitstopStrategy(file)
 	for k, v in ipairs(self._setupSpinners) do
 		if string.find(v.id, "_PRESET_") then
 			local preset = string.split(v.id, "_PRESET_")[2]
-			v:setValue(tempSpFile:get("PRESET_" .. preset, v.id:gsub("_PRESET_" .. preset, ""), v.default))
+			local newValue = tempSpFile:get("PRESET_" .. preset, v.id:gsub("_PRESET_" .. preset, ""), v.default)
+			v:setValue(v.id:gsub("_PRESET_" .. preset, "") == "COMPOUND" and newValue + 1 or newValue)
 		end
 	end
 end

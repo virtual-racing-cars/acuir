@@ -53,6 +53,10 @@ function SetupItem:initialize(
 		self.max = self.value
 	end
 
+	if self.min == self.max then
+		self.fixed = true
+	end
+
 	if string.startsWith(self.help, "HELP") then
 		self.help = acHelpTags[self.help] or ""
 	end

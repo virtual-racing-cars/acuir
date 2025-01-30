@@ -3,9 +3,9 @@ local page = {}
 require("ui.setup.setup_window")
 require("ui.setup.car_status_window")
 require("src.ui.setup.setup_io")
+require("classes.SetupManager")
 
 local vec2Temp1 = vec2()
-local vec2Temp2 = vec2()
 
 local bottomBarButtons = {
 	{
@@ -38,7 +38,31 @@ local bottomBarButtons = {
 	},
 }
 
+sm = nil
+
+local initTimer = 0
+
+local acLogo = ac.getFolder(ac.FolderID.Root) .. "\\launcher\\themes\\default\\graphics\\btn_AC_logo.png"
+local acLogoSize = ui.imageSize(acLogo) * 2 * cui.scaleY()
+
 function page.draw()
+	if not sm then
+		if initTimer == 0 then
+			initTimer = os.clock() + 2
+		elseif initTimer < os.clock() then
+			sm = SetupManager()
+		end
+
+		ui.drawRectFilled(vec2(0, 0), ui.windowSize(), SETTINGS.uiColor1 / 1.25)
+		acLogoSize = ui.imageSize(acLogo) * 2 * cui.scaleY()
+
+		ui.setCursorX(ui.windowWidth() / 2 - acLogoSize.x / 2)
+		ui.setCursorY(ui.windowHeight() / 2 - acLogoSize.y / 2)
+		ui.image(acLogo, acLogoSize)
+
+		return
+	end
+
 	topBar(false)
 
 	cui.contentWindow(

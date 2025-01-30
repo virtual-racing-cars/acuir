@@ -29,9 +29,6 @@ require("ui.main_window")
 require("ui.pause.pause_window")
 require("ui.audio")
 
-require("classes.SetupManager")
-sm = SetupManager()
-
 ac.setWindowOpen("main", true)
 ui.onExclusiveHUD(function(mode)
 	if not STORAGE.appOpen then
@@ -87,6 +84,10 @@ function script.update(dt)
 
 	local redirectVM = (sim.isInMainMenu and ac.isWindowOpen("main")) or sim.isPaused
 	ac.redirectVirtualMirror(redirectVM)
+
+	if not sm then
+		return
+	end
 
 	if isInMainMenu and not sim.isInMainMenu then
 		sm:applyPitstopStrategy()

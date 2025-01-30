@@ -112,10 +112,6 @@ function drawSlider(
 		SETTINGS.uiColor2
 	)
 
-	if locked then
-		ui.addIcon(ui.Icons.Padlock, vec2Temp1:set(height / 4, height / 4), vec2Temp2:set(0.95, 0.1), nil)
-	end
-
 	value = value * step + min
 
 	if not sliderScrolling or value == _value then
@@ -148,6 +144,9 @@ function drawSlider(
 
 	return value, changed, active
 end
+
+local hoveredId = nil
+local hoveredTimer = 0
 
 function drawSpinner(
 	id,
@@ -187,18 +186,25 @@ function drawSpinner(
 		and not cui.modalDialogCallback
 
 	if hoveredHelp and helpText and helpText ~= "NULL" and helpText ~= "" then
-		ui.tooltip(vec2(10, 20) * cui.scaleY(), function()
-			ui.pushTextWrapPosition(400 * cui.scaleX())
-			helpText = helpText:gsub("\\n", "\n")
-			ui.dwriteText(helpText, 20 * cui.scaleY())
-			ui.popTextWrapPosition()
-		end)
+		if hoveredId ~= id then
+			hoveredTimer = os.clock() + 0.3
+			hoveredId = id
+		end
+
+		if hoveredTimer < os.clock() then
+			ui.tooltip(vec2(10, 20) * cui.scaleY(), function()
+				ui.pushTextWrapPosition(400 * cui.scaleX())
+				helpText = helpText:gsub("\\n", "\n")
+				ui.dwriteText(helpText, 20 * cui.scaleY())
+				ui.popTextWrapPosition()
+			end)
+		end
 	end
 
 	ui.drawRectFilled(
 		vec2Temp1:set(xPos + height, yPos + buttonSize),
 		vec2Temp2:set(xPos + width - height, yPos + height),
-		SETTINGS.uiColor3
+		locked and SETTINGS.uiColor3 / 1.25 or SETTINGS.uiColor3
 	)
 
 	local hovered = ui.mouseLocalPos() >= vec2Temp1:set(xPos + buttonSize, yPos)

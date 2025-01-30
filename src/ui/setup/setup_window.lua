@@ -111,7 +111,6 @@ local function drawSetupSpinner(sm, si)
 
 	local xPos = positions[si.xPos]
 	local yPos = (si.yPos * 97 + 60) * cui.scaleY()
-	local locked = si.min == si.max
 
 	if #si.items > 0 then
 		si.format = si.items[si.value + 1]
@@ -124,7 +123,7 @@ local function drawSetupSpinner(sm, si)
 		yPos,
 		spinnerWidth,
 		spinnerHeight,
-		locked,
+		si.fixed,
 		si.value,
 		si.min,
 		si.max,
@@ -138,7 +137,7 @@ local function drawSetupSpinner(sm, si)
 		si.help
 	)
 
-	if si.mirrorAvailable and not locked then
+	if si.mirrorAvailable and not si.fixed then
 		ui.setCursorX(ui.windowWidth() / 2 - spinnerHeight / 4)
 		ui.setCursorY(yPos + spinnerHeight / 4)
 		if linkButton(si.name, vec2(spinnerHeight / 2, spinnerHeight / 2), si.mirrored) then
@@ -157,7 +156,7 @@ local function drawSetupSpinner(sm, si)
 		end
 	end
 
-	if active or locked then
+	if active or si.fixed then
 		changed = false
 	end
 
@@ -190,17 +189,13 @@ function car_setup(sm)
 		end
 	end
 
-	if tab.name == "GEARS" and #cphys.gearRatios > 0 then
+	if tab.name == "GEARS" then
 		cui.setCursorX(0)
 		cui.setCursorY(134)
 
 		for i = 0, car.gearCount - 1 do
 			cui.setCursorX(0)
-			local maxGearSpeed = math.round(
-				(math.pi * car.wheels[2].tyreRadius * 2 * (car.rpmLimiter - 0))
-					/ (60 * cphys.gearRatios[i + 2] * cphys.finalRatio)
-					* 3.6
-			)
+			local maxGearSpeed = ac.getCarMaxSpeedWithGear(0, i) * 3.6
 			ui.dwriteTextAligned(
 				string.format("Gear %s: %s KMH", i + 1, maxGearSpeed),
 				18 * cui.scaleY(),

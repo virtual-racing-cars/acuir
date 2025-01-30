@@ -164,9 +164,12 @@ local sessionInfoTable = {
 		end,
 		row2 = function()
 			if sim.raceSessionType == ac.SessionType.Race then
-				return string.format("%.1f", sim.timeToSessionStart)
+				local hours = sim.timeToSessionStart / 3600000
+				local minutes = (sim.timeToSessionStart % 3600000) / 60000
+
+				return string.format("%02d:%02d", hours, minutes)
 			else
-				return ""
+				return
 			end
 		end,
 	},
@@ -226,24 +229,30 @@ local function sessionInfo()
 		)
 		ui.popDWriteFont()
 
-		ui.drawRectFilled(ui.getCursor(), ui.getCursor() + vec2(sizeX, sizeY), rgbm(0.1, 0.1, 0.1, 0.5))
+		local expanded = not sessionInfoTable[i].row2()
+		ui.drawRectFilled(
+			ui.getCursor(),
+			ui.getCursor() + vec2(sizeX, expanded and sizeY * 2 or sizeY),
+			rgbm(0.1, 0.1, 0.1, 0.5)
+		)
 		ui.dwriteTextAligned(
 			sessionInfoTable[i].row1(),
-			fontSize,
+			expanded and fontSize * 2 or fontSize,
 			ui.Alignment.Center,
 			ui.Alignment.Center,
-			vec2(sizeX, sizeY)
+			vec2(sizeX, expanded and sizeY * 2 or sizeY)
 		)
 
-		ui.drawRectFilled(ui.getCursor(), ui.getCursor() + vec2(sizeX, sizeY), rgbm(0.1, 0.1, 0.1, 0.5))
-
-		ui.dwriteTextAligned(
-			sessionInfoTable[i].row2(),
-			fontSize,
-			ui.Alignment.Center,
-			ui.Alignment.Center,
-			vec2(sizeX, sizeY)
-		)
+		if not expanded then
+			ui.drawRectFilled(ui.getCursor(), ui.getCursor() + vec2(sizeX, sizeY), rgbm(0.1, 0.1, 0.1, 0.5))
+			ui.dwriteTextAligned(
+				sessionInfoTable[i].row2(),
+				fontSize,
+				ui.Alignment.Center,
+				ui.Alignment.Center,
+				vec2(sizeX, sizeY)
+			)
+		end
 
 		ui.endGroup()
 		ui.setCursor(vec2(startX + ((sizeX + gap) * i), startY))
