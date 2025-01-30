@@ -1,9 +1,8 @@
 require("classes.SetupItem")
 
+local sim = ac.getSim()
 local setupINI = ac.INIConfig.carData(0, "setup.ini")
-
 local setupFixedINI = ac.INIConfig.load(ac.getFolder(ac.FolderID.UserSetups) .. "\\server_temp.ini")
-
 local pitstopsINI =
 	ac.INIConfig.load(string.format("%s\\%s", ac.getFolder(ac.FolderID.Root), "system\\cfg\\pitstop.ini"))
 local presetsCount = pitstopsINI:get("SETTINGS", "PRESETS_COUNT", 1)
@@ -81,7 +80,7 @@ local function loadSetupSpinners()
 			max = #items - 1
 		end
 
-		if name == "GEARSET" then
+		if id == "GEARSET" then
 			name = "GEAR SETS"
 			tab = "GEARS"
 			min = 0
@@ -98,7 +97,7 @@ local function loadSetupSpinners()
 			tab = "FUEL"
 		end
 
-		local fixed = setupFixedINI:get(id, "VALUE", -12345) ~= -12345 or v.readOnly
+		local fixed = sim.isOnlineRace and setupFixedINI:get(id, "VALUE", -12345) ~= -12345
 
 		if not table.contains(populatedTabs, tab) then
 			table.insert(populatedTabs, tab)
@@ -108,7 +107,23 @@ local function loadSetupSpinners()
 
 		table.insert(
 			setupSpinners,
-			SetupItem(id, tab, name, min, max, step, multiplier, items, format, xPos, yPos, uid, false, nil, fixed)
+			SetupItem(
+				id,
+				tab,
+				name,
+				min,
+				max,
+				step,
+				multiplier,
+				items,
+				format,
+				xPos,
+				yPos,
+				uid,
+				false,
+				nil,
+				fixed or v.readOnly
+			)
 		)
 
 		local insertedNoChange = false
