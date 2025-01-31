@@ -42,10 +42,7 @@ local function loadSetups()
 				name = fileName,
 				track = dirName,
 				path = setupsDir .. "\\" .. dirName .. "\\" .. fileName,
-				lastWriteTime = os.date(
-					"%A, %B %d, %Y %H:%M:%S",
-					tonumber(string.trim(tostring(fileAttributes.lastWriteTime), "LL"))
-				),
+				lastWriteTime = fileAttributes.lastWriteTime,
 			})
 		end)
 	end)
@@ -214,33 +211,6 @@ local function saveSetupWindow(sm)
 		ui.Alignment.Center,
 		vec2(ui.availableSpaceX(), iconButtonHeight)
 	)
-
-	-- ui.setCursorX(groupBegin)
-
-	-- saveSetup.track = cui.combo(
-	-- 	"##trackcombobox",
-	-- 	vec2(buttonWidth, iconButtonHeight),
-	-- 	saveSetup.track,
-	-- 	function(previewValue)
-	-- 		local clicked = false
-	-- 		local value = previewValue
-	-- 		io.scanDir(setupsDir, function(dirName)
-	-- 			if cui.treeNodeButton(dirName, vec2(buttonWidth, iconButtonHeight / 2), false, false) then
-	-- 				clicked = true
-	-- 				value = dirName
-	-- 			end
-	-- 		end)
-	-- 		return clicked, value
-	-- 	end
-	-- )
-
-	-- saveSetup.name = cui.inputText(
-	-- 	"##SetupName",
-	-- 	saveSetup.track .. "/",
-	-- 	saveSetup.name,
-	-- 	ui.InputTextFlags.None,
-	-- 	vec2Temp1:set(buttonWidth, iconButtonHeight)
-	-- )
 
 	ui.setCursorX(groupBegin)
 	saveSetup.name = cui.inputText(
