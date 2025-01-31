@@ -68,6 +68,7 @@ function goToSettingsAiPage()
 end
 
 goToHomePage()
+goToSetupPage()
 
 local exclusiveHudMode = ""
 

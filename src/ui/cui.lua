@@ -490,7 +490,12 @@ function cui.combo(label, size, previewValue, content)
 	return value
 end
 
-function cui.inputTextBox(label, stringInput, size)
+local charSizes = {}
+local textInputCursorPos = 0
+local textInputCursorDragPos = 0
+local selectedRange = { 0, 0 }
+
+function cui.inputTextBox(label, stringPrefix, stringInput, size)
 	ui.pushDWriteFont(fontRegular)
 
 	local fontSize = math.floor(size.y * 0.4)
@@ -509,11 +514,26 @@ function cui.inputTextBox(label, stringInput, size)
 	local id = ui.getLastID()
 	local itemActive = cui.loadStoredBool(id)
 
+	ui.setCursor(tempCursor)
+	local textOffset = size.x / 60
+	ui.offsetCursorX(textOffset)
+	ui.offsetCursorY(2)
+
+	charSizes = {}
+	for i = 1, #stringInput do
+		charSizes[i] = ui.measureDWriteText(stringInput:sub(i, i), fontSize).x
+	end
+
+	if itemActive then
+		ui.drawRectFilled(
+			vec2(textInputCursorPos, ui.getCursorY()),
+			vec2(textInputCursorPos + (textInputCursorDragPos - textInputCursorPos), ui.getCursorY() + size.y - 2),
+			rgbm.colors.red
+		)
+	end
+
 	if hovered then
 		ui.setMouseCursor(ui.MouseCursor.TextInput)
-
-		if itemActive then
-		end
 	end
 
 	if itemActive == nil then
@@ -526,21 +546,76 @@ function cui.inputTextBox(label, stringInput, size)
 
 	ui.drawRect(r1, r2, rgbm.colors.white, 0, ui.CornerFlags.None, 2)
 
-	ui.setCursor(tempCursor)
-	local textOffset = size.x / 60
-	ui.offsetCursorX(textOffset)
-	ui.offsetCursorY(2)
+	local cursorSet = false
 
-	local text = (itemActive and math.floor(os.clock()) % 2 == 0) and stringInput .. "|" or stringInput
 	ui.dwriteTextAligned(
-		text,
+		stringPrefix,
 		fontSize,
 		ui.Alignment.Start,
 		ui.Alignment.Center,
-		vec2Temp1:set(size.x - textOffset, size.y),
+		vec2Temp1:set(ui.measureDWriteText(stringPrefix, fontSize).x, size.y),
 		false,
 		rgbm.colors.white
 	)
+	ui.sameLine()
+
+	for i in ipairs(charSizes) do
+		if
+			ui.mouseDragDelta(ui.MouseButton.Left).x < 0
+			and textInputCursorPos + ui.mouseDragDelta(ui.MouseButton.Left).x > ui.getCursorX()
+		then
+			textInputCursorDragPos = ui.getCursorX()
+			selectedRange[1] = i - 1
+		end
+
+		if not cursorSet and ui.mouseClicked(ui.MouseButton.Left) and ui.mouseLocalPos().x < ui.getCursorX() then
+			textInputCursorPos = ui.getCursorX()
+			textInputCursorDragPos = ui.getCursorX()
+			cursorSet = true
+			selectedRange[2] = i - 1
+		end
+
+		ui.dwriteTextAligned(
+			stringInput:sub(i, i),
+			fontSize,
+			ui.Alignment.Start,
+			ui.Alignment.Center,
+			vec2Temp1:set(charSizes[i], size.y),
+			false,
+			rgbm.colors.white
+		)
+		ui.sameLine()
+
+		if
+			ui.mouseDragDelta(ui.MouseButton.Left).x > 0
+			and textInputCursorPos + ui.mouseDragDelta(ui.MouseButton.Left).x > ui.getCursorX()
+		then
+			textInputCursorDragPos = ui.getCursorX()
+			selectedRange[1] = i
+		end
+
+		if not cursorSet and ui.mouseClicked(ui.MouseButton.Left) and ui.mouseLocalPos().x < ui.getCursorX() then
+			textInputCursorPos = ui.getCursorX()
+			textInputCursorDragPos = ui.getCursorX()
+			cursorSet = true
+			selectedRange[2] = i
+		end
+
+		if i == math.max(selectedRange[1], selectedRange[2]) or i == #charSizes then
+			ac.log("hi")
+
+			if itemActive and math.floor(os.clock()) % 2 == 0 or (hovered and ui.mouseClicked(ui.MouseButton.Left)) then
+				ui.drawSimpleLine(
+					vec2(textInputCursorPos, r1.y + 5),
+					vec2(textInputCursorPos, r1.y - 5) + vec2(0, size.y),
+					rgbm.colors.white,
+					1
+				)
+			end
+		end
+
+		ac.debug(i .. " " .. stringInput:sub(i, i), ui.getCursorX())
+	end
 
 	ui.popDWriteFont()
 
@@ -548,7 +623,7 @@ function cui.inputTextBox(label, stringInput, size)
 end
 
 function cui.inputText(label, stringPrefix, stringInput, flags, size)
-	local clicked, itemActive = cui.inputTextBox(label, stringPrefix .. stringInput, size)
+	local clicked, itemActive = cui.inputTextBox(label, stringPrefix, stringInput, size)
 
 	if not itemActive then
 		return stringInput
@@ -557,7 +632,21 @@ function cui.inputText(label, stringPrefix, stringInput, flags, size)
 	local captured = ui.captureKeyboard(true, true, true)
 	local charToAdd = nil
 
-	if ui.keyPressed(ui.Key.Backspace) and #stringInput > 0 then
+	if ui.keyPressed(ui.Key.Backspace) and #stringInput > 0 and selectedRange[1] ~= selectedRange[2] then
+		ac.log(selectedRange[1])
+		ac.log(selectedRange[2])
+
+		if selectedRange[1] >= selectedRange[2] then
+			stringInput = stringInput:sub(1, selectedRange[2]) .. stringInput:sub(selectedRange[1] + 1)
+		end
+
+		if selectedRange[2] > selectedRange[1] then
+			stringInput = stringInput:sub(1, selectedRange[1] - 1) .. stringInput:sub(selectedRange[2] + 1)
+		end
+
+		selectedRange[1] = 0
+		selectedRange[2] = 0
+	elseif ui.keyPressed(ui.Key.Backspace) and #stringInput > 0 then
 		stringInput = stringInput:sub(1, -2)
 		audioTrigger()
 	elseif #captured > 0 then

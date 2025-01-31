@@ -45,6 +45,8 @@ local initTimer = 0
 local acLogo = ac.getFolder(ac.FolderID.Root) .. "\\launcher\\themes\\default\\graphics\\btn_AC_logo.png"
 local acLogoSize = ui.imageSize(acLogo) * 2 * cui.scaleY()
 
+sm = SetupManager()
+
 function page.draw()
 	if not sm then
 		if initTimer == 0 then
