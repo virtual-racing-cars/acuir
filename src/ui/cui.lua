@@ -385,7 +385,11 @@ function cui.treeNodeButton(label, size, active, bold, count)
 	end
 
 	local tempCursor = ui.getCursor()
-	local clicked = ui.button("##" .. label .. treeNodeParent, size, ui.ButtonFlags.None)
+	local clicked = ui.button(
+		"##" .. label .. treeNodeParent,
+		size,
+		ui.ButtonFlags.PressedOnClick + ui.ButtonFlags.PressedOnDoubleClick
+	)
 	local hovered = ui.itemHovered() and not cui.modalDialogCallback
 	local id = ui.getLastID()
 

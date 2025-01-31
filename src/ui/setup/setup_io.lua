@@ -376,6 +376,13 @@ function setupIoDraw(sm)
 										path = setup.path,
 										creation = setup.creationTime,
 									}
+
+									ac.log(ac.getUI().isMouseLeftKeyDoubleClicked)
+
+									if ac.getUI().isMouseLeftKeyDoubleClicked then
+										sm:LoadStuff(selectedSetup.path)
+										currentSetup = selectedSetup.track .. "/" .. selectedSetup.name
+									end
 								end
 							end
 						end)

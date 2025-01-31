@@ -1,7 +1,12 @@
 local sim = ac.getSim()
 
 function playerListButton(car, xPos, yPos, width, height)
+	width = width - width / 50
+
+	ui.beginGroup(width)
 	ui.pushDWriteFont(ui.DWriteFont("Rajdhani"):weight(ui.DWriteFont.Weight.SemiBold))
+
+	local fontSize = height / 2
 
 	ui.setCursorX(xPos)
 	ui.setCursorY(yPos)
@@ -24,58 +29,85 @@ function playerListButton(car, xPos, yPos, width, height)
 
 	ui.setCursorX(xPos)
 	ui.setCursorY(yPos)
-	ui.dwriteTextAligned(car.racePosition, height / 2, ui.Alignment.End, ui.Alignment.Center, vec2(width / 20, height))
+	ui.dwriteTextAligned(car.racePosition, fontSize, ui.Alignment.End, ui.Alignment.Center, vec2(width / 20, height))
 
 	ui.setCursorX(xPos + width / 12)
 	ui.setCursorY(yPos)
 	ui.dwriteTextAligned(
-		ac.getDriverName(car.index),
-		height / 2,
+		car.isConnected and ac.getDriverName(car.index) or "---",
+		fontSize,
 		ui.Alignment.Start,
 		ui.Alignment.Center,
-		vec2(width, height)
+		vec2(width / 4, height)
 	)
+
+	ui.sameLine()
 
 	if not car.isConnected then
 		ui.drawLine(vec2(xPos, yPos), vec2(xPos + width, yPos), rgbm.colors.black)
 		ui.drawLine(vec2(xPos, yPos + height), vec2(xPos + width, yPos + height), rgbm.colors.black)
 
 		ui.popDWriteFont()
+		ui.endGroup()
 		return
 	end
 
-	if car.isInPitlane then
-		ui.setCursorX(xPos + width - width / 15)
-		ui.setCursorY(yPos)
+	local infoWidth = ui.availableSpaceX() / 4
 
-		ui.drawRectFilled(vec2(xPos + width - width / 15, yPos), vec2(xPos + width, yPos + height), SETTINGS.uiColor3)
+	ui.dwriteTextAligned(
+		ac.lapTimeToString(car.previousLapTimeMs),
+		fontSize,
+		ui.Alignment.Center,
+		ui.Alignment.Center,
+		vec2(infoWidth, height),
+		false,
+		rgbm.colors.white
+	)
+	ui.sameLine()
+
+	ui.dwriteTextAligned(
+		ac.lapTimeToString(car.bestLapTimeMs),
+		fontSize,
+		ui.Alignment.Center,
+		ui.Alignment.Center,
+		vec2(infoWidth, height),
+		false,
+		rgbm.colors.white
+	)
+	ui.sameLine()
+
+	ui.dwriteTextAligned(
+		ac.getTyresName(car.index, car.compoundIndex),
+		fontSize,
+		ui.Alignment.Center,
+		ui.Alignment.Center,
+		vec2(infoWidth, height),
+		false,
+		rgbm.colors.white
+	)
+	ui.sameLine()
+
+	if car.isInPitlane or car.isRetired then
+		ui.drawRectFilled(
+			vec2(ui.getCursorX(), yPos),
+			vec2(ui.getCursorX() + infoWidth / 2, yPos + height),
+			SETTINGS.uiColor3
+		)
 
 		ui.dwriteTextAligned(
 			"P",
-			height / 2,
+			fontSize,
 			ui.Alignment.Center,
 			ui.Alignment.Center,
-			vec2(width / 15, height),
+			vec2(infoWidth / 2, height),
 			false,
 			rgbm.colors.black
 		)
 	end
 
-	ui.setCursorX(xPos + width - (width / 15) * 2)
-	ui.setCursorY(yPos)
-
-	ui.dwriteTextAligned(
-		ac.getTyresName(car.index, car.compoundIndex),
-		height / 2,
-		ui.Alignment.Center,
-		ui.Alignment.Center,
-		vec2(width / 15, height),
-		false,
-		rgbm.colors.white
-	)
-
 	ui.drawLine(vec2(xPos, yPos), vec2(xPos + width, yPos), rgbm.colors.black)
 	ui.drawLine(vec2(xPos, yPos + height), vec2(xPos + width, yPos + height), rgbm.colors.black)
 
 	ui.popDWriteFont()
+	ui.endGroup()
 end

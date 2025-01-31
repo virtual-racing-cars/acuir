@@ -1,8 +1,13 @@
 require("classes.SetupItem")
 
 local sim = ac.getSim()
+local car = ac.getCar(0)
 local setupINI = ac.INIConfig.carData(0, "setup.ini")
-local setupFixedINI = ac.INIConfig.load(ac.getFolder(ac.FolderID.UserSetups) .. "\\server_temp.ini")
+
+local setupFixedFile = ac.getFolder(ac.FolderID.UserSetups) .. "\\server_temp.ini"
+local setupFixedINI = ac.INIConfig.load(setupFixedFile)
+local setupFixed = io.lastWriteTime(setupFixedFile) > os.time() - 10
+
 local pitstopsINI =
 	ac.INIConfig.load(string.format("%s\\%s", ac.getFolder(ac.FolderID.Root), "system\\cfg\\pitstop.ini"))
 local presetsCount = pitstopsINI:get("SETTINGS", "PRESETS_COUNT", 1)
@@ -30,14 +35,35 @@ local function loadSetupSpinners()
 	local pairedItems = {}
 	local setupSpinners = {}
 
-	local electronicsSetupItems = {
-		"MGUK_DELIVERY",
-		"MGUK_RECOVERY",
-		"MGUH_MODE",
-		"BRAKE_ENGINE",
-		"ABS",
-		"TRACTION_CONTROL",
-	}
+	local electronicsSetupItems = {}
+
+	if car.hasCockpitERSDelivery then
+		table.insert(electronicsSetupItems, "MGUK_DELIVERY")
+	end
+
+	if car.hasCockpitERSRecovery then
+		table.insert(electronicsSetupItems, "MGUK_RECOVERY")
+	end
+
+	if car.hasCockpitMGUHMode then
+		table.insert(electronicsSetupItems, "MGUH_MODE")
+	end
+
+	if car.hasEngineBrakeSettings then
+		table.insert(electronicsSetupItems, "BRAKE_ENGINE")
+	end
+
+	if car.absModes > 0 then
+		table.insert(electronicsSetupItems, "ABS")
+	end
+
+	if car.tractionControlModes > 0 then
+		table.insert(electronicsSetupItems, "TRACTION_CONTROL")
+	end
+
+	if car.tractionControl2Modes > 0 then
+		table.insert(electronicsSetupItems, "TRACTION_CONTROL_2")
+	end
 
 	for i in ipairs(setupSpinners) do
 		setupSpinners[i] = nil
@@ -66,6 +92,7 @@ local function loadSetupSpinners()
 		table.findFirst(electronicsSetupItems, function(item, index, callbackData)
 			if id == item then
 				tab = "ELECTRONICS"
+
 				yPos = index - 1
 			end
 		end)
@@ -97,7 +124,7 @@ local function loadSetupSpinners()
 			tab = "FUEL"
 		end
 
-		local fixed = sim.isOnlineRace and setupFixedINI:get(id, "VALUE", -12345) ~= -12345
+		local fixed = setupFixed and sim.isOnlineRace and setupFixedINI:get(id, "VALUE", -12345) ~= -12345
 
 		if not table.contains(populatedTabs, tab) then
 			table.insert(populatedTabs, tab)
@@ -127,7 +154,7 @@ local function loadSetupSpinners()
 		)
 
 		local insertedNoChange = false
-		if pitstopSetupSpinners[id] and not v.readOnly then
+		if pitstopSetupSpinners[id] then
 			for i = 1, presetsCount do
 				if not insertedNoChange and id == "COMPOUND" then
 					items = table.clone(items, true)
