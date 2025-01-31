@@ -5,12 +5,11 @@ local sim = ac.getSim()
 local acLogo = ac.getFolder(ac.FolderID.Root) .. "\\launcher\\themes\\default\\graphics\\btn_AC_logo.png"
 local acLogoSize = ui.imageSize(acLogo)
 
-local teleportPitsCallback = nil
-
 local pauseButtons = {
 	{
 		label = "Resume",
 		enabled = true,
+		condition = function() end,
 		func = function()
 			ac.tryToPause(false)
 		end,
@@ -18,6 +17,7 @@ local pauseButtons = {
 	{
 		label = "Replay",
 		enabled = true,
+		condition = function() end,
 		func = function()
 			ac.tryToToggleReplay(true)
 		end,
@@ -26,28 +26,38 @@ local pauseButtons = {
 	{
 		label = "Settings",
 		enabled = false,
+		condition = function() end,
 		func = function() end,
 	},
 	{
 		label = "View Settings",
 		enabled = false,
+		condition = function() end,
 		func = function() end,
 	},
 	{
 		label = "Back To Pitlane",
 		enabled = true,
+		condition = function() end,
 		func = function()
-			ac.tryToTeleportToPits()
 			ac.tryToPause(false)
-
+			ac.tryToTeleportToPits()
 			teleportPitsCallback = function()
-				return ac.tryToOpenRaceMenu("setup")
+				ac.tryToOpenRaceMenu()
+				ac.tryToOpenRaceMenu("setup")
+
+				if sim.isInMainMenu then
+					return true
+				end
 			end
 		end,
 	},
 	{
 		label = "Restart Session",
 		enabled = true,
+		condition = function()
+			return sim.isOnlineRace
+		end,
 		func = function()
 			ac.tryToPause(false)
 			ac.tryToRestartSession()
@@ -56,6 +66,7 @@ local pauseButtons = {
 	{
 		label = "Quit",
 		enabled = true,
+		condition = function() end,
 		func = function()
 			promptShutdownAC()
 		end,
@@ -77,14 +88,21 @@ function page.draw(dt)
 	ui.pushStyleColor(ui.StyleColor.Button, SETTINGS.uiColor1)
 	for i in ipairs(pauseButtons) do
 		local menuButton = pauseButtons[i]
+		local enabled = menuButton.enabled
+		local hidden = false
+
+		if menuButton.condition() then
+			hidden = true
+		end
 
 		if
-			cui.menuButton(
+			not hidden
+			and cui.menuButton(
 				menuButton.label,
 				menuButtonSize,
 				ui.Alignment.Center,
 				ui.Alignment.Center,
-				menuButton.enabled and ui.ButtonFlags.None or ui.ButtonFlags.Disabled
+				enabled and ui.ButtonFlags.None or ui.ButtonFlags.Disabled
 			)
 		then
 			menuButton.func()
@@ -95,12 +113,6 @@ function page.draw(dt)
 	ui.popStyleVar(1)
 
 	ui.endGroup()
-
-	if teleportPitsCallback then
-		if teleportPitsCallback() then
-			teleportPitsCallback = nil
-		end
-	end
 end
 
 return page

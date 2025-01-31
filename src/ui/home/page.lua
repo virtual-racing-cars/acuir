@@ -102,7 +102,9 @@ local menuButtonList = {
 	{
 		label = "RESTART SESSION",
 		enabled = true,
-		condition = function() end,
+		condition = function()
+			return sim.isOnlineRace
+		end,
 		func = function()
 			ac.tryToRestartSession()
 		end,

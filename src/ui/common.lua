@@ -30,26 +30,6 @@ function bottomBar(buttons)
 		rgbm(0.8, 0.8, 0.8, 1)
 	)
 
-	ui.setCursorX(0)
-	ui.setCursorY(0)
-
-	-- ui.dwriteTextAligned(
-	-- 	"OFFLINE",
-	-- 	26 * cui.scaleY(),
-	-- 	ui.Alignment.End,
-	-- 	ui.Alignment.End,
-	-- 	ui.availableSpace() - vec2(100 * cui.scaleX(), 10 * cui.scaleY()),
-	-- 	false,
-	-- 	rgbm(1, 0.9, 0, 1)
-	-- )
-	-- ui.popDWriteFont()
-
-	-- ui.drawCircleFilled(
-	-- 	vec2(ui.windowWidth() - 30 * cui.scaleX(), ui.windowHeight() - 30 * cui.scaleY()),
-	-- 	10 * cui.scaleX(),
-	-- 	rgbm.colors.orange
-	-- )
-
 	ui.pushStyleColor(ui.StyleColor.Button, rgbm.colors.transparent)
 	ui.setCursorX(0)
 	ui.setCursorY(bottomBarHeight)

@@ -67,7 +67,15 @@ tempSpFile:setAndSave("PRESET_0", "COMPOUND", -1)
 
 local isInMainMenu = false
 
+teleportPitsCallback = nil
+
 function script.update(dt)
+	if teleportPitsCallback then
+		if teleportPitsCallback() then
+			teleportPitsCallback = nil
+		end
+	end
+
 	if sim.isInMainMenu and SETTINGS.autoStart and windowTimeSync < os.clock() - 1 then
 		ac.tryToOpenRaceMenu("race")
 		ac.tryToOpenRaceMenu("setup")
