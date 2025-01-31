@@ -527,6 +527,8 @@ function cui.inputTextBox(label, stringPrefix, stringInput, size)
 
 	if hovered then
 		ui.setMouseCursor(ui.MouseCursor.TextInput)
+	elseif ui.mouseClicked(ui.MouseButton.Left) then
+		cui.storeBool(id, false)
 	end
 
 	local charSizes = {}
@@ -596,7 +598,7 @@ function cui.inputTextBox(label, stringPrefix, stringInput, size)
 	end
 
 	if
-		not ui.mouseDown(ui.MouseButton.Left) and itemActive and math.floor(os.clock()) % 2 == 0
+		not ui.mouseDown(ui.MouseButton.Left) and itemActive and math.floor(os.clock() * 2) % 2 == 0
 		or (hovered and ui.mouseClicked(ui.MouseButton.Left))
 	then
 		local pos = tempCursor.x
@@ -619,7 +621,11 @@ function cui.inputText(label, stringPrefix, stringInput, flags, size)
 	local captured = ui.captureKeyboard(true, true, true)
 	local charToAdd = nil
 
-	if ui.keyPressed(ui.Key.Backspace) and #stringInput > 0 and inputTextBoxDragIndex ~= inputTextBoxCursorIndex then
+	if
+		(ui.keyPressed(ui.Key.Backspace) or ui.keyPressed(ui.Key.Delete) or #captured > 0)
+		and #stringInput > 0
+		and inputTextBoxDragIndex ~= inputTextBoxCursorIndex
+	then
 		if inputTextBoxCursorIndex >= inputTextBoxDragIndex then
 			stringInput = stringInput:sub(1, inputTextBoxDragIndex) .. stringInput:sub(inputTextBoxCursorIndex + 1)
 			inputTextBoxCursorIndex = inputTextBoxDragIndex
@@ -634,9 +640,14 @@ function cui.inputText(label, stringPrefix, stringInput, flags, size)
 		stringInput = stringInput:sub(1, inputTextBoxCursorIndex - 1) .. stringInput:sub(inputTextBoxCursorIndex + 1)
 		inputTextBoxCursorIndex = inputTextBoxCursorIndex - 1
 		inputTextBoxDragIndex = inputTextBoxCursorIndex
-	elseif #captured > 0 then
-		charToAdd = captured:queue()
+	elseif ui.keyPressed(ui.Key.Delete) and #stringInput > 0 then
+		stringInput = stringInput:sub(1, inputTextBoxCursorIndex) .. stringInput:sub(inputTextBoxCursorIndex + 2)
+		inputTextBoxCursorIndex = inputTextBoxCursorIndex
+		inputTextBoxDragIndex = inputTextBoxCursorIndex
+	end
 
+	if #captured > 0 then
+		charToAdd = captured:queue()
 		if #charToAdd == 1 and charToAdd:match("[%w_ .;,><]") then
 			inputTextBoxCursorIndex = inputTextBoxCursorIndex + 1
 			inputTextBoxDragIndex = inputTextBoxCursorIndex
@@ -647,6 +658,16 @@ function cui.inputText(label, stringPrefix, stringInput, flags, size)
 
 			audioTrigger()
 		end
+	end
+
+	if ui.keyPressed(ui.Key.Left) then
+		inputTextBoxCursorIndex = math.max(inputTextBoxCursorIndex - 1, 0)
+		inputTextBoxDragIndex = inputTextBoxCursorIndex
+	end
+
+	if ui.keyPressed(ui.Key.Right) then
+		inputTextBoxCursorIndex = math.min(inputTextBoxCursorIndex + 1, #stringInput)
+		inputTextBoxDragIndex = inputTextBoxCursorIndex
 	end
 
 	stringInput = stringInput:gsub("\n", "")

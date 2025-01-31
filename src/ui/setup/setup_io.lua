@@ -69,6 +69,10 @@ end
 loadSetups()
 
 local function deleteSetup()
+	if not io.fileExists(saveSetup.path) then
+		return
+	end
+
 	io.deleteFile(saveSetup.path)
 	io.deleteFile(string.trim(saveSetup.path, ".ini") .. ".sp")
 
@@ -374,6 +378,8 @@ function setupIoDraw(sm)
 		true,
 		true
 	)
+
+	ac.log(selectedSetup)
 
 	return ""
 end
