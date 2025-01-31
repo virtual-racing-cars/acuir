@@ -68,7 +68,7 @@ function goToSettingsAiPage()
 end
 
 goToHomePage()
-goToSetupPage()
+-- goToSetupPage()
 
 local exclusiveHudMode = ""
 
@@ -176,7 +176,7 @@ function MainMenuWindow(dt)
 
 	ac.debug("perfTime", (os.preciseClock() - perfTime) * 1000)
 
-	exclusiveHudMode = "debug"
+	exclusiveHudMode = ""
 
 	return exclusiveHudMode
 end

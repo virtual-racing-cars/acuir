@@ -86,7 +86,9 @@ function playerListButton(car, xPos, yPos, width, height)
 	ui.setCursorX(xPos)
 	ui.setCursorY(yPos)
 	if ui.invisibleButton("##playerlistbutton" .. car.index, vec2(width, height)) then
-		ac.focusCar(car.index)
+		if car.isConnected then
+			ac.focusCar(car.index)
+		end
 	end
 
 	local evenCar = car.racePosition % 2 == 0

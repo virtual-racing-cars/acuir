@@ -181,11 +181,7 @@ local sessionInfoTable = {
 			return string.format("Track - %.1f C", sim.roadTemperature)
 		end,
 		row2 = function()
-			return string.format(
-				"%s - %s %%",
-				findClosestIndex(sim.roadGrip * 100, trackGrip),
-				math.round(sim.roadGrip * 100, 1)
-			)
+			return string.format("%s - %.1f %%", findClosestIndex(sim.roadGrip * 100, trackGrip), sim.roadGrip * 100)
 		end,
 	},
 	{
