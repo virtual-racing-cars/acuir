@@ -6,8 +6,8 @@ local refreshingSetups = false
 
 local loadedSetups = {}
 local trackSortedSetups = {}
-local selectedSetup = { name = "", track = "", path = "", creation = "" }
-local saveSetup = { name = "", track = ac.getTrackID(), path = "", creation = "" }
+local selectedSetup = { name = "", track = "", path = "", lastWriteTime = "" }
+local saveSetup = { name = "", track = ac.getTrackID(), path = "", lastWriteTime = "" }
 local currentSetup = "generic/default"
 
 local function loadSetups()
@@ -42,9 +42,9 @@ local function loadSetups()
 				name = fileName,
 				track = dirName,
 				path = setupsDir .. "\\" .. dirName .. "\\" .. fileName,
-				creationTime = os.date(
+				lastWriteTime = os.date(
 					"%A, %B %d, %Y %H:%M:%S",
-					tonumber(string.trim(tostring(fileAttributes.creationTime), "LL"))
+					tonumber(string.trim(tostring(fileAttributes.lastWriteTime), "LL"))
 				),
 			})
 		end)
@@ -52,7 +52,7 @@ local function loadSetups()
 
 	for track, setupList in pairs(loadedSetups) do
 		table.sort(setupList, function(a, b)
-			return a.creationTime > b.creationTime
+			return a.lastWriteTime > b.lastWriteTime
 		end)
 	end
 
@@ -78,7 +78,7 @@ local function deleteSetup()
 	saveSetup.name = ""
 	saveSetup.path = ""
 
-	selectedSetup = { name = "", track = "", path = "", creation = "" }
+	selectedSetup = { name = "", track = "", path = "", lastWriteTime = "" }
 
 	loadSetups()
 end
@@ -367,14 +367,14 @@ function setupIoDraw(sm)
 										name = name,
 										track = track,
 										path = setup.path,
-										creation = setup.creationTime,
+										lastWriteTime = setup.lastWriteTime,
 									}
 
 									saveSetup = {
 										name = name,
 										track = track,
 										path = setup.path,
-										creation = setup.creationTime,
+										lastWriteTime = setup.lastWriteTime,
 									}
 
 									ac.log(ac.getUI().isMouseLeftKeyDoubleClicked)
