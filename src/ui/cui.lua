@@ -621,6 +621,11 @@ function cui.inputText(label, stringPrefix, stringInput, flags, size)
 	local captured = ui.captureKeyboard(true, true, true)
 	local charToAdd = nil
 
+	if ui.mouseDoubleClicked(ui.MouseButton.Left) then
+		inputTextBoxDragIndex = 0
+		inputTextBoxCursorIndex = #stringInput
+	end
+
 	if ui.keyPressed(ui.Key.D) and ui.keyboardButtonDown(ui.KeyIndex.Control) then
 		inputTextBoxDragIndex = #stringInput
 		inputTextBoxCursorIndex = inputTextBoxCursorIndex
