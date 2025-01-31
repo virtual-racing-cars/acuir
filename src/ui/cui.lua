@@ -516,6 +516,8 @@ function cui.inputTextBox(label, stringPrefix, stringInput, size)
 	local id = ui.getLastID()
 	local itemActive = cui.loadStoredBool(id)
 
+	ui.pushClipRect(r1, r2)
+
 	ui.setCursor(tempCursor)
 	local textOffset = size.x / 60
 	ui.offsetCursorX(textOffset)
@@ -609,6 +611,7 @@ function cui.inputTextBox(label, stringPrefix, stringInput, size)
 	ui.drawRect(r1, r2, rgbm.colors.white, 0, ui.CornerFlags.None, 2)
 
 	ui.popDWriteFont()
+	ui.popClipRect()
 
 	return itemActive
 end
