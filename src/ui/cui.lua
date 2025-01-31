@@ -621,6 +621,32 @@ function cui.inputText(label, stringPrefix, stringInput, flags, size)
 	local captured = ui.captureKeyboard(true, true, true)
 	local charToAdd = nil
 
+	if ui.keyPressed(ui.Key.D) and ui.keyboardButtonDown(ui.KeyIndex.Control) then
+		inputTextBoxDragIndex = #stringInput
+		inputTextBoxCursorIndex = inputTextBoxCursorIndex
+	end
+
+	if ui.keyPressed(ui.Key.Left) then
+		inputTextBoxCursorIndex = math.max(inputTextBoxCursorIndex - 1, 0)
+
+		if not ui.keyboardButtonDown(ui.KeyIndex.Shift) then
+			inputTextBoxDragIndex = inputTextBoxCursorIndex
+		end
+	end
+
+	if ui.keyPressed(ui.Key.Right) then
+		inputTextBoxCursorIndex = math.min(inputTextBoxCursorIndex + 1, #stringInput)
+
+		if not ui.keyboardButtonDown(ui.KeyIndex.Shift) then
+			inputTextBoxDragIndex = inputTextBoxCursorIndex
+		end
+	end
+
+	if ui.keyPressed(ui.Key.A) and ui.keyboardButtonDown(ui.KeyIndex.Control) then
+		inputTextBoxDragIndex = 0
+		inputTextBoxCursorIndex = #stringInput
+	end
+
 	if
 		(ui.keyPressed(ui.Key.Backspace) or ui.keyPressed(ui.Key.Delete) or #captured > 0)
 		and #stringInput > 0
@@ -648,7 +674,7 @@ function cui.inputText(label, stringPrefix, stringInput, flags, size)
 
 	if #captured > 0 then
 		charToAdd = captured:queue()
-		if #charToAdd == 1 and charToAdd:match("[%w_ .;,><]") then
+		if #charToAdd == 1 and charToAdd:match("[%w_ .;,><%-]") then
 			inputTextBoxCursorIndex = inputTextBoxCursorIndex + 1
 			inputTextBoxDragIndex = inputTextBoxCursorIndex
 
@@ -658,16 +684,6 @@ function cui.inputText(label, stringPrefix, stringInput, flags, size)
 
 			audioTrigger()
 		end
-	end
-
-	if ui.keyPressed(ui.Key.Left) then
-		inputTextBoxCursorIndex = math.max(inputTextBoxCursorIndex - 1, 0)
-		inputTextBoxDragIndex = inputTextBoxCursorIndex
-	end
-
-	if ui.keyPressed(ui.Key.Right) then
-		inputTextBoxCursorIndex = math.min(inputTextBoxCursorIndex + 1, #stringInput)
-		inputTextBoxDragIndex = inputTextBoxCursorIndex
 	end
 
 	stringInput = stringInput:gsub("\n", "")
