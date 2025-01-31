@@ -110,7 +110,7 @@ local function drawSetupSpinner(sm, si)
 	}
 
 	local xPos = positions[si.xPos]
-	local yPos = (si.yPos * 97 + 25) * cui.scaleY()
+	local yPos = (si.yPos * 97 + 60) * cui.scaleY()
 
 	if #si.items > 0 then
 		si.format = si.items[si.value + 1]

@@ -511,13 +511,16 @@ function cui.inputTextBox(label, stringInput, size)
 
 	if hovered then
 		ui.setMouseCursor(ui.MouseCursor.TextInput)
+
+		if itemActive then
+		end
 	end
 
 	if itemActive == nil then
 		cui.storeBool(id, false)
 	end
 
-	if clicked or ui.mouseClicked(ui.MouseButton.Left) then
+	if clicked then
 		cui.storeBool(id, clicked)
 	end
 

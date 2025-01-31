@@ -17,7 +17,7 @@ local bottomBarButtons = {
 	},
 	{
 		label = "RESET",
-		enabled = false,
+		enabled = true,
 		func = function()
 			sm:resetSetup()
 		end,

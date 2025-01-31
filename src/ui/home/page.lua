@@ -127,22 +127,32 @@ function page.draw()
 		"home_leaderboard_window",
 		STORAGE.setupTab,
 		vec2(0, 286 * cui.scaleY()),
-		vec2(650 * cui.scaleX(), sim.windowHeight - 459 * cui.scaleY()),
+		vec2(750 * cui.scaleX(), sim.windowHeight - 459 * cui.scaleY()),
 		ui.WindowFlags.None,
 		function()
 			local height = 50 * cui.scaleY()
-			for i, car in ac.iterateCars.leaderboard() do
-				playerListButton(car, 0, (i - 1) * height, ui.windowWidth(), height)
-			end
 
-			-- for i = 0, 24 do
-			-- 	local car = ac.getCar(0)
-			-- 	playerListButton(car, 0, (i - 1) * height, ui.windowWidth() - ui.windowWidth() / 50, height)
-			-- end
+			playerListBanner(0, 0, ui.windowWidth(), height)
+
+			cui.contentWindow(
+				"home_leaderboard_entrant_window",
+				STORAGE.setupTab,
+				vec2(0, height),
+				vec2(ui.windowWidth(), ui.windowHeight() - height),
+				ui.WindowFlags.None,
+				function()
+					for i, car in ac.iterateCars.leaderboard() do
+						playerListButton(car, 0, (i - 1) * height, ui.windowWidth(), height)
+					end
+				end,
+				false,
+				true,
+				true
+			)
 		end,
 		false,
 		true,
-		true
+		false
 	)
 
 	-- cui.contentWindow(
