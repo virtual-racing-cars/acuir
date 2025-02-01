@@ -351,8 +351,6 @@ function setupIoDraw(sm)
 										lastWriteTime = setup.lastWriteTime,
 									}
 
-									ac.log(ac.getUI().isMouseLeftKeyDoubleClicked)
-
 									if ac.getUI().isMouseLeftKeyDoubleClicked then
 										sm:LoadStuff(selectedSetup.path)
 										currentSetup = selectedSetup.track .. "/" .. selectedSetup.name
@@ -378,8 +376,6 @@ function setupIoDraw(sm)
 		true,
 		true
 	)
-
-	ac.log(selectedSetup)
 
 	return ""
 end

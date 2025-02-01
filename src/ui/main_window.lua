@@ -174,7 +174,7 @@ function MainMenuWindow(dt)
 	ui.popStyleColor(2)
 	ui.popAllowKeyboardFocus()
 
-	ac.debug("perfTime", (os.preciseClock() - perfTime) * 1000)
+	-- ac.debug("perfTime", (os.preciseClock() - perfTime) * 1000)
 
 	exclusiveHudMode = ""
 
