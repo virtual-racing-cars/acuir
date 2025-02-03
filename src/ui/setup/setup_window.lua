@@ -190,25 +190,7 @@ function car_setup(sm)
 	end
 
 	if tab.name == "GEARS" and #cphys.gearRatios > 0 then
-		cui.setCursorX(0)
-		cui.setCursorY(134)
-
-		for i = 0, car.gearCount - 1 do
-			cui.setCursorX(0)
-			local maxGearSpeed = math.round(
-				(math.pi * car.wheels[2].tyreRadius * 2 * (car.rpmLimiter - 0))
-					/ (60 * cphys.gearRatios[i + 2] * cphys.finalRatio)
-					* 3.6
-			)
-
-			ui.dwriteTextAligned(
-				string.format("Gear %s: %s KMH", i + 1, maxGearSpeed),
-				18 * cui.scaleY(),
-				ui.Alignment.Center,
-				ui.Alignment.Start,
-				vec2(ui.windowWidth(), 97 * cui.scaleY())
-			)
-		end
+		gearWindow(spinnerWidth)
 	end
 
 	if changed then

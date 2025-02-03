@@ -124,6 +124,10 @@ local function loadSetupSpinners()
 			tab = "FUEL"
 		end
 
+		if tab == "GEARS" then
+			xPos = 1
+		end
+
 		local fixed = setupFixed and sim.isOnlineRace and setupFixedINI:get(id, "VALUE", -12345) ~= -12345
 
 		if not table.contains(populatedTabs, tab) then

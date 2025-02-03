@@ -1,31 +1,79 @@
 local car = ac.getCar(0)
 local cphys = ac.getCarPhysics(0)
 
-function gearWindow()
-	cui.setCursorX(0)
-	cui.setCursorY(50)
+local function getGearMaxSpeedKmh(gear)
+	-- if ac.getCarMaxSpeedWithGear then
+	-- 	return math.round(ac.getCarMaxSpeedWithGear(0, gear - 1), 1)
+	-- end
 
+	return math.round(
+		(math.pi * car.wheels[2].tyreRadius * 2 * (car.rpmLimiter - 0))
+			/ (60 * cphys.gearRatios[gear + 1] * cphys.finalRatio)
+			* 3.6
+	)
+end
+
+local maxSpeed = nil
+
+for i = -1, car.gearCount + 3 do
+	ac.debug(i, math.round(ac.getCarMaxSpeedWithGear(0, i), 1))
+end
+
+function gearWindow(spinnerWidth)
+	local yMin = ui.windowHeight() / 4
+	local yMax = ui.windowHeight() - yMin
+
+	local xMin = ui.windowWidth() / 2 / 8
+	local xMax = ui.windowWidth() / 2 - xMin
+
+	ui.setCursor(vec2(xMin, yMin / 2))
 	ui.dwriteTextAligned(
-		"Max Gear Speeds",
-		20 * cui.scaleY(),
+		"Max Gear Speeds KMH",
+		50 * cui.scaleY(),
 		ui.Alignment.Center,
-		ui.Alignment.Center,
-		vec2(790, 150) * cui.scaleY()
+		ui.Alignment.Start,
+		vec2(xMax, yMin)
 	)
 
-	for i = 0, car.gearCount - 1 do
-		cui.setCursorX(0)
-		local maxGearSpeed = math.round(
-			(math.pi * car.wheels[2].tyreRadius * 2 * (car.rpmLimiter - 0))
-				/ (60 * cphys.gearRatios[i + 2] * cphys.finalRatio)
-				* 3.6
-		)
-		ui.dwriteTextAligned(
-			string.format("Gear %s: %s KMH", i + 1, maxGearSpeed),
-			20 * cui.scaleY(),
-			ui.Alignment.Center,
-			ui.Alignment.Center,
-			vec2(790, 50) * cui.scaleY()
-		)
+	if not maxSpeed or maxSpeed == 0 then
+		maxSpeed = getGearMaxSpeedKmh(car.gearCount) * 1.25
+	end
+
+	for i = 0, 10 do
+		ui.pathLineTo(vec2(xMin + xMax / 10 * i, yMin))
+		ui.pathLineTo(vec2(xMin + xMax / 10 * i, yMax))
+		ui.pathStroke(rgbm(1, 1, 1, 0.3), false, 2)
+
+		ui.pathLineTo(vec2(xMin, yMin + (yMax - yMin) / 10 * i))
+		ui.pathLineTo(vec2(xMin + xMax, yMin + (yMax - yMin) / 10 * i))
+		ui.pathStroke(rgbm(1, 1, 1, 0.3), false, 2)
+	end
+
+	local prevGearSpeed = 0
+	for i = 1, car.gearCount do
+		local maxGearSpeed = getGearMaxSpeedKmh(i)
+
+		-- ac.debug(i, maxGearSpeed)
+
+		local x1 = xMin + xMax * (prevGearSpeed / maxSpeed)
+		local p1 = vec2(x1, math.max(yMin + (yMax - yMin) * (1 - (prevGearSpeed / maxGearSpeed)), yMin))
+		local p2 = vec2(math.max(xMin + xMax * (maxGearSpeed / maxSpeed), x1), yMin)
+
+		ui.pathLineTo(p1)
+		ui.pathLineTo(p2)
+		ui.pathStroke(rgbm.colors.red, false, 4)
+
+		if maxGearSpeed > prevGearSpeed then
+			ui.setCursor(p2 - vec2(20, 25) * cui.scaleY())
+			ui.dwriteTextAligned(
+				maxGearSpeed,
+				18 * cui.scaleY(),
+				ui.Alignment.Center,
+				ui.Alignment.Start,
+				vec2(40, 40) * cui.scaleY()
+			)
+		end
+
+		prevGearSpeed = maxGearSpeed
 	end
 end
