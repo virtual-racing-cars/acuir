@@ -2,9 +2,9 @@ local car = ac.getCar(0)
 local cphys = ac.getCarPhysics(0)
 
 local function getGearMaxSpeedKmh(gear)
-	-- if ac.getCarMaxSpeedWithGear then
-	-- 	return math.round(ac.getCarMaxSpeedWithGear(0, gear - 1), 1)
-	-- end
+	if ac.getCarMaxSpeedWithGear then
+		return math.round(ac.getCarMaxSpeedWithGear(0, gear - 1), 1)
+	end
 
 	return math.round(
 		(math.pi * car.wheels[2].tyreRadius * 2 * (car.rpmLimiter - 0))
@@ -19,7 +19,7 @@ for i = -1, car.gearCount + 3 do
 	ac.debug(i, math.round(ac.getCarMaxSpeedWithGear(0, i), 1))
 end
 
-function gearWindow(spinnerWidth)
+function gearWindow()
 	local yMin = ui.windowHeight() / 4
 	local yMax = ui.windowHeight() - yMin
 
@@ -40,10 +40,16 @@ function gearWindow(spinnerWidth)
 	end
 
 	for i = 0, 10 do
+		ui.dwriteDrawText(math.round(i / 10 * maxSpeed), 14 * cui.scaleY(), vec2(xMin + xMax / 10 * i, yMax))
 		ui.pathLineTo(vec2(xMin + xMax / 10 * i, yMin))
 		ui.pathLineTo(vec2(xMin + xMax / 10 * i, yMax))
 		ui.pathStroke(rgbm(1, 1, 1, 0.3), false, 2)
 
+		ui.dwriteDrawText(
+			math.round(car.rpmLimiter - (car.rpmLimiter / 10) * i),
+			14 * cui.scaleY(),
+			vec2(xMin, yMin + (yMax - yMin) / 10 * i)
+		)
 		ui.pathLineTo(vec2(xMin, yMin + (yMax - yMin) / 10 * i))
 		ui.pathLineTo(vec2(xMin + xMax, yMin + (yMax - yMin) / 10 * i))
 		ui.pathStroke(rgbm(1, 1, 1, 0.3), false, 2)

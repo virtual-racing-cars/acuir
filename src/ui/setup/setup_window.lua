@@ -189,7 +189,7 @@ function car_setup(sm)
 		end
 	end
 
-	if tab.name == "GEARS" and #cphys.gearRatios > 0 then
+	if tab.name == "GEARS" then
 		gearWindow(spinnerWidth)
 	end
 
