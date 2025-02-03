@@ -19,14 +19,27 @@ for i = -1, car.gearCount + 3 do
 	ac.debug(i, math.round(ac.getCarMaxSpeedWithGear(0, i), 1))
 end
 
-function gearWindow()
+function gearWindow(spinnerCount)
 	local yMin = ui.windowHeight() / 4
 	local yMax = ui.windowHeight() - yMin
 
 	local xMin = ui.windowWidth() / 2 / 8
 	local xMax = ui.windowWidth() / 2 - xMin
 
-	ui.setCursor(vec2(xMin, yMin / 2))
+	local xPos = xMin
+	local yPos = 0
+
+	spinnerCount = 0
+
+	-- if spinnerCount <= 0 then
+	-- 	xMin = ui.windowWidth() / 2 - ui.windowWidth() / 4
+	-- 	xMax = ui.windowWidth() / 2 - xMin
+	-- 	xPos = ui.windowWidth() / 2 - (xMax - xMin) / 2
+	-- 	ui.setCursor(vec2(xPos, yMin / 2))
+	-- end
+
+	ui.setCursor(vec2(xPos, yMin / 2))
+
 	ui.dwriteTextAligned(
 		"Max Gear Speeds KMH",
 		50 * cui.scaleY(),

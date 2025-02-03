@@ -2,9 +2,6 @@ require("src.ui.setup.gear_window")
 require("src.classes.Button")
 require("src.classes.Slider")
 
-local car = ac.getCar(0)
-local cphys = ac.getCarPhysics(0)
-
 local currentApp = 0
 local tabBarPosition = 0
 local tabItemPositions = { [0] = 0 }
@@ -190,7 +187,7 @@ function car_setup(sm)
 	end
 
 	if tab.name == "GEARS" then
-		gearWindow(spinnerWidth)
+		gearWindow(#tab.setupSpinners)
 	end
 
 	if changed then
