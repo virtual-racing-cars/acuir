@@ -2,23 +2,7 @@ local page = {}
 
 local sim = ac.getSim()
 
-local channels = {
-	"Main",
-	"Rain",
-	"Weather",
-	"Track",
-	"Wipers",
-	"Car Components",
-	"Wind",
-	"Tyres",
-	"Surfaces",
-	"Dirt",
-	"Engine",
-	"Transmission",
-	"Opponents",
-}
-
-table.sort(channels)
+local settings = require("settings")
 
 local bottomBarButtons = {
 	{
@@ -45,6 +29,32 @@ local bottomBarButtons = {
 	-- },
 }
 
+local audioChannels = {
+	"Main",
+	"Rain",
+	"Weather",
+	"Track",
+	"Wipers",
+	"Car Components",
+	"Wind",
+	"Tyres",
+	"Surfaces",
+	"Dirt",
+	"Engine",
+	"Transmission",
+	"Opponents",
+}
+
+table.sort(audioChannels)
+
+local audioSettings = {
+	-- { key = "autoStart", label = "Auto-Start new UI", default = true },
+	-- { key = "showVersions", label = "Show app and CSP versions", default = true },
+	-- { key = "developerMode", label = "Developer Mode", default = false },
+}
+
+settings:register(audioSettings)
+
 function page.draw()
 	settingsMenuCommon("/Audio", bottomBarButtons, goToSettingsPage)
 
@@ -60,7 +70,7 @@ function page.draw()
 
 			ui.setCursorY(100)
 
-			for k, v in ipairs(channels) do
+			for k, v in ipairs(audioChannels) do
 				local id = string.replace(v, " ", "")
 
 				ui.setCursorX(50)

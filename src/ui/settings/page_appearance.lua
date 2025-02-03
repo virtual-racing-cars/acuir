@@ -1,6 +1,7 @@
 local page = {}
 
 local sim = ac.getSim()
+local settings = require("settings")
 
 local bottomBarButtons = {
 	{
@@ -27,6 +28,12 @@ local bottomBarButtons = {
 	-- },
 }
 
+local appearanceSettings = {
+	{ key = "appearanceSettingsTest", label = "Appearance Lol", default = true },
+}
+
+settings:register(appearanceSettings)
+
 local primaryActive = false
 local secondaryActive = false
 local tertiaryActive = false
@@ -49,6 +56,16 @@ function page.draw()
 			ui.setCursorX(50)
 			if ui.checkbox("Show 'Car Info' window on the setup page", SETTINGS.hideOtherTrackSetups) then
 				SETTINGS.hideOtherTrackSetups = not SETTINGS.hideOtherTrackSetups
+			end
+
+			for i = 1, #appearanceSettings do
+				local s = appearanceSettings[i]
+
+				if s.type == 1 then
+					if ui.checkbox(s.label, settings[s.key]) then
+						settings[s.key] = not settings[s.key]
+					end
+				end
 			end
 
 			cui.setCursorX(10)

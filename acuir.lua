@@ -27,7 +27,8 @@ package.add("src")
 cui = require("ui.cui")
 require("ui.main_window")
 require("ui.pause.pause_window")
-require("ui.audio")
+require("audio")
+local settings = require("settings")
 
 ac.setWindowOpen("main", true)
 ui.onExclusiveHUD(function(mode)
@@ -62,13 +63,9 @@ end
 local uic = ac.getUI()
 local sim = ac.getSim()
 
-local tempSpFile = ac.INIConfig.load(ac.getFolder(ac.FolderID.UserSetups) .. "\\" .. ac.getCarID(0) .. "\\_temp.sp")
-tempSpFile:setAndSave("PRESET_0", "COMPOUND", -1)
-
 local isInMainMenu = false
 
 teleportPitsCallback = nil
-
 function script.update(dt)
 	if teleportPitsCallback then
 		if teleportPitsCallback() then

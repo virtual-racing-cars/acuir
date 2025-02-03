@@ -82,8 +82,14 @@ local menuButtonList = {
 		func = function() end,
 	},
 	{
-		label = "SETTINGS",
+		label = "TELEMETRY",
 		enabled = false,
+		condition = function() end,
+		func = function() end,
+	},
+	{
+		label = "SETTINGS",
+		enabled = true,
 		condition = function() end,
 		func = function()
 			goToSettingsPage()

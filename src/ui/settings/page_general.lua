@@ -2,6 +2,8 @@ local page = {}
 
 local sim = ac.getSim()
 
+local settings = require("settings")
+
 local bottomBarButtons = {
 	{
 		label = "BACK",
@@ -27,8 +29,13 @@ local bottomBarButtons = {
 	-- },
 }
 
-local but1 = ac.ControlButton("Lol")
-local but2 = ac.ControlButton("Lol2")
+local generalSettings = {
+	{ key = "autoStart", label = "Auto-Start new UI", default = true, type = 0 },
+	{ key = "showVersions", label = "Show app and CSP versions", default = true },
+	{ key = "developerMode", label = "Developer Mode", default = false },
+}
+
+settings:register(generalSettings)
 
 function page.draw()
 	settingsMenuCommon("/General", bottomBarButtons, goToSettingsPage)
@@ -48,40 +55,17 @@ function page.draw()
 
 			ui.beginGroup(0)
 
-			if ui.checkbox("Auto-Start new UI", SETTINGS.autoStart) then
-				SETTINGS.autoStart = not SETTINGS.autoStart
+			for i = 1, #generalSettings do
+				local general = generalSettings[i]
+
+				ac.log(general)
+
+				if general.type == 1 then
+					if ui.checkbox(general.label, settings[general.key]) then
+						settings[general.key] = not settings[general.key]
+					end
+				end
 			end
-
-			-- local value, changed, active = slider(
-			-- 	"##afkhideui",
-			-- 	SETTINGS.uiHideonIdleTime,
-			-- 	0,
-			-- 	300,
-			-- 	0,
-			-- 	"%s",
-			-- 	nil,
-			-- 	vec2(1000, 32),
-			-- 	1,
-			-- 	false,
-			-- 	true,
-			-- 	1,
-			-- 	1
-			-- )
-
-			-- if changed then
-			-- 	SETTINGS.uiHideonIdleTime = math.floor(value / 5 + 0.5) * 5
-			-- end
-
-			if ui.checkbox("Show app and CSP versions on bottom right of the screen", SETTINGS.showVersions) then
-				SETTINGS.showVersions = not SETTINGS.showVersions
-			end
-
-			if ui.checkbox("Developer Mode", SETTINGS.showVersions) then
-				SETTINGS.showVersions = not SETTINGS.showVersions
-			end
-
-			but1:control()
-			but2:control()
 
 			ui.endGroup()
 
