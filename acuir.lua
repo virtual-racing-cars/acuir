@@ -28,6 +28,7 @@ require("ui.main_window")
 require("ui.pause.pause_window")
 require("audio")
 local settings = require("settings")
+local audio = require("audio")
 
 ac.setWindowOpen("main", true)
 ui.onExclusiveHUD(function(mode)
@@ -38,10 +39,14 @@ ui.onExclusiveHUD(function(mode)
 	local dt = ac.getScriptDeltaT()
 
 	if mode == "menu" then
+		audio:driver(dt)
+
 		return MainMenuWindow(dt)
 	end
 
 	if mode == "pause" then
+		audio:driver(dt)
+
 		return PauseMenuWindow()
 	end
 end)

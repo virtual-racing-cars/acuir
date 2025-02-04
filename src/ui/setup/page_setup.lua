@@ -1,11 +1,10 @@
-local cui = require("ui.cui")
-
 local page = {}
 
 require("ui.setup.setup_window")
 require("ui.setup.car_status_window")
 require("src.ui.setup.setup_io")
 require("classes.SetupManager")
+local cui = require("ui.cui")
 
 local vec2Temp1 = vec2()
 

@@ -1,6 +1,7 @@
 local cui = {}
 
 local sim = ac.getSim()
+local audio = require("audio")
 
 local vec2Temp1 = vec2()
 local vec2Temp2 = vec2()
@@ -669,7 +670,7 @@ function cui.inputText(label, stringPrefix, stringInput, flags, size)
 			stringInput = stringInput:sub(1, inputTextBoxCursorIndex) .. stringInput:sub(inputTextBoxDragIndex + 1)
 			inputTextBoxDragIndex = inputTextBoxCursorIndex
 		end
-		audioTrigger()
+		audio:trigger()
 	elseif ui.keyPressed(ui.Key.Backspace) and #stringInput > 0 then
 		stringInput = stringInput:sub(1, inputTextBoxCursorIndex - 1) .. stringInput:sub(inputTextBoxCursorIndex + 1)
 		inputTextBoxCursorIndex = inputTextBoxCursorIndex - 1
@@ -690,7 +691,7 @@ function cui.inputText(label, stringPrefix, stringInput, flags, size)
 				.. charToAdd
 				.. stringInput:sub(inputTextBoxCursorIndex)
 
-			audioTrigger()
+			audio:trigger()
 		end
 	end
 

@@ -127,8 +127,6 @@ function MainMenuWindow(dt)
 
 			exclusiveHudMode = ""
 			exclusiveHudMode = pageManager:draw()
-
-			audioDriver(dt)
 		end,
 		false,
 		true

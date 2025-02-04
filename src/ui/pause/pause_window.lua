@@ -1,72 +1,10 @@
-local cui = require("ui.cui")
 require("ui.common")
 require("classes.PageManager")
+local cui = require("ui.cui")
 
 local HomePage = require("ui.pause.page_pause_home")
--- local SetupPage = require("ui.setup.page_setup")
--- local SetupAppsPage = require("ui.setup.page_apps")
--- local SettingsPage = require("ui.SETTINGS.page_settings")
--- local SettingsGeneralPage = require("ui.SETTINGS.page_general")
--- local SettingsControls = require("ui.SETTINGS.page_controls")
--- local SettingsAudioPage = require("ui.SETTINGS.page_audio")
--- local SettingsAppearancePage = require("ui.SETTINGS.page_appearance")
--- local SettingsAiPage = require("ui.SETTINGS.page_ai")
-
 local pageManager = PageManager()
 pageManager:registerPage("HomePage", nil, HomePage)
--- pageManager:registerPage("SetupPage", "HomePage", SetupPage)
--- pageManager:registerPage("SettingsPage", "HomePage", SettingsPage)
--- pageManager:registerPage("SetupAppsPage", "SetupPage", SetupAppsPage)
--- pageManager:registerPage("SettingsGeneralPage", "SettingsPage", SettingsGeneralPage)
--- pageManager:registerPage("SettingsControlsPage", "SettingsPage", SettingsControls)
--- pageManager:registerPage("SettingsAudioPage", "SettingsPage", SettingsAudioPage)
--- pageManager:registerPage("SettingsAppearancePage", "SettingsPage", SettingsAppearancePage)
--- pageManager:registerPage("SettingsAiPage", "SettingsPage", SettingsAiPage)
-
--- function goToHomePage()
--- 	pageManager:setPage("HomePage")
--- 	pageManager:makeUndo()
--- end
-
--- function goToSetupPage()
--- 	pageManager:setPage("SetupPage")
--- 	pageManager:makeUndo()
--- end
-
--- function goToSettingsPage()
--- 	pageManager:setPage("SettingsPage")
--- 	pageManager:makeUndo()
--- end
-
--- function goToSetupAppsPage()
--- 	pageManager:setPage("SetupAppsPage")
--- 	pageManager:makeUndo()
--- end
-
--- function goToSettingsGeneralPage()
--- 	pageManager:setPage("SettingsGeneralPage")
--- 	pageManager:makeUndo()
--- end
-
--- function goToSettingsControlsPage()
--- 	pageManager:setPage("SettingsControlsPage")
--- 	pageManager:makeUndo()
--- end
-
--- function goToSettingsAudioPage()
--- 	pageManager:setPage("SettingsAudioPage")
--- 	pageManager:makeUndo()
--- end
-
--- function goToSettingsAppearancePage()
--- 	pageManager:setPage("SettingsAppearancePage")
--- 	pageManager:makeUndo()
--- end
-
--- function goToSettingsAiPage()
--- 	pageManager:setPage("SettingsAiPage")
--- 	pageManager:makeUndo()
--- end
 
 local exclusiveHudMode = ""
 
@@ -123,8 +61,6 @@ function PauseMenuWindow(dt)
 
 			exclusiveHudMode = ""
 			exclusiveHudMode = pageManager:draw()
-
-			audioDriver(dt)
 		end,
 		false,
 		true

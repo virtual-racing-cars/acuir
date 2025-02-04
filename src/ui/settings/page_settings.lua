@@ -1,7 +1,6 @@
-local cui = require("ui.cui")
-
 local page = {}
 
+local cui = require("ui.cui")
 local sim = ac.getSim()
 
 local settingsPages = {

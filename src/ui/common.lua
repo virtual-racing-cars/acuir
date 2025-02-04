@@ -1,5 +1,7 @@
 local cui = require("ui.cui")
-
+local app = require("app")
+local csp = require("csp")
+local simutils = require("sim")
 local sim = ac.getSim()
 
 local fontRegular = ui.DWriteFont("Rajdhani"):weight(ui.DWriteFont.Weight.SemiBold)
@@ -12,9 +14,7 @@ local topBarHeight = 200 * cui.scaleY()
 local bottomBarHeight = sim.windowHeight - 96 * cui.scaleY()
 
 local menuButtonSize = 56
-local manifestINI = ac.INIConfig.load("manifest.ini", ac.INIFormat.Extended)
-local version = manifestINI:get("ABOUT", "VERSION", "0.0.0")
-local versionString = "v " .. version .. ", CSP: " .. ac.getPatchVersion() .. " (" .. ac.getPatchVersionCode() .. ")"
+local versionString = string.format("%s: %s, CSP: %s (%s)", app.name, app.version, csp.version, csp.versionCode)
 
 function bottomBar(buttons)
 	ui.drawRectFilled(vec2(0, bottomBarHeight), vec2(ui.windowWidth(), ui.windowHeight()), SETTINGS.uiColor1 / 3)
@@ -91,58 +91,13 @@ function homeBar(buttons)
 	ui.popStyleColor(1)
 end
 
-local function findClosestIndex(input, numbers)
-	local trackGripString = nil
-	local smallestDifference = math.huge
-
-	for i, num in ipairs(numbers) do
-		local difference = math.abs(input - num[1])
-		if difference < smallestDifference then
-			smallestDifference = difference
-			trackGripString = num[2]
-		end
-	end
-
-	return trackGripString
-end
-
-local trackGrip = {
-	{ 86, "DUSTY" },
-	{ 89, "OLD" },
-	{ 95, "GREEN" },
-	{ 98, "RUBBERED" },
-	{ 100, "OPTIMUM" },
-}
-
-local windDirection = {
-	"N",
-	"NE",
-	"E",
-	"SE",
-	"S",
-	"SW",
-	"W",
-	"NW",
-}
-
-local raceSessiontTypeString = {
-	"Undefined",
-	"Practice",
-	"Qualify",
-	"Race",
-	"Hotlap",
-	"TimeAttack",
-	"Drift",
-	"Drag",
-}
-
 local sessionInfoTable = {
 	{
 		label = function()
-			return raceSessiontTypeString[sim.raceSessionType + 1]
+			return simutils.raceSessionTypeString
 		end,
 		row1 = function()
-			return string.format("%02d:%02d", sim.timeHours, sim.timeMinutes)
+			return simutils.simTimeString
 		end,
 		row2 = function()
 			if sim.raceSessionType == ac.SessionType.Race then
@@ -160,10 +115,10 @@ local sessionInfoTable = {
 			return "Track"
 		end,
 		row1 = function()
-			return string.format("Temp - %.1f C", sim.roadTemperature)
+			return string.format("Temp - %.1f° C", sim.roadTemperature)
 		end,
 		row2 = function()
-			return string.format("%s - %.1f %%", findClosestIndex(sim.roadGrip * 100, trackGrip), sim.roadGrip * 100)
+			return string.format("%s - %.1f %%", simutils.trackGripString, sim.roadGrip * 100)
 		end,
 	},
 	{
@@ -171,7 +126,7 @@ local sessionInfoTable = {
 			return "Air"
 		end,
 		row1 = function()
-			return string.format("Temp - %.1f C", sim.ambientTemperature)
+			return string.format("Temp - %.1f° C", sim.ambientTemperature)
 		end,
 		row2 = function()
 			return string.format("Humidity - %.0f %%", ac.getAirHumidity(vec3(0, 0, 0)) * 100)
@@ -185,7 +140,7 @@ local sessionInfoTable = {
 			return string.format("Speed - %.1f kmh", sim.windSpeedKmh)
 		end,
 		row2 = function()
-			return sim.windDirectionDeg
+			return string.format("%s - %.1f°", simutils.windDirectionString, sim.windDirectionDeg + 180)
 		end,
 	},
 }

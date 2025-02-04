@@ -1,7 +1,7 @@
 local page = {}
 
-local sim = ac.getSim()
 local settings = require("settings")
+local sim = ac.getSim()
 
 local bottomBarButtons = {
 	{

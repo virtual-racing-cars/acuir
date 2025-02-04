@@ -1,9 +1,8 @@
-local cui = require("ui.cui")
 local page = {}
 
-local sim = ac.getSim()
-
 local settings = require("settings")
+local cui = require("ui.cui")
+local sim = ac.getSim()
 
 local bottomBarButtons = {
 	{
@@ -29,6 +28,16 @@ local bottomBarButtons = {
 	-- 	func = function() end,
 	-- },
 }
+
+-- SETTINGS = ac.storage({
+-- 	autoStart = true,
+-- 	showVersions = true,
+-- 	hideOtherTrackSetups = true,
+-- 	uiHideonIdleTime = 150,
+-- 	uiColor1 = rgbm.new("#3e3c46"),
+-- 	uiColor2 = rgbm(1, 0, 0, 1),
+-- 	uiColor3 = rgbm(1, 1, 1, 1),
+-- })
 
 local generalSettings = {
 	{ key = "autoStart", label = "Auto-Start new UI", default = true },

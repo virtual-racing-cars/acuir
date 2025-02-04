@@ -1,6 +1,6 @@
-local cui = require("ui.cui")
 local page = {}
 
+local cui = require("ui.cui")
 local sim = ac.getSim()
 
 -- require("src.ui.home.map")

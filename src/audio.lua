@@ -1,3 +1,5 @@
+local Audio = {}
+
 local delayTimer = 0
 local delayTime = 0.125
 
@@ -16,7 +18,7 @@ local function playAudio(file)
 	delayTimer = os.clock() + delayTime
 end
 
-function audioDriver(dt)
+function Audio:driver(dt)
 	-- local mediaPeak = ac.mediaCurrentPeak()
 	-- mediaPeak = math.min(math.max(mediaPeak.x, mediaPeak.y), 0.5)
 	-- peak = math.applyLag(peak, mediaPeak, mediaPeak > peak and 0.997 or 0, dt)
@@ -26,7 +28,7 @@ function audioDriver(dt)
 	end
 end
 
-function audioTrigger()
+function Audio:trigger()
 	if ui.anyItemHovered() and ui.mouseClicked(ui.MouseButton.Left) then
 		playAudio("gui_click")
 		return
@@ -34,3 +36,5 @@ function audioTrigger()
 
 	playAudio("gui_nav")
 end
+
+return Audio

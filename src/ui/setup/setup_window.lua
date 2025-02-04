@@ -1,7 +1,7 @@
-local cui = require("ui.cui")
 require("src.ui.setup.gear_window")
-require("src.classes.Button")
 require("src.classes.Slider")
+local cui = require("ui.cui")
+local audio = require("audio")
 
 local currentApp = 0
 local tabBarPosition = 0
@@ -31,10 +31,10 @@ function setupTabBar(apps)
 	if ui.mouseLocalPos() >= vec2(0, 0) and ui.mouseLocalPos() < vec2(ui.windowWidth(), 56 * cui.scaleY()) then
 		if ui.mouseWheel() > 0 then
 			currentApp = currentApp >= #apps - 1 and 0 or currentApp + 1
-			audioTrigger()
+			audio:trigger()
 		elseif ui.mouseWheel() < 0 then
 			currentApp = currentApp == 0 and #apps - 1 or currentApp - 1
-			audioTrigger()
+			audio:trigger()
 		end
 	end
 
@@ -145,12 +145,12 @@ local function drawSetupSpinner(sm, si)
 
 	if hovered and ui.mouseClicked(ui.MouseButton.Right) then
 		si:resetValue()
-		audioTrigger()
+		audio:trigger()
 	end
 
 	if changed or active then
 		if si:setValue(value) then
-			audioTrigger()
+			audio:trigger()
 		end
 	end
 
