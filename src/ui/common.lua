@@ -157,10 +157,10 @@ local sessionInfoTable = {
 	},
 	{
 		label = function()
-			return "Road"
+			return "Track"
 		end,
 		row1 = function()
-			return string.format("Track - %.1f C", sim.roadTemperature)
+			return string.format("Temp - %.1f C", sim.roadTemperature)
 		end,
 		row2 = function()
 			return string.format("%s - %.1f %%", findClosestIndex(sim.roadGrip * 100, trackGrip), sim.roadGrip * 100)
@@ -168,13 +168,24 @@ local sessionInfoTable = {
 	},
 	{
 		label = function()
-			return "Ambient"
+			return "Air"
 		end,
 		row1 = function()
-			return string.format("Air - %.1f C", sim.ambientTemperature)
+			return string.format("Temp - %.1f C", sim.ambientTemperature)
 		end,
 		row2 = function()
 			return string.format("Humidity - %.0f %%", ac.getAirHumidity(vec3(0, 0, 0)) * 100)
+		end,
+	},
+	{
+		label = function()
+			return "Wind"
+		end,
+		row1 = function()
+			return string.format("Speed - %.1f kmh", sim.windSpeedKmh)
+		end,
+		row2 = function()
+			return sim.windDirectionDeg
 		end,
 	},
 }

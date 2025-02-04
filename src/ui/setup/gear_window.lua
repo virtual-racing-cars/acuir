@@ -4,19 +4,7 @@ local car = ac.getCar(0)
 local cphys = ac.getCarPhysics(0)
 
 local function getGearMaxSpeedKmh(gear)
-	if ac.getCarMaxSpeedWithGear then
-		return math.round(ac.getCarMaxSpeedWithGear(0, gear), 1)
-	end
-
-	if not cphys.gearRatio then
-		return 0
-	end
-
-	return math.round(
-		(math.pi * car.wheels[2].tyreRadius * 2 * (car.rpmLimiter - 0))
-			/ (60 * cphys.gearRatios[gear + 1] * cphys.finalRatio)
-			* 3.6
-	)
+	return math.round(ac.getCarMaxSpeedWithGear(0, gear))
 end
 
 local maxSpeed = nil
