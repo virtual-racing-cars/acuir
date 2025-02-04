@@ -1,3 +1,5 @@
+local cui = require("ui.cui")
+
 local page = {}
 
 require("ui.setup.setup_window")

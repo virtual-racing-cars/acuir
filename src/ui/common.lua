@@ -1,3 +1,5 @@
+local cui = require("ui.cui")
+
 local sim = ac.getSim()
 
 local fontRegular = ui.DWriteFont("Rajdhani"):weight(ui.DWriteFont.Weight.SemiBold)

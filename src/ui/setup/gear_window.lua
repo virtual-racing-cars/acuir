@@ -1,3 +1,5 @@
+local cui = require("ui.cui")
+
 local car = ac.getCar(0)
 local cphys = ac.getCarPhysics(0)
 

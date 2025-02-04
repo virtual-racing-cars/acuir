@@ -1,3 +1,4 @@
+local cui = require("ui.cui")
 require("ui.common")
 require("classes.PageManager")
 

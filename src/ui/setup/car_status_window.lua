@@ -1,3 +1,5 @@
+local cui = require("ui.cui")
+
 local car = ac.getCar(0)
 local carINI = ac.INIConfig.carData(0, "car.ini")
 local kgPerL = carINI:get("FUEL_EXT", "KG_PER_LITER", 0.7339)

@@ -24,7 +24,6 @@ STORAGE.appOpen = SETTINGS.autoStart
 STORAGE.hasAppOpened = false
 
 package.add("src")
-cui = require("ui.cui")
 require("ui.main_window")
 require("ui.pause.pause_window")
 require("audio")

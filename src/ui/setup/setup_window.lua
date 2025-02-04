@@ -1,3 +1,4 @@
+local cui = require("ui.cui")
 require("src.ui.setup.gear_window")
 require("src.classes.Button")
 require("src.classes.Slider")

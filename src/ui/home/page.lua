@@ -1,3 +1,4 @@
+local cui = require("ui.cui")
 local page = {}
 
 local sim = ac.getSim()
