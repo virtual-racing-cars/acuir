@@ -9,10 +9,6 @@ end
 
 local maxSpeed = nil
 
-for i = -1, car.gearCount + 3 do
-	ac.debug(i, math.round(ac.getCarMaxSpeedWithGear(0, i), 1))
-end
-
 function gearWindow(spinnerCount)
 	local yMin = ui.windowHeight() / 4
 	local yMax = ui.windowHeight() - yMin
