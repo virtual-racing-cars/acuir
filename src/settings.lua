@@ -12,19 +12,10 @@ dbStorage.configure(string.format("%s\\settings.db", settingsDatabasePath))
 ---@type DbDictionaryStorage<{a: integer, b: string}>
 local dbList = dbStorage.Dictionary("TABLE")
 
--- local dbList = {
--- 	---@type DbDictionaryStorage<{a: integer, b: string}>
--- 	stages = dbStorage.Dictionary("TABLE"),
--- 	---@type DbDictionaryStorage<{a: integer, b: string}>
--- 	sectors = dbStorage.Dictionary("TABLE"),
--- }
-
 function settings:setValue(key, value)
-	if value ~= settings:getValue(key) then
-		local v = dbList:get(key)
-		v.value = value
-		dbList:set(key, v)
-	end
+	local v = dbList:get(key)
+	v.value = value
+	dbList:set(key, v)
 end
 
 function settings:getValue(key)
@@ -39,12 +30,8 @@ end
 
 function settings:register(settingsTable)
 	for k, v in pairs(settingsTable) do
-		v.type = type(v.default) == "boolean" and 1 or 0
-		v.value = v.default
-
-		local uid = bit.tohex(ac.checksumXXH(stringify(v)))
-		if not dbList:get(v.key) or dbList:get(v.key).uid ~= uid then
-			v.uid = uid
+		if not dbList:get(v.key) then
+			v.value = v.default
 			dbList:set(v.key, v)
 		end
 	end
@@ -52,19 +39,11 @@ end
 
 setmetatable(settings, {
 	__index = function(_, key)
-		local value = settings:getValue(key)
-		if value == nil then
-			ac.log(string.format("Warning: Key '%s' not found in database.", key))
-		end
-		return value
+		return settings:getValue(key)
 	end,
 
 	__newindex = function(_, key, value)
-		if key and value ~= nil then
-			settings:setValue(key, value)
-		else
-			ac.error("Invalid key or value provided to settings")
-		end
+		settings:setValue(key, value)
 	end,
 })
 

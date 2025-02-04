@@ -28,11 +28,11 @@ local bottomBarButtons = {
 	-- },
 }
 
-local appearanceSettings = {
-	{ key = "appearanceSettingsTest", label = "Appearance Lol", default = true },
-}
+-- local appearanceSettings = {
+-- 	{ key = "appearanceSettingsTest", label = "Appearance Lol", default = true },
+-- }
 
-settings:register(appearanceSettings)
+-- settings:register("Appearance", appearanceSettings)
 
 local primaryActive = false
 local secondaryActive = false
@@ -58,15 +58,15 @@ function page.draw()
 				SETTINGS.hideOtherTrackSetups = not SETTINGS.hideOtherTrackSetups
 			end
 
-			for i = 1, #appearanceSettings do
-				local s = appearanceSettings[i]
+			-- for i = 1, #appearanceSettings do
+			-- 	local s = appearanceSettings[i]
 
-				if s.type == 1 then
-					if ui.checkbox(s.label, settings[s.key]) then
-						settings[s.key] = not settings[s.key]
-					end
-				end
-			end
+			-- 	if s.type == 1 then
+			-- 		if ui.checkbox(s.label, settings[s.key]) then
+			-- 			settings[s.key] = not settings[s.key]
+			-- 		end
+			-- 	end
+			-- end
 
 			cui.setCursorX(10)
 			ui.text("Primary Theme Color:")

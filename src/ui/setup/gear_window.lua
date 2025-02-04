@@ -3,7 +3,11 @@ local cphys = ac.getCarPhysics(0)
 
 local function getGearMaxSpeedKmh(gear)
 	if ac.getCarMaxSpeedWithGear then
-		return math.round(ac.getCarMaxSpeedWithGear(0, gear - 1), 1)
+		return math.round(ac.getCarMaxSpeedWithGear(0, gear), 1)
+	end
+
+	if not cphys.gearRatio then
+		return 0
 	end
 
 	return math.round(
@@ -15,9 +19,9 @@ end
 
 local maxSpeed = nil
 
--- for i = -1, car.gearCount + 3 do
--- 	ac.debug(i, math.round(ac.getCarMaxSpeedWithGear(0, i), 1))
--- end
+for i = -1, car.gearCount + 3 do
+	ac.debug(i, math.round(ac.getCarMaxSpeedWithGear(0, i), 1))
+end
 
 function gearWindow(spinnerCount)
 	local yMin = ui.windowHeight() / 4

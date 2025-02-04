@@ -23,7 +23,7 @@ local settingsPages = {
 		end,
 	},
 	{
-		label = "UI",
+		label = "Appearance",
 		enabled = true,
 		func = function()
 			goToSettingsAppearancePage()

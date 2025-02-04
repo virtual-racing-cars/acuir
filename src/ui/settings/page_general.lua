@@ -30,7 +30,7 @@ local bottomBarButtons = {
 }
 
 local generalSettings = {
-	{ key = "autoStart", label = "Auto-Start new UI", default = true, type = 0 },
+	{ key = "autoStart", label = "Auto-Start new UI", default = true },
 	{ key = "showVersions", label = "Show app and CSP versions", default = true },
 	{ key = "developerMode", label = "Developer Mode", default = false },
 }
@@ -58,12 +58,8 @@ function page.draw()
 			for i = 1, #generalSettings do
 				local general = generalSettings[i]
 
-				ac.log(general)
-
-				if general.type == 1 then
-					if ui.checkbox(general.label, settings[general.key]) then
-						settings[general.key] = not settings[general.key]
-					end
+				if ui.checkbox(general.label, settings[general.key]) then
+					settings[general.key] = not settings[general.key]
 				end
 			end
 

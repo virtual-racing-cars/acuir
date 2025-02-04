@@ -53,7 +53,7 @@ local audioSettings = {
 	-- { key = "developerMode", label = "Developer Mode", default = false },
 }
 
-settings:register(audioSettings)
+-- settings:register("Audio", audioSettings)
 
 function page.draw()
 	settingsMenuCommon("/Audio", bottomBarButtons, goToSettingsPage)
