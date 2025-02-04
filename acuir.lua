@@ -1,9 +1,3 @@
-STORAGE = ac.storage({
-	appOpen = false,
-	hasAppOpened = false,
-	setupTab = 1,
-})
-
 SETTINGS = ac.storage({
 	autoStart = true,
 	showVersions = true,
@@ -20,19 +14,20 @@ SETTINGS = ac.storage({
 -- 	end
 -- end
 
-STORAGE.appOpen = SETTINGS.autoStart
-STORAGE.hasAppOpened = false
-
 package.add("src")
 require("ui.main_window")
 require("ui.pause.pause_window")
 require("audio")
 local settings = require("settings")
+local state = require("state")
 local audio = require("audio")
+
+state.appOpen = settings.autoStart
+state.hasAppOpened = false
 
 ac.setWindowOpen("main", true)
 ui.onExclusiveHUD(function(mode)
-	if not STORAGE.appOpen then
+	if not state.appOpen then
 		return
 	end
 
@@ -56,8 +51,8 @@ ac.setWindowOpen("main", true)
 local windowTimeSync = 0
 
 function script.main()
-	if not STORAGE.hasAppOpened then
-		STORAGE.hasAppOpened = true
+	if not state.hasAppOpened then
+		state.hasAppOpened = true
 		ac.setMousePosition(ui.cursorScreenPos())
 	end
 
@@ -71,23 +66,27 @@ local isInMainMenu = false
 
 teleportPitsCallback = nil
 function script.update(dt)
+	-- for i in ipairs(settings.General) do
+	-- 	print(settings.General[i])
+	-- end
+
 	if teleportPitsCallback then
 		if teleportPitsCallback() then
 			teleportPitsCallback = nil
 		end
 	end
 
-	if sim.isInMainMenu and SETTINGS.autoStart and windowTimeSync < os.clock() - 1 then
+	if sim.isInMainMenu and settings.autoStart and windowTimeSync < os.clock() - 1 then
 		ac.tryToOpenRaceMenu("race")
 		ac.tryToOpenRaceMenu("setup")
 	end
 
 	if uic.ctrlDown and uic.shiftDown and ui.keyboardButtonPressed(ui.KeyIndex.F5) then
-		SETTINGS.autoStart = not STORAGE.appOpen
-		STORAGE.appOpen = not STORAGE.appOpen
+		settings.autoStart = not state.appOpen
+		state.appOpen = not state.appOpen
 	end
 
-	if not STORAGE.appOpen then
+	if not state.appOpen then
 		return
 	end
 

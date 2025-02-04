@@ -1,6 +1,7 @@
-local cui = require("ui.cui")
 require("ui.common")
 require("classes.PageManager")
+local cui = require("ui.cui")
+local state = require("state")
 
 local HomePage = require("ui.home.page")
 local SetupPage = require("ui.setup.page_setup")
@@ -69,7 +70,7 @@ function goToSettingsAiPage()
 end
 
 goToHomePage()
--- goToSettingsGeneralPage()
+goToSettingsGeneralPage()
 
 local exclusiveHudMode = ""
 
@@ -80,7 +81,7 @@ local fontSemiBold = ui.DWriteFont("Noto Sans SC"):weight(ui.DWriteFont.Weight.S
 function MainMenuWindow(dt)
 	ui.pushAllowKeyboardFocus(false)
 
-	if not STORAGE.appOpen then
+	if not state.appOpen then
 		exclusiveHudMode = nil
 		return
 	end

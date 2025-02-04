@@ -5,6 +5,7 @@ require("ui.setup.car_status_window")
 require("src.ui.setup.setup_io")
 require("classes.SetupManager")
 local cui = require("ui.cui")
+local state = require("state")
 
 local vec2Temp1 = vec2()
 
@@ -70,18 +71,18 @@ function page.draw()
 
 	cui.contentWindow(
 		"car_setup_window",
-		STORAGE.setupTab,
+		"car_setup_window",
 		vec2(0, 200 * cui.scaleY()),
 		vec2(ui.windowWidth(), ui.windowHeight() - 303 * cui.scaleY()),
 		ui.WindowFlags.None,
 		function()
 			ui.setCursor(0)
-			STORAGE.setupTab = setupTabBar(sm.setupTabs)
+			state.setupTab = setupTabBar(sm.setupTabs)
 
 			ui.setCursor(0)
 			cui.contentWindow(
 				"car_setup_items_window",
-				STORAGE.setupTab .. "2",
+				"car_setup_items_window",
 				vec2(ui.windowWidth() / 4, 56 * cui.scaleY()),
 				vec2(ui.windowWidth() / 2, ui.windowHeight() - 56 * cui.scaleY()),
 				ui.WindowFlags.None,
@@ -96,7 +97,7 @@ function page.draw()
 			ui.setCursor(0)
 			cui.contentWindow(
 				"car_status_window",
-				STORAGE.setupTab .. "42",
+				"car_status_window",
 				vec2((ui.windowWidth() / 4) * 3, 56 * cui.scaleY()),
 				vec2(ui.windowWidth() / 4, ui.windowHeight() - 56 * cui.scaleY()),
 				ui.WindowFlags.None,
@@ -134,7 +135,7 @@ function page.draw()
 
 					cui.contentWindow(
 						"car_status_subwindow",
-						STORAGE.setupTab .. "42",
+						"car_status_subwindow",
 						vec2(0, ui.availableSpaceY() / 20),
 						vec2(ui.windowWidth() + 20, ui.availableSpaceY() - ui.availableSpaceY() / 20),
 						ui.WindowFlags.None,
@@ -166,7 +167,7 @@ function page.draw()
 			ui.setCursor(0)
 			cui.contentWindow(
 				"setup_io_window",
-				STORAGE.setupTab .. "423",
+				"setup_io_window",
 				vec2(0, 56 * cui.scaleY()),
 				vec2(ui.windowWidth() / 4, ui.windowHeight() - 56 * cui.scaleY()),
 				ui.WindowFlags.None,
@@ -199,7 +200,7 @@ function page.draw()
 					ui.setCursor(0)
 					cui.contentWindow(
 						"setup_io_track_subwindow",
-						STORAGE.setupTab .. "42",
+						"setup_io_track_subwindow",
 						vec2(0, ui.availableSpaceY() / 20),
 						vec2(ui.windowWidth(), ui.windowHeight() - ui.windowHeight() / 20),
 						ui.WindowFlags.None,

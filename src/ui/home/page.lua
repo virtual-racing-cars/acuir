@@ -1,10 +1,11 @@
 local page = {}
 
+require("src.classes.PlayerListButton")
 local cui = require("ui.cui")
+local state = require("state")
 local sim = ac.getSim()
 
 -- require("src.ui.home.map")
-require("src.classes.PlayerListButton")
 
 function promptShutdownAC()
 	local mouseMoved = false
@@ -134,7 +135,7 @@ function page.draw()
 
 	cui.contentWindow(
 		"home_leaderboard_window",
-		STORAGE.setupTab,
+		state.setupTab,
 		vec2(0, 286 * cui.scaleY()),
 		vec2(750 * cui.scaleX(), sim.windowHeight - 459 * cui.scaleY()),
 		ui.WindowFlags.None,
@@ -145,7 +146,7 @@ function page.draw()
 
 			cui.contentWindow(
 				"home_leaderboard_entrant_window",
-				STORAGE.setupTab,
+				state.setupTab,
 				vec2(0, height),
 				vec2(ui.windowWidth(), ui.windowHeight() - height),
 				ui.WindowFlags.None,

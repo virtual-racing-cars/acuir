@@ -1,10 +1,10 @@
 local App = {}
 
-local manifestINI = ac.INIConfig.load("manifest.ini", ac.INIFormat.Extended)
-local appVersionString = manifestINI:get("ABOUT", "VERSION", "0.0.0")
-local appfullName = manifestINI:get("ABOUT", "FULL_NAME", "Application")
-local appName = manifestINI:get("ABOUT", "NAME", "App")
-local appDescription = manifestINI:get("ABOUT", "DESCRIPTION", "")
+local appManifestINI = ac.INIConfig.load("manifest.ini", ac.INIFormat.Extended)
+local appVersionString = appManifestINI:get("ABOUT", "VERSION", "0.0.0")
+local appfullName = appManifestINI:get("ABOUT", "FULL_NAME", "Application")
+local appName = appManifestINI:get("ABOUT", "NAME", "App")
+local appDescription = appManifestINI:get("ABOUT", "DESCRIPTION", "")
 
 function App.version()
 	return appVersionString
@@ -20,6 +20,14 @@ end
 
 function App.description()
 	return appDescription
+end
+
+function App.rootDir()
+	return ac.getFolder(ac.FolderID.ScriptOrigin)
+end
+
+function App.configDir()
+	return ac.getFolder(ac.FolderID.ScriptConfig)
 end
 
 local proxy = {}

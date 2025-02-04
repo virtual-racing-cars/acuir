@@ -1,6 +1,7 @@
 local page = {}
 
 local settings = require("settings")
+local cui = require("ui.cui")
 local sim = ac.getSim()
 
 local bottomBarButtons = {
@@ -43,7 +44,7 @@ function page.draw()
 
 	cui.contentWindow(
 		"car_setup_window",
-		STORAGE.setupTab,
+		"car_setup_window",
 		vec2(60 * cui.scaleX(), 240 * cui.scaleY()),
 		vec2(sim.windowWidth - 120 * cui.scaleX(), sim.windowHeight - 383 * cui.scaleY()),
 		ui.WindowFlags.None,
@@ -58,15 +59,11 @@ function page.draw()
 				SETTINGS.hideOtherTrackSetups = not SETTINGS.hideOtherTrackSetups
 			end
 
-			-- for i = 1, #appearanceSettings do
-			-- 	local s = appearanceSettings[i]
-
-			-- 	if s.type == 1 then
-			-- 		if ui.checkbox(s.label, settings[s.key]) then
-			-- 			settings[s.key] = not settings[s.key]
-			-- 		end
-			-- 	end
-			-- end
+			for i, v in ipairs(settings.Appearance) do
+				if ui.checkbox(v.label, settings.Appearance[v.key]) then
+					settings.Appearance[v.key] = not settings.Appearance[v.key]
+				end
+			end
 
 			cui.setCursorX(10)
 			ui.text("Primary Theme Color:")

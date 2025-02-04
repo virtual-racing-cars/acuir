@@ -1,7 +1,7 @@
-local cui = {}
+local CUI = {}
 
-local sim = ac.getSim()
 local audio = require("audio")
+local sim = ac.getSim()
 
 local vec2Temp1 = vec2()
 local vec2Temp2 = vec2()
@@ -20,7 +20,7 @@ ac.onResolutionChange(function(newSize, makingScreenshot)
 	scaleX = scaleY
 end)
 
-function cui.loadStoredBool(id)
+function CUI.loadStoredBool(id)
 	if storedBools[id] == nil then
 		storedBools[id] = false
 	end
@@ -28,56 +28,56 @@ function cui.loadStoredBool(id)
 	return storedBools[id]
 end
 
-function cui.storeBool(id, value)
+function CUI.storeBool(id, value)
 	storedBools[id] = value
 end
 
-function cui.windowMaxWidth()
+function CUI.windowMaxWidth()
 	return windowMaxWidth
 end
 
-function cui.windowMaxHeight()
+function CUI.windowMaxHeight()
 	return windowMaxHeight
 end
 
-function cui.availableSpaceX()
+function CUI.availableSpaceX()
 	return ui.availableSpaceX()
 end
 
-function cui.availableSpaceY()
+function CUI.availableSpaceY()
 	return ui.availableSpaceY() * scaleY
 end
 
-function cui.scaleX()
+function CUI.scaleX()
 	return scaleX
 end
 
-function cui.scaleY()
+function CUI.scaleY()
 	return scaleY
 end
 
-function cui.setCursorX(v)
+function CUI.setCursorX(v)
 	ui.setCursorX(v * scaleX)
 end
 
-function cui.setCursorY(v)
+function CUI.setCursorY(v)
 	ui.setCursorY(v * scaleY)
 end
 
-function cui.offsetCursorX(v)
+function CUI.offsetCursorX(v)
 	ui.offsetCursorX(v * scaleX)
 end
 
-function cui.offsetCursorY(v)
+function CUI.offsetCursorY(v)
 	ui.offsetCursorY(v * scaleY)
 end
 
-function cui.childWindow(id, size, border, flags, content)
+function CUI.childWindow(id, size, border, flags, content)
 	ui.childWindow(id, size, false, flags, content)
 end
 
-function cui.contentWindow(id, title, position, size, flags, content, showTitle, hideBackground, scroll)
-	cui.pushWindow(id .. "test", position.x, position.y, size.x, size.y, scroll)
+function CUI.contentWindow(id, title, position, size, flags, content, showTitle, hideBackground, scroll)
+	CUI.pushWindow(id .. "test", position.x, position.y, size.x, size.y, scroll)
 
 	if not hideBackground then
 		ui.drawRectFilled(vec2(0, 0), size, SETTINGS.uiColor1 / 2)
@@ -85,70 +85,70 @@ function cui.contentWindow(id, title, position, size, flags, content, showTitle,
 
 	content()
 
-	cui.popWindow()
+	CUI.popWindow()
 end
 
 local fontRegular = ui.DWriteFont("Rajdhani"):weight(ui.DWriteFont.Weight.SemiBold)
 local fontBold = ui.DWriteFont("Rajdhani"):weight(ui.DWriteFont.Weight.Bold)
 local fontSemiBold = ui.DWriteFont("Noto Sans SC"):weight(ui.DWriteFont.Weight.SemiBold)
 
-cui.modalDialogCallback = nil
+CUI.modalDialogCallback = nil
 
-function cui.modalDialog(callback)
-	cui.modalDialogCallback = callback
+function CUI.modalDialog(callback)
+	CUI.modalDialogCallback = callback
 end
 
-function cui.dwriteTextWrapped(text, font)
+function CUI.dwriteTextWrapped(text, font)
 	ui.pushDWriteFont(fontRegular)
-	ui.dwriteTextWrapped(text, font * cui.scaleY())
+	ui.dwriteTextWrapped(text, font * CUI.scaleY())
 	ui.popDWriteFont()
 end
 
-function cui.dwriteText(params)
+function CUI.dwriteText(params)
 	if not params.size then
 		params.size = vec2Temp1:set(350, 100)
 	end
 
 	if params.xPos then
-		ui.setCursorX(params.xPos * cui.scaleX())
+		ui.setCursorX(params.xPos * CUI.scaleX())
 	end
 
 	if params.yPos then
-		ui.setCursorY(params.yPos * cui.scaleY())
+		ui.setCursorY(params.yPos * CUI.scaleY())
 	end
 
 	ui.pushDWriteFont(fontRegular)
-	ui.dwriteText(params.text, params.fontSize * cui.scaleY(), params.color)
+	ui.dwriteText(params.text, params.fontSize * CUI.scaleY(), params.color)
 	ui.popDWriteFont()
 end
 
-function cui.dwriteTextAligned(params)
+function CUI.dwriteTextAligned(params)
 	if not params.size then
 		params.size = vec2Temp1:set(350, 100)
 	end
 
 	if params.xPos then
-		ui.setCursorX(params.xPos * cui.scaleX())
+		ui.setCursorX(params.xPos * CUI.scaleX())
 	end
 
 	if params.yPos then
-		ui.setCursorY(params.yPos * cui.scaleY())
+		ui.setCursorY(params.yPos * CUI.scaleY())
 	end
 
 	ui.pushDWriteFont(fontRegular)
 	ui.dwriteTextAligned(
 		params.text,
-		params.fontSize * cui.scaleY(),
+		params.fontSize * CUI.scaleY(),
 		params.xAlign,
 		params.yAlign,
-		vec2Temp1:set(params.size.x * cui.scaleX(), params.size.y * cui.scaleY()),
+		vec2Temp1:set(params.size.x * CUI.scaleX(), params.size.y * CUI.scaleY()),
 		false,
 		params.color
 	)
 	ui.popDWriteFont()
 end
 
-function cui.button(label, sizeX, sizeY, fontSize, horizontalAligment, verticalAlignment, flags, fontColor)
+function CUI.button(label, sizeX, sizeY, fontSize, horizontalAligment, verticalAlignment, flags, fontColor)
 	if not horizontalAligment then
 		horizontalAligment = ui.Alignment.Center
 	end
@@ -198,7 +198,7 @@ function cui.button(label, sizeX, sizeY, fontSize, horizontalAligment, verticalA
 	return clicked and not (flags == ui.ButtonFlags.Disabled)
 end
 
-function cui.modalButton(label, sizeX, sizeY, flags)
+function CUI.modalButton(label, sizeX, sizeY, flags)
 	local fontSize = sizeY / 2
 
 	local disabled = flags == ui.ButtonFlags.Disabled
@@ -239,7 +239,7 @@ function cui.modalButton(label, sizeX, sizeY, flags)
 	return clicked and not (flags == ui.ButtonFlags.Disabled)
 end
 
-function cui.menuButton(label, size, horizontalAligment, verticalAlignment, flags, active, bold)
+function CUI.menuButton(label, size, horizontalAligment, verticalAlignment, flags, active, bold)
 	if bold then
 		ui.pushDWriteFont(fontBold)
 	else
@@ -265,7 +265,7 @@ function cui.menuButton(label, size, horizontalAligment, verticalAlignment, flag
 		sizeY = size
 		fontSize = math.floor(sizeY * 0.45)
 		fontSize = (fontSize % 2 ~= 0) and fontSize or fontSize + 1
-		buttonSize = vec2Temp1:set(ui.measureDWriteText(string.upper(label), fontSize).x + 100 * cui.scaleY(), size)
+		buttonSize = vec2Temp1:set(ui.measureDWriteText(string.upper(label), fontSize).x + 100 * CUI.scaleY(), size)
 	else
 		sizeX = size.x
 		sizeY = size.y
@@ -327,13 +327,13 @@ function cui.menuButton(label, size, horizontalAligment, verticalAlignment, flag
 	return clicked and not (flags == ui.ButtonFlags.Disabled)
 end
 
-function cui.modernButton(label, sizeX, sizeY, flags, icon)
+function CUI.modernButton(label, sizeX, sizeY, flags, icon)
 	local clicked = ui.modernButton(label, vec2(sizeX, sizeY) * scaleY, flags, icon, 16 * scaleY)
 	local hovered = ui.itemHovered()
 	return clicked and not (flags == ui.ButtonFlags.Disabled)
 end
 
-function cui.iconButton(label, icon, sizeX, sizeY, flags)
+function CUI.iconButton(label, icon, sizeX, sizeY, flags)
 	if not flags then
 		flags = ui.ButtonFlags.None
 	end
@@ -366,7 +366,7 @@ function cui.iconButton(label, icon, sizeX, sizeY, flags)
 end
 
 local treeNodeParent = ""
-function cui.treeNodeButton(label, size, active, bold, count)
+function CUI.treeNodeButton(label, size, active, bold, count)
 	if bold then
 		ui.pushDWriteFont(fontBold)
 	else
@@ -395,7 +395,7 @@ function cui.treeNodeButton(label, size, active, bold, count)
 		size,
 		ui.ButtonFlags.PressedOnClick + ui.ButtonFlags.PressedOnDoubleClick
 	)
-	local hovered = ui.itemHovered() and not cui.modalDialogCallback
+	local hovered = ui.itemHovered() and not CUI.modalDialogCallback
 	local id = ui.getLastID()
 
 	if active then
@@ -426,7 +426,7 @@ function cui.treeNodeButton(label, size, active, bold, count)
 	)
 	if bold and count > 0 then
 		ui.addIcon(
-			cui.loadStoredBool(id) and ui.Icons.Minus or ui.Icons.Plus,
+			CUI.loadStoredBool(id) and ui.Icons.Minus or ui.Icons.Plus,
 			vec2Temp1:set(size.y / 2, size.y / 2),
 			vec2Temp2:set(0.95, 0.5),
 			nil
@@ -438,18 +438,18 @@ function cui.treeNodeButton(label, size, active, bold, count)
 	return clicked, id
 end
 
-function cui.treeNode(label, count, content)
+function CUI.treeNode(label, count, content)
 	local clicked, id =
-		cui.treeNodeButton(label, vec2Temp1:set(ui.availableSpaceX(), 50 * cui.scaleY()), false, true, count)
+		CUI.treeNodeButton(label, vec2Temp1:set(ui.availableSpaceX(), 50 * CUI.scaleY()), false, true, count)
 	treeNodeParent = label
 
 	if count < 1 then
 		return clicked
 	end
 
-	local open = cui.loadStoredBool(id)
+	local open = CUI.loadStoredBool(id)
 	if clicked then
-		cui.storeBool(id, not open)
+		CUI.storeBool(id, not open)
 	end
 
 	if open then
@@ -463,14 +463,14 @@ function cui.treeNode(label, count, content)
 	return clicked
 end
 
-function cui.combo(label, size, previewValue, content)
+function CUI.combo(label, size, previewValue, content)
 	local cursorXTemp = ui.getCursorX()
-	local clicked, id = cui.treeNodeButton(previewValue, size, false, true)
+	local clicked, id = CUI.treeNodeButton(previewValue, size, false, true)
 	local cursorYTemp = ui.getCursorY()
 
-	local open = cui.loadStoredBool(id)
+	local open = CUI.loadStoredBool(id)
 	if clicked then
-		cui.storeBool(id, not open)
+		CUI.storeBool(id, not open)
 	end
 
 	local value = previewValue
@@ -486,7 +486,7 @@ function cui.combo(label, size, previewValue, content)
 		end)
 
 		if clicked then
-			cui.storeBool(id, false)
+			CUI.storeBool(id, false)
 		end
 	end
 
@@ -498,7 +498,7 @@ end
 local inputTextBoxDragIndex = 0
 local inputTextBoxCursorIndex = 2
 
-function cui.inputTextBox(label, stringPrefix, stringInput, size)
+function CUI.inputTextBox(label, stringPrefix, stringInput, size)
 	ui.pushDWriteFont(fontRegular)
 
 	local fontSize = math.floor(size.y * 0.4)
@@ -515,7 +515,7 @@ function cui.inputTextBox(label, stringPrefix, stringInput, size)
 	local r1, r2 = ui.itemRect()
 	local hovered = ui.itemHovered()
 	local id = ui.getLastID()
-	local itemActive = cui.loadStoredBool(id)
+	local itemActive = CUI.loadStoredBool(id)
 
 	ui.pushClipRect(r1, r2)
 
@@ -525,13 +525,13 @@ function cui.inputTextBox(label, stringPrefix, stringInput, size)
 	ui.offsetCursorY(2)
 
 	if clicked then
-		cui.storeBool(id, clicked)
+		CUI.storeBool(id, clicked)
 	end
 
 	if hovered then
 		ui.setMouseCursor(ui.MouseCursor.TextInput)
 	elseif ui.mouseClicked(ui.MouseButton.Left) then
-		cui.storeBool(id, false)
+		CUI.storeBool(id, false)
 	end
 
 	local charSizes = {}
@@ -617,8 +617,8 @@ function cui.inputTextBox(label, stringPrefix, stringInput, size)
 	return itemActive
 end
 
-function cui.inputText(label, stringPrefix, stringInput, flags, size)
-	if not cui.inputTextBox(label, stringPrefix, stringInput, size) then
+function CUI.inputText(label, stringPrefix, stringInput, flags, size)
+	if not CUI.inputTextBox(label, stringPrefix, stringInput, size) then
 		return stringInput
 	end
 
@@ -700,13 +700,13 @@ function cui.inputText(label, stringPrefix, stringInput, flags, size)
 	return stringInput
 end
 
-function cui.dummy(x, y)
+function CUI.dummy(x, y)
 	ui.dummy(vec2Temp1:set(x * scaleY, y * scaleY))
 end
 
 local margins = 15
 
-function cui.pushWindow(id, x, y, width, height, scroll)
+function CUI.pushWindow(id, x, y, width, height, scroll)
 	local windowFlags = ui.WindowFlags.NoResize
 
 	if not scroll then
@@ -732,7 +732,7 @@ function cui.pushWindow(id, x, y, width, height, scroll)
 	ui.beginGroup(tabWidth)
 end
 
-function cui.popWindow(scroll)
+function CUI.popWindow(scroll)
 	if not scroll then
 		ui.popClipRect()
 	end
@@ -742,7 +742,7 @@ function cui.popWindow(scroll)
 	ui.popStyleVar(1)
 end
 
-function cui.getWindow(windowName)
+function CUI.getWindow(windowName)
 	local appWindows = ac.getAppWindows()
 	local window = nil
 
@@ -755,4 +755,4 @@ function cui.getWindow(windowName)
 	return window
 end
 
-return cui
+return CUI

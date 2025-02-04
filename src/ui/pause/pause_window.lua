@@ -1,6 +1,7 @@
 require("ui.common")
 require("classes.PageManager")
 local cui = require("ui.cui")
+local state = require("state")
 
 local HomePage = require("ui.pause.page_pause_home")
 local pageManager = PageManager()
@@ -15,7 +16,7 @@ local fontSemiBold = ui.DWriteFont("Noto Sans SC"):weight(ui.DWriteFont.Weight.S
 function PauseMenuWindow(dt)
 	ui.pushAllowKeyboardFocus(false)
 
-	if not STORAGE.appOpen then
+	if not state.appOpen then
 		exclusiveHudMode = nil
 		return
 	end
