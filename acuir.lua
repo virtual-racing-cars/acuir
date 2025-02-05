@@ -22,6 +22,7 @@ local settings = require("settings")
 local state = require("state")
 local audio = require("audio")
 local csp = require("csp")
+local style = require("style")
 
 state.appOpen = settings.autoStart
 state.hasAppOpened = false

@@ -1,4 +1,5 @@
 local cui = require("ui.cui")
+local style = require("style")
 
 local vec2Temp1 = vec2()
 local vec2Temp2 = vec2()
@@ -12,12 +13,9 @@ local spinnerButtonTimer = 0
 local spinnerButtonTime = 0
 
 local function drawSpinnerButton(direction, size, disabled)
-	size = size / 2
+	style:pushSpinnerButtonStyle()
 
-	ui.pushStyleColor(ui.StyleColor.Button, rgbm(0, 0, 0, 0))
-	ui.pushStyleColor(ui.StyleColor.ButtonHovered, rgbm(0, 0, 0, 0))
-	ui.pushStyleColor(ui.StyleColor.ButtonActive, rgbm(0, 0, 0, 0))
-	ui.pushStyleColor(ui.StyleColor.TextHovered, rgbm(1, 0, 0, 1))
+	size = size / 2
 
 	local tmpPos = ui.getCursor()
 
@@ -40,7 +38,7 @@ local function drawSpinnerButton(direction, size, disabled)
 		spinnerButtonTimer = (os.clock() - spinnerButtonTime) < 2.5 and os.clock() + 0.1 or os.clock() + 0.075
 	end
 
-	ui.popStyleColor(4)
+	style:popSpinnerButtonStyle()
 
 	return clicked
 end

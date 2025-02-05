@@ -2,6 +2,7 @@ require("ui.common")
 require("classes.PageManager")
 local cui = require("ui.cui")
 local state = require("state")
+local style = require("style")
 
 local HomePage = require("ui.home.page")
 local SetupPage = require("ui.setup.page_setup")
@@ -74,10 +75,6 @@ goToSettingsGeneralPage()
 
 local exclusiveHudMode = ""
 
-local fontRegular = ui.DWriteFont("Rajdhani"):weight(ui.DWriteFont.Weight.SemiBold)
-local fontBold = ui.DWriteFont("Rajdhani"):weight(ui.DWriteFont.Weight.Bold)
-local fontSemiBold = ui.DWriteFont("Noto Sans SC"):weight(ui.DWriteFont.Weight.SemiBold)
-
 function MainMenuWindow(dt)
 	ui.pushAllowKeyboardFocus(false)
 
@@ -101,11 +98,7 @@ function MainMenuWindow(dt)
 		end
 	end
 
-	ui.pushDWriteFont(fontRegular)
-	ui.pushStyleColor(ui.StyleColor.ScrollbarGrab, SETTINGS.uiColor3)
-	ui.pushStyleColor(ui.StyleColor.ScrollbarBg, rgbm.colors.black)
-	ui.pushStyleVar(ui.StyleVar.ScrollbarSize, 5)
-	ui.pushStyleVar(ui.StyleVar.ItemSpacing, 0)
+	style:pushStyleMain()
 
 	local childWindowWith = (2560 - 120) * cui.scaleX()
 	local childWindowHeight = (1440 - 80) * cui.scaleX()
@@ -158,9 +151,8 @@ function MainMenuWindow(dt)
 		)
 	end
 
-	ui.popDWriteFont()
-	ui.popStyleVar(2)
-	ui.popStyleColor(2)
+	style:popStyleMain()
+
 	ui.popAllowKeyboardFocus()
 
 	-- ac.debug("perfTime", (os.preciseClock() - perfTime) * 1000)
