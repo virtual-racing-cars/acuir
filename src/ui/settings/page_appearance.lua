@@ -45,12 +45,6 @@ function page.draw()
 			ui.setCursorY(60)
 			ui.setCursorX(50)
 
-			for i, v in ipairs(settings.Appearance) do
-				if ui.checkbox(v.label, settings.Appearance[v.key]) then
-					settings.Appearance[v.key] = not settings.Appearance[v.key]
-				end
-			end
-
 			cui.setCursorX(10)
 			ui.text("Primary Theme Color:")
 			ui.sameLine()

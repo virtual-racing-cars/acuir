@@ -12,34 +12,34 @@ local acLogo = ac.getFolder(ac.FolderID.Root) .. "\\launcher\\themes\\default\\g
 local acLogoSize = ui.imageSize(acLogo) * cui.scaleY()
 
 local topBarHeight = 200 * cui.scaleY()
-local bottomBarHeight = sim.windowHeight - 96 * cui.scaleY()
 
 local menuButtonSize = 56
 local versionString = string.format("%s: %s, CSP: %s (%s)", app.name, app.version, csp.version, csp.versionCode)
 
 function bottomBar(buttons)
 	ui.drawRectFilled(
-		vec2(0, bottomBarHeight),
+		vec2(0, ui.windowHeight() - 56 * cui.scaleY()),
 		vec2(ui.windowWidth(), ui.windowHeight()),
 		settings.Appearance.uiColor1 / 3
 	)
 
-	ui.pushDWriteFont(fontRegular)
-	ui.setCursorX(0)
-	ui.setCursorY(10)
-	ui.dwriteTextAligned(
-		versionString,
-		26 * cui.scaleY(),
-		ui.Alignment.End,
-		ui.Alignment.End,
-		ui.availableSpace() - vec2(40, 10) * cui.scaleY(),
-		false,
-		rgbm(0.8, 0.8, 0.8, 1)
-	)
+	if settings.General.showVersions then
+		ui.setCursorX(0)
+		ui.setCursorY(10)
+		ui.dwriteTextAligned(
+			versionString,
+			26 * cui.scaleY(),
+			ui.Alignment.End,
+			ui.Alignment.End,
+			ui.availableSpace() - vec2(40, 10) * cui.scaleY(),
+			false,
+			rgbm(0.8, 0.8, 0.8, 1)
+		)
+	end
 
 	ui.pushStyleColor(ui.StyleColor.Button, rgbm.colors.transparent)
 	ui.setCursorX(0)
-	ui.setCursorY(bottomBarHeight)
+	ui.setCursorY(ui.windowHeight() - 56 * cui.scaleY())
 	for i in ipairs(buttons) do
 		local menuButton = buttons[i]
 

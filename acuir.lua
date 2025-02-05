@@ -10,9 +10,6 @@ local pages = require("ui.pages")
 
 app.state.appOpen = settings.General.autoStart
 app.state.hasAppOpened = false
-app.state.appOpen = true
-
-ac.setWindowOpen("main", true)
 
 local modeLast = ""
 ui.onExclusiveHUD(function(mode)
@@ -48,7 +45,7 @@ ui.onExclusiveHUD(function(mode)
 
 	if mode == "game" then
 		if modeLast ~= mode then
-			pages:setParentPauseMenu()
+			pages:setParentMainMenu()
 		end
 	end
 
@@ -64,6 +61,7 @@ function script.main()
 
 	windowTimeSync = os.clock()
 end
+ac.setWindowOpen("main", true)
 
 local isInMainMenu = false
 teleportPitsCallback = nil

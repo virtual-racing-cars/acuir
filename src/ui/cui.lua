@@ -433,13 +433,17 @@ function CUI.treeNodeButton(label, size, active, bold, count)
 	return clicked, id
 end
 
-function CUI.treeNode(label, count, content)
+function CUI.treeNode(label, count, content, defaultOpen)
 	local clicked, id =
 		CUI.treeNodeButton(label, vec2Temp1:set(ui.availableSpaceX(), 50 * CUI.scaleY()), false, true, count)
 	treeNodeParent = label
 
 	if count < 1 then
 		return clicked
+	end
+
+	if defaultOpen and not storedBools[id] then
+		CUI.storeBool(id, true)
 	end
 
 	local open = CUI.loadStoredBool(id)

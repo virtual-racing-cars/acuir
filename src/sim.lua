@@ -1,4 +1,4 @@
-local Utils = {}
+local SimUtils = {}
 
 local sim = ac.getSim()
 
@@ -20,7 +20,7 @@ local windDirectionStrings = {
 	"NNW",
 }
 
-function Utils.windDirectionString()
+function SimUtils.windDirectionString()
 	return windDirectionStrings[math.round((sim.windDirectionDeg + 180) / 24) + 1]
 end
 
@@ -47,7 +47,7 @@ local trackGripStrings = {
 	{ 100, "OPTIMUM" },
 }
 
-function Utils.trackGripString()
+function SimUtils.trackGripString()
 	return findClosestIndex(sim.roadGrip * 100, trackGripStrings)
 end
 
@@ -62,30 +62,30 @@ local raceSessiontTypeString = {
 	"Drag",
 }
 
-function Utils.raceSessionTypeString()
+function SimUtils.raceSessionTypeString()
 	return raceSessiontTypeString[sim.raceSessionType + 1]
 end
 
-function Utils.ambientTemperatureC()
+function SimUtils.ambientTemperatureC()
 	return sim.ambientTemperature
 end
 
-function Utils.ambientTemperatureK()
+function SimUtils.ambientTemperatureK()
 	return sim.ambientTemperature + 273.15
 end
 
-function Utils.ambientTemperatureF()
+function SimUtils.ambientTemperatureF()
 	return sim.ambientTemperature * (9 / 5) + 32
 end
 
-function Utils.simTimeString()
+function SimUtils.simTimeString()
 	return string.format("%02d:%02d", sim.timeHours, sim.timeMinutes)
 end
 
 local proxy = {}
 setmetatable(proxy, {
 	__index = function(_, key)
-		local value = rawget(Utils, key)
+		local value = rawget(SimUtils, key)
 		if type(value) == "function" then
 			return value()
 		else

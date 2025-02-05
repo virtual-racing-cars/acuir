@@ -321,7 +321,7 @@ function setupIoDraw(sm)
 			if refreshingSetups then
 				ui.icon(ui.Icons.LoadingSpinner, ui.availableSpace())
 			else
-				for _, track in ipairs(trackSortedSetups) do
+				for i, track in ipairs(trackSortedSetups) do
 					ui.setCursorX(0)
 					if
 						cui.treeNode(track, #loadedSetups[track], function()
@@ -359,7 +359,7 @@ function setupIoDraw(sm)
 									end
 								end
 							end
-						end)
+						end, i == 1)
 					then
 						saveSetup.track = track
 					end

@@ -3,7 +3,7 @@ local settings = {
 		{ key = "autoStart", label = "Auto-Start new UI", default = true, widget = 1 },
 		{
 			key = "hideOtherTrackSetups",
-			label = "Only show current track and generic setup folders",
+			label = "Hide Other Track Setups",
 			default = true,
 			widget = 1,
 		},

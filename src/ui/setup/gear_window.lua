@@ -1,3 +1,4 @@
+local settings = require("settings")
 local cui = require("ui.cui")
 local car = ac.getCar(0)
 local cphys = ac.getCarPhysics(0)
@@ -69,7 +70,7 @@ function gearWindow(spinnerCount)
 
 		ui.pathLineTo(p1)
 		ui.pathLineTo(p2)
-		ui.pathStroke(rgbm.colors.red, false, 4)
+		ui.pathStroke(settings.Appearance.uiColor2, false, 4)
 
 		if maxGearSpeed > prevGearSpeed then
 			ui.setCursor(p2 - vec2(20, 25) * cui.scaleY())
