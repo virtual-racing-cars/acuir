@@ -5,7 +5,7 @@ require("ui.setup.car_status_window")
 require("src.ui.setup.setup_io")
 require("classes.SetupManager")
 local cui = require("ui.cui")
-local state = require("state")
+local app = require("app")
 
 local vec2Temp1 = vec2()
 
@@ -76,7 +76,7 @@ function page.draw()
 		ui.WindowFlags.None,
 		function()
 			ui.setCursor(0)
-			state.setupTab = setupTabBar(sm.setupTabs)
+			app.state.setupTab = setupTabBar(sm.setupTabs)
 
 			ui.setCursor(0)
 			cui.contentWindow(

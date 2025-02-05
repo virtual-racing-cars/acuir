@@ -30,6 +30,12 @@ function App.configDir()
 	return ac.getFolder(ac.FolderID.ScriptConfig)
 end
 
+App.state = {
+	appOpen = false,
+	hasAppOpened = false,
+	setupTab = 1,
+}
+
 local proxy = {}
 setmetatable(proxy, {
 	__index = function(_, key)

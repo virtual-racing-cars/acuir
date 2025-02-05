@@ -2,18 +2,18 @@ package.add("src")
 require("ui.main_window")
 require("ui.pause.pause_window")
 require("audio")
+local app = require("app")
 local settings = require("settings")
-local state = require("state")
 local audio = require("audio")
 local csp = require("csp")
 
-state.appOpen = settings.autoStart
-state.hasAppOpened = false
-state.appOpen = true
+app.state.appOpen = settings.General.autoStart
+app.state.hasAppOpened = false
+app.state.appOpen = true
 
 ac.setWindowOpen("main", true)
 ui.onExclusiveHUD(function(mode)
-	if not state.appOpen or ac.getLastError() then
+	if not app.state.appOpen or ac.getLastError() then
 		return
 	end
 
@@ -34,8 +34,8 @@ end)
 
 local windowTimeSync = 0
 function script.main()
-	if not state.hasAppOpened then
-		state.hasAppOpened = true
+	if not app.state.hasAppOpened then
+		app.state.hasAppOpened = true
 		ac.setMousePosition(ui.cursorScreenPos())
 	end
 
@@ -51,17 +51,17 @@ function script.update(dt)
 		end
 	end
 
-	if csp.sim.isInMainMenu and settings.autoStart and windowTimeSync < os.clock() - 1 then
+	if csp.sim.isInMainMenu and settings.General.autoStart and windowTimeSync < os.clock() - 1 then
 		ac.tryToOpenRaceMenu("race")
 		ac.tryToOpenRaceMenu("setup")
 	end
 
 	if csp.ui.ctrlDown and csp.ui.shiftDown and ui.keyboardButtonPressed(ui.KeyIndex.F5) then
-		settings.autoStart = not state.appOpen
-		state.appOpen = not state.appOpen
+		settings.General.autoStart = not app.state.appOpen
+		app.state.appOpen = not app.state.appOpen
 	end
 
-	if not state.appOpen then
+	if not app.state.appOpen then
 		return
 	end
 

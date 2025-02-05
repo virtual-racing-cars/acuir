@@ -3,7 +3,7 @@ require("src.classes.Slider")
 local settings = require("settings")
 local cui = require("ui.cui")
 local audio = require("audio")
-local state = require("state")
+local app = require("app")
 
 local currentApp = 0
 local tabBarPosition = 0
@@ -170,7 +170,7 @@ function car_setup(sm)
 	spinnerHeight = 70 * cui.scaleY()
 
 	local changed = false
-	local tab = sm.setupTabs[tonumber(state.setupTab)]
+	local tab = sm.setupTabs[tonumber(app.state.setupTab)]
 
 	for _, v in pairs(tab.setupSpinners) do
 		if v.tab == "PITSTOP STRATEGY" then

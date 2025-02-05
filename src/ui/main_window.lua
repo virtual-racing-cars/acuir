@@ -1,7 +1,8 @@
 require("ui.common")
 require("classes.PageManager")
+local settings = require("settings")
 local cui = require("ui.cui")
-local state = require("state")
+local app = require("app")
 local style = require("style")
 
 local HomePage = require("ui.home.page")
@@ -78,7 +79,7 @@ local exclusiveHudMode = ""
 function MainMenuWindow(dt)
 	ui.pushAllowKeyboardFocus(false)
 
-	if not state.appOpen then
+	if not app.state.appOpen then
 		exclusiveHudMode = nil
 		return
 	end

@@ -1,8 +1,9 @@
 local page = {}
 
 require("src.classes.PlayerListButton")
+local settings = require("settings")
 local cui = require("ui.cui")
-local state = require("state")
+local app = require("app")
 local sim = ac.getSim()
 
 -- require("src.ui.home.map")
