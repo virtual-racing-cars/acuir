@@ -2,7 +2,6 @@ PageManager = class("PageManager")
 
 function PageManager:initialize()
 	self.pages = {}
-	self.parentName = nil
 	self.currentPage = nil
 	self.currentPageName = nil
 
@@ -10,15 +9,8 @@ function PageManager:initialize()
 	self._history_pos = 0
 end
 
-function PageManager:registerPage(name, parentName, page)
+function PageManager:registerPage(name, page)
 	self.pages[name] = page
-	self.parentName = parentName
-
-	if not parentName then
-		self.currentPage = self.pages[name]
-		self.currentPageName = name
-		self:makeUndo()
-	end
 end
 
 function PageManager:setPage(name, skipUndo)
@@ -29,8 +21,8 @@ function PageManager:setPage(name, skipUndo)
 			self:makeUndo()
 		end
 	else
-		ac.fuck()
 		ac.error(string.format("Page %s is not valid", name))
+		ac.fuck()
 	end
 end
 
@@ -87,8 +79,11 @@ function PageManager:makeUndo()
 	self._history_pos = #self._history
 end
 
-function PageManager:resetUndo()
+function PageManager:resetUndo(skipUndo)
 	self._history = {}
 	self._history_pos = 0
-	self:makeUndo()
+
+	if not skipUndo then
+		self:makeUndo()
+	end
 end

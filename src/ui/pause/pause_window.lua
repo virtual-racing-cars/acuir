@@ -4,14 +4,7 @@ local settings = require("settings")
 local cui = require("ui.cui")
 local app = require("app")
 local pages = require("ui.pages")
-
-pages.pausePM:registerPage("HomePage", nil, require("ui.pause.page_pause_home"))
-pages.mainMenuPM:registerPage("SettingsPage", "HomePage", require("ui.SETTINGS.page_settings"))
-pages.pausePM:registerPage("SettingsGeneralPage", "SettingsPage", require("ui.SETTINGS.page_general"))
-pages.pausePM:registerPage("SettingsControlsPage", "SettingsPage", require("ui.SETTINGS.page_controls"))
-pages.pausePM:registerPage("SettingsAudioPage", "SettingsPage", require("ui.SETTINGS.page_audio"))
-pages.pausePM:registerPage("SettingsAppearancePage", "SettingsPage", require("ui.SETTINGS.page_appearance"))
-pages.pausePM:registerPage("SettingsAiPage", "SettingsPage", require("ui.SETTINGS.page_ai"))
+pages.manager:registerPage("PauseMenu", require("ui.pause.page_pause_home"))
 
 local exclusiveHudMode = ""
 
@@ -26,16 +19,12 @@ function PauseMenuWindow(dt)
 
 	local perfTime = os.preciseClock()
 
-	if ui.keyboardButtonPressed(ui.KeyIndex.Escape) or ac.isKeyPressed(ui.KeyIndex.XButton1) then
-		if pages.pause:isUndoAvailable() then
-			pages.pause:undo()
-		end
+	if ac.isKeyPressed(ui.KeyIndex.XButton1) then
+		pages:undo()
 	end
 
 	if ac.isKeyPressed(ui.KeyIndex.XButton2) then
-		if pages.pause:isRedoAvailable() then
-			pages.pause:redo()
-		end
+		pages:redo()
 	end
 
 	ui.pushDWriteFont(fontRegular)
@@ -43,8 +32,8 @@ function PauseMenuWindow(dt)
 	ui.pushStyleVar(ui.StyleVar.ScrollbarSize, 3)
 	ui.pushStyleVar(ui.StyleVar.ItemSpacing, 0)
 
-	local childWindowWith = (2560 * cui.scaleX()) / 5
-	local childWindowHeight = (1440 * cui.scaleY()) / 2
+	local childWindowWith = (2560 - 120) * cui.scaleX()
+	local childWindowHeight = (1440 - 80) * cui.scaleX()
 	local mainWindowFlags = ui.WindowFlags.NoScrollbar + ui.WindowFlags.NoScrollWithMouse
 
 	if cui.modalDialogCallback then
@@ -60,10 +49,7 @@ function PauseMenuWindow(dt)
 		vec2(childWindowWith, childWindowHeight),
 		mainWindowFlags,
 		function()
-			ui.drawRectFilled(vec2(0, 0), ui.availableSpace(), settings.Appearance.uiColor1 / 1.5)
-
-			exclusiveHudMode = ""
-			exclusiveHudMode = pages.pausePM:draw()
+			exclusiveHudMode = pages.manager:draw()
 		end
 	)
 

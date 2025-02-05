@@ -6,12 +6,15 @@ local app = require("app")
 local settings = require("settings")
 local audio = require("audio")
 local csp = require("csp")
+local pages = require("ui.pages")
 
 app.state.appOpen = settings.General.autoStart
 app.state.hasAppOpened = false
 app.state.appOpen = true
 
 ac.setWindowOpen("main", true)
+
+local modeLast = ""
 ui.onExclusiveHUD(function(mode)
 	if not app.state.appOpen or ac.getLastError() then
 		return
@@ -22,14 +25,37 @@ ui.onExclusiveHUD(function(mode)
 	if mode == "menu" then
 		audio:driver(dt)
 
+		if modeLast ~= mode then
+			pages.manager:resetUndo(true)
+			pages:goToMainMenu()
+		end
+
+		modeLast = mode
+
 		return MainMenuWindow(dt)
 	end
 
 	if mode == "pause" then
 		audio:driver(dt)
 
+		if modeLast ~= mode then
+			pages.manager:resetUndo(true)
+			pages:goToPauseMenu()
+		end
+
+		modeLast = mode
+
 		return PauseMenuWindow()
 	end
+
+	if mode == "game" then
+		if modeLast ~= mode then
+			pages.manager:resetUndo(true)
+			pages:goToPauseMenu()
+		end
+	end
+
+	modeLast = mode
 end)
 
 local windowTimeSync = 0
@@ -78,3 +104,5 @@ function script.update(dt)
 
 	isInMainMenu = csp.sim.isInMainMenu
 end
+
+function script.pause() end

@@ -6,15 +6,15 @@ local app = require("app")
 local style = require("style")
 local pages = require("ui.pages")
 
-pages.mainMenuPM:registerPage("HomePage", nil, require("ui.home.page"))
-pages.mainMenuPM:registerPage("SetupPage", "HomePage", require("ui.setup.page_setup"))
-pages.mainMenuPM:registerPage("SettingsPage", "HomePage", require("ui.SETTINGS.page_settings"))
-pages.mainMenuPM:registerPage("SetupAppsPage", "SetupPage", require("ui.setup.page_apps"))
-pages.mainMenuPM:registerPage("SettingsGeneralPage", "SettingsPage", require("ui.SETTINGS.page_general"))
-pages.mainMenuPM:registerPage("SettingsControlsPage", "SettingsPage", require("ui.SETTINGS.page_controls"))
-pages.mainMenuPM:registerPage("SettingsAudioPage", "SettingsPage", require("ui.SETTINGS.page_audio"))
-pages.mainMenuPM:registerPage("SettingsAppearancePage", "SettingsPage", require("ui.SETTINGS.page_appearance"))
-pages.mainMenuPM:registerPage("SettingsAiPage", "SettingsPage", require("ui.SETTINGS.page_ai"))
+pages.manager:registerPage("MainMenu", require("ui.home.page"))
+pages.manager:registerPage("SetupPage", require("ui.setup.page_setup"))
+pages.manager:registerPage("SettingsPage", require("ui.SETTINGS.page_settings"))
+pages.manager:registerPage("SetupAppsPage", require("ui.setup.page_apps"))
+pages.manager:registerPage("SettingsGeneralPage", require("ui.SETTINGS.page_general"))
+pages.manager:registerPage("SettingsControlsPage", require("ui.SETTINGS.page_controls"))
+pages.manager:registerPage("SettingsAudioPage", require("ui.SETTINGS.page_audio"))
+pages.manager:registerPage("SettingsAppearancePage", require("ui.SETTINGS.page_appearance"))
+pages.manager:registerPage("SettingsAiPage", require("ui.SETTINGS.page_ai"))
 
 local exclusiveHudMode = ""
 
@@ -24,15 +24,15 @@ function MainMenuWindow(dt)
 	ui.pushAllowKeyboardFocus(false)
 	exclusiveHudMode = ""
 
-	if ui.keyboardButtonPressed(ui.KeyIndex.Escape) or ac.isKeyPressed(ui.KeyIndex.XButton1) then
-		if pages.mainMenuPM:isUndoAvailable() then
-			pages.mainMenuPM:undo()
+	if ac.isKeyPressed(ui.KeyIndex.XButton1) then
+		if pages:isUndoAvailable() then
+			pages:undo()
 		end
 	end
 
 	if ac.isKeyPressed(ui.KeyIndex.XButton2) then
-		if pages.mainMenuPM:isRedoAvailable() then
-			pages.mainMenuPM:redo()
+		if pages:isRedoAvailable() then
+			pages:redo()
 		end
 	end
 
@@ -57,7 +57,7 @@ function MainMenuWindow(dt)
 		function()
 			updateCommon()
 
-			exclusiveHudMode = pages.mainMenuPM:draw()
+			exclusiveHudMode = pages.manager:draw()
 		end
 	)
 

@@ -8,35 +8,35 @@ local settingsPages = {
 		label = "General",
 		enabled = true,
 		func = function()
-			pages.mainMenu:goToSettingsGeneral()
+			pages:goToSettingsGeneral()
 		end,
 	},
 	{
 		label = "Controls",
 		enabled = false,
 		func = function()
-			pages.mainMenu:goToSettingsControls()
+			pages:goToSettingsControls()
 		end,
 	},
 	{
 		label = "Audio",
 		enabled = true,
 		func = function()
-			pages.mainMenu:goToSettingsAudio()
+			pages:goToSettingsAudio()
 		end,
 	},
 	{
 		label = "Appearance",
 		enabled = true,
 		func = function()
-			pages.mainMenu:goToSettingsAppearance()
+			pages:goToSettingsAppearance()
 		end,
 	},
 	{
 		label = "AI",
 		enabled = false,
 		func = function()
-			pages.mainMenu:goToSettingsAi()
+			pages:goToSettingsAi()
 		end,
 	},
 }
@@ -47,7 +47,7 @@ function page.draw()
 			label = "BACK",
 			enabled = true,
 			func = function()
-				pages.mainMenu:goToHome()
+				pages:undo()
 			end,
 		},
 	})

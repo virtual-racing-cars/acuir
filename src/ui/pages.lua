@@ -1,91 +1,65 @@
 local pages = {}
 
-pages.mainMenuPM = PageManager()
+pages.manager = PageManager()
 
-pages.mainMenu = {}
-
-function pages.mainMenu:isUndoAvailable()
-	return pages.mainMenuPM:isUndoAvailable()
+function pages:isUndoAvailable()
+	return pages.manager:isUndoAvailable()
 end
 
-function pages.mainMenu:isRedoAvailable()
-	return pages.mainMenuPM:isRedoAvailable()
+function pages:undo()
+	if pages:isUndoAvailable() then
+		pages.manager:undo()
+	end
 end
 
-function pages.mainMenu:goToHome()
-	pages.mainMenuPM:setPage("HomePage")
+function pages:isRedoAvailable()
+	return pages.manager:isRedoAvailable()
 end
 
-function pages.mainMenu:goToSetup()
-	pages.mainMenuPM:setPage("SetupPage")
+function pages:redo()
+	if pages:isRedoAvailable() then
+		pages.manager:redo()
+	end
 end
 
-function pages.mainMenu:goToSettings()
-	pages.mainMenuPM:setPage("SettingsPage")
+function pages:goToMainMenu()
+	pages.manager:setPage("MainMenu")
 end
 
-function pages.mainMenu:goToSetupApps()
-	pages.mainMenuPM:setPage("SetupAppsPage")
+function pages:goToPauseMenu()
+	pages.manager:setPage("PauseMenu")
 end
 
-function pages.mainMenu:goToSettingsGeneral()
-	pages.mainMenuPM:setPage("SettingsGeneralPage")
+function pages:goToSetup()
+	pages.manager:setPage("SetupPage")
 end
 
-function pages.mainMenu:goToSettingsControls()
-	pages.mainMenuPM:setPage("SettingsControlsPage")
+function pages:goToSettings()
+	pages.manager:setPage("SettingsPage")
 end
 
-function pages.mainMenu:goToSettingsAudio()
-	pages.mainMenuPM:setPage("SettingsAudioPage")
+function pages:goToSetupApps()
+	pages.manager:setPage("SetupAppsPage")
 end
 
-function pages.mainMenu:goToSettingsAppearance()
-	pages.mainMenuPM:setPage("SettingsAppearancePage")
+function pages:goToSettingsGeneral()
+	pages.manager:setPage("SettingsGeneralPage")
 end
 
-function pages.mainMenu:goToSettingsAi()
-	pages.mainMenuPM:setPage("SettingsAiPage")
+function pages:goToSettingsControls()
+	pages.manager:setPage("SettingsControlsPage")
 end
 
-pages.pausePM = PageManager()
-
-pages.pause = {}
-
-function pages.pause:isUndoAvailable()
-	return pages.pausePM:isUndoAvailable()
+function pages:goToSettingsAudio()
+	pages.manager:setPage("SettingsAudioPage")
 end
 
-function pages.pause:isRedoAvailable()
-	return pages.pausePM:isRedoAvailable()
+function pages:goToSettingsAppearance()
+	pages.manager:setPage("SettingsAppearancePage")
 end
 
-function pages.pause:goToHome()
-	pages.pausePM:setPage("HomePage")
-end
-
-function pages.pause:goToSettings()
-	pages.pausePM:setPage("SettingsPage")
-end
-
-function pages.pause:goToSettingsGeneral()
-	pages.pausePM:setPage("SettingsGeneralPage")
-end
-
-function pages.pause:goToSettingsControls()
-	pages.pausePM:setPage("SettingsControlsPage")
-end
-
-function pages.pause:goToSettingsAudio()
-	pages.pausePM:setPage("SettingsAudioPage")
-end
-
-function pages.pause:goToSettingsAppearance()
-	pages.pausePM:setPage("SettingsAppearancePage")
-end
-
-function pages.pause:goToSettingsAi()
-	pages.pausePM:setPage("SettingsAiPage")
+function pages:goToSettingsAi()
+	pages.manager:setPage("SettingsAiPage")
 end
 
 return pages

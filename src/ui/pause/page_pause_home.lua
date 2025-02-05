@@ -2,6 +2,7 @@ local page = {}
 
 local settings = require("settings")
 local cui = require("ui.cui")
+local pages = require("ui.pages")
 local sim = ac.getSim()
 
 local acLogo = ac.getFolder(ac.FolderID.Root) .. "\\launcher\\themes\\default\\graphics\\btn_AC_logo.png"
@@ -27,9 +28,11 @@ local pauseButtons = {
 
 	{
 		label = "Settings",
-		enabled = false,
+		enabled = true,
 		condition = function() end,
-		func = function() end,
+		func = function()
+			pages:goToSettings()
+		end,
 	},
 	{
 		label = "View Settings",
@@ -76,45 +79,66 @@ local pauseButtons = {
 }
 
 function page.draw(dt)
-	acLogoSize = ui.imageSize(acLogo) * 1.25 * cui.scaleY()
-	ui.setCursorX(ui.windowWidth() / 2 - acLogoSize.x / 2)
-	ui.image(acLogo, acLogoSize)
-	ui.newLine()
+	local childWindowWith = (2560 * cui.scaleX()) / 5
+	local childWindowHeight = (1440 * cui.scaleY()) / 2
+	local mainWindowFlags = ui.WindowFlags.NoScrollbar + ui.WindowFlags.NoScrollWithMouse
 
-	ui.setCursorX(ui.windowWidth() / 8)
-	ui.beginGroup(ui.windowWidth() - (ui.windowWidth() / 8) * 2)
-	ui.pushStyleVar(ui.StyleVar.ItemSpacing, ui.windowHeight() / 50)
-
-	local menuButtonSize = vec2(ui.availableSpaceX(), ui.availableSpaceY() / 10)
-
-	ui.pushStyleColor(ui.StyleColor.Button, settings.Appearance.uiColor1)
-	for i in ipairs(pauseButtons) do
-		local menuButton = pauseButtons[i]
-		local enabled = menuButton.enabled
-		local hidden = false
-
-		if menuButton.condition() then
-			hidden = true
-		end
-
-		if
-			not hidden
-			and cui.menuButton(
-				menuButton.label,
-				menuButtonSize,
-				ui.Alignment.Center,
-				ui.Alignment.Center,
-				enabled and ui.ButtonFlags.None or ui.ButtonFlags.Disabled
-			)
-		then
-			menuButton.func()
-		end
+	if cui.modalDialogCallback then
+		mainWindowFlags = mainWindowFlags
+			+ ui.WindowFlags.NoInputs
+			+ ui.WindowFlags.NoMouseInputs
+			+ ui.WindowFlags.NoFocusOnAppearing
 	end
-	ui.popStyleColor(1)
 
-	ui.popStyleVar(1)
+	cui.contentWindow(
+		"pause_window",
+		vec2((ui.windowWidth() - childWindowWith) / 2, (ui.windowHeight() - childWindowHeight) / 2),
+		vec2(childWindowWith, childWindowHeight),
+		mainWindowFlags,
+		function()
+			ui.drawRectFilled(vec2(0, 0), ui.availableSpace(), settings.Appearance.uiColor1 / 1.5)
 
-	ui.endGroup()
+			acLogoSize = ui.imageSize(acLogo) * 1.25 * cui.scaleY()
+			ui.setCursorX(ui.windowWidth() / 2 - acLogoSize.x / 2)
+			ui.image(acLogo, acLogoSize)
+			ui.newLine()
+
+			ui.setCursorX(ui.windowWidth() / 8)
+			ui.beginGroup(ui.windowWidth() - (ui.windowWidth() / 8) * 2)
+			ui.pushStyleVar(ui.StyleVar.ItemSpacing, ui.windowHeight() / 50)
+
+			local menuButtonSize = vec2(ui.availableSpaceX(), ui.availableSpaceY() / 10)
+
+			ui.pushStyleColor(ui.StyleColor.Button, settings.Appearance.uiColor1)
+			for i in ipairs(pauseButtons) do
+				local menuButton = pauseButtons[i]
+				local enabled = menuButton.enabled
+				local hidden = false
+
+				if menuButton.condition() then
+					hidden = true
+				end
+
+				if
+					not hidden
+					and cui.menuButton(
+						menuButton.label,
+						menuButtonSize,
+						ui.Alignment.Center,
+						ui.Alignment.Center,
+						enabled and ui.ButtonFlags.None or ui.ButtonFlags.Disabled
+					)
+				then
+					menuButton.func()
+				end
+			end
+			ui.popStyleColor(1)
+
+			ui.popStyleVar(1)
+
+			ui.endGroup()
+		end
+	)
 end
 
 return page

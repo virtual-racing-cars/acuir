@@ -1,6 +1,5 @@
 local page = {}
 
-local settings = require("settings")
 local cui = require("ui.cui")
 local pages = require("ui.pages")
 local sim = ac.getSim()
@@ -10,7 +9,7 @@ local bottomBarButtons = {
 		label = "BACK",
 		enabled = true,
 		func = function()
-			pages.mainMenu:goToSettings()
+			pages:goToSettings()
 		end,
 	},
 	{

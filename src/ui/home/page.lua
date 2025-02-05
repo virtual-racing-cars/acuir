@@ -76,7 +76,7 @@ local menuButtonList = {
 		enabled = true,
 		condition = function() end,
 		func = function()
-			pages.mainMenu:goToSetup()
+			pages:goToSetup()
 		end,
 	},
 	{
@@ -96,7 +96,7 @@ local menuButtonList = {
 		enabled = true,
 		condition = function() end,
 		func = function()
-			pages.mainMenu:goToSettings()
+			pages:goToSettings()
 		end,
 	},
 	{

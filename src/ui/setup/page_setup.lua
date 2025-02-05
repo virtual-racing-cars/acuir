@@ -16,7 +16,7 @@ local bottomBarButtons = {
 		label = "BACK",
 		enabled = true,
 		func = function()
-			pages.mainMenu:goToHome()
+			pages:goToMainMenu()
 		end,
 	},
 	{
