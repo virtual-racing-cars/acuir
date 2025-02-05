@@ -135,7 +135,6 @@ function page.draw()
 
 	cui.contentWindow(
 		"home_leaderboard_window",
-		state.setupTab,
 		vec2(0, 286 * cui.scaleY()),
 		vec2(750 * cui.scaleX(), sim.windowHeight - 459 * cui.scaleY()),
 		ui.WindowFlags.None,
@@ -146,7 +145,6 @@ function page.draw()
 
 			cui.contentWindow(
 				"home_leaderboard_entrant_window",
-				state.setupTab,
 				vec2(0, height),
 				vec2(ui.windowWidth(), ui.windowHeight() - height),
 				ui.WindowFlags.None,
@@ -154,15 +152,9 @@ function page.draw()
 					for i, car in ac.iterateCars.leaderboard() do
 						playerListButton(car, 0, (i - 1) * height, ui.windowWidth(), height)
 					end
-				end,
-				false,
-				true,
-				true
+				end
 			)
-		end,
-		false,
-		true,
-		false
+		end
 	)
 
 	-- cui.contentWindow(

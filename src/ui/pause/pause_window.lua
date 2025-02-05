@@ -53,7 +53,6 @@ function PauseMenuWindow(dt)
 
 	cui.contentWindow(
 		"pause_window",
-		"",
 		vec2((ui.windowWidth() - childWindowWith) / 2, (ui.windowHeight() - childWindowHeight) / 2),
 		vec2(childWindowWith, childWindowHeight),
 		mainWindowFlags,
@@ -62,15 +61,12 @@ function PauseMenuWindow(dt)
 
 			exclusiveHudMode = ""
 			exclusiveHudMode = pageManager:draw()
-		end,
-		false,
-		true
+		end
 	)
 
 	if cui.modalDialogCallback then
 		cui.contentWindow(
 			"callback_window",
-			"",
 			vec2(0, 0),
 			ui.windowSize(),
 			ui.WindowFlags.NoScrollbar + ui.WindowFlags.NoScrollWithMouse,
@@ -81,7 +77,6 @@ function PauseMenuWindow(dt)
 				local childWindowHeight = ui.windowHeight() / 5
 				cui.contentWindow(
 					"callback_subwindow",
-					"",
 					vec2((ui.windowWidth() - childWindowWith) / 2, (ui.windowHeight() - childWindowHeight) / 2),
 					vec2(childWindowWith, childWindowHeight),
 					ui.WindowFlags.NoScrollbar + ui.WindowFlags.NoScrollWithMouse,
@@ -91,15 +86,9 @@ function PauseMenuWindow(dt)
 						if cui.modalDialogCallback() then
 							cui.modalDialogCallback = nil
 						end
-					end,
-					false,
-					true,
-					false
+					end
 				)
-			end,
-			false,
-			true,
-			false
+			end
 		)
 	end
 

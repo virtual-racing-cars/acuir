@@ -77,7 +77,7 @@ function CUI.childWindow(id, size, border, flags, content)
 	ui.childWindow(id, size, false, flags, content)
 end
 
-function CUI.contentWindow(id, title, position, size, flags, content, showTitle, hideBackground, scroll)
+function CUI.contentWindow(id, position, size, flags, content, hideBackground, scroll)
 	CUI.pushWindow(id .. "test", position.x, position.y, size.x, size.y, scroll)
 
 	if not hideBackground then

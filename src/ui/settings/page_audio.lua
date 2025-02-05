@@ -59,7 +59,6 @@ function page.draw()
 
 	cui.contentWindow(
 		"car_setup_window",
-		"car_setup_window",
 		vec2(60 * cui.scaleX(), 240 * cui.scaleY()),
 		vec2(sim.windowWidth - 120 * cui.scaleX(), sim.windowHeight - 383 * cui.scaleY()),
 		ui.WindowFlags.None,
@@ -88,9 +87,7 @@ function page.draw()
 				rgbm.colors.gray,
 				2
 			)
-		end,
-		false,
-		true
+		end
 	)
 
 	return ""

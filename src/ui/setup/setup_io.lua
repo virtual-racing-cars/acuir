@@ -296,7 +296,6 @@ function setupIoDraw(sm)
 
 	cui.contentWindow(
 		"setup_io_saved_setups",
-		"setup_io_saved_setups",
 		vec2(0, (ui.windowHeight() / 4) * 3),
 		vec2(ui.windowWidth(), ui.windowHeight() / 4),
 		ui.WindowFlags.None,
@@ -304,13 +303,10 @@ function setupIoDraw(sm)
 			ui.setCursor(0)
 
 			saveSetupWindow(sm)
-		end,
-		false,
-		false
+		end
 	)
 
 	cui.contentWindow(
-		"load_setups",
 		"load_setups",
 		vec2(0, 0),
 		vec2(ui.windowWidth(), (ui.windowHeight() / 4) * 3),
@@ -373,10 +369,7 @@ function setupIoDraw(sm)
 			if ui.getScrollMaxY() - ui.getScrollY() < 5 * cui.scaleY() then
 				ui.setScrollY(ui.getScrollMaxY())
 			end
-		end,
-		false,
-		true,
-		true
+		end
 	)
 
 	return ""
