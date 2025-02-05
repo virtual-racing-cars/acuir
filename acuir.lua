@@ -24,6 +24,7 @@ local audio = require("audio")
 
 state.appOpen = settings.autoStart
 state.hasAppOpened = false
+state.appOpen = true
 
 ac.setWindowOpen("main", true)
 ui.onExclusiveHUD(function(mode)

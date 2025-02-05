@@ -2,6 +2,8 @@ local CSP = {}
 
 local cspVersion = ac.getPatchVersion()
 local cspVersionCode = ac.getPatchVersionCode()
+local cspSim = ac.getSim()
+local cspUI = ac.getUI()
 
 function CSP.version()
 	return cspVersion
@@ -9,6 +11,14 @@ end
 
 function CSP.versionCode()
 	return cspVersionCode
+end
+
+function CSP.sim()
+	return cspSim
+end
+
+function CSP.ui()
+	return cspUI
 end
 
 local proxy = {}

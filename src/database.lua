@@ -10,49 +10,26 @@ local dbStorage = require("shared.utils.dbstorage")
 dbStorage.configure(string.format("%s\\storage.db", dbPath))
 
 ---@type DbDictionaryStorage<{a: integer, b: string}>
-local dbList = dbStorage.Dictionary("TABLE")
+local dbList = {}
 
-function db:setValue(key, value)
-	local v = dbList:get(key)
-	v.value = value
-	dbList:set(key, v)
-end
+function db:register(dbKey, dbTable)
+	if not dbList[dbKey] then
+		dbList[dbKey] = dbStorage.Dictionary(dbKey)
+	end
 
-function db:getValue(key)
-	return dbList:get(key).value
-end
-
-function db:resetValue(key)
-	local v = dbList:get(key)
-	v.value = v.default
-	dbList:set(key, v)
-end
-
-function db:register(dictName, dbTable)
 	for k, v in pairs(dbTable) do
-		v.key = string.format("%s.%s", dictName, v.key)
-		if not dbList:get(v.key) then
-			v.value = v.default
-			dbList:set(v.key, v)
-		else
-			v.value = dbList:get(v.key).value
+		if not dbList[dbKey]:get(v.key) then
+			dbList[dbKey]:set(v.key, { value = v.default })
 		end
 	end
 end
 
-setmetatable(db, {
-	__index = function(_, key)
-		if not dbList:get(key) then
-			ac.error("Database does not contain key [%s]!" % key)
-			return
-		end
+function db:get(dbKey, key)
+	return dbList[dbKey]:get(key).value
+end
 
-		return db:getValue(key)
-	end,
-
-	__newindex = function(_, key, value)
-		db:setValue(key, value)
-	end,
-})
+function db:set(dbKey, key, value)
+	dbList[dbKey]:set(key, { value = value })
+end
 
 return db

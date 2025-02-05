@@ -2,14 +2,12 @@ local state = {}
 
 local db = require("database")
 
-state.UI = {
-	{ key = "appOpen", label = "Show UI", default = true },
-	{ key = "hasAppOpened", label = "Show UI", default = true },
-	{ key = "setupTab", label = "Show UI", default = 1 },
-}
-
 state.list = {
-	state.UI,
+	UI = {
+		{ key = "appOpen", label = "Show UI", default = true },
+		{ key = "hasAppOpened", label = "Show UI", default = true },
+		{ key = "setupTab", label = "Show UI", default = 1 },
+	},
 }
 
 for k, v in pairs(state.list) do

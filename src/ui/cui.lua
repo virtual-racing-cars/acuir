@@ -1,5 +1,6 @@
 local CUI = {}
 
+local settings = require("settings")
 local audio = require("audio")
 local sim = ac.getSim()
 
@@ -91,6 +92,8 @@ end
 local fontRegular = ui.DWriteFont("Rajdhani"):weight(ui.DWriteFont.Weight.SemiBold)
 local fontBold = ui.DWriteFont("Rajdhani"):weight(ui.DWriteFont.Weight.Bold)
 local fontSemiBold = ui.DWriteFont("Noto Sans SC"):weight(ui.DWriteFont.Weight.SemiBold)
+
+function CUI.pushTitleFont() end
 
 CUI.modalDialogCallback = nil
 
