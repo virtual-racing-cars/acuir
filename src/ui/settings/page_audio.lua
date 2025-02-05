@@ -1,6 +1,7 @@
 local page = {}
 
 local settings = require("settings")
+local cui = require("ui.cui")
 local sim = ac.getSim()
 
 local bottomBarButtons = {
@@ -45,14 +46,6 @@ local audioChannels = {
 }
 
 table.sort(audioChannels)
-
-local audioSettings = {
-	-- { key = "autoStart", label = "Auto-Start new UI", default = true },
-	-- { key = "showVersions", label = "Show app and CSP versions", default = true },
-	-- { key = "developerMode", label = "Developer Mode", default = false },
-}
-
--- settings:register("Audio", audioSettings)
 
 function page.draw()
 	settingsMenuCommon("/Audio", bottomBarButtons, goToSettingsPage)

@@ -29,12 +29,6 @@ local bottomBarButtons = {
 	-- },
 }
 
--- local appearanceSettings = {
--- 	{ key = "appearanceSettingsTest", label = "Appearance Lol", default = true },
--- }
-
--- settings:register("Appearance", appearanceSettings)
-
 local primaryActive = false
 local secondaryActive = false
 local tertiaryActive = false

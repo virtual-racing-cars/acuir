@@ -152,30 +152,6 @@ local centerStatusInfo = {
 	},
 }
 
--- local car = ac.getCar(0)
-
--- local masses = { 34.96, 34.96, 38.96, 38.96 }
--- local heights = {
--- 	car.wheels[0].tyreLoadedRadius,
--- 	car.wheels[1].tyreLoadedRadius,
--- 	car.wheels[2].tyreLoadedRadius,
--- 	car.wheels[3].tyreLoadedRadius,
--- }
-
--- local total_mass = 0
--- local weighted_sum = 0
-
--- for i = 1, #masses do
--- 	total_mass = total_mass + masses[i]
--- 	weighted_sum = weighted_sum + (masses[i] * heights[i])
--- end
-
--- if total_mass == 0 then
--- 	return 0 -- Avoid division by zero
--- end
-
--- ac.log(weighted_sum / total_mass)
-
 function CarStatusWindow()
 	if car == nil then
 		car = ac.getCar(0)

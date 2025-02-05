@@ -40,9 +40,6 @@ local settingsPages = {
 }
 
 function page.draw()
-	-- ui.drawLine(vec2(220, 64), vec2(600, 64), rgbm.colors.white, 1)
-	-- ui.drawLine(vec2(220, 90), vec2(600, 90), rgbm.colors.white, 1)
-
 	settingsMenuCommon("", {
 		{
 			label = "BACK",

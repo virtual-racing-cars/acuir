@@ -68,7 +68,6 @@ function PageManager:isRedoAvailable()
 end
 
 function PageManager:cleanUndoHistory()
-	-- delete higher undo steps
 	for i = #self._history, self._history_pos + 1, -1 do
 		table.remove(self._history, i)
 	end

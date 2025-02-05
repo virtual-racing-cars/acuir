@@ -21,6 +21,7 @@ require("audio")
 local settings = require("settings")
 local state = require("state")
 local audio = require("audio")
+local csp = require("csp")
 
 state.appOpen = settings.autoStart
 state.hasAppOpened = false
@@ -61,28 +62,23 @@ function script.main()
 end
 
 local uic = ac.getUI()
-local sim = ac.getSim()
 
 local isInMainMenu = false
 
 teleportPitsCallback = nil
 function script.update(dt)
-	-- for i in ipairs(settings.General) do
-	-- 	print(settings.General[i])
-	-- end
-
 	if teleportPitsCallback then
 		if teleportPitsCallback() then
 			teleportPitsCallback = nil
 		end
 	end
 
-	if sim.isInMainMenu and settings.autoStart and windowTimeSync < os.clock() - 1 then
+	if csp.sim.isInMainMenu and settings.autoStart and windowTimeSync < os.clock() - 1 then
 		ac.tryToOpenRaceMenu("race")
 		ac.tryToOpenRaceMenu("setup")
 	end
 
-	if uic.ctrlDown and uic.shiftDown and ui.keyboardButtonPressed(ui.KeyIndex.F5) then
+	if csp.ui.ctrlDown and uic.shiftDown and ui.keyboardButtonPressed(ui.KeyIndex.F5) then
 		settings.autoStart = not state.appOpen
 		state.appOpen = not state.appOpen
 	end
@@ -91,16 +87,16 @@ function script.update(dt)
 		return
 	end
 
-	local redirectVM = (sim.isInMainMenu and ac.isWindowOpen("main")) or sim.isPaused
+	local redirectVM = (csp.sim.isInMainMenu and ac.isWindowOpen("main")) or csp.sim.isPaused
 	ac.redirectVirtualMirror(redirectVM)
 
 	if not sm then
 		return
 	end
 
-	if isInMainMenu and not sim.isInMainMenu then
+	if isInMainMenu and not csp.sim.isInMainMenu then
 		sm:applyPitstopStrategy()
 	end
 
-	isInMainMenu = sim.isInMainMenu
+	isInMainMenu = csp.sim.isInMainMenu
 end

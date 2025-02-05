@@ -157,19 +157,6 @@ function page.draw()
 		end
 	)
 
-	-- cui.contentWindow(
-	-- 	"car_setup_window22",
-	-- 	STORAGE.setupTab,
-	-- 	vec2(sim.windowWidth - (800 + 60) * cui.scaleX(), 316 * cui.scaleY()),
-	-- 	vec2(650 * cui.scaleX(), sim.windowHeight - 459 * cui.scaleY()),
-	-- 	ui.WindowFlags.None,
-	-- 	function()
-	-- 		drawMap()
-	-- 	end,
-	-- 	false,
-	-- 	true
-	-- )
-
 	bottomBar({})
 
 	return ""

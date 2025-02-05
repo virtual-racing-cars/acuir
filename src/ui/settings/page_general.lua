@@ -2,7 +2,6 @@ local page = {}
 
 local settings = require("settings")
 local cui = require("ui.cui")
-local sim = ac.getSim()
 
 local bottomBarButtons = {
 	{
@@ -94,7 +93,6 @@ function page.draw()
 						false,
 						nil
 					)
-					-- ui.slider("##" .. v.label, settings.General[v.key], v.min, v.max, v.format)
 				end
 			end
 

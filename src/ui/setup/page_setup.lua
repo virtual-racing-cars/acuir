@@ -135,20 +135,6 @@ function page.draw()
 						ui.WindowFlags.None,
 						function()
 							CarStatusWindow()
-							-- ui.pushTextWrapPosition(ui.windowWidth() - 20)
-							-- if HELP_TEXT and HELP_TEXT ~= "NULL" and HELP_TEXT ~= "" then
-							-- 	ui.dummy(vec2(230 * cui.scaleY(), 0))
-							-- 	-- ui.bringWindowToFront()
-							-- 	local helpSections = string.split(HELP_TEXT, "\\n\\n")
-
-							-- 	for i in ipairs(helpSections) do
-							-- 		cui.dwriteTextWrapped(helpSections[i], 24)
-							-- 	end
-							-- end
-
-							-- ui.popTextWrapPosition()
-
-							-- HELP_TEXT = ""
 						end
 					)
 				end
