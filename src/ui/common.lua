@@ -250,10 +250,9 @@ function topBar(showSessionInfo)
 	sessionInfo()
 end
 
-function settingsMenuCommon(path, bottomBarButtons, escapeAction)
+function settingsMenuCommon(path, bottomBarButtons)
 	ui.drawRectFilled(vec2(0, 0), vec2(sim.windowWidth, sim.windowHeight), settings.Appearance.uiColor1 / 1.1)
 
-	-- local storagePath = STORAGE.settingsTab > 1 and "Settings/" .. page.label or "Settings/"
 	topSubBar("/Settings" .. path)
 	bottomBar(bottomBarButtons)
 end

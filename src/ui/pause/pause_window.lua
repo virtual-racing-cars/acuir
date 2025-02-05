@@ -3,10 +3,15 @@ require("classes.PageManager")
 local settings = require("settings")
 local cui = require("ui.cui")
 local app = require("app")
+local pages = require("ui.pages")
 
-local HomePage = require("ui.pause.page_pause_home")
-local pageManager = PageManager()
-pageManager:registerPage("HomePage", nil, HomePage)
+pages.pausePM:registerPage("HomePage", nil, require("ui.pause.page_pause_home"))
+pages.mainMenuPM:registerPage("SettingsPage", "HomePage", require("ui.SETTINGS.page_settings"))
+pages.pausePM:registerPage("SettingsGeneralPage", "SettingsPage", require("ui.SETTINGS.page_general"))
+pages.pausePM:registerPage("SettingsControlsPage", "SettingsPage", require("ui.SETTINGS.page_controls"))
+pages.pausePM:registerPage("SettingsAudioPage", "SettingsPage", require("ui.SETTINGS.page_audio"))
+pages.pausePM:registerPage("SettingsAppearancePage", "SettingsPage", require("ui.SETTINGS.page_appearance"))
+pages.pausePM:registerPage("SettingsAiPage", "SettingsPage", require("ui.SETTINGS.page_ai"))
 
 local exclusiveHudMode = ""
 
@@ -15,24 +20,21 @@ local fontBold = ui.DWriteFont("Rajdhani"):weight(ui.DWriteFont.Weight.Bold)
 local fontSemiBold = ui.DWriteFont("Noto Sans SC"):weight(ui.DWriteFont.Weight.SemiBold)
 
 function PauseMenuWindow(dt)
-	ui.pushAllowKeyboardFocus(false)
+	exclusiveHudMode = ""
 
-	if not app.state.appOpen then
-		exclusiveHudMode = nil
-		return
-	end
+	ui.pushAllowKeyboardFocus(false)
 
 	local perfTime = os.preciseClock()
 
 	if ui.keyboardButtonPressed(ui.KeyIndex.Escape) or ac.isKeyPressed(ui.KeyIndex.XButton1) then
-		if pageManager:isUndoAvailable() then
-			pageManager:undo()
+		if pages.pause:isUndoAvailable() then
+			pages.pause:undo()
 		end
 	end
 
 	if ac.isKeyPressed(ui.KeyIndex.XButton2) then
-		if pageManager:isRedoAvailable() then
-			pageManager:redo()
+		if pages.pause:isRedoAvailable() then
+			pages.pause:redo()
 		end
 	end
 
@@ -61,7 +63,7 @@ function PauseMenuWindow(dt)
 			ui.drawRectFilled(vec2(0, 0), ui.availableSpace(), settings.Appearance.uiColor1 / 1.5)
 
 			exclusiveHudMode = ""
-			exclusiveHudMode = pageManager:draw()
+			exclusiveHudMode = pages.pausePM:draw()
 		end
 	)
 
@@ -100,7 +102,5 @@ function PauseMenuWindow(dt)
 
 	ac.debug("perfTime", (os.preciseClock() - perfTime) * 1000)
 
-	exclusiveHudMode = ""
-
-	return exclusiveHudMode
+	return app.state.debug and "debug" or exclusiveHudMode
 end

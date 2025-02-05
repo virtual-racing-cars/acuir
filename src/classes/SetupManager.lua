@@ -334,7 +334,7 @@ function SetupManager:LoadStuff(tbl)
 end
 
 function SetupManager:loadPitstopStrategy(file)
-	local spFileString = file:gsub(".ini", ".sp")
+	local spFileString = string.replace(file, ".ini", ".sp")
 
 	if not io.fileExists(spFileString) then
 		return
@@ -354,7 +354,7 @@ end
 function SetupManager:saveSetup(file)
 	ac.saveCurrentSetup(file)
 
-	local spFileString = file:gsub(".ini", ".sp")
+	local spFileString = string.replace(file, ".ini", ".sp")
 	local tempSpFile = ac.INIConfig.load(spFileString)
 
 	for k, v in ipairs(self._setupSpinners) do
@@ -403,7 +403,6 @@ function SetupManager:isRedoAvailable()
 end
 
 function SetupManager:cleanUndoHistory()
-	-- delete higher undo steps
 	for i = #self._history, self._history_pos + 1, -1 do
 		table.remove(self._history, i)
 	end

@@ -34,6 +34,7 @@ App.state = {
 	appOpen = false,
 	hasAppOpened = false,
 	setupTab = 1,
+	debug = true,
 }
 
 local proxy = {}

@@ -2,13 +2,14 @@ local page = {}
 
 local settings = require("settings")
 local cui = require("ui.cui")
+local pages = require("ui.pages")
 
 local bottomBarButtons = {
 	{
 		label = "BACK",
 		enabled = true,
 		func = function()
-			goToSettingsPage()
+			pages.mainMenu:goToSettings()
 		end,
 	},
 	{
@@ -21,15 +22,10 @@ local bottomBarButtons = {
 		enabled = false,
 		func = function() end,
 	},
-	-- {
-	-- 	label = "SETUP PRESETS",
-	-- 	enabled = true,
-	-- 	func = function() end,
-	-- },
 }
 
 function page.draw()
-	settingsMenuCommon("/General", bottomBarButtons, goToSettingsPage)
+	settingsMenuCommon("/General", bottomBarButtons)
 
 	cui.contentWindow(
 		"car_setup_window",

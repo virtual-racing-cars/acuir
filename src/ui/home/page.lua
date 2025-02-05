@@ -5,6 +5,7 @@ local settings = require("settings")
 local cui = require("ui.cui")
 local app = require("app")
 local sim = ac.getSim()
+local pages = require("ui.pages")
 
 -- require("src.ui.home.map")
 
@@ -75,7 +76,7 @@ local menuButtonList = {
 		enabled = true,
 		condition = function() end,
 		func = function()
-			goToSetupPage()
+			pages.mainMenu:goToSetup()
 		end,
 	},
 	{
@@ -95,7 +96,7 @@ local menuButtonList = {
 		enabled = true,
 		condition = function() end,
 		func = function()
-			goToSettingsPage()
+			pages.mainMenu:goToSettings()
 		end,
 	},
 	{

@@ -57,7 +57,7 @@ local raceSessiontTypeString = {
 	"Qualify",
 	"Race",
 	"Hotlap",
-	"TimeAttack",
+	"Time Attack",
 	"Drift",
 	"Drag",
 }

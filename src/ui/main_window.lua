@@ -4,98 +4,35 @@ local settings = require("settings")
 local cui = require("ui.cui")
 local app = require("app")
 local style = require("style")
+local pages = require("ui.pages")
 
-local HomePage = require("ui.home.page")
-local SetupPage = require("ui.setup.page_setup")
-local SetupAppsPage = require("ui.setup.page_apps")
-local SettingsPage = require("ui.SETTINGS.page_settings")
-local SettingsGeneralPage = require("ui.SETTINGS.page_general")
-local SettingsControls = require("ui.SETTINGS.page_controls")
-local SettingsAudioPage = require("ui.SETTINGS.page_audio")
-local SettingsAppearancePage = require("ui.SETTINGS.page_appearance")
-local SettingsAiPage = require("ui.SETTINGS.page_ai")
-
-local pageManager = PageManager()
-pageManager:registerPage("HomePage", nil, HomePage)
-pageManager:registerPage("SetupPage", "HomePage", SetupPage)
-pageManager:registerPage("SettingsPage", "HomePage", SettingsPage)
-pageManager:registerPage("SetupAppsPage", "SetupPage", SetupAppsPage)
-pageManager:registerPage("SettingsGeneralPage", "SettingsPage", SettingsGeneralPage)
-pageManager:registerPage("SettingsControlsPage", "SettingsPage", SettingsControls)
-pageManager:registerPage("SettingsAudioPage", "SettingsPage", SettingsAudioPage)
-pageManager:registerPage("SettingsAppearancePage", "SettingsPage", SettingsAppearancePage)
-pageManager:registerPage("SettingsAiPage", "SettingsPage", SettingsAiPage)
-
-function goToHomePage()
-	pageManager:setPage("HomePage")
-	pageManager:makeUndo()
-end
-
-function goToSetupPage()
-	pageManager:setPage("SetupPage")
-	pageManager:makeUndo()
-end
-
-function goToSettingsPage()
-	pageManager:setPage("SettingsPage")
-	pageManager:makeUndo()
-end
-
-function goToSetupAppsPage()
-	pageManager:setPage("SetupAppsPage")
-	pageManager:makeUndo()
-end
-
-function goToSettingsGeneralPage()
-	pageManager:setPage("SettingsGeneralPage")
-	pageManager:makeUndo()
-end
-
-function goToSettingsControlsPage()
-	pageManager:setPage("SettingsControlsPage")
-	pageManager:makeUndo()
-end
-
-function goToSettingsAudioPage()
-	pageManager:setPage("SettingsAudioPage")
-	pageManager:makeUndo()
-end
-
-function goToSettingsAppearancePage()
-	pageManager:setPage("SettingsAppearancePage")
-	pageManager:makeUndo()
-end
-
-function goToSettingsAiPage()
-	pageManager:setPage("SettingsAiPage")
-	pageManager:makeUndo()
-end
-
-goToHomePage()
-goToSetupPage()
+pages.mainMenuPM:registerPage("HomePage", nil, require("ui.home.page"))
+pages.mainMenuPM:registerPage("SetupPage", "HomePage", require("ui.setup.page_setup"))
+pages.mainMenuPM:registerPage("SettingsPage", "HomePage", require("ui.SETTINGS.page_settings"))
+pages.mainMenuPM:registerPage("SetupAppsPage", "SetupPage", require("ui.setup.page_apps"))
+pages.mainMenuPM:registerPage("SettingsGeneralPage", "SettingsPage", require("ui.SETTINGS.page_general"))
+pages.mainMenuPM:registerPage("SettingsControlsPage", "SettingsPage", require("ui.SETTINGS.page_controls"))
+pages.mainMenuPM:registerPage("SettingsAudioPage", "SettingsPage", require("ui.SETTINGS.page_audio"))
+pages.mainMenuPM:registerPage("SettingsAppearancePage", "SettingsPage", require("ui.SETTINGS.page_appearance"))
+pages.mainMenuPM:registerPage("SettingsAiPage", "SettingsPage", require("ui.SETTINGS.page_ai"))
 
 local exclusiveHudMode = ""
 
 function MainMenuWindow(dt)
-	ui.pushAllowKeyboardFocus(false)
-
-	if not app.state.appOpen then
-		exclusiveHudMode = nil
-		return
-	end
-	exclusiveHudMode = ""
-
 	local perfTime = os.preciseClock()
 
+	ui.pushAllowKeyboardFocus(false)
+	exclusiveHudMode = ""
+
 	if ui.keyboardButtonPressed(ui.KeyIndex.Escape) or ac.isKeyPressed(ui.KeyIndex.XButton1) then
-		if pageManager:isUndoAvailable() then
-			pageManager:undo()
+		if pages.mainMenuPM:isUndoAvailable() then
+			pages.mainMenuPM:undo()
 		end
 	end
 
 	if ac.isKeyPressed(ui.KeyIndex.XButton2) then
-		if pageManager:isRedoAvailable() then
-			pageManager:redo()
+		if pages.mainMenuPM:isRedoAvailable() then
+			pages.mainMenuPM:redo()
 		end
 	end
 
@@ -120,7 +57,7 @@ function MainMenuWindow(dt)
 		function()
 			updateCommon()
 
-			exclusiveHudMode = pageManager:draw()
+			exclusiveHudMode = pages.mainMenuPM:draw()
 		end
 	)
 
@@ -158,7 +95,5 @@ function MainMenuWindow(dt)
 
 	ac.debug("perfTime", (os.preciseClock() - perfTime) * 1000)
 
-	exclusiveHudMode = "debug"
-
-	return exclusiveHudMode
+	return app.state.debug and "debug" or exclusiveHudMode
 end

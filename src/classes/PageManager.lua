@@ -17,14 +17,19 @@ function PageManager:registerPage(name, parentName, page)
 	if not parentName then
 		self.currentPage = self.pages[name]
 		self.currentPageName = name
+		self:makeUndo()
 	end
 end
 
-function PageManager:setPage(name)
+function PageManager:setPage(name, skipUndo)
 	if self.pages[name] then
 		self.currentPage = self.pages[name]
 		self.currentPageName = name
+		if not skipUndo then
+			self:makeUndo()
+		end
 	else
+		ac.fuck()
 		ac.error(string.format("Page %s is not valid", name))
 	end
 end
@@ -36,7 +41,7 @@ function PageManager:draw()
 end
 
 function PageManager:LoadStuff(name)
-	self:setPage(name)
+	self:setPage(name, true)
 end
 
 function PageManager:undo()

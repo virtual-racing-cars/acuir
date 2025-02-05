@@ -4,8 +4,10 @@ require("ui.setup.setup_window")
 require("ui.setup.car_status_window")
 require("src.ui.setup.setup_io")
 require("classes.SetupManager")
+local settings = require("settings")
 local cui = require("ui.cui")
 local app = require("app")
+local pages = require("ui.pages")
 
 local vec2Temp1 = vec2()
 
@@ -14,7 +16,7 @@ local bottomBarButtons = {
 		label = "BACK",
 		enabled = true,
 		func = function()
-			goToHomePage()
+			pages.mainMenu:goToHome()
 		end,
 	},
 	{

@@ -2,6 +2,7 @@ local page = {}
 
 local settings = require("settings")
 local cui = require("ui.cui")
+local pages = require("ui.pages")
 local sim = ac.getSim()
 
 local bottomBarButtons = {
@@ -9,7 +10,7 @@ local bottomBarButtons = {
 		label = "BACK",
 		enabled = true,
 		func = function()
-			goToSettingsPage()
+			pages.mainMenu:goToSettings()
 		end,
 	},
 	{
@@ -22,11 +23,6 @@ local bottomBarButtons = {
 		enabled = false,
 		func = function() end,
 	},
-	-- {
-	-- 	label = "SETUP PRESETS",
-	-- 	enabled = true,
-	-- 	func = function() end,
-	-- },
 }
 
 local primaryActive = false
@@ -34,7 +30,7 @@ local secondaryActive = false
 local tertiaryActive = false
 
 function page.draw()
-	settingsMenuCommon("/UI", bottomBarButtons, goToSettingsPage)
+	settingsMenuCommon("/UI", bottomBarButtons)
 
 	cui.contentWindow(
 		"car_setup_window",
@@ -48,9 +44,6 @@ function page.draw()
 
 			ui.setCursorY(60)
 			ui.setCursorX(50)
-			if ui.checkbox("Show 'Car Info' window on the setup page", SETTINGS.hideOtherTrackSetups) then
-				SETTINGS.hideOtherTrackSetups = not SETTINGS.hideOtherTrackSetups
-			end
 
 			for i, v in ipairs(settings.Appearance) do
 				if ui.checkbox(v.label, settings.Appearance[v.key]) then

@@ -1,40 +1,42 @@
 local page = {}
 
 local cui = require("ui.cui")
-local sim = ac.getSim()
+local pages = require("ui.pages")
 
 local settingsPages = {
 	{
 		label = "General",
 		enabled = true,
 		func = function()
-			goToSettingsGeneralPage()
+			pages.mainMenu:goToSettingsGeneral()
 		end,
 	},
 	{
 		label = "Controls",
 		enabled = false,
-		func = goToSettingsControlsPage,
+		func = function()
+			pages.mainMenu:goToSettingsControls()
+		end,
 	},
 	{
 		label = "Audio",
 		enabled = true,
 		func = function()
-			goToSettingsAudioPage()
+			pages.mainMenu:goToSettingsAudio()
 		end,
 	},
 	{
 		label = "Appearance",
 		enabled = true,
 		func = function()
-			goToSettingsAppearancePage()
+			pages.mainMenu:goToSettingsAppearance()
 		end,
 	},
 	{
 		label = "AI",
 		enabled = false,
 		func = function()
-			goToSettingsAiPage()
+			pages.mainMenu:goToSettingsAi()
 		end,
 	},
 }
@@ -45,10 +47,10 @@ function page.draw()
 			label = "BACK",
 			enabled = true,
 			func = function()
-				goToHomePage()
+				pages.mainMenu:goToHome()
 			end,
 		},
-	}, goToHomePage)
+	})
 
 	cui.setCursorX(320)
 	cui.setCursorY(366)

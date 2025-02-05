@@ -2,6 +2,7 @@ local page = {}
 
 local settings = require("settings")
 local cui = require("ui.cui")
+local pages = require("ui.pages")
 local sim = ac.getSim()
 
 local bottomBarButtons = {
@@ -9,7 +10,7 @@ local bottomBarButtons = {
 		label = "BACK",
 		enabled = true,
 		func = function()
-			goToSettingsPage()
+			pages.mainMenu:goToSettings()
 		end,
 	},
 	{
@@ -22,11 +23,6 @@ local bottomBarButtons = {
 		enabled = false,
 		func = function() end,
 	},
-	-- {
-	-- 	label = "SETUP PRESETS",
-	-- 	enabled = true,
-	-- 	func = function() end,
-	-- },
 }
 
 local audioChannels = {
@@ -48,7 +44,7 @@ local audioChannels = {
 table.sort(audioChannels)
 
 function page.draw()
-	settingsMenuCommon("/Audio", bottomBarButtons, goToSettingsPage)
+	settingsMenuCommon("/Audio", bottomBarButtons)
 
 	cui.contentWindow(
 		"car_setup_window",
