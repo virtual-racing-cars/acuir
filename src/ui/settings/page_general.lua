@@ -35,8 +35,8 @@ function page.draw()
 	cui.contentWindow(
 		"car_setup_window",
 		"car_setup_window",
-		vec2(60 * cui.scaleX(), 240 * cui.scaleY()),
-		vec2(sim.windowWidth - 120 * cui.scaleX(), sim.windowHeight - 383 * cui.scaleY()),
+		vec2(0, 240 * cui.scaleY()),
+		vec2(ui.windowWidth(), ui.windowHeight() - 300 * cui.scaleY()),
 		ui.WindowFlags.None,
 		function()
 			ui.drawLine(vec2(0, 2 * cui.scaleY()), vec2(ui.windowWidth(), 2 * cui.scaleY()), rgbm.colors.gray, 2)
@@ -48,18 +48,40 @@ function page.draw()
 			ui.beginGroup(0)
 
 			for i, v in ipairs(settings.General) do
+				cui.setCursorY(100 * i)
+
 				if v.widget == 1 then
-					if ui.checkbox(v.label, settings.General[v.key]) then
-						settings.General[v.key] = not settings.General[v.key]
-					end
+					local value = settings.General[v.key] and 1 or 0
+					local newValue = drawSpinner(
+						v.label,
+						v.label,
+						ui.windowWidth() / 2 - 600 / 2,
+						ui.getCursorY(),
+						600,
+						75,
+						false,
+						value,
+						0,
+						1,
+						1,
+						1,
+						0,
+						settings.General[v.key] and "Enabled" or "Disabled",
+						1,
+						0,
+						false,
+						nil
+					)
+
+					settings.General[v.key] = newValue == 1 and true or false
 				elseif v.widget == 2 then
 					settings.General[v.key] = drawSpinner(
 						v.label,
 						v.label,
-						ui.windowWidth() / 2 - 500 / 2,
+						ui.windowWidth() / 2 - 600 / 2,
 						ui.getCursorY(),
-						500,
-						50,
+						600,
+						75,
 						false,
 						settings.General[v.key],
 						v.min,
