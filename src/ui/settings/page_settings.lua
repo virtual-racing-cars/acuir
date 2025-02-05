@@ -47,7 +47,7 @@ function page.draw()
 			label = "BACK",
 			enabled = true,
 			func = function()
-				pages:undo()
+				pages:goToParent()
 			end,
 		},
 	})

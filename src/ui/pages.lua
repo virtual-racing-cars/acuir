@@ -26,8 +26,22 @@ function pages:goToMainMenu()
 	pages.manager:setPage("MainMenu")
 end
 
+function pages:setParentMainMenu()
+	pages.manager:setParentPageName("MainMenu")
+	pages:goToMainMenu()
+end
+
 function pages:goToPauseMenu()
 	pages.manager:setPage("PauseMenu")
+end
+
+function pages:setParentPauseMenu()
+	pages.manager:setParentPageName("PauseMenu")
+	pages:goToPauseMenu()
+end
+
+function pages:goToParent()
+	pages.manager:setPage(pages.manager.parentName)
 end
 
 function pages:goToSetup()

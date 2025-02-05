@@ -26,8 +26,7 @@ ui.onExclusiveHUD(function(mode)
 		audio:driver(dt)
 
 		if modeLast ~= mode then
-			pages.manager:resetUndo(true)
-			pages:goToMainMenu()
+			pages:setParentMainMenu()
 		end
 
 		modeLast = mode
@@ -39,8 +38,7 @@ ui.onExclusiveHUD(function(mode)
 		audio:driver(dt)
 
 		if modeLast ~= mode then
-			pages.manager:resetUndo(true)
-			pages:goToPauseMenu()
+			pages:setParentPauseMenu()
 		end
 
 		modeLast = mode
@@ -50,8 +48,7 @@ ui.onExclusiveHUD(function(mode)
 
 	if mode == "game" then
 		if modeLast ~= mode then
-			pages.manager:resetUndo(true)
-			pages:goToPauseMenu()
+			pages:setParentPauseMenu()
 		end
 	end
 
