@@ -8,12 +8,6 @@ SETTINGS = ac.storage({
 	uiColor3 = rgbm(1, 1, 1, 1),
 })
 
--- for v, v in pairs(SETTINGS) do
--- 	for _k, _v in pairs(v) do
--- 		SETTINGS[_k] = _v.default
--- 	end
--- end
-
 package.add("src")
 require("ui.main_window")
 require("ui.pause.pause_window")
@@ -22,7 +16,6 @@ local settings = require("settings")
 local state = require("state")
 local audio = require("audio")
 local csp = require("csp")
-local style = require("style")
 
 state.appOpen = settings.autoStart
 state.hasAppOpened = false
@@ -49,10 +42,7 @@ ui.onExclusiveHUD(function(mode)
 	end
 end)
 
-ac.setWindowOpen("main", true)
-
 local windowTimeSync = 0
-
 function script.main()
 	if not state.hasAppOpened then
 		state.hasAppOpened = true
@@ -62,10 +52,7 @@ function script.main()
 	windowTimeSync = os.clock()
 end
 
-local uic = ac.getUI()
-
 local isInMainMenu = false
-
 teleportPitsCallback = nil
 function script.update(dt)
 	if teleportPitsCallback then
@@ -79,7 +66,7 @@ function script.update(dt)
 		ac.tryToOpenRaceMenu("setup")
 	end
 
-	if csp.ui.ctrlDown and uic.shiftDown and ui.keyboardButtonPressed(ui.KeyIndex.F5) then
+	if csp.ui.ctrlDown and csp.ui.shiftDown and ui.keyboardButtonPressed(ui.KeyIndex.F5) then
 		settings.autoStart = not state.appOpen
 		state.appOpen = not state.appOpen
 	end

@@ -154,7 +154,9 @@ function page.draw()
 					end
 				end
 			)
-		end
+		end,
+		false,
+		true
 	)
 
 	bottomBar({})

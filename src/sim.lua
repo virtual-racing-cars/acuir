@@ -87,9 +87,9 @@ setmetatable(proxy, {
 	__index = function(_, key)
 		local value = rawget(Utils, key)
 		if type(value) == "function" then
-			return value() -- Automatically call function
+			return value()
 		else
-			return value -- Return value normally
+			return value
 		end
 	end,
 })

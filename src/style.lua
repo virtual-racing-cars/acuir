@@ -37,6 +37,8 @@ local spinnerButtonStyle = {
 		{ ui.StyleColor.ButtonActive, rgbm(0, 0, 0, 0) },
 		{ ui.StyleColor.TextHovered, rgbm(1, 0, 0, 1) },
 	},
+	var = {},
+	font = nil,
 }
 
 function Style:pushSpinnerButtonStyle()

@@ -369,7 +369,9 @@ function setupIoDraw(sm)
 			if ui.getScrollMaxY() - ui.getScrollY() < 5 * cui.scaleY() then
 				ui.setScrollY(ui.getScrollMaxY())
 			end
-		end
+		end,
+		true,
+		true
 	)
 
 	return ""
