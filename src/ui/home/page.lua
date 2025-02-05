@@ -21,7 +21,7 @@ function promptShutdownAC()
 		ui.drawSimpleLine(
 			vec2(ui.windowWidth() / 2 - titleTextWidth / 2, ui.getCursorY()),
 			vec2(ui.windowWidth() / 2 + titleTextWidth / 2, ui.getCursorY()),
-			SETTINGS.uiColor2,
+			settings.Appearance.uiColor2,
 			3
 		)
 

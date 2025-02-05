@@ -181,7 +181,7 @@ function playerListButton(car, xPos, yPos, width, height)
 		ui.drawRectFilled(
 			vec2(ui.getCursorX(), yPos),
 			vec2(ui.getCursorX() + infoWidth / 2, yPos + height),
-			SETTINGS.uiColor3
+			settings.Appearance.uiColor3
 		)
 
 		ui.dwriteTextAligned(

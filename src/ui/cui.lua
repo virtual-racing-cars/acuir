@@ -271,13 +271,11 @@ function CUI.menuButton(label, size, horizontalAligment, verticalAlignment, flag
 
 	local fontColor = active and rgbm(0, 0, 0, 1) or nil
 
-	ui.pushStyleColor(ui.StyleColor.ButtonHovered, settings.uiColor2)
-	ui.pushStyleColor(ui.StyleColor.ButtonActive, settings.uiColor2)
-
-	ac.log(settings.Appearance.uiColor2)
+	ui.pushStyleColor(ui.StyleColor.ButtonHovered, settings.Appearance.uiColor2)
+	ui.pushStyleColor(ui.StyleColor.ButtonActive, settings.Appearance.uiColor2)
 
 	if active then
-		ui.pushStyleColor(ui.StyleColor.Button, settings.uiColor3)
+		ui.pushStyleColor(ui.StyleColor.Button, settings.Appearance.uiColor3)
 	end
 
 	if flags == ui.ButtonFlags.Disabled then
@@ -299,7 +297,7 @@ function CUI.menuButton(label, size, horizontalAligment, verticalAlignment, flag
 		ui.popStyleColor(1)
 
 		if ui.itemHovered() then
-			ui.drawRect(tempCursor, tempCursor + buttonSize, settings.uiColor3)
+			ui.drawRect(tempCursor, tempCursor + buttonSize, settings.Appearance.uiColor3)
 		end
 	end
 

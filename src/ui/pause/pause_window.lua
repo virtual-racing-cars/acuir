@@ -37,7 +37,7 @@ function PauseMenuWindow(dt)
 	end
 
 	ui.pushDWriteFont(fontRegular)
-	ui.pushStyleColor(ui.StyleColor.ScrollbarGrab, settings.uiColor2)
+	ui.pushStyleColor(ui.StyleColor.ScrollbarGrab, settings.Appearance.uiColor2)
 	ui.pushStyleVar(ui.StyleVar.ScrollbarSize, 3)
 	ui.pushStyleVar(ui.StyleVar.ItemSpacing, 0)
 

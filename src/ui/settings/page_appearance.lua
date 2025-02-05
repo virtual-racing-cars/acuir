@@ -99,16 +99,17 @@ function page.draw()
 			ui.sameLine()
 			cui.setCursorX(210)
 			ui.setNextItemWidth(275)
-			local secondaryColor, secondaryOpacity = SETTINGS.uiColor2:unpack()
+			local secondaryColor, secondaryOpacity = settings.Appearance.uiColor2:unpack()
 			local newSecondaryOpacity, secondaryOpacityChanged =
 				ui.slider("##ui_secondary_slider", secondaryOpacity * 100, 0, 100, "Opacity: %.0f%%")
 
 			if secondaryOpacityChanged then
-				SETTINGS.uiColor2 = SETTINGS.uiColor2:set(secondaryColor, newSecondaryOpacity / 100)
+				settings.Appearance.uiColor2 =
+					settings.Appearance.uiColor2:set(secondaryColor, newSecondaryOpacity / 100)
 			end
 
 			ui.sameLine()
-			if ui.colorButton("##secondary", SETTINGS.uiColor2, ui.ColorPickerFlags.None) then
+			if ui.colorButton("##secondary", settings.Appearance.uiColor2, ui.ColorPickerFlags.None) then
 				secondaryActive = not secondaryActive
 				primaryActive = false
 			end
@@ -122,11 +123,11 @@ function page.draw()
 				if
 					ui.colorPicker(
 						"##ui_secondary_picker",
-						SETTINGS.uiColor2,
+						settings.Appearance.uiColor2,
 						ui.ColorPickerFlags.DisplayRGB + ui.ColorPickerFlags.NoAlpha + ui.ColorPickerFlags.NoSidePreview
 					)
 				then
-					SETTINGS.uiColor2 = SETTINGS.uiColor2
+					settings.Appearance.uiColor2 = settings.Appearance.uiColor2
 				end
 			end
 
@@ -135,16 +136,16 @@ function page.draw()
 			ui.sameLine()
 			cui.setCursorX(210)
 			ui.setNextItemWidth(275)
-			local tertiaryColor, tertiaryOpacity = SETTINGS.uiColor3:unpack()
+			local tertiaryColor, tertiaryOpacity = settings.Appearance.uiColor3:unpack()
 			local newtertiaryOpacity, tertiaryOpacityChanged =
 				ui.slider("##ui_tertiary_slider", tertiaryOpacity * 100, 0, 100, "Opacity: %.0f%%")
 
 			if tertiaryOpacityChanged then
-				SETTINGS.uiColor3 = SETTINGS.uiColor3:set(tertiaryColor, newtertiaryOpacity / 100)
+				settings.Appearance.uiColor3 = settings.Appearance.uiColor3:set(tertiaryColor, newtertiaryOpacity / 100)
 			end
 
 			ui.sameLine()
-			if ui.colorButton("##tertiary", SETTINGS.uiColor3, ui.ColorPickerFlags.None) then
+			if ui.colorButton("##tertiary", settings.Appearance.uiColor3, ui.ColorPickerFlags.None) then
 				tertiaryActive = not tertiaryActive
 				primaryActive = false
 			end
@@ -158,11 +159,11 @@ function page.draw()
 				if
 					ui.colorPicker(
 						"##ui_tertiary_picker",
-						SETTINGS.uiColor3,
+						settings.Appearance.uiColor3,
 						ui.ColorPickerFlags.DisplayRGB + ui.ColorPickerFlags.NoAlpha + ui.ColorPickerFlags.NoSidePreview
 					)
 				then
-					SETTINGS.uiColor3 = SETTINGS.uiColor3
+					settings.Appearance.uiColor3 = settings.Appearance.uiColor3
 				end
 			end
 
