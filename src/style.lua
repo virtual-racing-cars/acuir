@@ -1,8 +1,10 @@
 local Style = {}
 
+local settings = require("settings")
+
 local styleMain = {
 	colors = {
-		{ ui.StyleColor.ScrollbarGrab, SETTINGS.uiColor3 },
+		{ ui.StyleColor.ScrollbarGrab, settings.uiColor3 },
 		{ ui.StyleColor.ScrollbarBg, rgbm.colors.black },
 	},
 	var = {

@@ -1,3 +1,4 @@
+local settings = require("settings")
 local sim = ac.getSim()
 
 function playerListBanner(xPos, yPos, width, height)
@@ -95,13 +96,14 @@ function playerListButton(car, xPos, yPos, width, height)
 	ui.drawRectFilled(
 		vec2(xPos, yPos),
 		vec2(xPos + width, yPos + height),
-		evenCar and SETTINGS.uiColor1 / 4 or SETTINGS.uiColor1 / 2
+		evenCar and settings.Appearance.uiColor1 / 4 or settings.Appearance.uiColor1 / 2
 	)
 
 	ui.drawRectFilled(
 		vec2(xPos, yPos),
 		vec2(xPos + width / 15, yPos + height),
-		sim.focusedCar == car.index and SETTINGS.uiColor2 or (car.index == 0 and SETTINGS.uiColor3 or SETTINGS.uiColor1)
+		sim.focusedCar == car.index and settings.Appearance.uiColor2
+			or (car.index == 0 and settings.Appearance.uiColor3 or settings.Appearance.uiColor1)
 	)
 
 	ui.setCursorX(xPos)

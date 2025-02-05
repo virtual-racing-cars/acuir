@@ -1,5 +1,6 @@
 local page = {}
 
+local settings = require("settings")
 local cui = require("ui.cui")
 local sim = ac.getSim()
 
@@ -86,7 +87,7 @@ function page.draw(dt)
 
 	local menuButtonSize = vec2(ui.availableSpaceX(), ui.availableSpaceY() / 10)
 
-	ui.pushStyleColor(ui.StyleColor.Button, SETTINGS.uiColor1)
+	ui.pushStyleColor(ui.StyleColor.Button, settings.Appearance.uiColor1)
 	for i in ipairs(pauseButtons) do
 		local menuButton = pauseButtons[i]
 		local enabled = menuButton.enabled

@@ -57,7 +57,7 @@ function page.draw()
 			sm = SetupManager()
 		end
 
-		ui.drawRectFilled(vec2(0, 0), ui.windowSize(), SETTINGS.uiColor1 / 1.25)
+		ui.drawRectFilled(vec2(0, 0), ui.windowSize(), settings.Appearance.uiColor1 / 1.25)
 		acLogoSize = ui.imageSize(acLogo) * 2 * cui.scaleY()
 
 		ui.setCursorX(ui.windowWidth() / 2 - acLogoSize.x / 2)

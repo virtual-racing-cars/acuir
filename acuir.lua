@@ -1,13 +1,3 @@
-SETTINGS = ac.storage({
-	autoStart = true,
-	showVersions = true,
-	hideOtherTrackSetups = true,
-	uiHideonIdleTime = 150,
-	uiColor1 = rgbm.new("#3e3c46"),
-	uiColor2 = rgbm(1, 0, 0, 1),
-	uiColor3 = rgbm(1, 1, 1, 1),
-})
-
 package.add("src")
 require("ui.main_window")
 require("ui.pause.pause_window")
@@ -23,7 +13,7 @@ state.appOpen = true
 
 ac.setWindowOpen("main", true)
 ui.onExclusiveHUD(function(mode)
-	if not state.appOpen then
+	if not state.appOpen or ac.getLastError() then
 		return
 	end
 

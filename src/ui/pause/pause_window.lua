@@ -1,5 +1,6 @@
 require("ui.common")
 require("classes.PageManager")
+local settings = require("settings")
 local cui = require("ui.cui")
 local state = require("state")
 
@@ -36,7 +37,7 @@ function PauseMenuWindow(dt)
 	end
 
 	ui.pushDWriteFont(fontRegular)
-	ui.pushStyleColor(ui.StyleColor.ScrollbarGrab, SETTINGS.uiColor2)
+	ui.pushStyleColor(ui.StyleColor.ScrollbarGrab, settings.uiColor2)
 	ui.pushStyleVar(ui.StyleVar.ScrollbarSize, 3)
 	ui.pushStyleVar(ui.StyleVar.ItemSpacing, 0)
 
@@ -57,7 +58,7 @@ function PauseMenuWindow(dt)
 		vec2(childWindowWith, childWindowHeight),
 		mainWindowFlags,
 		function()
-			ui.drawRectFilled(vec2(0, 0), ui.availableSpace(), SETTINGS.uiColor1 / 1.5)
+			ui.drawRectFilled(vec2(0, 0), ui.availableSpace(), settings.Appearance.uiColor1 / 1.5)
 
 			exclusiveHudMode = ""
 			exclusiveHudMode = pageManager:draw()
@@ -72,7 +73,7 @@ function PauseMenuWindow(dt)
 			ui.WindowFlags.NoScrollbar + ui.WindowFlags.NoScrollWithMouse,
 			function()
 				ui.setCursor(0)
-				ui.drawRectFilled(vec2(0, 0), ui.availableSpace(), SETTINGS.uiColor1 / 1.2)
+				ui.drawRectFilled(vec2(0, 0), ui.availableSpace(), settings.Appearance.uiColor1 / 1.2)
 				local childWindowWith = ui.windowWidth() / 5
 				local childWindowHeight = ui.windowHeight() / 5
 				cui.contentWindow(

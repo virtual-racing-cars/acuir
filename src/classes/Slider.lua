@@ -1,3 +1,4 @@
+local settings = require("settings")
 local cui = require("ui.cui")
 local style = require("style")
 
@@ -109,7 +110,7 @@ function drawSlider(
 	ui.drawRectFilled(
 		vec2Temp1:set(xPos, yPos + height),
 		vec2Temp2:set(xPos + ((value / max) * width), yPos + height * 1.083),
-		SETTINGS.uiColor2
+		settings.Appearance.uiColor2
 	)
 
 	value = value * step + min
@@ -178,7 +179,7 @@ function drawSpinner(
 	ui.drawRectFilled(
 		vec2Temp1:set(xPos + height, yPos),
 		vec2Temp2:set(xPos + width - height, yPos + buttonSize),
-		SETTINGS.uiColor1
+		settings.Appearance.uiColor1
 	)
 
 	local hoveredHelp = ui.mouseLocalPos() >= vec2Temp1:set(xPos + height, yPos)
@@ -204,7 +205,7 @@ function drawSpinner(
 	ui.drawRectFilled(
 		vec2Temp1:set(xPos + height, yPos + buttonSize),
 		vec2Temp2:set(xPos + width - height, yPos + height),
-		locked and SETTINGS.uiColor3 / 1.25 or SETTINGS.uiColor3
+		locked and settings.Appearance.uiColor3 / 1.25 or settings.Appearance.uiColor3
 	)
 
 	local hovered = ui.mouseLocalPos() >= vec2Temp1:set(xPos + buttonSize, yPos)

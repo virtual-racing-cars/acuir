@@ -81,7 +81,7 @@ function CUI.contentWindow(id, position, size, flags, content, showBackground, s
 	CUI.pushWindow(id .. "test", position.x, position.y, size.x, size.y, scroll)
 
 	if showBackground then
-		ui.drawRectFilled(vec2(0, 0), size, SETTINGS.uiColor1 / 2)
+		ui.drawRectFilled(vec2(0, 0), size, settings.Appearance.uiColor1 / 2)
 	end
 
 	content()
@@ -102,16 +102,10 @@ function CUI.modalDialog(callback)
 end
 
 function CUI.dwriteTextWrapped(text, font)
-	ui.pushDWriteFont(fontRegular)
 	ui.dwriteTextWrapped(text, font * CUI.scaleY())
-	ui.popDWriteFont()
 end
 
 function CUI.dwriteText(params)
-	if not params.size then
-		params.size = vec2Temp1:set(350, 100)
-	end
-
 	if params.xPos then
 		ui.setCursorX(params.xPos * CUI.scaleX())
 	end
@@ -120,9 +114,7 @@ function CUI.dwriteText(params)
 		ui.setCursorY(params.yPos * CUI.scaleY())
 	end
 
-	ui.pushDWriteFont(fontRegular)
 	ui.dwriteText(params.text, params.fontSize * CUI.scaleY(), params.color)
-	ui.popDWriteFont()
 end
 
 function CUI.dwriteTextAligned(params)
@@ -206,9 +198,9 @@ function CUI.modalButton(label, sizeX, sizeY, flags)
 
 	local disabled = flags == ui.ButtonFlags.Disabled
 
-	ui.pushStyleColor(ui.StyleColor.Button, SETTINGS.uiColor1)
-	ui.pushStyleColor(ui.StyleColor.ButtonHovered, SETTINGS.uiColor2)
-	ui.pushStyleColor(ui.StyleColor.ButtonActive, SETTINGS.uiColor2)
+	ui.pushStyleColor(ui.StyleColor.Button, settings.Appearance.uiColor1)
+	ui.pushStyleColor(ui.StyleColor.ButtonHovered, settings.Appearance.uiColor2)
+	ui.pushStyleColor(ui.StyleColor.ButtonActive, settings.Appearance.uiColor2)
 
 	local tempCursor = ui.getCursor()
 	local clicked = ui.button("##" .. label, vec2Temp1:set(sizeX, sizeY), flags)
@@ -279,11 +271,13 @@ function CUI.menuButton(label, size, horizontalAligment, verticalAlignment, flag
 
 	local fontColor = active and rgbm(0, 0, 0, 1) or nil
 
-	ui.pushStyleColor(ui.StyleColor.ButtonHovered, SETTINGS.uiColor2)
-	ui.pushStyleColor(ui.StyleColor.ButtonActive, SETTINGS.uiColor2)
+	ui.pushStyleColor(ui.StyleColor.ButtonHovered, settings.uiColor2)
+	ui.pushStyleColor(ui.StyleColor.ButtonActive, settings.uiColor2)
+
+	ac.log(settings.Appearance.uiColor2)
 
 	if active then
-		ui.pushStyleColor(ui.StyleColor.Button, SETTINGS.uiColor3)
+		ui.pushStyleColor(ui.StyleColor.Button, settings.uiColor3)
 	end
 
 	if flags == ui.ButtonFlags.Disabled then
@@ -305,7 +299,7 @@ function CUI.menuButton(label, size, horizontalAligment, verticalAlignment, flag
 		ui.popStyleColor(1)
 
 		if ui.itemHovered() then
-			ui.drawRect(tempCursor, tempCursor + buttonSize, SETTINGS.uiColor3)
+			ui.drawRect(tempCursor, tempCursor + buttonSize, settings.uiColor3)
 		end
 	end
 
@@ -384,12 +378,12 @@ function CUI.treeNodeButton(label, size, active, bold, count)
 	fontSize = (fontSize % 2 ~= 0) and fontSize or fontSize + 1
 	local fontColor = active and rgbm(0, 0, 0, 1) or nil
 
-	ui.pushStyleColor(ui.StyleColor.Button, bold and SETTINGS.uiColor1 or rgbm(0.1, 0.1, 0.1, 1))
-	ui.pushStyleColor(ui.StyleColor.ButtonHovered, SETTINGS.uiColor2)
-	ui.pushStyleColor(ui.StyleColor.ButtonActive, SETTINGS.uiColor2)
+	ui.pushStyleColor(ui.StyleColor.Button, bold and settings.Appearance.uiColor1 or rgbm(0.1, 0.1, 0.1, 1))
+	ui.pushStyleColor(ui.StyleColor.ButtonHovered, settings.Appearance.uiColor2)
+	ui.pushStyleColor(ui.StyleColor.ButtonActive, settings.Appearance.uiColor2)
 
 	if active then
-		ui.pushStyleColor(ui.StyleColor.Button, SETTINGS.uiColor3)
+		ui.pushStyleColor(ui.StyleColor.Button, settings.Appearance.uiColor3)
 	end
 
 	local tempCursor = ui.getCursor()
@@ -405,7 +399,7 @@ function CUI.treeNodeButton(label, size, active, bold, count)
 		ui.popStyleColor(1)
 
 		if hovered then
-			ui.drawRect(tempCursor, tempCursor + size, SETTINGS.uiColor3)
+			ui.drawRect(tempCursor, tempCursor + size, settings.Appearance.uiColor3)
 		end
 	end
 
@@ -509,9 +503,9 @@ function CUI.inputTextBox(label, stringPrefix, stringInput, size)
 
 	local tempCursor = ui.getCursor()
 
-	ui.pushStyleColor(ui.StyleColor.Button, SETTINGS.uiColor1)
-	ui.pushStyleColor(ui.StyleColor.ButtonHovered, SETTINGS.uiColor1)
-	ui.pushStyleColor(ui.StyleColor.ButtonActive, SETTINGS.uiColor1)
+	ui.pushStyleColor(ui.StyleColor.Button, settings.Appearance.uiColor1)
+	ui.pushStyleColor(ui.StyleColor.ButtonHovered, settings.Appearance.uiColor1)
+	ui.pushStyleColor(ui.StyleColor.ButtonActive, settings.Appearance.uiColor1)
 	local clicked = ui.button("##" .. label, size, ui.ButtonFlags.None)
 	ui.popStyleColor(3)
 

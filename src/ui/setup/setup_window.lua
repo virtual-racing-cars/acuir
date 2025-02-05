@@ -1,5 +1,6 @@
 require("src.ui.setup.gear_window")
 require("src.classes.Slider")
+local settings = require("settings")
 local cui = require("ui.cui")
 local audio = require("audio")
 local state = require("state")
@@ -50,7 +51,7 @@ function setupTabBar(apps)
 
 	ui.setCursorX(tabBarPosition)
 	ui.setCursorY(0)
-	ui.pushStyleColor(ui.StyleColor.Button, SETTINGS.uiColor1)
+	ui.pushStyleColor(ui.StyleColor.Button, settings.Appearance.uiColor1)
 	for i in ipairs(apps) do
 		tabItem(i - 1, apps[i].name)
 

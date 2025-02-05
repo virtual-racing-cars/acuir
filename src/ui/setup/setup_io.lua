@@ -1,11 +1,11 @@
 local cui = require("ui.cui")
 
+local settings = require("settings")
+
 local vec2Temp1 = vec2()
 
 local setupsDir = ac.getFolder(ac.FolderID.UserSetups) .. "\\" .. ac.getCarID(0)
-
 local refreshingSetups = false
-
 local loadedSetups = {}
 local trackSortedSetups = {}
 local selectedSetup = { name = "", track = "", path = "", lastWriteTime = "" }
@@ -236,7 +236,11 @@ local function saveSetupWindow(sm)
 
 	ui.setCursorX(groupBegin)
 
-	ui.drawRectFilled(ui.getCursor(), ui.getCursor() + vec2Temp1:set(buttonWidth, iconButtonHeight), SETTINGS.uiColor1)
+	ui.drawRectFilled(
+		ui.getCursor(),
+		ui.getCursor() + vec2Temp1:set(buttonWidth, iconButtonHeight),
+		settings.Appearance.uiColor1
+	)
 	if
 		cui.menuButton(
 			"Load Setup",
@@ -257,7 +261,7 @@ local function saveSetupWindow(sm)
 	ui.drawRectFilled(
 		ui.getCursor(),
 		ui.getCursor() + vec2Temp1:set(buttonWidth / 2, iconButtonHeight),
-		SETTINGS.uiColor1
+		settings.Appearance.uiColor1
 	)
 	if
 		cui.menuButton(
@@ -278,7 +282,7 @@ local function saveSetupWindow(sm)
 	ui.drawRectFilled(
 		ui.getCursor(),
 		ui.getCursor() + vec2Temp1:set(buttonWidth / 2, iconButtonHeight),
-		SETTINGS.uiColor1
+		settings.Appearance.uiColor1
 	)
 	if cui.menuButton("Save Setup", vec2Temp1:set(buttonWidth / 2, iconButtonHeight)) then
 		if setupFileExists then

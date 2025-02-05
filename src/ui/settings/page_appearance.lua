@@ -42,7 +42,7 @@ function page.draw()
 		vec2(sim.windowWidth - 120 * cui.scaleX(), sim.windowHeight - 383 * cui.scaleY()),
 		ui.WindowFlags.None,
 		function()
-			ui.drawRectFilled(vec2(0, 0), vec2(ui.windowWidth(), ui.windowHeight()), SETTINGS.uiColor1 / 1.1)
+			ui.drawRectFilled(vec2(0, 0), vec2(ui.windowWidth(), ui.windowHeight()), settings.Appearance.uiColor1 / 1.1)
 			ui.drawLine(vec2(0, 2), vec2(ui.windowWidth(), 2), rgbm.colors.gray, 2)
 			ui.drawRectFilled(vec2(0, 2), vec2(ui.windowWidth(), ui.windowHeight()), rgbm(0, 0, 0, 0.2))
 
@@ -63,16 +63,16 @@ function page.draw()
 			ui.sameLine()
 			cui.setCursorX(210)
 			ui.setNextItemWidth(275)
-			local primaryColor, primaryOpacity = SETTINGS.uiColor1:unpack()
+			local primaryColor, primaryOpacity = settings.Appearance.uiColor1:unpack()
 			local newPrimaryOpacity, primaryOpacityChanged =
 				ui.slider("##ui_primary_slider", primaryOpacity * 100, 0, 100, "Opacity: %.0f%%")
 
 			if primaryOpacityChanged then
-				SETTINGS.uiColor1 = SETTINGS.uiColor1:set(primaryColor, newPrimaryOpacity / 100)
+				settings.Appearance.uiColor1 = settings.Appearance.uiColor1:set(primaryColor, newPrimaryOpacity / 100)
 			end
 
 			ui.sameLine()
-			if ui.colorButton("##primary", SETTINGS.uiColor1, ui.ColorPickerFlags.None) then
+			if ui.colorButton("##primary", settings.Appearance.uiColor1, ui.ColorPickerFlags.None) then
 				primaryActive = not primaryActive
 				secondaryActive = false
 			end
@@ -86,11 +86,11 @@ function page.draw()
 				if
 					ui.colorPicker(
 						"##ui_primary_picker",
-						SETTINGS.uiColor1,
+						settings.Appearance.uiColor1,
 						ui.ColorPickerFlags.DisplayRGB + ui.ColorPickerFlags.NoAlpha + ui.ColorPickerFlags.NoSidePreview
 					)
 				then
-					SETTINGS.uiColor1 = SETTINGS.uiColor1
+					settings.Appearance.uiColor1 = settings.Appearance.uiColor1
 				end
 			end
 

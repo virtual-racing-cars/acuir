@@ -1,3 +1,4 @@
+local settings = require("settings")
 local cui = require("ui.cui")
 local app = require("app")
 local csp = require("csp")
@@ -17,7 +18,11 @@ local menuButtonSize = 56
 local versionString = string.format("%s: %s, CSP: %s (%s)", app.name, app.version, csp.version, csp.versionCode)
 
 function bottomBar(buttons)
-	ui.drawRectFilled(vec2(0, bottomBarHeight), vec2(ui.windowWidth(), ui.windowHeight()), SETTINGS.uiColor1 / 3)
+	ui.drawRectFilled(
+		vec2(0, bottomBarHeight),
+		vec2(ui.windowWidth(), ui.windowHeight()),
+		settings.Appearance.uiColor1 / 3
+	)
 
 	ui.pushDWriteFont(fontRegular)
 	ui.setCursorX(0)
@@ -59,7 +64,7 @@ function homeBar(buttons)
 	ui.setCursorX(0)
 	ui.setCursorY(topBarHeight)
 
-	ui.pushStyleColor(ui.StyleColor.Button, SETTINGS.uiColor1)
+	ui.pushStyleColor(ui.StyleColor.Button, settings.Appearance.uiColor1)
 
 	for i in ipairs(buttons) do
 		local menuButton = buttons[i]
@@ -236,7 +241,7 @@ function topBar(showSessionInfo)
 	ui.drawRectFilled(
 		vec2(0, topBarHeight),
 		vec2(ui.windowWidth(), (topBarHeight + menuButtonSize * cui.scaleY())),
-		SETTINGS.uiColor1 / 1.3
+		settings.Appearance.uiColor1 / 1.3
 	)
 	ui.setCursorX(ui.windowWidth() / 2 - acLogoSize.x / 2)
 	ui.setCursorY(topBarHeight * 0.2)
@@ -246,7 +251,7 @@ function topBar(showSessionInfo)
 end
 
 function settingsMenuCommon(path, bottomBarButtons, escapeAction)
-	ui.drawRectFilled(vec2(0, 0), vec2(sim.windowWidth, sim.windowHeight), SETTINGS.uiColor1 / 1.1)
+	ui.drawRectFilled(vec2(0, 0), vec2(sim.windowWidth, sim.windowHeight), settings.Appearance.uiColor1 / 1.1)
 
 	-- local storagePath = STORAGE.settingsTab > 1 and "Settings/" .. page.label or "Settings/"
 	topSubBar("/Settings" .. path)

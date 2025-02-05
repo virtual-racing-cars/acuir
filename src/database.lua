@@ -18,7 +18,7 @@ function db:register(dbKey, dbTable)
 	end
 
 	for k, v in pairs(dbTable) do
-		if not dbList[dbKey]:get(v.key) then
+		if true then --not dbList[dbKey]:get(v.key) then
 			dbList[dbKey]:set(v.key, { value = v.default })
 		end
 	end
