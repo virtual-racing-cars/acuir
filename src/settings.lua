@@ -4,7 +4,7 @@ local settings = {
 		{
 			key = "hideOtherTrackSetups",
 			label = "Hide Other Track Setups",
-			default = true,
+			default = false,
 			widget = 1,
 		},
 		{ key = "showVersions", label = "Show App and CSP versions", default = true, widget = 1 },

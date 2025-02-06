@@ -27,6 +27,12 @@ local function loadSetups()
 	loadedSetups[ac.getTrackID()] = {}
 
 	io.scanDir(setupsDir, function(dirName)
+		if settings.General.hideOtherTrackSetups then
+			if dirName ~= ac.getTrackID() and dirName ~= "generic" then
+				return
+			end
+		end
+
 		if string.find(dirName, ".sp") or string.find(dirName, ".ini") or string.find(dirName, ".txt") then
 			return
 		end
@@ -293,7 +299,13 @@ local function saveSetupWindow(sm)
 	end
 end
 
+local lastHide = settings.General.hideOtherTrackSetups
+
 function setupIoDraw(sm)
+	if lastHide ~= settings.General.hideOtherTrackSetups then
+		loadSetups()
+	end
+
 	if ui.keyPressed(ui.Key.Delete) then
 		deleteSetup()
 	end
