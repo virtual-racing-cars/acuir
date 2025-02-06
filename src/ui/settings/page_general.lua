@@ -95,8 +95,6 @@ function page.draw()
 		2
 	)
 
-	ui.drawLine(vec2(ui.windowWidth() / 2, 0), vec2(ui.windowWidth() / 2, ui.windowHeight()), rgbm.colors.green)
-
 	bottomBar(bottomBarButtons)
 	cui.popWindow()
 	return ""

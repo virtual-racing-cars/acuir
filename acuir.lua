@@ -56,7 +56,6 @@ local windowTimeSync = 0
 function script.main()
 	if not app.state.hasAppOpened then
 		app.state.hasAppOpened = true
-		ac.setMousePosition(ui.cursorScreenPos())
 	end
 
 	windowTimeSync = os.clock()

@@ -294,13 +294,13 @@ function CUI.menuButton(label, size, horizontalAligment, verticalAlignment, flag
 	if type(size) == "number" then
 		size = size * scaleY
 		sizeY = size
-		fontSize = math.floor(sizeY * 0.45)
+		fontSize = math.floor(sizeY * 0.55)
 		fontSize = (fontSize % 2 ~= 0) and fontSize + 1 or fontSize
 		buttonSize = vec2Temp1:set(ui.measureDWriteText(string.upper(label), fontSize).x + 100 * CUI.scaleY(), size)
 	else
 		sizeX = size.x
 		sizeY = size.y
-		fontSize = math.floor(sizeY * 0.45)
+		fontSize = math.floor(sizeY * 0.55)
 		fontSize = (fontSize % 2 ~= 0) and fontSize + 1 or fontSize
 		buttonSize = vec2Temp1(sizeX, sizeY)
 	end
@@ -358,6 +358,79 @@ function CUI.menuButton(label, size, horizontalAligment, verticalAlignment, flag
 	return clicked and not (flags == ui.ButtonFlags.Disabled)
 end
 
+function CUI.specialButton(label, size, horizontalAligment, verticalAlignment, flags, active)
+	ui.pushDWriteFont(fontBold)
+
+	if not horizontalAligment then
+		horizontalAligment = ui.Alignment.Center
+	end
+
+	if not verticalAlignment then
+		verticalAlignment = ui.Alignment.Center
+	end
+
+	if not flags then
+		flags = ui.ButtonFlags.None
+	end
+
+	local sizeX = size.x
+	local sizeY = size.y
+	local fontSize = math.floor(sizeY * 0.55)
+	fontSize = (fontSize % 2 ~= 0) and fontSize + 1 or fontSize
+	local buttonSize = vec2Temp1(sizeX, sizeY)
+
+	local fontColor = active and rgbm(0, 0, 0, 1) or nil
+
+	ui.pushStyleColor(ui.StyleColor.ButtonHovered, rgbm(0, 0.6, 0, 1))
+	ui.pushStyleColor(ui.StyleColor.ButtonActive, rgbm(0, 0.4, 0, 1))
+	ui.pushStyleColor(ui.StyleColor.Button, rgbm.colors.green)
+
+	if flags == ui.ButtonFlags.Disabled then
+		fontColor = rgbm(0.6, 0.6, 0.6, 1)
+		ui.pushStyleColor(ui.StyleColor.Button, rgbm(0.05, 0.05, 0.05, 1))
+	end
+
+	local tempCursor = ui.getCursor()
+	local clicked = ui.button("##" .. label, buttonSize, flags)
+	local hovered = ui.itemHovered()
+	local r1, r2 = ui.itemRect()
+
+	if flags == ui.ButtonFlags.Disabled then
+		ui.popStyleColor(1)
+	elseif hovered then
+		fontColor = rgbm(1, 1, 1, 1)
+	end
+
+	if active then
+		ui.popStyleColor(1)
+
+		if ui.itemHovered() then
+			ui.drawRect(tempCursor, tempCursor + buttonSize, settings.Appearance.uiColor3)
+		end
+	end
+
+	ui.glowRectFilled(r1, r2, rgbm.colors.green)
+
+	ui.popStyleColor(3)
+
+	ui.sameLine()
+	ui.offsetCursorY(1)
+	ui.setCursor(tempCursor)
+	ui.dwriteTextAligned(
+		string.upper(label),
+		fontSize,
+		horizontalAligment,
+		verticalAlignment,
+		buttonSize,
+		false,
+		fontColor
+	)
+
+	ui.popDWriteFont()
+
+	return clicked and not (flags == ui.ButtonFlags.Disabled)
+end
+
 function CUI.modernButton(label, sizeX, sizeY, flags, icon)
 	local clicked = ui.modernButton(label, vec2(sizeX, sizeY) * scaleY, flags, icon, 16 * scaleY)
 	local hovered = ui.itemHovered()
@@ -365,35 +438,20 @@ function CUI.modernButton(label, sizeX, sizeY, flags, icon)
 end
 
 function CUI.iconButton(label, icon, sizeX, sizeY, flags)
-	if not flags then
-		flags = ui.ButtonFlags.None
+	local disabled = false
+	if bit.band(flags, ui.ButtonFlags.Disabled) ~= 0 then
+		disabled = true
 	end
 
-	ui.pushStyleColor(ui.StyleColor.Button, rgbm(0.25, 0.25, 0.25, 0.5))
-
-	local tempCursorX = ui.getCursorX()
-
-	local clicked = ui.button("##" .. label, vec2(sizeX, sizeY) * scaleY, flags)
+	local clicked = ui.invisibleButton("##" .. label, vec2(sizeX, sizeY))
 	local hovered = ui.itemHovered()
 
-	ui.sameLine()
-	ui.setCursorX(tempCursorX + 15 * scaleY)
+	local iconColor = disabled and rgbm(0.3, 0.3, 0.3, 0.8)
+		or (hovered and settings.Appearance.uiColor2 or settings.Appearance.uiColor3)
 
-	ui.dwriteTextAligned(
-		label,
-		14 * scaleX,
-		ui.Alignment.Start,
-		ui.Alignment.Center,
-		vec2Temp1:set(sizeX, sizeY) * scaleY
-	)
+	ui.addIcon(icon, vec2(sizeY, sizeY) * 0.4, vec2(0.5, 0.5), iconColor)
 
-	ui.sameLine()
-	ui.setCursorX(tempCursorX + 60 * scaleY)
-	ui.icon(icon, vec2(sizeY, sizeY) * scaleY, nil, sizeY / 2 * scaleY)
-
-	ui.popStyleColor(1)
-
-	return clicked and not (flags == ui.ButtonFlags.Disabled)
+	return clicked and not disabled
 end
 
 local treeNodeParent = ""
@@ -644,7 +702,7 @@ function CUI.inputTextBox(label, stringPrefix, stringInput, size)
 		ui.drawSimpleLine(vec2(pos, r1.y + 10), vec2(pos, r1.y - 10) + vec2(0, size.y), rgbm.colors.white / 1.25, 2)
 	end
 
-	ui.drawRect(r1, r2, rgbm.colors.white, 0, ui.CornerFlags.None, 2)
+	ui.drawRect(r1, r2, settings.Appearance.uiColor1 * 2, 0, ui.CornerFlags.None, 2)
 
 	ui.popDWriteFont()
 	ui.popClipRect()

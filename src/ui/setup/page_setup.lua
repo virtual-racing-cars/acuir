@@ -173,7 +173,7 @@ function page.draw()
 
 	cui.pushWindowFitted("setup_page_window")
 
-	topBar(false)
+	topBar("/ Vehicle Setup")
 
 	cui.pushWindow("car_setup_window", 0, 200 * cui.scaleY(), ui.windowWidth(), ui.windowHeight() - 303 * cui.scaleY())
 	ui.setCursor(0)

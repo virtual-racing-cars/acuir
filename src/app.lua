@@ -33,7 +33,7 @@ end
 App.state = {
 	appOpen = false,
 	hasAppOpened = false,
-	setupTab = 7,
+	setupTab = 1,
 	debug = true,
 }
 

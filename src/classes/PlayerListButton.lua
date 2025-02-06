@@ -30,7 +30,7 @@ function playerListBanner(xPos, yPos, width, height)
 	local infoWidth = width / 6
 
 	ui.dwriteTextAligned(
-		"Last Lap",
+		"Last",
 		fontSize,
 		ui.Alignment.Center,
 		ui.Alignment.Center,
@@ -41,7 +41,7 @@ function playerListBanner(xPos, yPos, width, height)
 	ui.sameLine()
 
 	ui.dwriteTextAligned(
-		"Best Lap",
+		"Best",
 		fontSize,
 		ui.Alignment.Center,
 		ui.Alignment.Center,
@@ -52,7 +52,7 @@ function playerListBanner(xPos, yPos, width, height)
 	ui.sameLine()
 
 	ui.dwriteTextAligned(
-		"Compound",
+		"Tyre",
 		fontSize,
 		ui.Alignment.Center,
 		ui.Alignment.Center,

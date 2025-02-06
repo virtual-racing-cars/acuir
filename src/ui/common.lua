@@ -3,6 +3,7 @@ local cui = require("ui.cui")
 local app = require("app")
 local csp = require("csp")
 local simutils = require("sim")
+local style = require("style")
 local sim = ac.getSim()
 
 local acLogo = ac.getFolder(ac.FolderID.Root) .. "\\launcher\\themes\\default\\graphics\\btn_AC_logo.png"
@@ -96,20 +97,25 @@ end
 local sessionInfoTable = {
 	{
 		label = function()
+			return "Sim Time"
+		end,
+		row1 = function()
+			return simutils.simDateString
+		end,
+		row2 = function()
+			return simutils.simTimeString
+		end,
+	},
+
+	{
+		label = function()
 			return simutils.raceSessionTypeString
 		end,
 		row1 = function()
-			return simutils.simTimeString
+			return simutils.sessionTotalTimeString
 		end,
 		row2 = function()
-			if sim.raceSessionType == ac.SessionType.Race then
-				local hours = sim.timeToSessionStart / 3600000
-				local minutes = (sim.timeToSessionStart % 3600000) / 60000
-
-				return string.format("%02d:%02d", hours, minutes)
-			else
-				return
-			end
+			return simutils.sessionTimeLeftString
 		end,
 	},
 	{
@@ -148,79 +154,66 @@ local sessionInfoTable = {
 }
 
 local function sessionInfo()
-	local startX = ui.windowWidth() / 50
-	local startY = 50 * cui.scaleY()
-	local sizeX = 170 * cui.scaleX()
+	local startX = 1890 * cui.scaleY()
+	local startY = 12 * cui.scaleY()
+	local sizeX = 192 * cui.scaleX()
 	local sizeY = 35 * cui.scaleY()
-	local gap = 3
 
-	local fontSize = math.floor(sizeY * 0.6)
+	local fontSize = math.floor(sizeY * 0.7)
 	fontSize = (fontSize % 2 ~= 0) and fontSize + 1 or fontSize
 
 	ui.setCursor(vec2(startX, startY))
 	for i in ipairs(sessionInfoTable) do
 		ui.beginGroup()
 
-		ui.offsetCursorX(-1)
+		ui.pushDWriteFont("Rajdhani;weight=bold")
+		ui.dwriteTextAligned(
+			string.upper(sessionInfoTable[i].label()) .. ":",
+			fontSize,
+			ui.Alignment.Start,
+			ui.Alignment.Center,
+			vec2(sizeX, sizeY)
+		)
+		ui.popDWriteFont()
+		ui.sameLine()
 
-		ui.drawRectFilled(ui.getCursor(), ui.getCursor() + vec2(sizeX, sizeY), rgbm(0, 0, 0, 0.6))
+		ui.offsetCursorX(-50 * cui.scaleY())
 
 		ui.dwriteTextAligned(
-			string.upper(sessionInfoTable[i].label()),
+			sessionInfoTable[i].row1(),
 			fontSize,
+			ui.Alignment.Start,
 			ui.Alignment.Center,
+			vec2(sizeX, sizeY)
+		)
+		ui.sameLine()
+		ui.offsetCursorX(20 * cui.scaleY())
+
+		ui.dwriteTextAligned(
+			sessionInfoTable[i].row2(),
+			fontSize,
+			ui.Alignment.Start,
 			ui.Alignment.Center,
 			vec2(sizeX, sizeY)
 		)
 
-		local expanded = not sessionInfoTable[i].row2()
-		ui.drawRectFilled(
-			ui.getCursor(),
-			ui.getCursor() + vec2(sizeX, expanded and sizeY * 2 or sizeY),
-			rgbm(0.1, 0.1, 0.1, 0.5)
-		)
-		ui.dwriteTextAligned(
-			sessionInfoTable[i].row1(),
-			expanded and fontSize * 2 or fontSize,
-			ui.Alignment.Center,
-			ui.Alignment.Center,
-			vec2(sizeX, expanded and sizeY * 2 or sizeY)
-		)
-
-		if not expanded then
-			ui.drawRectFilled(ui.getCursor(), ui.getCursor() + vec2(sizeX, sizeY), rgbm(0.1, 0.1, 0.1, 0.5))
-			ui.dwriteTextAligned(
-				sessionInfoTable[i].row2(),
-				fontSize,
-				ui.Alignment.Center,
-				ui.Alignment.Center,
-				vec2(sizeX, sizeY)
-			)
-		end
-
 		ui.endGroup()
-		ui.setCursor(vec2(startX + ((sizeX + gap) * i), startY))
+		ui.setCursorX(startX)
 	end
 end
 
 function topSubBar(path)
-	cui.setCursorX(60)
-	cui.setCursorY(33)
+	ui.setCursorX(ui.windowWidth() / 65)
+	ui.setCursorY(topBarHeight / 2 - acLogoSize.y / 2)
 	ui.image(acLogo, acLogoSize)
-	ui.drawLine(
-		vec2(227 * cui.scaleX(), 105 * cui.scaleY()),
-		vec2(1100 * cui.scaleX(), 105 * cui.scaleY()),
-		rgbm.colors.white,
-		3
-	)
 
-	cui.setCursorX(230)
-	cui.setCursorY(28)
-
+	cui.setCursorX(225)
+	ui.setCursorY(topBarHeight / 2 - (100 * cui.scaleY()) / 2)
 	ui.pushDWriteFont(ui.DWriteFont("Rajdhani"):weight(ui.DWriteFont.Weight.SemiBold))
+
 	ui.dwriteTextAligned(
 		path,
-		38 * cui.scaleY(),
+		60 * cui.scaleY(),
 		ui.Alignment.Start,
 		ui.Alignment.Center,
 		vec2(450 * cui.scaleX(), 100 * cui.scaleY()),
@@ -230,17 +223,63 @@ function topSubBar(path)
 	ui.popDWriteFont()
 end
 
-function topBar(showSessionInfo)
-	ui.drawRectFilled(vec2(0, 0), vec2(ui.windowWidth(), topBarHeight), rgbm(0.2, 0.2, 0.2, 0.5))
+function topBar(path)
+	local driveButtonWidth = 400 * cui.scaleY()
+	local driveButtonHeight = 80 * cui.scaleY()
 
+	ui.drawRectFilled(0, vec2(ui.windowWidth(), topBarHeight), rgbm(0.1, 0.1, 0.1, 0.95))
 	ui.drawRectFilled(
 		vec2(0, topBarHeight),
 		vec2(ui.windowWidth(), (topBarHeight + menuButtonSize * cui.scaleY())),
 		settings.Appearance.uiColor1 / 1.3
 	)
-	ui.setCursorX(ui.windowWidth() / 2 - acLogoSize.x / 2)
-	ui.setCursorY(topBarHeight * 0.2)
-	ui.image(acLogo, acLogoSize)
+
+	topSubBar(path)
+
+	ui.setCursorY(topBarHeight / 2 - driveButtonHeight / 2)
+	ui.setCursorX(ui.windowWidth() / 2 - driveButtonWidth / 2)
+	ui.offsetCursorX(-driveButtonHeight)
+	if
+		cui.iconButton(
+			"##resetSession",
+			ui.Icons.Reset,
+			driveButtonHeight,
+			driveButtonHeight,
+			simutils.sessionRestartable and ui.ButtonFlags.None or ui.ButtonFlags.Disabled
+		)
+	then
+		ac.tryToRestartSession()
+	end
+	ui.sameLine()
+
+	ui.pushStyleColor(ui.StyleColor.Button, rgbm.colors.green)
+	if
+		cui.specialButton(
+			"Drive Now",
+			vec2(driveButtonWidth, driveButtonHeight),
+			ui.Alignment.Center,
+			ui.Alignment.Center,
+			0, --- ui.ButtonFlags.None or ui.ButtonFlags.Disabled,
+			false
+		)
+	then
+		ac.tryToStart()
+	end
+
+	ui.popStyleColor(1)
+	ui.sameLine()
+
+	if
+		cui.iconButton(
+			"##skipSession",
+			ui.Icons.Skip,
+			driveButtonHeight,
+			driveButtonHeight,
+			simutils.sessionSkippable and ui.ButtonFlags.None or ui.ButtonFlags.Disabled
+		)
+	then
+		ac.tryToSkipSession()
+	end
 
 	sessionInfo()
 end

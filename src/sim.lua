@@ -1,6 +1,7 @@
 local SimUtils = {}
 
 local sim = ac.getSim()
+local car = ac.getCar(0)
 
 local windDirectionStrings = {
 	"N",
@@ -79,7 +80,27 @@ function SimUtils.ambientTemperatureF()
 end
 
 function SimUtils.simTimeString()
-	return string.format("%02d:%02d", sim.timeHours, sim.timeMinutes)
+	return string.format("%02d:%02d:%02d", sim.timeHours, sim.timeMinutes, sim.timeSeconds)
+end
+
+function SimUtils.simDateString()
+	return os.date("%B %d, %Y", sim.timestamp)
+end
+
+function SimUtils.sessionTimeLeftString()
+	return sim.sessionTimeLeft <= 0 and "--" or string.format("%.1f min", sim.sessionTimeLeft / 60000)
+end
+
+function SimUtils.sessionTotalTimeString()
+	return string.format("%s min", (sim.sessionTimeLeft - sim.timeToSessionStart) / 60000)
+end
+
+function SimUtils.sessionSkippable()
+	return sim.sessionsCount > 1 and sim.currentSessionIndex + 1 < sim.sessionsCount
+end
+
+function SimUtils.sessionRestartable()
+	return car.sessionID == -1
 end
 
 local proxy = {}

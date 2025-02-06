@@ -63,14 +63,14 @@ function promptShutdownAC()
 end
 
 local menuButtonList = {
-	{
-		label = "DRIVE",
-		enabled = true,
-		condition = function() end,
-		func = function()
-			ac.tryToStart()
-		end,
-	},
+	-- {
+	-- 	label = "DRIVE",
+	-- 	enabled = true,
+	-- 	condition = function() end,
+	-- 	func = function()
+	-- 		ac.tryToStart()
+	-- 	end,
+	-- },
 	{
 		label = "VEHICLE SETUP",
 		enabled = true,
@@ -99,26 +99,26 @@ local menuButtonList = {
 			pages:goToSettings()
 		end,
 	},
-	{
-		label = "SKIP SESSION",
-		enabled = true,
-		condition = function()
-			return not (sim.sessionsCount > 1 and sim.currentSessionIndex + 1 < sim.sessionsCount)
-		end,
-		func = function()
-			ac.tryToSkipSession()
-		end,
-	},
-	{
-		label = "RESTART SESSION",
-		enabled = true,
-		condition = function()
-			return sim.isOnlineRace
-		end,
-		func = function()
-			ac.tryToRestartSession()
-		end,
-	},
+	-- {
+	-- 	label = "SKIP SESSION",
+	-- 	enabled = true,
+	-- 	condition = function()
+	-- 		return not (sim.sessionsCount > 1 and sim.currentSessionIndex + 1 < sim.sessionsCount)
+	-- 	end,
+	-- 	func = function()
+	-- 		ac.tryToSkipSession()
+	-- 	end,
+	-- },
+	-- {
+	-- 	label = "RESTART SESSION",
+	-- 	enabled = true,
+	-- 	condition = function()
+	-- 		return sim.isOnlineRace
+	-- 	end,
+	-- 	func = function()
+	-- 		ac.tryToRestartSession()
+	-- 	end,
+	-- },
 	{
 		label = "QUIT",
 		enabled = true,
@@ -134,7 +134,7 @@ function page.update() end
 function page.draw()
 	cui.pushWindowFitted("main_menu_page_window")
 
-	topBar(true)
+	topBar()
 	homeBar(menuButtonList)
 
 	cui.pushWindow(
@@ -146,7 +146,7 @@ function page.draw()
 		true
 	)
 	local height = 50 * cui.scaleY()
-	playerListBanner(0, 0, ui.windowWidth(), height)
+	playerListBanner(0, 0, ui.windowWidth(), height * 0.9)
 
 	cui.pushWindow("home_leaderboard_entrant_window", 0, height, ui.windowWidth(), ui.windowHeight() - height, true)
 	for i, car in ac.iterateCars.leaderboard() do
