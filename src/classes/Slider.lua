@@ -68,8 +68,8 @@ function drawSlider(
 	local max = (max - min) / step
 	local changed = false
 	local xMax = xPos + width
-	local fontSize = math.floor(height * 0.36)
-	fontSize = (fontSize % 2 ~= 0) and fontSize or fontSize + 1
+	local fontSize = math.floor(height * 0.38)
+	fontSize = (fontSize % 2 ~= 0) and fontSize + 1 or fontSize
 
 	ui.setCursorX(xPos)
 	ui.setCursorY(yPos)

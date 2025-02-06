@@ -33,8 +33,8 @@ end
 App.state = {
 	appOpen = false,
 	hasAppOpened = false,
-	setupTab = 1,
-	debug = false,
+	setupTab = 7,
+	debug = true,
 }
 
 local proxy = {}

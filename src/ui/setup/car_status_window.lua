@@ -166,13 +166,13 @@ function CarStatusWindow()
 			local row = (i > 1 and j > 1) and i - 1 or i
 
 			if i == 2 and j > 1 then
-				infoBlock = cornerStatusInfo[0]
+				goto continue
 			end
 
 			if i == 1 then
 				cui.dwriteText({
 					text = cornerStatusLabels[j + 1],
-					fontSize = 24,
+					fontSize = 22,
 					xPos = xPos,
 					yPos = yPos,
 				})
@@ -180,7 +180,7 @@ function CarStatusWindow()
 
 			cui.dwriteText({
 				text = infoBlock.label .. ":",
-				fontSize = 24,
+				fontSize = 22,
 				xPos = xPos,
 				yPos = yPos + row * 28,
 			})
@@ -188,11 +188,13 @@ function CarStatusWindow()
 			if infoBlock.value(j) then
 				cui.dwriteText({
 					text = math.round(infoBlock.value(j), infoBlock.round) .. " " .. infoBlock.unit,
-					fontSize = 24,
+					fontSize = 22,
 					xPos = xPos + 150,
 					yPos = yPos + row * 28,
 				})
 			end
+
+			::continue::
 		end
 	end
 
@@ -204,13 +206,13 @@ function CarStatusWindow()
 
 		cui.dwriteText({
 			text = infoBlock.label .. ":",
-			fontSize = 24,
+			fontSize = 22,
 			xPos = xPos,
 			yPos = yPos + row * 50,
 		})
 		cui.dwriteText({
 			text = math.round(infoBlock.value(i), infoBlock.round) .. " " .. infoBlock.unit,
-			fontSize = 24,
+			fontSize = 22,
 			xPos = xPos + 200,
 			yPos = yPos + row * 50,
 		})

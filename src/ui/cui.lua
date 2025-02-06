@@ -110,7 +110,10 @@ function CUI.dwriteText(params)
 		ui.setCursorY(params.yPos * CUI.scaleY())
 	end
 
-	ui.dwriteText(params.text, params.fontSize * CUI.scaleY(), params.color)
+	local fontSize = params.fontSize * CUI.scaleY()
+	fontSize = (fontSize % 2 ~= 0) and fontSize + 1 or fontSize
+
+	ui.dwriteText(params.text, fontSize, params.color)
 end
 
 function CUI.dwriteTextAligned(params)
@@ -292,13 +295,13 @@ function CUI.menuButton(label, size, horizontalAligment, verticalAlignment, flag
 		size = size * scaleY
 		sizeY = size
 		fontSize = math.floor(sizeY * 0.45)
-		fontSize = (fontSize % 2 ~= 0) and fontSize or fontSize + 1
+		fontSize = (fontSize % 2 ~= 0) and fontSize + 1 or fontSize
 		buttonSize = vec2Temp1:set(ui.measureDWriteText(string.upper(label), fontSize).x + 100 * CUI.scaleY(), size)
 	else
 		sizeX = size.x
 		sizeY = size.y
 		fontSize = math.floor(sizeY * 0.45)
-		fontSize = (fontSize % 2 ~= 0) and fontSize or fontSize + 1
+		fontSize = (fontSize % 2 ~= 0) and fontSize + 1 or fontSize
 		buttonSize = vec2Temp1(sizeX, sizeY)
 	end
 

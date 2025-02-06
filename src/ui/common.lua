@@ -5,8 +5,6 @@ local csp = require("csp")
 local simutils = require("sim")
 local sim = ac.getSim()
 
-local fontBold = ui.DWriteFont("Rajdhani"):weight(ui.DWriteFont.Weight.Bold)
-
 local acLogo = ac.getFolder(ac.FolderID.Root) .. "\\launcher\\themes\\default\\graphics\\btn_AC_logo.png"
 local acLogoSize = ui.imageSize(acLogo) * cui.scaleY()
 
@@ -152,12 +150,12 @@ local sessionInfoTable = {
 local function sessionInfo()
 	local startX = ui.windowWidth() / 50
 	local startY = 50 * cui.scaleY()
-	local sizeX = 171 * cui.scaleX()
+	local sizeX = 170 * cui.scaleX()
 	local sizeY = 35 * cui.scaleY()
 	local gap = 3
 
-	local fontSize = math.floor(sizeY * 0.55)
-	fontSize = (fontSize % 2 ~= 0) and fontSize or fontSize + 1
+	local fontSize = math.floor(sizeY * 0.6)
+	fontSize = (fontSize % 2 ~= 0) and fontSize + 1 or fontSize
 
 	ui.setCursor(vec2(startX, startY))
 	for i in ipairs(sessionInfoTable) do
@@ -166,7 +164,6 @@ local function sessionInfo()
 		ui.offsetCursorX(-1)
 
 		ui.drawRectFilled(ui.getCursor(), ui.getCursor() + vec2(sizeX, sizeY), rgbm(0, 0, 0, 0.6))
-		ui.pushDWriteFont(fontBold)
 
 		ui.dwriteTextAligned(
 			string.upper(sessionInfoTable[i].label()),
@@ -175,7 +172,6 @@ local function sessionInfo()
 			ui.Alignment.Center,
 			vec2(sizeX, sizeY)
 		)
-		ui.popDWriteFont()
 
 		local expanded = not sessionInfoTable[i].row2()
 		ui.drawRectFilled(
