@@ -4,17 +4,33 @@ local car = ac.getCar(0)
 local cphys = ac.getCarPhysics(0)
 
 local function getGearMaxSpeedKmh(gear)
-	return math.round(ac.getCarMaxSpeedWithGear(0, gear))
+	if ac.getCarMaxSpeedWithGear then
+		return math.round(math.max(ac.getCarMaxSpeedWithGear(0, gear), 0))
+	end
+
+	if not cphys.gearRatio then
+		return 0
+	end
+
+	return math.round(
+		(math.pi * car.wheels[2].tyreRadius * 2 * (car.rpmLimiter - 0))
+			/ (60 * cphys.gearRatios[gear + 1] * cphys.finalRatio)
+			* 3.6
+	)
 end
+
+local maxSpeedWithGear = {
+	[0] = 0,
+}
 
 local maxSpeed = nil
 
 function gearWindow(spinnerCount)
-	local yMin = ui.windowHeight() / 4
+	local yMin = ui.windowHeight() / 5
 	local yMax = ui.windowHeight() - yMin
 
 	local xMin = ui.windowWidth() / 2 / 8
-	local xMax = ui.windowWidth() / 2 - xMin
+	local xMax = ui.windowWidth() / 2 + xMin / 2
 	local width = xMax - xMin
 
 	if spinnerCount <= 0 then
@@ -48,13 +64,7 @@ function gearWindow(spinnerCount)
 		)
 		ui.pathLineTo(vec2(xMin + width / 10 * i, yMin))
 		ui.pathLineTo(vec2(xMin + width / 10 * i, yMax))
-		ui.pathStroke(rgbm(1, 1, 1, 0.3), false, 2)
-
-		-- ui.dwriteDrawText(
-		-- 	math.round(car.rpmLimiter - (car.rpmLimiter / 10) * i),
-		-- 	14 * cui.scaleY(),
-		-- 	vec2(xMin, yMin + (yMax - yMin) / 10 * i)
-		-- )
+		ui.pathStroke(rgbm(1, 1, 1, 0.3), false, 3)
 
 		ui.setCursor(vec2(xMin - 70, yMin + (yMax - yMin) / 10 * i) - 10)
 		ui.dwriteTextAligned(
@@ -67,14 +77,21 @@ function gearWindow(spinnerCount)
 
 		ui.pathLineTo(vec2(xMin, yMin + (yMax - yMin) / 10 * i))
 		ui.pathLineTo(vec2(xMin + width, yMin + (yMax - yMin) / 10 * i))
-		ui.pathStroke(rgbm(1, 1, 1, 0.3), false, 2)
+		ui.pathStroke(rgbm(1, 1, 1, 0.3), false, 3)
 	end
 
-	local prevGearSpeed = 0
 	for i = 1, car.gearCount do
 		local maxGearSpeed = getGearMaxSpeedKmh(i)
 
-		-- ac.debug(i, maxGearSpeed)
+		if maxGearSpeed > 0 then
+			maxSpeedWithGear[i] = maxGearSpeed
+		else
+			maxGearSpeed = maxSpeedWithGear[i]
+		end
+
+		ac.debug(i, maxGearSpeed)
+
+		local prevGearSpeed = maxSpeedWithGear[i - 1]
 
 		local x1 = xMin + width * (prevGearSpeed / maxSpeed)
 		local p1 = vec2(x1, math.max(yMin + (yMax - yMin) * (1 - (prevGearSpeed / maxGearSpeed)), yMin))
@@ -82,7 +99,7 @@ function gearWindow(spinnerCount)
 
 		ui.pathLineTo(p1)
 		ui.pathLineTo(p2)
-		ui.pathStroke(settings.Appearance.uiColor2, false, 4)
+		ui.pathStroke(settings.Appearance.uiColor2, false, 5)
 
 		ui.setCursor(p1:setLerp(p1, p2, 0.5))
 		ui.dwriteTextAligned(i, 18 * cui.scaleY(), ui.Alignment.Center, ui.Alignment.Start, vec2(15, 20) * cui.scaleY())
