@@ -110,7 +110,7 @@ local function drawSetupSpinner(sm, si)
 	}
 
 	local xPos = positions[si.xPos]
-	local yPos = (si.yPos * 97 + 60) * cui.scaleY()
+	local yPos = (si.yPos * 97 + 61) * cui.scaleY()
 
 	if #si.items > 0 then
 		si.format = si.items[si.value + 1]
@@ -166,8 +166,8 @@ end
 local pitstopStrategyPreset = 0
 
 function car_setup(sm)
-	spinnerWidth = 600 * cui.scaleX()
-	spinnerHeight = 70 * cui.scaleY()
+	spinnerWidth = 620 * cui.scaleX()
+	spinnerHeight = 74 * cui.scaleY()
 
 	local changed = false
 	local tab = sm.setupTabs[tonumber(app.state.setupTab)]

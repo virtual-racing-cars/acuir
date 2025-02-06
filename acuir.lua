@@ -71,7 +71,12 @@ function script.update(dt)
 		end
 	end
 
-	if csp.sim.isInMainMenu and settings.General.autoStart and windowTimeSync < os.clock() - 1 then
+	if
+		csp.sim.isInMainMenu
+		and settings.General.autoStart
+		and not app.state.hasAppOpened
+		and windowTimeSync < os.clock() - 1
+	then
 		ac.tryToOpenRaceMenu("race")
 		ac.tryToOpenRaceMenu("setup")
 	end

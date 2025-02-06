@@ -2,7 +2,9 @@ local CUI = {}
 
 local settings = require("settings")
 local audio = require("audio")
+local simutils = require("sim")
 local sim = ac.getSim()
+local car = ac.getCar(0)
 
 local vec2Temp1 = vec2()
 local vec2Temp2 = vec2()
@@ -358,7 +360,7 @@ function CUI.menuButton(label, size, horizontalAligment, verticalAlignment, flag
 	return clicked and not (flags == ui.ButtonFlags.Disabled)
 end
 
-function CUI.specialButton(label, size, horizontalAligment, verticalAlignment, flags, active)
+function CUI.specialButton(label, size, horizontalAligment, verticalAlignment)
 	ui.pushDWriteFont(fontBold)
 
 	if not horizontalAligment then
@@ -369,9 +371,7 @@ function CUI.specialButton(label, size, horizontalAligment, verticalAlignment, f
 		verticalAlignment = ui.Alignment.Center
 	end
 
-	if not flags then
-		flags = ui.ButtonFlags.None
-	end
+	local flags = ui.ButtonFlags.None
 
 	local sizeX = size.x
 	local sizeY = size.y
@@ -379,15 +379,19 @@ function CUI.specialButton(label, size, horizontalAligment, verticalAlignment, f
 	fontSize = (fontSize % 2 ~= 0) and fontSize + 1 or fontSize
 	local buttonSize = vec2Temp1(sizeX, sizeY)
 
-	local fontColor = active and rgbm(0, 0, 0, 1) or nil
+	local fontColor = nil
 
-	ui.pushStyleColor(ui.StyleColor.ButtonHovered, rgbm(0, 0.6, 0, 1))
-	ui.pushStyleColor(ui.StyleColor.ButtonActive, rgbm(0, 0.4, 0, 1))
-	ui.pushStyleColor(ui.StyleColor.Button, rgbm.colors.green)
+	local locked = simutils.controlsLocked
 
-	if flags == ui.ButtonFlags.Disabled then
-		fontColor = rgbm(0.6, 0.6, 0.6, 1)
-		ui.pushStyleColor(ui.StyleColor.Button, rgbm(0.05, 0.05, 0.05, 1))
+	if locked then
+		ui.pushStyleColor(ui.StyleColor.ButtonHovered, rgbm(0.6, 0.6, 0.6, 1))
+		ui.pushStyleColor(ui.StyleColor.ButtonActive, rgbm(0.4, 0.4, 0.4, 1))
+		ui.pushStyleColor(ui.StyleColor.Button, rgbm(0.5, 0.5, 0.5, 1))
+		fontColor = rgbm.colors.black
+	else
+		ui.pushStyleColor(ui.StyleColor.ButtonHovered, rgbm(0, 0.6, 0, 1))
+		ui.pushStyleColor(ui.StyleColor.ButtonActive, rgbm(0, 0.4, 0, 1))
+		ui.pushStyleColor(ui.StyleColor.Button, rgbm.colors.green)
 	end
 
 	local tempCursor = ui.getCursor()
@@ -395,29 +399,13 @@ function CUI.specialButton(label, size, horizontalAligment, verticalAlignment, f
 	local hovered = ui.itemHovered()
 	local r1, r2 = ui.itemRect()
 
-	if flags == ui.ButtonFlags.Disabled then
-		ui.popStyleColor(1)
-	elseif hovered then
-		fontColor = rgbm(1, 1, 1, 1)
-	end
-
-	if active then
-		ui.popStyleColor(1)
-
-		if ui.itemHovered() then
-			ui.drawRect(tempCursor, tempCursor + buttonSize, settings.Appearance.uiColor3)
-		end
-	end
-
-	ui.glowRectFilled(r1, r2, rgbm.colors.green)
-
 	ui.popStyleColor(3)
 
 	ui.sameLine()
 	ui.offsetCursorY(1)
 	ui.setCursor(tempCursor)
 	ui.dwriteTextAligned(
-		string.upper(label),
+		string.upper(locked and "Controls Locked" or "Drive Now"),
 		fontSize,
 		horizontalAligment,
 		verticalAlignment,
@@ -425,6 +413,21 @@ function CUI.specialButton(label, size, horizontalAligment, verticalAlignment, f
 		false,
 		fontColor
 	)
+
+	if locked then
+		ui.setCursor(tempCursor)
+		ui.dwriteTextAligned(
+			"%s seconds" % simutils.controlsLockedTimeRemaining,
+			fontSize / 2.5,
+			horizontalAligment,
+			ui.Alignment.End,
+			buttonSize,
+			false,
+			fontColor
+		)
+	else
+		ui.glowRectFilled(r1, r2, rgbm.colors.green)
+	end
 
 	ui.popDWriteFont()
 

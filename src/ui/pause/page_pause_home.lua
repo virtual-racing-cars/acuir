@@ -41,13 +41,14 @@ local pauseButtons = {
 		func = function() end,
 	},
 	{
-		label = "Back To Pitlane",
+		label = "Go To Vehicle Setup",
 		enabled = true,
 		condition = function() end,
 		func = function()
 			ac.tryToPause(false)
 			ac.tryToTeleportToPits()
 			teleportPitsCallback = function()
+				pages:goToSetup()
 				ac.tryToOpenRaceMenu()
 				ac.tryToOpenRaceMenu("setup")
 
@@ -55,6 +56,15 @@ local pauseButtons = {
 					return true
 				end
 			end
+		end,
+	},
+	{
+		label = "Go To Pitlane",
+		enabled = true,
+		condition = function() end,
+		func = function()
+			ac.tryToPause(false)
+			ac.tryToTeleportToPits()
 		end,
 	},
 	{
@@ -80,7 +90,7 @@ local pauseButtons = {
 
 function page.draw(dt)
 	local childWindowWith = (2560 * cui.scaleX()) / 5
-	local childWindowHeight = (1440 * cui.scaleY()) / 2
+	local childWindowHeight = (1440 * cui.scaleY()) * 0.5
 	local mainWindowFlags = ui.WindowFlags.NoScrollbar + ui.WindowFlags.NoScrollWithMouse
 
 	if cui.modalDialogCallback then
@@ -105,9 +115,11 @@ function page.draw(dt)
 
 			ui.setCursorX(ui.windowWidth() / 8)
 			ui.beginGroup(ui.windowWidth() - (ui.windowWidth() / 8) * 2)
-			ui.pushStyleVar(ui.StyleVar.ItemSpacing, ui.windowHeight() / 50)
 
-			local menuButtonSize = vec2(ui.availableSpaceX(), ui.availableSpaceY() / 10)
+			local itemSpacing = ui.windowHeight() / 50
+			ui.pushStyleVar(ui.StyleVar.ItemSpacing, itemSpacing)
+
+			local menuButtonSize = vec2(ui.availableSpaceX(), ui.availableSpaceY() / 11)
 
 			ui.pushStyleColor(ui.StyleColor.Button, settings.Appearance.uiColor1)
 			for i in ipairs(pauseButtons) do
@@ -117,6 +129,7 @@ function page.draw(dt)
 
 				if menuButton.condition() then
 					hidden = true
+					ui.offsetCursorY(menuButtonSize.y + itemSpacing)
 				end
 
 				if
@@ -132,8 +145,8 @@ function page.draw(dt)
 					menuButton.func()
 				end
 			end
-			ui.popStyleColor(1)
 
+			ui.popStyleColor(1)
 			ui.popStyleVar(1)
 
 			ui.endGroup()

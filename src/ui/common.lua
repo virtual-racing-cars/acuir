@@ -224,7 +224,7 @@ function topSubBar(path)
 end
 
 function topBar(path)
-	local driveButtonWidth = 400 * cui.scaleY()
+	local driveButtonWidth = 500 * cui.scaleY()
 	local driveButtonHeight = 80 * cui.scaleY()
 
 	ui.drawRectFilled(0, vec2(ui.windowWidth(), topBarHeight), rgbm(0.1, 0.1, 0.1, 0.95))
@@ -258,9 +258,7 @@ function topBar(path)
 			"Drive Now",
 			vec2(driveButtonWidth, driveButtonHeight),
 			ui.Alignment.Center,
-			ui.Alignment.Center,
-			0, --- ui.ButtonFlags.None or ui.ButtonFlags.Disabled,
-			false
+			ui.Alignment.Center
 		)
 	then
 		ac.tryToStart()

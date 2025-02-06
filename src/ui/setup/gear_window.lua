@@ -91,8 +91,6 @@ function gearWindow(spinnerCount)
 			maxGearSpeed = maxSpeedWithGear[i]
 		end
 
-		ac.debug(i, maxGearSpeed)
-
 		local prevGearSpeed = maxSpeedWithGear[i - 1]
 
 		local x1 = xMin + width * (prevGearSpeed / maxSpeed)

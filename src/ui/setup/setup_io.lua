@@ -242,11 +242,14 @@ local function saveSetupWindow(sm)
 
 	ui.setCursorX(groupBegin)
 
+	cui.offsetCursorY(10)
+
 	ui.drawRectFilled(
 		ui.getCursor(),
 		ui.getCursor() + vec2Temp1:set(buttonWidth, iconButtonHeight),
 		settings.Appearance.uiColor1
 	)
+
 	if
 		cui.menuButton(
 			"Load Setup",
