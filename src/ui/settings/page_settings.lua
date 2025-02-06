@@ -7,6 +7,7 @@ local pages = require("ui.pages")
 local settingsPages = {
 	{
 		label = "General",
+		icon = ui.Icons.AppWindow,
 		enabled = true,
 		func = function()
 			pages:goToSettingsGeneral()
@@ -14,6 +15,7 @@ local settingsPages = {
 	},
 	{
 		label = "Controls",
+		icon = ui.Icons.SteeringWheel,
 		enabled = false,
 		func = function()
 			pages:goToSettingsControls()
@@ -21,6 +23,7 @@ local settingsPages = {
 	},
 	{
 		label = "Audio",
+		icon = ui.Icons.Music,
 		enabled = true,
 		func = function()
 			pages:goToSettingsAudio()
@@ -28,18 +31,20 @@ local settingsPages = {
 	},
 	{
 		label = "Appearance",
+		icon = ui.Icons.Contrast,
 		enabled = true,
 		func = function()
 			pages:goToSettingsAppearance()
 		end,
 	},
-	{
-		label = "AI",
-		enabled = false,
-		func = function()
-			pages:goToSettingsAi()
-		end,
-	},
+	-- {
+	-- 	label = "AI",
+	-- 	icon = ui.Icons.AppWindow,
+	-- 	enabled = false,
+	-- 	func = function()
+	-- 		pages:goToSettingsAi()
+	-- 	end,
+	-- },
 }
 
 function page.draw()
@@ -55,7 +60,15 @@ function page.draw()
 	for i = 1, #settingsPages do
 		local page = settingsPages[i]
 
-		if cui.modalButton(page.label, 560, 300, page.enabled and ui.ButtonFlags.None or ui.ButtonFlags.Disabled) then
+		if
+			cui.settingsButton(
+				page.label,
+				560,
+				300,
+				page.enabled and ui.ButtonFlags.None or ui.ButtonFlags.Disabled,
+				page.icon
+			)
+		then
 			page.func()
 		end
 

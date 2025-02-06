@@ -93,7 +93,7 @@ local centerStatusInfo = {
 		unit = "mm",
 	},
 	{
-		label = "CoG Height",
+		label = "Sprung CoG Height",
 		value = function(i)
 			return car.cgHeight * 1000
 		end,

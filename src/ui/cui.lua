@@ -193,6 +193,43 @@ function CUI.button(label, sizeX, sizeY, fontSize, horizontalAligment, verticalA
 	return clicked and not (flags == ui.ButtonFlags.Disabled)
 end
 
+function CUI.settingsButton(label, sizeX, sizeY, flags, icon)
+	local fontSize = sizeY / 5
+
+	local disabled = flags == ui.ButtonFlags.Disabled
+
+	ui.pushStyleColor(ui.StyleColor.Button, settings.Appearance.uiColor1)
+	ui.pushStyleColor(ui.StyleColor.ButtonHovered, settings.Appearance.uiColor2)
+	ui.pushStyleColor(ui.StyleColor.ButtonActive, settings.Appearance.uiColor2)
+	local tempCursor = ui.getCursor()
+	local clicked = ui.button("##" .. label, vec2Temp1:set(sizeX, sizeY), flags)
+	local hovered = ui.itemHovered()
+	local r1, r2 = ui.itemRect()
+	ui.popStyleColor(3)
+
+	ui.addIcon(icon, vec2Temp1:set(sizeY / 4, sizeY / 4), vec2Temp2:set(0.5, 0.25), nil)
+
+	if not ui.itemHovered() or disabled then
+		ui.drawRect(r1, r2, disabled and rgbm.colors.gray or rgbm.colors.white, 0, ui.CornerFlags.None, 1)
+	end
+
+	ui.setCursor(tempCursor)
+
+	ui.pushDWriteFont(fontBold)
+	ui.dwriteTextAligned(
+		string.upper(label),
+		fontSize,
+		ui.Alignment.Center,
+		ui.Alignment.Center,
+		vec2Temp1:set(sizeX, sizeY * 1.4),
+		false,
+		rgbm.colors.white
+	)
+	ui.popDWriteFont()
+
+	return clicked and not (flags == ui.ButtonFlags.Disabled)
+end
+
 function CUI.modalButton(label, sizeX, sizeY, flags)
 	local fontSize = sizeY / 2
 

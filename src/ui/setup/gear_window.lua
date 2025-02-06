@@ -15,27 +15,22 @@ function gearWindow(spinnerCount)
 
 	local xMin = ui.windowWidth() / 2 / 8
 	local xMax = ui.windowWidth() / 2 - xMin
+	local width = xMax - xMin
 
-	local xPos = xMin
-	local yPos = 0
-
-	spinnerCount = 0
-
-	-- if spinnerCount <= 0 then
-	-- 	xMin = ui.windowWidth() / 2 - ui.windowWidth() / 4
-	-- 	xMax = ui.windowWidth() / 2 - xMin
-	-- 	xPos = ui.windowWidth() / 2 - (xMax - xMin) / 2
-	-- 	ui.setCursor(vec2(xPos, yMin / 2))
-	-- end
-
-	ui.setCursor(vec2(xPos, yMin / 2))
+	if spinnerCount <= 0 then
+		xMin = ui.windowWidth() / 2 - width / 2
+		xMax = ui.windowWidth() / 2 + width / 2
+		ui.setCursor(vec2(ui.windowWidth() / 2 - width / 2, yMin * 0.7))
+	else
+		ui.setCursor(vec2(xMin, yMin * 0.7))
+	end
 
 	ui.dwriteTextAligned(
 		"Max Gear Speeds KMH",
-		50 * cui.scaleY(),
+		30 * cui.scaleY(),
 		ui.Alignment.Center,
 		ui.Alignment.Start,
-		vec2(xMax, yMin)
+		vec2(width, yMin)
 	)
 
 	if not maxSpeed or maxSpeed == 0 then
@@ -43,18 +38,35 @@ function gearWindow(spinnerCount)
 	end
 
 	for i = 0, 10 do
-		ui.dwriteDrawText(math.round(i / 10 * maxSpeed), 14 * cui.scaleY(), vec2(xMin + xMax / 10 * i, yMax))
-		ui.pathLineTo(vec2(xMin + xMax / 10 * i, yMin))
-		ui.pathLineTo(vec2(xMin + xMax / 10 * i, yMax))
+		ui.setCursor(vec2(xMin + width / 10 * i - 32, yMax + 10))
+		ui.dwriteTextAligned(
+			math.round(i / 10 * maxSpeed),
+			18 * cui.scaleY(),
+			ui.Alignment.Center,
+			ui.Alignment.Center,
+			vec2(65, 20) * cui.scaleY()
+		)
+		ui.pathLineTo(vec2(xMin + width / 10 * i, yMin))
+		ui.pathLineTo(vec2(xMin + width / 10 * i, yMax))
 		ui.pathStroke(rgbm(1, 1, 1, 0.3), false, 2)
 
-		ui.dwriteDrawText(
+		-- ui.dwriteDrawText(
+		-- 	math.round(car.rpmLimiter - (car.rpmLimiter / 10) * i),
+		-- 	14 * cui.scaleY(),
+		-- 	vec2(xMin, yMin + (yMax - yMin) / 10 * i)
+		-- )
+
+		ui.setCursor(vec2(xMin - 70, yMin + (yMax - yMin) / 10 * i) - 10)
+		ui.dwriteTextAligned(
 			math.round(car.rpmLimiter - (car.rpmLimiter / 10) * i),
-			14 * cui.scaleY(),
-			vec2(xMin, yMin + (yMax - yMin) / 10 * i)
+			18 * cui.scaleY(),
+			ui.Alignment.End,
+			ui.Alignment.Center,
+			vec2(65, 20) * cui.scaleY()
 		)
+
 		ui.pathLineTo(vec2(xMin, yMin + (yMax - yMin) / 10 * i))
-		ui.pathLineTo(vec2(xMin + xMax, yMin + (yMax - yMin) / 10 * i))
+		ui.pathLineTo(vec2(xMin + width, yMin + (yMax - yMin) / 10 * i))
 		ui.pathStroke(rgbm(1, 1, 1, 0.3), false, 2)
 	end
 
@@ -64,13 +76,16 @@ function gearWindow(spinnerCount)
 
 		-- ac.debug(i, maxGearSpeed)
 
-		local x1 = xMin + xMax * (prevGearSpeed / maxSpeed)
+		local x1 = xMin + width * (prevGearSpeed / maxSpeed)
 		local p1 = vec2(x1, math.max(yMin + (yMax - yMin) * (1 - (prevGearSpeed / maxGearSpeed)), yMin))
-		local p2 = vec2(math.max(xMin + xMax * (maxGearSpeed / maxSpeed), x1), yMin)
+		local p2 = vec2(math.max(xMin + width * (maxGearSpeed / maxSpeed), x1), yMin)
 
 		ui.pathLineTo(p1)
 		ui.pathLineTo(p2)
 		ui.pathStroke(settings.Appearance.uiColor2, false, 4)
+
+		ui.setCursor(p1:setLerp(p1, p2, 0.5))
+		ui.dwriteTextAligned(i, 18 * cui.scaleY(), ui.Alignment.Center, ui.Alignment.Start, vec2(15, 20) * cui.scaleY())
 
 		if maxGearSpeed > prevGearSpeed then
 			ui.setCursor(p2 - vec2(20, 25) * cui.scaleY())
