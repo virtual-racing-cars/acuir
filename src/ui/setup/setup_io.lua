@@ -349,7 +349,7 @@ function setupIoDraw(sm)
 								if
 									cui.treeNodeButton(
 										name,
-										vec2(ui.windowWidth(), 40 * cui.scaleY()),
+										vec2(ui.windowWidth(), 52 * cui.scaleY()),
 										setupActive,
 										false
 									)

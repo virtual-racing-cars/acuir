@@ -161,7 +161,7 @@ function CarStatusWindow()
 	for i = 1, #cornerStatusInfo do
 		local infoBlock = cornerStatusInfo[i]
 		for j = 0, 3 do
-			local xPos = (j % 2 == 0) and 20 or 350
+			local xPos = (j % 2 == 0) and 20 or 326
 			local yPos = j < 2 and 10 or 700
 			local row = (i > 1 and j > 1) and i - 1 or i
 
@@ -172,7 +172,7 @@ function CarStatusWindow()
 			if i == 1 then
 				cui.dwriteText({
 					text = cornerStatusLabels[j + 1],
-					fontSize = 22,
+					fontSize = 25,
 					xPos = xPos,
 					yPos = yPos,
 				})
@@ -180,7 +180,7 @@ function CarStatusWindow()
 
 			cui.dwriteText({
 				text = infoBlock.label .. ":",
-				fontSize = 22,
+				fontSize = 25,
 				xPos = xPos,
 				yPos = yPos + row * 28,
 			})
@@ -188,8 +188,8 @@ function CarStatusWindow()
 			if infoBlock.value(j) then
 				cui.dwriteText({
 					text = math.round(infoBlock.value(j), infoBlock.round) .. " " .. infoBlock.unit,
-					fontSize = 22,
-					xPos = xPos + 150,
+					fontSize = 25,
+					xPos = xPos + 174,
 					yPos = yPos + row * 28,
 				})
 			end
@@ -200,20 +200,20 @@ function CarStatusWindow()
 
 	for i = 1, #centerStatusInfo do
 		local infoBlock = centerStatusInfo[i]
-		local xPos = 155
+		local xPos = 130
 		local yPos = 240
 		local row = i
 
 		cui.dwriteText({
 			text = infoBlock.label .. ":",
-			fontSize = 22,
+			fontSize = 25,
 			xPos = xPos,
 			yPos = yPos + row * 50,
 		})
 		cui.dwriteText({
 			text = math.round(infoBlock.value(i), infoBlock.round) .. " " .. infoBlock.unit,
-			fontSize = 22,
-			xPos = xPos + 200,
+			fontSize = 25,
+			xPos = xPos + 240,
 			yPos = yPos + row * 50,
 		})
 	end

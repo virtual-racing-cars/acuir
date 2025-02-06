@@ -154,7 +154,7 @@ local sessionInfoTable = {
 }
 
 local function sessionInfo()
-	local startX = 1890 * cui.scaleY()
+	local startX = (ui.windowWidth() / 4) * 3 + 20 * cui.scaleY()
 	local startY = 12 * cui.scaleY()
 	local sizeX = 192 * cui.scaleX()
 	local sizeY = 35 * cui.scaleY()

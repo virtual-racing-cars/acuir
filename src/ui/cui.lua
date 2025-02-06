@@ -416,6 +416,7 @@ function CUI.specialButton(label, size, horizontalAligment, verticalAlignment)
 
 	if locked then
 		ui.setCursor(tempCursor)
+
 		ui.dwriteTextAligned(
 			"%s seconds" % simutils.controlsLockedTimeRemaining,
 			fontSize / 2.5,
@@ -469,8 +470,8 @@ function CUI.treeNodeButton(label, size, active, bold, count)
 		count = 0
 	end
 
-	local fontSize = math.floor(size.y * 0.45)
-	fontSize = (fontSize % 2 ~= 0) and fontSize or fontSize + 1
+	local fontSize = math.floor(size.y * 0.55)
+	fontSize = (fontSize % 2 ~= 0) and fontSize + 1 or fontSize
 	local fontColor = active and rgbm(0, 0, 0, 1) or nil
 
 	ui.pushStyleColor(ui.StyleColor.Button, bold and settings.Appearance.uiColor1 or rgbm(0.1, 0.1, 0.1, 1))
@@ -532,7 +533,7 @@ end
 
 function CUI.treeNode(label, count, content, defaultOpen)
 	local clicked, id =
-		CUI.treeNodeButton(label, vec2Temp1:set(ui.availableSpaceX(), 50 * CUI.scaleY()), false, true, count)
+		CUI.treeNodeButton(label, vec2Temp1:set(ui.availableSpaceX(), 60 * CUI.scaleY()), false, true, count)
 	treeNodeParent = label
 
 	if count < 1 then
@@ -597,8 +598,8 @@ local inputTextBoxCursorIndex = 2
 function CUI.inputTextBox(label, stringPrefix, stringInput, size)
 	ui.pushDWriteFont(fontRegular)
 
-	local fontSize = math.floor(size.y * 0.4)
-	fontSize = (fontSize % 2 ~= 0) and fontSize or fontSize + 1
+	local fontSize = math.floor(size.y * 0.55)
+	fontSize = (fontSize % 2 ~= 0) and fontSize + 1 or fontSize
 
 	local tempCursor = ui.getCursor()
 
@@ -618,7 +619,7 @@ function CUI.inputTextBox(label, stringPrefix, stringInput, size)
 	ui.setCursor(tempCursor)
 	local textOffset = size.x / 60
 	ui.offsetCursorX(textOffset)
-	ui.offsetCursorY(2)
+	ui.offsetCursorY(1)
 
 	if clicked then
 		CUI.storeBool(id, clicked)
