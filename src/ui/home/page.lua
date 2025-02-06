@@ -132,36 +132,32 @@ local menuButtonList = {
 function page.update() end
 
 function page.draw()
+	cui.pushWindowFitted("main_menu_page_window")
+
 	topBar(true)
 	homeBar(menuButtonList)
 
-	cui.contentWindow(
+	cui.pushWindow(
 		"home_leaderboard_window",
-		vec2(0, 286 * cui.scaleY()),
-		vec2(750 * cui.scaleX(), sim.windowHeight - 459 * cui.scaleY()),
-		ui.WindowFlags.None,
-		function()
-			local height = 50 * cui.scaleY()
-
-			playerListBanner(0, 0, ui.windowWidth(), height)
-
-			cui.contentWindow(
-				"home_leaderboard_entrant_window",
-				vec2(0, height),
-				vec2(ui.windowWidth(), ui.windowHeight() - height),
-				ui.WindowFlags.None,
-				function()
-					for i, car in ac.iterateCars.leaderboard() do
-						playerListButton(car, 0, (i - 1) * height, ui.windowWidth(), height)
-					end
-				end
-			)
-		end,
-		false,
+		0,
+		286 * cui.scaleY(),
+		750 * cui.scaleX(),
+		ui.windowHeight() - 459 * cui.scaleY(),
 		true
 	)
+	local height = 50 * cui.scaleY()
+	playerListBanner(0, 0, ui.windowWidth(), height)
+
+	cui.pushWindow("home_leaderboard_entrant_window", 0, height, ui.windowWidth(), ui.windowHeight() - height, true)
+	for i, car in ac.iterateCars.leaderboard() do
+		playerListButton(car, 0, (i - 1) * height, ui.windowWidth(), height)
+	end
+	cui.popWindow(true)
+	cui.popWindow()
 
 	bottomBar({})
+
+	cui.popWindow()
 
 	return ""
 end

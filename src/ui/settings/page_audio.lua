@@ -45,42 +45,34 @@ table.sort(audioChannels)
 
 function page.draw()
 	ui.drawRectFilled(vec2(0, 0), vec2(ui.windowWidth(), ui.windowHeight()), settings.Appearance.uiColor1 / 1.1)
+
+	cui.pushWindowFitted("settings_audio_window")
+
 	topSubBar("/Settings/Audio")
 
-	cui.contentWindow(
-		"car_setup_window",
-		vec2(60 * cui.scaleX(), 240 * cui.scaleY()),
-		vec2(sim.windowWidth - 120 * cui.scaleX(), sim.windowHeight - 383 * cui.scaleY()),
-		ui.WindowFlags.None,
-		function()
-			ui.drawLine(vec2(0, 2), vec2(ui.windowWidth(), 2), rgbm.colors.gray, 2)
-			ui.drawRectFilled(vec2(0, 2), vec2(ui.windowWidth(), ui.windowHeight()), rgbm(0, 0, 0, 0.2))
+	ui.drawLine(vec2(0, 2), vec2(ui.windowWidth(), 2), rgbm.colors.gray, 2)
+	ui.drawRectFilled(vec2(0, 2), vec2(ui.windowWidth(), ui.windowHeight()), rgbm(0, 0, 0, 0.2))
 
-			ui.setCursorY(100)
+	ui.setCursorY(100)
 
-			for k, v in ipairs(audioChannels) do
-				local id = string.replace(v, " ", "")
+	for k, v in ipairs(audioChannels) do
+		local id = string.replace(v, " ", "")
 
-				ui.setCursorX(50)
+		ui.setCursorX(50)
 
-				local value, changed =
-					ui.slider("##" .. id, ac.getAudioVolume(ac.AudioChannel[id]) * 100, 0, 100, v .. ": %.0f")
+		local value, changed =
+			ui.slider("##" .. id, ac.getAudioVolume(ac.AudioChannel[id]) * 100, 0, 100, v .. ": %.0f")
 
-				if changed then
-					ac.setAudioVolume(ac.AudioChannel[id], value / 100)
-				end
-			end
-
-			ui.drawLine(
-				vec2(0, ui.windowHeight() - 2),
-				vec2(ui.windowWidth(), ui.windowHeight() - 2),
-				rgbm.colors.gray,
-				2
-			)
-
-			bottomBar(bottomBarButtons)
+		if changed then
+			ac.setAudioVolume(ac.AudioChannel[id], value / 100)
 		end
-	)
+	end
+
+	ui.drawLine(vec2(0, ui.windowHeight() - 2), vec2(ui.windowWidth(), ui.windowHeight() - 2), rgbm.colors.gray, 2)
+
+	bottomBar(bottomBarButtons)
+
+	cui.popWindow()
 
 	return ""
 end

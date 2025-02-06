@@ -24,7 +24,7 @@ local settingsPages = {
 	{
 		label = "Audio",
 		icon = ui.Icons.Music,
-		enabled = true,
+		enabled = false,
 		func = function()
 			pages:goToSettingsAudio()
 		end,
@@ -32,7 +32,7 @@ local settingsPages = {
 	{
 		label = "Appearance",
 		icon = ui.Icons.Contrast,
-		enabled = true,
+		enabled = false,
 		func = function()
 			pages:goToSettingsAppearance()
 		end,
@@ -49,6 +49,8 @@ local settingsPages = {
 
 function page.draw()
 	ui.drawRectFilled(vec2(0, 0), vec2(ui.windowWidth(), ui.windowHeight()), settings.Appearance.uiColor1 / 1.1)
+
+	cui.pushWindowFitted("settings_page_window")
 	topSubBar("/Settings")
 
 	cui.setCursorX(320)
@@ -92,6 +94,7 @@ function page.draw()
 		},
 	})
 
+	cui.popWindow()
 	return ""
 end
 

@@ -80,10 +80,6 @@ end
 function CUI.contentWindow(id, position, size, flags, content, showBackground, scroll)
 	CUI.pushWindow(id .. "test", position.x, position.y, size.x, size.y, scroll)
 
-	if showBackground then
-		ui.drawRectFilled(vec2(0, 0), size, settings.Appearance.uiColor1 / 2)
-	end
-
 	content()
 
 	CUI.popWindow()
@@ -776,6 +772,21 @@ function CUI.popWindow(scroll)
 	ui.endGroup()
 	ui.endChild()
 	ui.popStyleVar(1)
+end
+
+function CUI.pushWindowFitted(id, flags, scroll)
+	CUI.pushWindow(
+		id,
+		60 * CUI.scaleY(),
+		40 * CUI.scaleY(),
+		ui.windowWidth() - 120 * CUI.scaleY(),
+		ui.windowHeight() - 80 * CUI.scaleY(),
+		scroll
+	)
+end
+
+function CUI.pushWindowFull(id, flags, scroll)
+	CUI.pushWindow(id, 0, 0, ui.windowWidth(), ui.windowHeight(), scroll)
 end
 
 function CUI.getWindow(windowName)

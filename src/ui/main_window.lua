@@ -38,8 +38,6 @@ function MainMenuWindow(dt)
 
 	style:pushStyleMain()
 
-	local childWindowWith = (2560 - 120) * cui.scaleX()
-	local childWindowHeight = (1440 - 80) * cui.scaleX()
 	local mainWindowFlags = ui.WindowFlags.NoScrollbar + ui.WindowFlags.NoScrollWithMouse
 
 	if cui.modalDialogCallback then
@@ -49,44 +47,33 @@ function MainMenuWindow(dt)
 			+ ui.WindowFlags.NoFocusOnAppearing
 	end
 
-	cui.contentWindow(
-		"main_window",
-		vec2((ui.windowWidth() - childWindowWith) / 2, (ui.windowHeight() - childWindowHeight) / 2),
-		vec2(childWindowWith, childWindowHeight),
-		mainWindowFlags,
-		function()
-			updateCommon()
-
-			exclusiveHudMode = pages.manager:draw()
-		end
-	)
+	cui.pushWindowFull("main_window", mainWindowFlags)
+	updateCommon()
+	exclusiveHudMode = pages.manager:draw()
+	cui.popWindow(false)
 
 	if cui.modalDialogCallback then
-		cui.contentWindow(
-			"callback_window",
-			vec2(0, 0),
-			ui.windowSize(),
-			ui.WindowFlags.NoScrollbar + ui.WindowFlags.NoScrollWithMouse,
-			function()
-				ui.setCursor(0)
-				ui.drawRectFilled(vec2(0, 0), ui.availableSpace(), settings.Appearance.uiColor1 / 1.2)
-				local childWindowWith = ui.windowWidth() / 5
-				local childWindowHeight = ui.windowHeight() / 5
-				cui.contentWindow(
-					"callback_subwindow",
-					vec2((ui.windowWidth() - childWindowWith) / 2, (ui.windowHeight() - childWindowHeight) / 2),
-					vec2(childWindowWith, childWindowHeight),
-					ui.WindowFlags.NoScrollbar + ui.WindowFlags.NoScrollWithMouse,
-					function()
-						ui.bringWindowToFront()
-						ui.setCursor(0)
-						if cui.modalDialogCallback() then
-							cui.modalDialogCallback = nil
-						end
-					end
-				)
-			end
+		cui.pushWindowFull("callback_window")
+		ui.setCursor(0)
+		ui.drawRectFilled(vec2(0, 0), ui.availableSpace(), settings.Appearance.uiColor1 / 1.2)
+		local childWindowWith = ui.windowWidth() / 5
+		local childWindowHeight = ui.windowHeight() / 5
+		cui.pushWindow(
+			"callback_subwindow",
+			(ui.windowWidth() - childWindowWith) / 2,
+			(ui.windowHeight() - childWindowHeight) / 2,
+			childWindowWith,
+			childWindowHeight
 		)
+
+		ui.bringWindowToFront()
+		ui.setCursor(0)
+		if cui.modalDialogCallback() then
+			cui.modalDialogCallback = nil
+		end
+
+		cui.popWindow()
+		cui.popWindow()
 	end
 
 	style:popStyleMain()

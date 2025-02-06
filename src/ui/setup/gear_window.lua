@@ -41,6 +41,8 @@ function gearWindow(spinnerCount)
 		ui.setCursor(vec2(xMin, yMin * 0.7))
 	end
 
+	ui.drawRectFilled(vec2(xMin, yMin), vec2(xMax, yMax), rgbm(0, 0, 0, 0.75))
+
 	ui.dwriteTextAligned(
 		"Max Gear Speeds KMH",
 		30 * cui.scaleY(),
@@ -83,7 +85,7 @@ function gearWindow(spinnerCount)
 	for i = 1, car.gearCount do
 		local maxGearSpeed = getGearMaxSpeedKmh(i)
 
-		if maxGearSpeed > 0 then
+		if maxGearSpeed > 0 and maxGearSpeed <= maxSpeed then
 			maxSpeedWithGear[i] = maxGearSpeed
 		else
 			maxGearSpeed = maxSpeedWithGear[i]
