@@ -1,5 +1,6 @@
 local page = {}
 
+local settings = require("settings")
 local cui = require("ui.cui")
 local pages = require("ui.pages")
 local sim = ac.getSim()
@@ -43,7 +44,8 @@ local audioChannels = {
 table.sort(audioChannels)
 
 function page.draw()
-	settingsMenuCommon("/Audio", bottomBarButtons)
+	ui.drawRectFilled(vec2(0, 0), vec2(ui.windowWidth(), ui.windowHeight()), settings.Appearance.uiColor1 / 1.1)
+	topSubBar("/Settings/Audio")
 
 	cui.contentWindow(
 		"car_setup_window",
@@ -75,6 +77,8 @@ function page.draw()
 				rgbm.colors.gray,
 				2
 			)
+
+			bottomBar(bottomBarButtons)
 		end
 	)
 

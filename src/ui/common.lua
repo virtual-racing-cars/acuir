@@ -5,7 +5,6 @@ local csp = require("csp")
 local simutils = require("sim")
 local sim = ac.getSim()
 
-local fontRegular = ui.DWriteFont("Rajdhani"):weight(ui.DWriteFont.Weight.SemiBold)
 local fontBold = ui.DWriteFont("Rajdhani"):weight(ui.DWriteFont.Weight.Bold)
 
 local acLogo = ac.getFolder(ac.FolderID.Root) .. "\\launcher\\themes\\default\\graphics\\btn_AC_logo.png"
@@ -251,7 +250,7 @@ function topBar(showSessionInfo)
 end
 
 function settingsMenuCommon(path, bottomBarButtons)
-	ui.drawRectFilled(vec2(0, 0), vec2(sim.windowWidth, sim.windowHeight), settings.Appearance.uiColor1 / 1.1)
+	ui.drawRectFilled(vec2(0, 0), vec2(ui.windowWidth(), ui.windowHeight()), settings.Appearance.uiColor1 / 1.1)
 
 	topSubBar("/Settings" .. path)
 	bottomBar(bottomBarButtons)
@@ -260,5 +259,4 @@ end
 function updateCommon()
 	acLogoSize = ui.imageSize(acLogo) * cui.scaleY()
 	topBarHeight = 200 * cui.scaleY()
-	bottomBarHeight = ui.windowHeight() - 56 * cui.scaleY()
 end

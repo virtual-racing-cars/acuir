@@ -89,7 +89,8 @@ function page.draw()
 				function()
 					ui.setCursor(0)
 					car_setup(sm)
-				end
+				end,
+				true
 			)
 
 			ui.setCursor(0)

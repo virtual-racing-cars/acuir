@@ -25,16 +25,21 @@ local bottomBarButtons = {
 }
 
 function page.draw()
-	settingsMenuCommon("/General", bottomBarButtons)
+	ui.drawRectFilled(vec2(0, 0), vec2(ui.windowWidth(), ui.windowHeight()), settings.Appearance.uiColor1 / 1.1)
+	topSubBar("/Settings/General")
 
 	cui.contentWindow(
-		"car_setup_window",
-		vec2(0, 240 * cui.scaleY()),
-		vec2(ui.windowWidth(), ui.windowHeight() - 300 * cui.scaleY()),
+		"general_settings_window",
+		vec2(60 * cui.scaleY(), 240 * cui.scaleY()),
+		vec2(ui.windowWidth() - 120 * cui.scaleY(), ui.windowHeight() - 300 * cui.scaleY()),
 		ui.WindowFlags.None,
 		function()
 			ui.drawLine(vec2(0, 2 * cui.scaleY()), vec2(ui.windowWidth(), 2 * cui.scaleY()), rgbm.colors.gray, 2)
-			ui.drawRectFilled(vec2(0, 2 * cui.scaleY()), vec2(ui.windowWidth(), ui.windowHeight()), rgbm(0, 0, 0, 0.2))
+			ui.drawRectFilled(
+				vec2(0, 2 * cui.scaleY()),
+				vec2(ui.windowWidth(), ui.windowHeight() - 96 * cui.scaleY()),
+				rgbm(0, 0, 0, 0.2)
+			)
 
 			cui.setCursorX(50)
 			cui.setCursorY(100)
@@ -95,11 +100,13 @@ function page.draw()
 			ui.endGroup()
 
 			ui.drawLine(
-				vec2(0, ui.windowHeight() - 2),
-				vec2(ui.windowWidth(), ui.windowHeight() - 2),
+				vec2(0, ui.windowHeight() - 96 * cui.scaleY()),
+				vec2(ui.windowWidth(), ui.windowHeight() - 96 * cui.scaleY()),
 				rgbm.colors.gray,
 				2
 			)
+
+			bottomBar(bottomBarButtons)
 		end
 	)
 

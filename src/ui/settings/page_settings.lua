@@ -1,5 +1,6 @@
 local page = {}
 
+local settings = require("settings")
 local cui = require("ui.cui")
 local pages = require("ui.pages")
 
@@ -42,15 +43,8 @@ local settingsPages = {
 }
 
 function page.draw()
-	settingsMenuCommon("", {
-		{
-			label = "BACK",
-			enabled = true,
-			func = function()
-				pages:goToParent()
-			end,
-		},
-	})
+	ui.drawRectFilled(vec2(0, 0), vec2(ui.windowWidth(), ui.windowHeight()), settings.Appearance.uiColor1 / 1.1)
+	topSubBar("/Settings")
 
 	cui.setCursorX(320)
 	cui.setCursorY(366)
@@ -74,6 +68,16 @@ function page.draw()
 
 	ui.endGroup()
 	ui.popStyleVar(1)
+
+	bottomBar({
+		{
+			label = "BACK",
+			enabled = true,
+			func = function()
+				pages:goToParent()
+			end,
+		},
+	})
 
 	return ""
 end

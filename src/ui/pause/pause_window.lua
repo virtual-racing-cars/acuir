@@ -32,8 +32,8 @@ function PauseMenuWindow(dt)
 	ui.pushStyleVar(ui.StyleVar.ScrollbarSize, 3)
 	ui.pushStyleVar(ui.StyleVar.ItemSpacing, 0)
 
-	local childWindowWith = (2560 - 120) * cui.scaleX()
-	local childWindowHeight = (1440 - 80) * cui.scaleX()
+	local childWindowWith = 2560 * cui.scaleX()
+	local childWindowHeight = 1440 * cui.scaleX()
 	local mainWindowFlags = ui.WindowFlags.NoScrollbar + ui.WindowFlags.NoScrollWithMouse
 
 	if cui.modalDialogCallback then

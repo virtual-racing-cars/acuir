@@ -30,7 +30,8 @@ local secondaryActive = false
 local tertiaryActive = false
 
 function page.draw()
-	settingsMenuCommon("/UI", bottomBarButtons)
+	ui.drawRectFilled(vec2(0, 0), vec2(ui.windowWidth(), ui.windowHeight()), settings.Appearance.uiColor1 / 1.1)
+	topSubBar("/Settings/UI")
 
 	cui.contentWindow(
 		"car_setup_window",
@@ -39,7 +40,6 @@ function page.draw()
 		ui.WindowFlags.None,
 		function()
 			ui.drawRectFilled(vec2(0, 0), vec2(ui.windowWidth(), ui.windowHeight()), settings.Appearance.uiColor1 / 1.1)
-			ui.drawLine(vec2(0, 2), vec2(ui.windowWidth(), 2), rgbm.colors.gray, 2)
 			ui.drawRectFilled(vec2(0, 2), vec2(ui.windowWidth(), ui.windowHeight()), rgbm(0, 0, 0, 0.2))
 
 			ui.setCursorY(60)
@@ -154,12 +154,7 @@ function page.draw()
 				end
 			end
 
-			ui.drawLine(
-				vec2(0, ui.windowHeight() - 2),
-				vec2(ui.windowWidth(), ui.windowHeight() - 2),
-				rgbm.colors.gray,
-				2
-			)
+			bottomBar(bottomBarButtons)
 		end
 	)
 

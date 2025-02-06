@@ -29,10 +29,7 @@ end
 
 function PageManager:setParentPageName(name)
 	self:resetUndo(true)
-
-	if not self.parentName then
-		self.parentName = name
-	end
+	self.parentName = name
 end
 
 function PageManager:draw()
