@@ -775,12 +775,15 @@ function CUI.popWindow(scroll)
 end
 
 function CUI.pushWindowFitted(id, flags, scroll)
+	local childWindowWith = (2560 - 120) * CUI.scaleX()
+	local childWindowHeight = (1440 - 80) * CUI.scaleX()
+
 	CUI.pushWindow(
 		id,
-		60 * CUI.scaleY(),
-		40 * CUI.scaleY(),
-		ui.windowWidth() - 120 * CUI.scaleY(),
-		ui.windowHeight() - 80 * CUI.scaleY(),
+		(ui.windowWidth() - childWindowWith) / 2,
+		(ui.windowHeight() - childWindowHeight) / 2,
+		childWindowWith,
+		childWindowHeight,
 		scroll
 	)
 end

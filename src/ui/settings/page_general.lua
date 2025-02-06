@@ -37,23 +37,18 @@ function page.draw()
 		rgbm(0, 0, 0, 0.2)
 	)
 
-	cui.setCursorX(50)
-	cui.setCursorY(240)
-
-	ui.beginGroup(0)
-
 	for i, v in ipairs(settings.General) do
-		cui.setCursorY(200 + 100 * i)
+		cui.setCursorY(200 + 125 * i)
 
 		if v.widget == 1 then
 			local value = settings.General[v.key] and 1 or 0
 			local newValue = drawSpinner(
 				v.label,
 				v.label,
-				ui.windowWidth() / 2 - 600 / 2,
+				ui.windowWidth() / 2 - 600 * cui.scaleY() / 2,
 				ui.getCursorY(),
-				600,
-				75,
+				600 * cui.scaleY(),
+				75 * cui.scaleY(),
 				false,
 				value,
 				0,
@@ -93,14 +88,14 @@ function page.draw()
 		end
 	end
 
-	ui.endGroup()
-
 	ui.drawLine(
 		vec2(0, ui.windowHeight() - 96 * cui.scaleY()),
 		vec2(ui.windowWidth(), ui.windowHeight() - 96 * cui.scaleY()),
 		rgbm.colors.gray,
 		2
 	)
+
+	ui.drawLine(vec2(ui.windowWidth() / 2, 0), vec2(ui.windowWidth() / 2, ui.windowHeight()), rgbm.colors.green)
 
 	bottomBar(bottomBarButtons)
 	cui.popWindow()

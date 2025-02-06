@@ -139,6 +139,8 @@ function page.draw(dt)
 			ui.endGroup()
 		end
 	)
+
+	return ""
 end
 
 return page

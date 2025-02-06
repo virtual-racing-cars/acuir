@@ -53,7 +53,8 @@ function page.draw()
 	cui.pushWindowFitted("settings_page_window")
 	topSubBar("/Settings")
 
-	cui.setCursorX(320)
+	local rowWidth = 1924 * cui.scaleY()
+	ui.setCursorX((ui.windowWidth() - rowWidth) / 2)
 	cui.setCursorY(366)
 
 	ui.pushStyleVar(ui.StyleVar.ItemSpacing, 122 * cui.scaleX())
@@ -65,8 +66,8 @@ function page.draw()
 		if
 			cui.settingsButton(
 				page.label,
-				560,
-				300,
+				560 * cui.scaleY(),
+				300 * cui.scaleY(),
 				page.enabled and ui.ButtonFlags.None or ui.ButtonFlags.Disabled,
 				page.icon
 			)
@@ -76,7 +77,7 @@ function page.draw()
 
 		ui.sameLine()
 		if i == 3 then
-			cui.setCursorX(320)
+			ui.setCursorX((ui.windowWidth() - rowWidth) / 2)
 			cui.offsetCursorY(422)
 		end
 	end

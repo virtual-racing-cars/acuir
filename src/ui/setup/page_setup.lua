@@ -151,8 +151,6 @@ local function setupIoWindow()
 			)
 		end
 	)
-
-	cui.popWindow()
 end
 
 function page.draw()
@@ -178,22 +176,27 @@ function page.draw()
 	topBar(false)
 
 	cui.pushWindow("car_setup_window", 0, 200 * cui.scaleY(), ui.windowWidth(), ui.windowHeight() - 303 * cui.scaleY())
-
 	ui.setCursor(0)
 	app.state.setupTab = setupTabBar(sm.setupTabs)
 
-	setupItemWindow()
-	carStatusWindow()
-	setupIoWindow()
+	if app.state.setupTab > 1 then
+		setupItemWindow()
+		carStatusWindow()
+		setupIoWindow()
 
-	bottomBarButtons[#bottomBarButtons - 1].enabled = sm:isUndoAvailable()
-	bottomBarButtons[#bottomBarButtons].enabled = sm:isRedoAvailable()
+		bottomBarButtons[#bottomBarButtons - 1].enabled = sm:isUndoAvailable()
+		bottomBarButtons[#bottomBarButtons].enabled = sm:isRedoAvailable()
+	else
+		bottomBarButtons[#bottomBarButtons - 1].enabled = false
+		bottomBarButtons[#bottomBarButtons].enabled = false
+	end
+	cui.popWindow()
 
 	bottomBar(bottomBarButtons)
 
 	cui.popWindow()
 
-	return ""
+	return app.state.setupTab > 1 and "" or "apps"
 end
 
 return page
