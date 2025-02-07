@@ -22,6 +22,8 @@ ui.onExclusiveHUD(function(mode)
 	if mode == "menu" then
 		audio:driver(dt)
 
+		pages:goToSettingsControls()
+
 		if modeLast ~= mode then
 			pages:setParentMainMenu()
 		end

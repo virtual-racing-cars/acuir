@@ -3,6 +3,7 @@ local controls = {}
 require("src/classes/control_binding")
 require("src/classes/control_tabbar")
 local settings = require("settings")
+local controlsINI = ac.INIConfig.controlsConfig()
 
 local bindSectionKeyDefaults = {
 	NAME = "",
@@ -141,10 +142,35 @@ controls.apps = nil
 controls.car = nil
 controls.cm = nil
 
+local inputDeviceKeys = {
+	"JOY",
+	"KEY",
+	"XBOXBUTTON",
+}
+
+controls.boundDevices = {
+	{ "Steering", "None" },
+	{ "Throttle", "None" },
+	{ "Brakes", "None" },
+	{ "Clutch", "None" },
+	{ "Handbrake", "None" },
+}
+
 function controls:initialize()
 	controls.car = getCarControls()
 	controls.cm = getContentManagerControls()
 	controls.apps = getAppControls()
+
+	for k, v in ipairs(controls.boundDevices) do
+		for i in ipairs(inputDeviceKeys) do
+			local conIndex = controlsINI:get(string.upper(v[1]), inputDeviceKeys[i], -1)
+			if conIndex ~= -1 then
+				local device = controlsINI:get("CONTROLLERS", "CON%s" % conIndex, "")
+
+				controls.boundDevices[k][2] = device
+			end
+		end
+	end
 end
 
 return controls

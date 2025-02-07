@@ -181,7 +181,7 @@ local function bindingBoxes(name, label, button, bind, yOffset)
 	ui.sameLine()
 	ui.setCursorX(0)
 
-	button:control(vec2(ui.windowWidth(), 50), controlButtonFlags)
+	button:control(vec2(ui.windowWidth(), 50 * cui.scaleY()), controlButtonFlags)
 end
 
 local function buttonBinder(controlBinding)
@@ -197,14 +197,6 @@ local function buttonBinder(controlBinding)
 	-- 	checkbox(controlBinding)
 	-- end
 
-	if controlBinding.isMultiPositionSwitchBind then -- and controlBinding.mpsToggle then
-		for index, button in ipairs(controlBinding.buttonPosition) do
-			bindingBoxes(controlBinding.name, controlBinding.buttonPositionLabel[index], button, controlBinding.bind)
-		end
-
-		return
-	end
-
 	if controlBinding.isSequentialBind then
 		bindingBoxes(controlBinding.name, controlBinding.buttonUpLabel, controlBinding.buttonUp, controlBinding.bind, 8)
 		ui.newLine()
@@ -217,6 +209,15 @@ local function buttonBinder(controlBinding)
 			controlBinding.bind,
 			8
 		)
+	end
+
+	if controlBinding.isMultiPositionSwitchBind then -- and controlBinding.mpsToggle then
+		for index, button in ipairs(controlBinding.buttonPosition) do
+			ui.newLine()
+			ui.setCursorX(WINDOW_MARGIN)
+
+			bindingBoxes(controlBinding.name, controlBinding.buttonPositionLabel[index], button, controlBinding.bind)
+		end
 	end
 end
 
@@ -271,7 +272,14 @@ local appsTabBars = {}
 local function drawCarControlsTabBar()
 	local tab = carControlsTabBar:draw(controls.car.tabs)
 
-	cui.pushWindow("bindings_list_window", 0, 56, ui.windowWidth(), ui.windowHeight() - 56, true)
+	cui.pushWindow(
+		"bindings_list_window",
+		0,
+		56 * cui.scaleY(),
+		ui.windowWidth(),
+		ui.windowHeight() - 56 * cui.scaleY(),
+		true
+	)
 	for _, controlBinding in pairs(tab.content) do
 		buttonBinder(controlBinding)
 		ui.newLine()
@@ -282,7 +290,14 @@ end
 local function drawContentManagerControlsTabBar()
 	local tab = generalControlsTabBar:draw(controls.cm.tabs)
 
-	cui.pushWindow("bindings_list_window", 0, 56, ui.windowWidth(), ui.windowHeight() - 56, true)
+	cui.pushWindow(
+		"bindings_list_window",
+		0,
+		56 * cui.scaleY(),
+		ui.windowWidth(),
+		ui.windowHeight() - 56 * cui.scaleY(),
+		true
+	)
 	for _, controlBinding in pairs(tab.content) do
 		buttonBinder(controlBinding)
 		ui.newLine()
@@ -297,13 +312,30 @@ local function drawAppControlsTabBar()
 		appsTabBars[app.name] = TabBar()
 	end
 
+	cui.pushWindow(
+		"bindings_list_window",
+		0,
+		56 * cui.scaleY(),
+		ui.windowWidth(),
+		ui.windowHeight() - 56 * cui.scaleY(),
+		true
+	)
+	ui.setCursor(0)
 	local tab = appsTabBars[app.name]:draw(app.tabs)
+	cui.pushWindow(
+		"bindings_list_subwindow",
+		0,
+		56 * cui.scaleY(),
+		ui.windowWidth(),
+		ui.windowHeight() - 56 * cui.scaleY(),
+		true
+	)
 
-	cui.pushWindow("bindings_list_window", 0, 168, ui.windowWidth(), ui.windowHeight() - 56, true)
 	for _, controlBinding in pairs(tab.content) do
 		buttonBinder(controlBinding)
 		ui.newLine()
 	end
+	cui.popWindow(true)
 	cui.popWindow(true)
 end
 
@@ -324,7 +356,13 @@ local function cmControlsTabBar()
 	ui.setCursor(0)
 	local category = categoryTabBar:draw(categoryTabs)
 
-	cui.pushWindow("bindings_list_main_window", 0, 56, ui.windowWidth(), ui.windowHeight() - 56)
+	cui.pushWindow(
+		"bindings_list_main_window",
+		0,
+		56 * cui.scaleY(),
+		ui.windowWidth(),
+		ui.windowHeight() - 56 * cui.scaleY()
+	)
 	ui.setCursor(0)
 	category.content()
 	cui.popWindow()

@@ -4,6 +4,7 @@ local settings = require("settings")
 local cui = require("ui.cui")
 local pages = require("ui.pages")
 local bindindWindow = require("ui.settings.binding_window")
+local controls = require("controls")
 
 local bottomBarButtons = {
 	{
@@ -57,7 +58,7 @@ local function boundDevicesWindow()
 	ui.drawRectFilled(vec2(0, 230 * cui.scaleY()), vec2(ui.windowWidth(), 740 * cui.scaleY()), rgbm(0.1, 0.1, 0.1, 0.4))
 
 	ui.setCursorX(0)
-	ui.setCursorY(280)
+	cui.setCursorY(250)
 	cui.snapCursor()
 	ui.dwriteTextAligned(
 		"Currently Active & Bound Devices",
@@ -69,19 +70,26 @@ local function boundDevicesWindow()
 		rgbm(1, 1, 1, 1)
 	)
 
-	for i, k in ipairs(boundDevices) do
+	for i, k in ipairs(controls.boundDevices) do
 		cui.snapCursor()
 		ui.dwriteTextAligned(
-			k,
+			k[1],
 			24 * cui.scaleY(),
 			ui.Alignment.Center,
 			ui.Alignment.Center,
-			vec2(ui.windowWidth(), 48 * cui.scaleY()),
+			vec2(ui.windowWidth(), 40 * cui.scaleY()),
 			false,
 			rgbm(1, 1, 1, 1)
 		)
-		ui.newLine()
-		ui.newLine()
+		ui.dwriteTextAligned(
+			k[2],
+			24 * cui.scaleY(),
+			ui.Alignment.Center,
+			ui.Alignment.Center,
+			vec2(ui.windowWidth(), 40 * cui.scaleY()),
+			false,
+			rgbm(1, 0.67, 0.3, 1)
+		)
 	end
 
 	cui.popWindow()
@@ -142,7 +150,14 @@ function page.draw()
 	cui.pushWindowFitted("settings_controls_main_window")
 	topSubBar("/ Settings / Controls")
 
-	cui.pushWindow("settings_controls_window", 0, 200, ui.windowWidth(), ui.windowHeight() - 303, false)
+	cui.pushWindow(
+		"settings_controls_window",
+		0,
+		200 * cui.scaleY(),
+		ui.windowWidth(),
+		ui.windowHeight() - 303 * cui.scaleY(),
+		false
+	)
 
 	boundDevicesWindow()
 	buttonBindingWindow()

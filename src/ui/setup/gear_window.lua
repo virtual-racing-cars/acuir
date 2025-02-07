@@ -99,7 +99,7 @@ function gearWindow(spinnerCount)
 		local p1 = vec2(x1, math.max(yMin + (yMax - yMin) * (1 - (prevGearSpeed / maxGearSpeed)), yMin))
 		local p2 = vec2(math.max(xMin + width * (maxGearSpeed / maxSpeed), x1), yMin)
 
-		local labelWidth = 178 * cui.scaleY()
+		local labelWidth = 125 * cui.scaleY()
 		local labelHeight = 24 * cui.scaleY()
 		local labelPadding = 4 * cui.scaleY()
 		local fontSize = math.floor(24 * cui.scaleY())
@@ -122,7 +122,7 @@ function gearWindow(spinnerCount)
 		)
 		ui.offsetCursorX(-labelPadding)
 		ui.dwriteTextAligned(
-			string.format("Gear %s - %s kmh", i, maxGearSpeed),
+			string.format("%s - %s kmh", i, maxGearSpeed),
 			fontSize,
 			0,
 			0,
