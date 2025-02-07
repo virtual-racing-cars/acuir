@@ -1,7 +1,9 @@
 local bindings = {}
 
-require("controls")
+require("classes.TabBar")
 local cui = require("ui.cui")
+local controls = require("controls")
+controls:initialize()
 
 local controlsINI = ac.INIConfig.controlsConfig()
 local contentManagerControlsTabBar = {}
@@ -168,7 +170,7 @@ local function bindingBoxes(name, label, button, bind, yOffset)
 	-- end
 	-- labelAligned(label .. ":", yOffset)
 
-	ui.setCursorX(WINDOW_MARGIN * 2)
+	ui.setCursorX(WINDOW_MARGIN)
 	ui.dwriteTextAligned(
 		name .. " " .. label,
 		24 * cui.scaleY(),
@@ -177,7 +179,7 @@ local function bindingBoxes(name, label, button, bind, yOffset)
 		vec2(ui.windowWidth(), 50 * cui.scaleY())
 	)
 	ui.sameLine()
-	ui.setCursorX(WINDOW_MARGIN)
+	ui.setCursorX(0)
 
 	button:control(vec2(ui.windowWidth(), 50), controlButtonFlags)
 end
@@ -186,7 +188,7 @@ local function buttonBinder(controlBinding)
 	-- helpInfoButton(controlBinding)
 
 	if controlBinding.isActivationBind then
-		bindingBoxes(controlBinding.name, controlBinding.activationLabel, controlBinding.button, controlBinding.bind)
+		bindingBoxes(controlBinding.name, "", controlBinding.button, controlBinding.bind)
 
 		return
 	end
@@ -236,24 +238,80 @@ local function carControlsTabBar()
 end
 
 local function appsControlsTabBar()
-	ui.tabBar("appTabBar", ui.TabBarFlags.TabListPopupButton + ui.TabBarFlags.FittingPolicyScroll, function()
-		for _i, app in ipairs(appControlsTabBar) do
-			ui.tabItem(app.name, function()
-				ui.tabBar(
-					"appControlsTabBar",
-					ui.TabBarFlags.TabListPopupButton + ui.TabBarFlags.FittingPolicyScroll,
-					function()
-						for _i, tab in ipairs(app.tabs) do
-							ui.tabItem(tab.name, function()
-								tabContentsWindow(tab)
-							end)
-						end
-					end
-				)
-			end)
-		end
-	end)
+	ui.setCursor(0)
+	ac.log("hi")
+	ac.log(appControlsTabBar)
+
+	-- ui.tabBar("appTabBar", ui.TabBarFlags.TabListPopupButton + ui.TabBarFlags.FittingPolicyScroll, function()
+	-- 	for _i, app in ipairs(appControlsTabBar) do
+	-- 		ui.tabItem(app.name, function()
+	-- 			ui.tabBar(
+	-- 				"appControlsTabBar",
+	-- 				ui.TabBarFlags.TabListPopupButton + ui.TabBarFlags.FittingPolicyScroll,
+	-- 				function()
+	-- 					for _i, tab in ipairs(app.tabs) do
+	-- 						ui.tabItem(tab.name, function()
+	-- 							tabContentsWindow(tab)
+	-- 						end)
+	-- 					end
+	-- 				end
+	-- 			)
+	-- 		end)
+	-- 	end
+	-- end)
 end
+
+local categoryTabBar = TabBar()
+local carControlsTabBar = TabBar()
+local generalControlsTabBar = TabBar()
+local applicationControlsTabBar = TabBar()
+
+local appsTabBars = {}
+
+local function drawCarControlsTabBar()
+	local tab = carControlsTabBar:draw(controls.car.tabs)
+
+	cui.pushWindow("bindings_list_window", 0, 56, ui.windowWidth(), ui.windowHeight() - 56, true)
+	for _, controlBinding in pairs(tab.content) do
+		buttonBinder(controlBinding)
+		ui.newLine()
+	end
+	cui.popWindow(true)
+end
+
+local function drawContentManagerControlsTabBar()
+	local tab = generalControlsTabBar:draw(controls.cm.tabs)
+
+	cui.pushWindow("bindings_list_window", 0, 56, ui.windowWidth(), ui.windowHeight() - 56, true)
+	for _, controlBinding in pairs(tab.content) do
+		buttonBinder(controlBinding)
+		ui.newLine()
+	end
+	cui.popWindow(true)
+end
+
+local function drawAppControlsTabBar()
+	local app = applicationControlsTabBar:draw(controls.apps)
+	ui.newLine()
+	if not appsTabBars[app.name] then
+		appsTabBars[app.name] = TabBar()
+	end
+
+	local tab = appsTabBars[app.name]:draw(app.tabs)
+
+	cui.pushWindow("bindings_list_window", 0, 168, ui.windowWidth(), ui.windowHeight() - 56, true)
+	for _, controlBinding in pairs(tab.content) do
+		buttonBinder(controlBinding)
+		ui.newLine()
+	end
+	cui.popWindow(true)
+end
+
+local categoryTabs = {
+	{ name = "Car", content = drawCarControlsTabBar },
+	{ name = "General", content = drawContentManagerControlsTabBar },
+	{ name = "Apps", content = drawAppControlsTabBar },
+}
 
 local function cmControlsTabBar()
 	if contentManagerControlsTabBar == nil then
@@ -263,25 +321,35 @@ local function cmControlsTabBar()
 		return
 	end
 
-	ui.tabBar("cmControlsTabBar", ui.TabBarFlags.TabListPopupButton + ui.TabBarFlags.FittingPolicyScroll, function()
-		if extCarControlsTabBar ~= nil then
-			ui.tabItem("Car", function()
-				carControlsTabBar()
-			end)
-		end
+	ui.setCursor(0)
+	local category = categoryTabBar:draw(categoryTabs)
 
-		if table.count(appControlsTabBar) > 0 then
-			ui.tabItem("Apps", function()
-				appsControlsTabBar()
-			end)
-		end
+	cui.pushWindow("bindings_list_main_window", 0, 56, ui.windowWidth(), ui.windowHeight() - 56)
+	ui.setCursor(0)
+	category.content()
+	cui.popWindow()
 
-		for _i, tab in ipairs(contentManagerControlsTabBar.tabs) do
-			ui.tabItem(tab.name, function()
-				tabContentsWindow(tab)
-			end)
-		end
-	end)
+	-- tabBar:draw(contentManagerControlsTabBar.tabs)
+
+	-- ui.tabBar("cmControlsTabBar", ui.TabBarFlags.TabListPopupButton + ui.TabBarFlags.FittingPolicyScroll, function()
+	-- 	if extCarControlsTabBar ~= nil then
+	-- 		ui.tabItem("Car", function()
+	-- 			carControlsTabBar()
+	-- 		end)
+	-- 	end
+
+	-- 	if table.count(appControlsTabBar) > 0 then
+	-- 		ui.tabItem("Apps", function()
+	-- 			appsControlsTabBar()
+	-- 		end)
+	-- 	end
+
+	-- 	for _i, tab in ipairs(contentManagerControlsTabBar.tabs) do
+	-- 		ui.tabItem(tab.name, function()
+	-- 			tabContentsWindow(tab)
+	-- 		end)
+	-- 	end
+	-- end)
 end
 
 local function footerInfo()
@@ -299,8 +367,6 @@ local function footerInfo()
 	ui.icon(ui.Icons.Lua, vec2(12, 12), rgbm.colors.white, nil, 1)
 end
 
-contentManagerControlsTabBar, appControlsTabBar, extCarControlsTabBar = initializeControls()
-
 -- function windowMain()
 -- 	pushButtonStyle()
 
@@ -311,7 +377,7 @@ contentManagerControlsTabBar, appControlsTabBar, extCarControlsTabBar = initiali
 -- end
 
 function bindings:draw()
-	infoText()
+	-- infoText()
 	cmControlsTabBar()
 	-- footerInfo()
 end

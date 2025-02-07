@@ -1,3 +1,5 @@
+local controls = {}
+
 require("src/classes/control_binding")
 require("src/classes/control_tabbar")
 local settings = require("settings")
@@ -33,7 +35,7 @@ local function controlsINIDefaults(bind, bindSection, key, default, isCMBind)
 		bindSection[key] = { default }
 
 		if initialValue ~= "" and not isCMBind and settings.General.developerMode then
-			ac.log("[" .. bind .. "] Section is missing " .. key .. " key: Default value: " .. default)
+			-- ac.log("[" .. bind .. "] Section is missing " .. key .. " key: Default value: " .. default)
 		end
 	end
 
@@ -135,6 +137,14 @@ local function getContentManagerControls()
 	return loadControls("Content Manager", contentManagerControlsINI)
 end
 
-function initializeControls()
-	return getContentManagerControls(), getAppControls(), getCarControls()
+controls.apps = nil
+controls.car = nil
+controls.cm = nil
+
+function controls:initialize()
+	controls.car = getCarControls()
+	controls.cm = getContentManagerControls()
+	controls.apps = getAppControls()
 end
+
+return controls

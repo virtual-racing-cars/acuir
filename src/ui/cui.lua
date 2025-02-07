@@ -345,10 +345,6 @@ function CUI.menuButton(label, size, horizontalAligment, verticalAlignment, flag
 
 	if active then
 		ui.popStyleColor(1)
-
-		if ui.itemHovered() then
-			ui.drawRect(tempCursor, tempCursor + buttonSize, settings.Appearance.uiColor3)
-		end
 	end
 
 	ui.popStyleColor(2)

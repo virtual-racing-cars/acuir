@@ -108,7 +108,7 @@ local function buttonBindingWindow()
 	cui.pushWindow(
 		"settings_controls_binding_window",
 		ui.windowWidth() / 5,
-		100 * cui.scaleY(),
+		0,
 		(ui.windowWidth() / 5) * 2,
 		ui.windowHeight(),
 		false
@@ -140,15 +140,13 @@ function page.draw()
 	ui.drawRectFilled(vec2(0, 0), vec2(ui.windowWidth(), ui.windowHeight()), settings.Appearance.uiColor1 / 1.1)
 
 	cui.pushWindowFitted("settings_controls_main_window")
-	topSubBar("/Settings/Controls")
+	topSubBar("/ Settings / Controls")
 
 	cui.pushWindow("settings_controls_window", 0, 200, ui.windowWidth(), ui.windowHeight() - 303, false)
 
 	boundDevicesWindow()
-
 	buttonBindingWindow()
 	ffbWindow()
-	controlsTabBar()
 
 	cui.popWindow()
 
