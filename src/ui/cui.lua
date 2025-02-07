@@ -75,6 +75,17 @@ function CUI.offsetCursorY(v)
 	ui.offsetCursorY(v * scaleY)
 end
 
+function CUI.snapCursor()
+	local x, y = ui.getCursorX(), ui.getCursorY()
+	x, y = math.floor(x), math.floor(y)
+
+	x = x % 2 ~= 0 and x + 1 or x
+	y = y % 2 ~= 0 and y + 1 or y
+
+	ui.setCursorX(x)
+	ui.setCursorY(y)
+end
+
 function CUI.childWindow(id, size, border, flags, content)
 	ui.childWindow(id, size, false, flags, content)
 end
@@ -298,7 +309,8 @@ function CUI.menuButton(label, size, horizontalAligment, verticalAlignment, flag
 		sizeY = size
 		fontSize = math.floor(sizeY * 0.55)
 		fontSize = (fontSize % 2 ~= 0) and fontSize + 1 or fontSize
-		buttonSize = vec2Temp1:set(ui.measureDWriteText(string.upper(label), fontSize).x + 100 * CUI.scaleY(), size)
+		buttonSize =
+			vec2Temp1:set(math.round(ui.measureDWriteText(string.upper(label), fontSize).x + 100 * CUI.scaleY()), size)
 	else
 		sizeX = size.x
 		sizeY = size.y
@@ -341,10 +353,8 @@ function CUI.menuButton(label, size, horizontalAligment, verticalAlignment, flag
 
 	ui.popStyleColor(2)
 
-	ui.sameLine()
-
-	ui.offsetCursorY(1)
 	ui.setCursor(tempCursor)
+	CUI.snapCursor()
 	ui.dwriteTextAligned(
 		string.upper(label),
 		fontSize,
@@ -354,6 +364,8 @@ function CUI.menuButton(label, size, horizontalAligment, verticalAlignment, flag
 		false,
 		fontColor
 	)
+	ui.sameLine()
+	CUI.offsetCursorX(-1)
 
 	ui.popDWriteFont()
 
@@ -404,6 +416,7 @@ function CUI.specialButton(label, size, horizontalAligment, verticalAlignment)
 	ui.sameLine()
 	ui.offsetCursorY(1)
 	ui.setCursor(tempCursor)
+	CUI.snapCursor()
 	ui.dwriteTextAligned(
 		string.upper(locked and "Controls Locked" or "Drive Now"),
 		fontSize,
@@ -416,7 +429,7 @@ function CUI.specialButton(label, size, horizontalAligment, verticalAlignment)
 
 	if locked then
 		ui.setCursor(tempCursor)
-
+		CUI.snapCursor()
 		ui.dwriteTextAligned(
 			"%s seconds" % simutils.controlsLockedTimeRemaining,
 			fontSize / 2.5,
@@ -504,6 +517,7 @@ function CUI.treeNodeButton(label, size, active, bold, count)
 	ui.offsetCursorX(textOffset)
 
 	local text = count > 0 and string.format(" %s (%s)", label, count) or string.format(" %s", label)
+	CUI.snapCursor()
 	ui.dwriteTextAligned(
 		text,
 		fontSize,
@@ -517,7 +531,7 @@ function CUI.treeNodeButton(label, size, active, bold, count)
 		ui.addIcon(
 			CUI.loadStoredBool(id) and ui.Icons.Minus or ui.Icons.Plus,
 			vec2Temp1:set(size.y / 2, size.y / 2),
-			vec2Temp2:set(0.95, 0.5),
+			vec2Temp2:set(0.92, 0.5),
 			nil
 		)
 	end
@@ -632,6 +646,7 @@ function CUI.inputTextBox(label, stringPrefix, stringInput, size)
 		charSizes[i] = ui.measureDWriteText(stringInput:gsub(" ", "."):sub(i, i), fontSize).x
 	end
 
+	CUI.snapCursor()
 	ui.dwriteTextAligned(
 		stringPrefix,
 		fontSize,
@@ -644,6 +659,7 @@ function CUI.inputTextBox(label, stringPrefix, stringInput, size)
 	ui.sameLine()
 	tempCursor = ui.getCursor()
 
+	CUI.snapCursor()
 	for i in ipairs(charSizes) do
 		ui.dwriteTextAligned(
 			stringInput:sub(i, i),
@@ -699,7 +715,12 @@ function CUI.inputTextBox(label, stringPrefix, stringInput, size)
 	then
 		local pos = tempCursor.x
 			+ ui.measureDWriteText(stringInput:gsub(" ", "."):sub(1, inputTextBoxCursorIndex), fontSize).x
-		ui.drawSimpleLine(vec2(pos, r1.y + 10), vec2(pos, r1.y - 10) + vec2(0, size.y), rgbm.colors.white / 1.25, 2)
+		ui.drawSimpleLine(
+			vec2(pos, r1.y + 10 * CUI.scaleY()),
+			vec2(pos, r1.y - 10 * CUI.scaleY()) + vec2(0, size.y),
+			rgbm.colors.white / 1.25,
+			2 * CUI.scaleY()
+		)
 	end
 
 	ui.drawRect(r1, r2, settings.Appearance.uiColor1 * 2, 0, ui.CornerFlags.None, 2)

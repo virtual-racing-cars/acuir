@@ -73,6 +73,7 @@ function drawSlider(
 
 	ui.setCursorX(xPos)
 	ui.setCursorY(yPos)
+	cui.snapCursor()
 	ui.dwriteTextAligned(
 		name:gsub("->            ", ""):gsub("             %?", ""),
 		fontSize,
@@ -121,6 +122,7 @@ function drawSlider(
 
 	ui.setCursorX(xPos)
 	ui.setCursorY(yPos + height / 2)
+	cui.snapCursor()
 	ui.dwriteTextAligned(
 		string.format(format, value * multiplier + offset),
 		fontSize,

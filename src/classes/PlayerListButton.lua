@@ -1,4 +1,5 @@
 local settings = require("settings")
+local cui = require("ui.cui")
 local sim = ac.getSim()
 
 function playerListBanner(xPos, yPos, width, height)
@@ -7,7 +8,8 @@ function playerListBanner(xPos, yPos, width, height)
 	ui.beginGroup(width)
 	ui.pushDWriteFont(ui.DWriteFont("Rajdhani"):weight(ui.DWriteFont.Weight.SemiBold))
 
-	local fontSize = height / 2
+	local fontSize = math.floor(24 * cui.scaleY())
+	fontSize = (fontSize % 2 == 0) and fontSize + 1 or fontSize
 
 	ui.setCursorX(xPos)
 	ui.setCursorY(yPos)
@@ -21,14 +23,16 @@ function playerListBanner(xPos, yPos, width, height)
 	ui.setCursorY(yPos)
 	ui.dwriteTextAligned("Pos", fontSize, ui.Alignment.Center, ui.Alignment.Center, vec2(width / 15, height))
 
-	ui.setCursorX(xPos + width / 12)
+	ui.setCursorX(xPos + math.floor(width / 12))
 	ui.setCursorY(yPos)
+	cui.snapCursor()
 	ui.dwriteTextAligned("Driver", fontSize, ui.Alignment.Center, ui.Alignment.Center, vec2(width / 3, height))
 
 	ui.sameLine()
 
 	local infoWidth = width / 6
 
+	cui.snapCursor()
 	ui.dwriteTextAligned(
 		"Last",
 		fontSize,
@@ -40,6 +44,7 @@ function playerListBanner(xPos, yPos, width, height)
 	)
 	ui.sameLine()
 
+	cui.snapCursor()
 	ui.dwriteTextAligned(
 		"Best",
 		fontSize,
@@ -51,6 +56,7 @@ function playerListBanner(xPos, yPos, width, height)
 	)
 	ui.sameLine()
 
+	cui.snapCursor()
 	ui.dwriteTextAligned(
 		"Tyre",
 		fontSize,
@@ -62,6 +68,7 @@ function playerListBanner(xPos, yPos, width, height)
 	)
 	ui.sameLine()
 
+	cui.snapCursor()
 	ui.dwriteTextAligned(
 		"Lap",
 		fontSize,
@@ -108,6 +115,7 @@ function playerListButton(car, xPos, yPos, width, height)
 
 	ui.setCursorX(xPos)
 	ui.setCursorY(yPos)
+	cui.snapCursor()
 	ui.dwriteTextAligned(
 		car.racePosition,
 		fontSize,
@@ -120,6 +128,7 @@ function playerListButton(car, xPos, yPos, width, height)
 
 	ui.setCursorX(xPos + width / 12)
 	ui.setCursorY(yPos)
+	cui.snapCursor()
 	ui.dwriteTextAligned(
 		ac.getDriverName(car.index),
 		fontSize,
@@ -132,6 +141,7 @@ function playerListButton(car, xPos, yPos, width, height)
 
 	local infoWidth = width / 6
 
+	cui.snapCursor()
 	ui.dwriteTextAligned(
 		ac.lapTimeToString(car.previousLapTimeMs),
 		fontSize,
@@ -143,6 +153,7 @@ function playerListButton(car, xPos, yPos, width, height)
 	)
 	ui.sameLine()
 
+	cui.snapCursor()
 	ui.dwriteTextAligned(
 		ac.lapTimeToString(car.bestLapTimeMs),
 		fontSize,
@@ -166,6 +177,7 @@ function playerListButton(car, xPos, yPos, width, height)
 		return
 	end
 
+	cui.snapCursor()
 	ui.dwriteTextAligned(
 		ac.getTyresName(car.index, car.compoundIndex),
 		fontSize,
@@ -184,6 +196,7 @@ function playerListButton(car, xPos, yPos, width, height)
 			settings.Appearance.uiColor3
 		)
 
+		cui.snapCursor()
 		ui.dwriteTextAligned(
 			"P",
 			fontSize,
@@ -194,6 +207,7 @@ function playerListButton(car, xPos, yPos, width, height)
 			rgbm.colors.black
 		)
 	else
+		cui.snapCursor()
 		ui.dwriteTextAligned(
 			"L" .. car.lapCount + 1,
 			fontSize,

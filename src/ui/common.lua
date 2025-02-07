@@ -167,6 +167,7 @@ local function sessionInfo()
 		ui.beginGroup()
 
 		ui.pushDWriteFont("Rajdhani;weight=bold")
+		cui.snapCursor()
 		ui.dwriteTextAligned(
 			string.upper(sessionInfoTable[i].label()) .. ":",
 			fontSize,
@@ -179,6 +180,7 @@ local function sessionInfo()
 
 		ui.offsetCursorX(-50 * cui.scaleY())
 
+		cui.snapCursor()
 		ui.dwriteTextAligned(
 			sessionInfoTable[i].row1(),
 			fontSize,
@@ -189,6 +191,7 @@ local function sessionInfo()
 		ui.sameLine()
 		ui.offsetCursorX(20 * cui.scaleY())
 
+		cui.snapCursor()
 		ui.dwriteTextAligned(
 			sessionInfoTable[i].row2(),
 			fontSize,

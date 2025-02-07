@@ -57,6 +57,7 @@ function gearWindow(spinnerCount)
 
 	for i = 0, 10 do
 		ui.setCursor(vec2(xMin + width / 10 * i - 32, yMax + 10))
+		cui.snapCursor()
 		ui.dwriteTextAligned(
 			math.round(i / 10 * maxSpeed),
 			24 * cui.scaleY(),
@@ -69,6 +70,7 @@ function gearWindow(spinnerCount)
 		ui.pathStroke(rgbm(0.4, 0.4, 0.4, 1), false, 3)
 
 		ui.setCursor(vec2(xMin - 70, yMin + (yMax - yMin) / 10 * i) - 10)
+		cui.snapCursor()
 		ui.dwriteTextAligned(
 			math.round(car.rpmLimiter - (car.rpmLimiter / 10) * i),
 			24 * cui.scaleY(),
@@ -97,9 +99,11 @@ function gearWindow(spinnerCount)
 		local p1 = vec2(x1, math.max(yMin + (yMax - yMin) * (1 - (prevGearSpeed / maxGearSpeed)), yMin))
 		local p2 = vec2(math.max(xMin + width * (maxGearSpeed / maxSpeed), x1), yMin)
 
-		local labelWidth = 165 * cui.scaleY()
-		local labelHeight = 26 * cui.scaleY()
-		local labelPadding = 10 * cui.scaleY()
+		local labelWidth = 178 * cui.scaleY()
+		local labelHeight = 24 * cui.scaleY()
+		local labelPadding = 4 * cui.scaleY()
+		local fontSize = math.floor(24 * cui.scaleY())
+		fontSize = (fontSize % 2 == 0) and fontSize + 1 or fontSize
 
 		ui.pathLineTo(p1)
 		ui.pathLineTo(p2)
@@ -107,14 +111,19 @@ function gearWindow(spinnerCount)
 
 		ui.pathLineTo(p2)
 		ui.pathLineTo(vec2(p2.x, yMax - (height / car.gearCount / 2) * i + labelHeight))
-		ui.pathStroke(rgbm(1, 1, 1, 0.2), false, 3)
+		ui.pathStroke(rgbm(1, 1, 1, 0.1), false, 3)
 
 		ui.setCursor(vec2(p2.x - labelWidth, yMax - (height / car.gearCount / 2) * i))
-		ui.drawRectFilled(ui.getCursor(), ui.getCursor() + vec2(labelWidth, labelHeight), rgbm.colors.white)
+		cui.snapCursor()
+		ui.drawRectFilled(
+			ui.getCursor() - vec2(labelPadding, labelPadding),
+			ui.getCursor() + vec2(labelWidth + labelPadding, labelHeight + labelPadding),
+			rgbm.colors.white
+		)
 		ui.offsetCursorX(-labelPadding)
 		ui.dwriteTextAligned(
 			string.format("Gear %s - %s kmh", i, maxGearSpeed),
-			24 * cui.scaleY(),
+			fontSize,
 			0,
 			0,
 			vec2(labelWidth + (labelPadding * 2), labelHeight),

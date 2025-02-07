@@ -215,10 +215,14 @@ local function saveSetupWindow(sm)
 	local buttonWidth = (ui.windowWidth() / 24) * 22
 	local groupBegin = (ui.windowWidth() / 24)
 
+	local fontSize = math.floor(24 * cui.scaleY())
+	fontSize = (fontSize % 2 == 0) and fontSize + 1 or fontSize
+
 	ui.setCursor(0)
+
 	ui.dwriteTextAligned(
 		"Current Setup - " .. currentSetup,
-		22 * cui.scaleY(),
+		fontSize,
 		ui.Alignment.Center,
 		ui.Alignment.Center,
 		vec2(ui.availableSpaceX(), iconButtonHeight)
