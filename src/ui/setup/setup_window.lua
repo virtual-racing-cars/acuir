@@ -172,6 +172,10 @@ function car_setup(sm)
 	local changed = false
 	local tab = sm.setupTabs[tonumber(app.state.setupTab)]
 
+	if tab.name == "GEARS" then
+		gearWindow(#tab.setupSpinners)
+	end
+
 	for _, v in pairs(tab.setupSpinners) do
 		if v.tab == "PITSTOP STRATEGY" then
 			if v.id == "PRESET" then
@@ -183,14 +187,15 @@ function car_setup(sm)
 				drawSetupSpinner(sm, v)
 			end
 		elseif v.yPos > -2 then
+			if v.tab == "GEARS" and #tab.setupSpinners == 1 then
+				v.xPos = 0.5
+				v.yPos = 0
+			end
+
 			if drawSetupSpinner(sm, v) then
 				changed = true
 			end
 		end
-	end
-
-	if tab.name == "GEARS" then
-		gearWindow(#tab.setupSpinners)
 	end
 
 	if changed then

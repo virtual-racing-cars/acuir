@@ -218,7 +218,7 @@ local function saveSetupWindow(sm)
 	ui.setCursor(0)
 	ui.dwriteTextAligned(
 		"Current Setup - " .. currentSetup,
-		18 * cui.scaleY(),
+		22 * cui.scaleY(),
 		ui.Alignment.Center,
 		ui.Alignment.Center,
 		vec2(ui.availableSpaceX(), iconButtonHeight)

@@ -28,12 +28,13 @@ local maxSpeed = nil
 function gearWindow(spinnerCount)
 	local yMin = ui.windowHeight() / 5
 	local yMax = ui.windowHeight() - yMin
+	local height = yMax - yMin
 
 	local xMin = ui.windowWidth() / 2 / 8
 	local xMax = ui.windowWidth() / 2 + xMin / 2
 	local width = xMax - xMin
 
-	if spinnerCount <= 0 then
+	if spinnerCount <= 1 then
 		xMin = ui.windowWidth() / 2 - width / 2
 		xMax = ui.windowWidth() / 2 + width / 2
 		ui.setCursor(vec2(ui.windowWidth() / 2 - width / 2, yMin * 0.7))
@@ -43,43 +44,42 @@ function gearWindow(spinnerCount)
 
 	ui.drawRectFilled(vec2(xMin, yMin), vec2(xMax, yMax), rgbm(0, 0, 0, 0.75))
 
-	ui.dwriteTextAligned(
-		"Max Gear Speeds KMH",
-		30 * cui.scaleY(),
-		ui.Alignment.Center,
-		ui.Alignment.Start,
-		vec2(width, yMin)
-	)
-
 	if not maxSpeed or maxSpeed == 0 then
 		maxSpeed = getGearMaxSpeedKmh(car.gearCount) * 1.25
 	end
+
+	ui.pathLineTo(vec2(xMin, yMax))
+	ui.pathLineTo(vec2(xMin + width, yMax))
+	ui.pathStroke(rgbm(0.4, 0.4, 0.4, 1), false, 3)
+	ui.pathLineTo(vec2(xMin, yMin))
+	ui.pathLineTo(vec2(xMin, yMax))
+	ui.pathStroke(rgbm(0.4, 0.4, 0.4, 1), false, 3)
 
 	for i = 0, 10 do
 		ui.setCursor(vec2(xMin + width / 10 * i - 32, yMax + 10))
 		ui.dwriteTextAligned(
 			math.round(i / 10 * maxSpeed),
-			18 * cui.scaleY(),
+			24 * cui.scaleY(),
 			ui.Alignment.Center,
 			ui.Alignment.Center,
 			vec2(65, 20) * cui.scaleY()
 		)
-		ui.pathLineTo(vec2(xMin + width / 10 * i, yMin))
 		ui.pathLineTo(vec2(xMin + width / 10 * i, yMax))
-		ui.pathStroke(rgbm(1, 1, 1, 0.3), false, 3)
+		ui.pathLineTo(vec2(xMin + width / 10 * i, yMax - height / 50))
+		ui.pathStroke(rgbm(0.4, 0.4, 0.4, 1), false, 3)
 
 		ui.setCursor(vec2(xMin - 70, yMin + (yMax - yMin) / 10 * i) - 10)
 		ui.dwriteTextAligned(
 			math.round(car.rpmLimiter - (car.rpmLimiter / 10) * i),
-			18 * cui.scaleY(),
+			24 * cui.scaleY(),
 			ui.Alignment.End,
 			ui.Alignment.Center,
 			vec2(65, 20) * cui.scaleY()
 		)
 
 		ui.pathLineTo(vec2(xMin, yMin + (yMax - yMin) / 10 * i))
-		ui.pathLineTo(vec2(xMin + width, yMin + (yMax - yMin) / 10 * i))
-		ui.pathStroke(rgbm(1, 1, 1, 0.3), false, 3)
+		ui.pathLineTo(vec2(xMin + height / 50, yMin + (yMax - yMin) / 10 * i))
+		ui.pathStroke(rgbm(0.4, 0.4, 0.4, 1), false, 3)
 	end
 
 	for i = 1, car.gearCount do
@@ -97,23 +97,30 @@ function gearWindow(spinnerCount)
 		local p1 = vec2(x1, math.max(yMin + (yMax - yMin) * (1 - (prevGearSpeed / maxGearSpeed)), yMin))
 		local p2 = vec2(math.max(xMin + width * (maxGearSpeed / maxSpeed), x1), yMin)
 
+		local labelWidth = 165 * cui.scaleY()
+		local labelHeight = 26 * cui.scaleY()
+		local labelPadding = 10 * cui.scaleY()
+
 		ui.pathLineTo(p1)
 		ui.pathLineTo(p2)
-		ui.pathStroke(settings.Appearance.uiColor2, false, 5)
+		ui.pathStroke(settings.Appearance.uiColor2, false, 4)
 
-		ui.setCursor(p1:setLerp(p1, p2, 0.5))
-		ui.dwriteTextAligned(i, 18 * cui.scaleY(), ui.Alignment.Center, ui.Alignment.Start, vec2(15, 20) * cui.scaleY())
+		ui.pathLineTo(p2)
+		ui.pathLineTo(vec2(p2.x, yMax - (height / car.gearCount / 2) * i + labelHeight))
+		ui.pathStroke(rgbm(1, 1, 1, 0.2), false, 3)
 
-		if maxGearSpeed > prevGearSpeed then
-			ui.setCursor(p2 - vec2(20, 25) * cui.scaleY())
-			ui.dwriteTextAligned(
-				maxGearSpeed,
-				18 * cui.scaleY(),
-				ui.Alignment.Center,
-				ui.Alignment.Start,
-				vec2(40, 40) * cui.scaleY()
-			)
-		end
+		ui.setCursor(vec2(p2.x - labelWidth, yMax - (height / car.gearCount / 2) * i))
+		ui.drawRectFilled(ui.getCursor(), ui.getCursor() + vec2(labelWidth, labelHeight), rgbm.colors.white)
+		ui.offsetCursorX(-labelPadding)
+		ui.dwriteTextAligned(
+			string.format("Gear %s - %s kmh", i, maxGearSpeed),
+			24 * cui.scaleY(),
+			0,
+			0,
+			vec2(labelWidth + (labelPadding * 2), labelHeight),
+			false,
+			rgbm.colors.black
+		)
 
 		prevGearSpeed = maxGearSpeed
 	end

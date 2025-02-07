@@ -460,11 +460,7 @@ end
 
 local treeNodeParent = ""
 function CUI.treeNodeButton(label, size, active, bold, count)
-	if bold then
-		ui.pushDWriteFont(fontBold)
-	else
-		ui.pushDWriteFont(fontRegular)
-	end
+	ui.pushDWriteFont(fontRegular)
 
 	if not count then
 		count = 0
