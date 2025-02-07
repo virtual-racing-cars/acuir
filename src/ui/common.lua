@@ -54,6 +54,7 @@ function bottomBar(buttons)
 		end
 
 		ui.sameLine()
+		ui.offsetCursor(-1)
 	end
 	ui.popStyleColor(1)
 end

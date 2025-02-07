@@ -364,8 +364,6 @@ function CUI.menuButton(label, size, horizontalAligment, verticalAlignment, flag
 		false,
 		fontColor
 	)
-	ui.sameLine()
-	CUI.offsetCursorX(-1)
 
 	ui.popDWriteFont()
 

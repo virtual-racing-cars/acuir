@@ -15,6 +15,9 @@ local function tabItem(index, title)
 	then
 		currentApp = index
 	end
+
+	ui.sameLine()
+	ui.offsetCursorX(-1)
 end
 
 ac.onResolutionChange(function(newSize, makingScreenshot)
