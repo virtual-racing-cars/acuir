@@ -30,13 +30,13 @@ end)
 
 local tabBarScrollDisabled = false
 
-function setupTabBar(apps)
+function setupTabBar(tabs)
 	if ui.mouseLocalPos() >= vec2(0, 0) and ui.mouseLocalPos() < vec2(ui.windowWidth(), 56 * cui.scaleY()) then
 		if ui.mouseWheel() > 0 then
-			currentApp = currentApp >= #apps - 1 and 0 or currentApp + 1
+			currentApp = currentApp >= #tabs - 1 and 0 or currentApp + 1
 			audio:trigger()
 		elseif ui.mouseWheel() < 0 then
-			currentApp = currentApp == 0 and #apps - 1 or currentApp - 1
+			currentApp = currentApp == 0 and #tabs - 1 or currentApp - 1
 			audio:trigger()
 		end
 	end
@@ -53,15 +53,15 @@ function setupTabBar(apps)
 	ui.setCursorX(tabBarPosition)
 	ui.setCursorY(0)
 	ui.pushStyleColor(ui.StyleColor.Button, settings.Appearance.uiColor1)
-	for i in ipairs(apps) do
-		tabItem(i - 1, apps[i].name)
+	for i in ipairs(tabs) do
+		tabItem(i - 1, tabs[i].name)
 
 		if not tabItemPositions[i - 1] then
 			tabItemPositions[i - 1] = ui.getCursorX()
 		end
 	end
 
-	if tabItemPositions[#apps - 1] <= ui.windowWidth() then
+	if tabItemPositions[#tabs - 1] <= ui.windowWidth() then
 		tabBarScrollDisabled = true
 	end
 

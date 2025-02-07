@@ -3,6 +3,7 @@ local page = {}
 local settings = require("settings")
 local cui = require("ui.cui")
 local pages = require("ui.pages")
+local bindindWindow = require("ui.settings.binding_window")
 
 local bottomBarButtons = {
 	{
@@ -24,76 +25,132 @@ local bottomBarButtons = {
 	},
 }
 
+local boundDevices = { "Steering", "Throttle", "Brakes", "Clutch", "Handbrake" }
+
+local function boundDevicesWindow()
+	cui.pushWindow("settings_controls_bound_window", 0, 0, ui.windowWidth() / 5, ui.windowHeight(), false)
+	ui.drawRectFilled(vec2(0, 0), vec2(ui.windowWidth(), ui.windowHeight()), rgbm(0.4, 0.4, 0.4, 0.3))
+
+	ui.setCursor(0)
+	cui.snapCursor()
+	ui.dwriteTextAligned(
+		"Search by Action Name",
+		24 * cui.scaleY(),
+		ui.Alignment.Center,
+		ui.Alignment.Center,
+		vec2(ui.windowWidth(), 170 * cui.scaleY()),
+		false,
+		rgbm(1, 1, 1, 1)
+	)
+
+	local buttonWidth = (ui.windowWidth() / 24) * 22
+	local groupBegin = (ui.windowWidth() / 24)
+
+	local fontSize = math.floor(24 * cui.scaleY())
+	fontSize = (fontSize % 2 == 0) and fontSize + 1 or fontSize
+
+	ui.setCursor(0)
+	ui.setCursorX(groupBegin)
+	cui.setCursorY(130)
+	cui.inputText("##actionSearch", nil, "Hello There", ui.InputTextFlags.None, vec2(buttonWidth, 40 * cui.scaleY()))
+
+	ui.drawRectFilled(vec2(0, 230 * cui.scaleY()), vec2(ui.windowWidth(), 740 * cui.scaleY()), rgbm(0.1, 0.1, 0.1, 0.4))
+
+	ui.setCursorX(0)
+	ui.setCursorY(280)
+	cui.snapCursor()
+	ui.dwriteTextAligned(
+		"Currently Active & Bound Devices",
+		24 * cui.scaleY(),
+		ui.Alignment.Center,
+		ui.Alignment.Center,
+		vec2(ui.windowWidth(), 48 * cui.scaleY()),
+		false,
+		rgbm(1, 1, 1, 1)
+	)
+
+	for i, k in ipairs(boundDevices) do
+		cui.snapCursor()
+		ui.dwriteTextAligned(
+			k,
+			24 * cui.scaleY(),
+			ui.Alignment.Center,
+			ui.Alignment.Center,
+			vec2(ui.windowWidth(), 48 * cui.scaleY()),
+			false,
+			rgbm(1, 1, 1, 1)
+		)
+		ui.newLine()
+		ui.newLine()
+	end
+
+	cui.popWindow()
+end
+
+local function controlsTabBar()
+	cui.pushWindow(
+		"settings_controls_window",
+		ui.windowWidth() / 5,
+		0,
+		ui.windowWidth() - (ui.windowWidth() / 5),
+		100,
+		false
+	)
+	ui.drawRectFilled(vec2(0, 0), vec2(ui.windowWidth(), ui.windowHeight()), rgbm(0, 0, 0, 1))
+
+	ui.drawLine(vec2(0, 0), vec2(ui.windowWidth(), 0), rgbm.colors.white, 5)
+	ui.drawLine(vec2(0, ui.windowHeight() - 1), vec2(ui.windowWidth(), ui.windowHeight() - 1), rgbm.colors.white, 5)
+
+	cui.popWindow()
+end
+
+local function buttonBindingWindow()
+	cui.pushWindow(
+		"settings_controls_binding_window",
+		ui.windowWidth() / 5,
+		100 * cui.scaleY(),
+		(ui.windowWidth() / 5) * 2,
+		ui.windowHeight(),
+		false
+	)
+
+	-- ui.drawRectFilled(vec2(0, 0), vec2(ui.windowWidth(), ui.windowHeight()), rgbm(0.7, 0.3, 0.6, 1))
+	ui.drawRectFilled(vec2(0, 0), vec2(ui.windowWidth(), ui.windowHeight()), rgbm.colors.black)
+
+	bindindWindow:draw()
+
+	cui.popWindow()
+end
+
+local function ffbWindow()
+	cui.pushWindow(
+		"settings_controls_ffb_window",
+		(ui.windowWidth() / 5) * 3,
+		100 * cui.scaleY(),
+		(ui.windowWidth() / 5) * 2,
+		ui.windowHeight(),
+		false
+	)
+	-- ui.drawRectFilled(vec2(0, 0), vec2(ui.windowWidth(), ui.windowHeight()), rgbm(10, 0, 0, 1))
+
+	cui.popWindow()
+end
+
 function page.draw()
 	ui.drawRectFilled(vec2(0, 0), vec2(ui.windowWidth(), ui.windowHeight()), settings.Appearance.uiColor1 / 1.1)
 
-	cui.pushWindowFitted("settings_general_window")
-	topSubBar("/Settings/General")
+	cui.pushWindowFitted("settings_controls_main_window")
+	topSubBar("/Settings/Controls")
 
-	ui.drawLine(vec2(0, 240 * cui.scaleY()), vec2(ui.windowWidth(), 240 * cui.scaleY()), rgbm.colors.gray, 2)
-	ui.drawRectFilled(
-		vec2(0, 240 * cui.scaleY()),
-		vec2(ui.windowWidth(), ui.windowHeight() - 96 * cui.scaleY()),
-		rgbm(0, 0, 0, 0.2)
-	)
+	cui.pushWindow("settings_controls_window", 0, 200, ui.windowWidth(), ui.windowHeight() - 303, false)
 
-	for i, v in ipairs(settings.General) do
-		cui.setCursorY(200 + 125 * i)
+	boundDevicesWindow()
 
-		if v.widget == 1 then
-			local value = settings.General[v.key] and 1 or 0
-			local newValue = drawSpinner(
-				v.label,
-				v.label,
-				ui.windowWidth() / 2 - 600 * cui.scaleY() / 2,
-				ui.getCursorY(),
-				620 * cui.scaleY(),
-				74 * cui.scaleY(),
-				false,
-				value,
-				0,
-				1,
-				1,
-				1,
-				0,
-				settings.General[v.key] and "Enabled" or "Disabled",
-				1,
-				0,
-				false,
-				nil
-			)
+	buttonBindingWindow()
+	ffbWindow()
+	controlsTabBar()
 
-			settings.General[v.key] = newValue == 1 and true or false
-		elseif v.widget == 2 then
-			settings.General[v.key] = drawSpinner(
-				v.label,
-				v.label,
-				ui.windowWidth() / 2 - 600 / 2,
-				ui.getCursorY(),
-				620 * cui.scaleY(),
-				74 * cui.scaleY(),
-				false,
-				settings.General[v.key],
-				v.min,
-				v.max,
-				1,
-				1,
-				0,
-				v.format,
-				1,
-				0,
-				false,
-				nil
-			)
-		end
-	end
-
-	ui.drawLine(
-		vec2(0, ui.windowHeight() - 96 * cui.scaleY()),
-		vec2(ui.windowWidth(), ui.windowHeight() - 96 * cui.scaleY()),
-		rgbm.colors.gray,
-		2
-	)
+	cui.popWindow()
 
 	bottomBar(bottomBarButtons)
 	cui.popWindow()

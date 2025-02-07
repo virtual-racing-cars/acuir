@@ -220,7 +220,7 @@ function topSubBar(path)
 		60 * cui.scaleY(),
 		ui.Alignment.Start,
 		ui.Alignment.Center,
-		vec2(450 * cui.scaleX(), 100 * cui.scaleY()),
+		vec2(600 * cui.scaleX(), 100 * cui.scaleY()),
 		false,
 		rgbm(1, 1, 1, 1)
 	)
