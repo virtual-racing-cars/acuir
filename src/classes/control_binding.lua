@@ -71,15 +71,18 @@ end
 
 function ControlBinding:bindSequential(bind, downBind, downLabel, upBind, upLabel)
 	if string.startsWith(bind, "__EXT_LIGHT_") then
-		self.buttonDown = ac.ControlButton("__EXT_LIGHT_" .. downBind)
-		self.buttonUp = ac.ControlButton("__EXT_LIGHT_" .. upBind)
+		self.bindDown = "__EXT_LIGHT_" .. downBind
+		self.bindUp = "__EXT_LIGHT_" .. upBind
 	elseif self.isLuaControlled then
-		self.buttonDown = ac.ControlButton("__EXT_CAR_" .. bind .. downBind)
-		self.buttonUp = ac.ControlButton("__EXT_CAR_" .. bind .. upBind)
+		self.bindDown = "__EXT_CAR_" .. bind .. downBind
+		self.bindUp = "__EXT_CAR_" .. bind .. upBind
 	else
-		self.buttonDown = ac.ControlButton(bind .. downBind)
-		self.buttonUp = ac.ControlButton(bind .. upBind)
+		self.bindDown = bind .. downBind
+		self.bindUp = bind .. upBind
 	end
+
+	self.buttonDown = ac.ControlButton(self.bindDown)
+	self.buttonUp = ac.ControlButton(self.bindUp)
 
 	self.buttonDownLabel = not isempty(downLabel) and downLabel or "Decrease"
 	self.buttonUpLabel = not isempty(upLabel) and upLabel or "Increase"
@@ -99,11 +102,14 @@ function ControlBinding:bindMultiPositionSwitch(bind, switchCount, switchIndexOf
 		self.buttonPositionLabelExplicit = true
 	end
 
+	self.bindMps = {}
 	for i = 1, self.multiPositionSwitchCount do
 		if self.isLuaControlled then
-			self.buttonPosition[i] = ac.ControlButton("__EXT_CAR_" .. bind .. "_" .. i)
+			self.bindMps[i] = "__EXT_CAR_" .. bind .. "_" .. i
+			self.buttonPosition[i] = ac.ControlButton(self.bindMps[i])
 		else
-			self.buttonPosition[i] = ac.ControlButton(bind .. "_" .. i)
+			self.bindMps[i] = bind .. "_" .. i
+			self.buttonPosition[i] = ac.ControlButton(self.bindMps[i])
 		end
 
 		if self.mpsToggle then

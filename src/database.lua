@@ -25,6 +25,9 @@ function db:register(dbKey, dbTable)
 end
 
 function db:get(dbKey, key)
+	if not dbList[dbKey]:get(key) then
+		ac.error("Key %s doesn't exist in the database!" % key)
+	end
 	return dbList[dbKey]:get(key).value
 end
 

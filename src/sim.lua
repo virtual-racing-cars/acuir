@@ -3,8 +3,6 @@ local SimUtils = {}
 local sim = ac.getSim()
 local car = ac.getCar(0)
 
-local raceConfigINI = ac.INIConfig.raceConfig()
-
 local windDirectionStrings = {
 	"N",
 	"NNE",
@@ -81,27 +79,6 @@ function SimUtils.ambientTemperatureF()
 	return sim.ambientTemperature * (9 / 5) + 32
 end
 
-local sessionLimits = {}
-local sessionTimed = {}
-
-local function getSessionInfo()
-	raceConfigINI = ac.INIConfig.raceConfig()
-
-	for i = 0, sim.sessionsCount - 1 do
-		local duration = raceConfigINI:get("SESSION_%s" % i, "DURATION_MINUTES", 0)
-		local laps = raceConfigINI:get("SESSION_%s" % i, "LAPS", 0)
-		local timed = duration > 0
-
-		sessionTimed[i] = timed
-		sessionLimits[i] = timed and duration or laps
-	end
-end
-
-ac.onSessionStart(function(sessionIndex, restarted)
-	getSessionInfo()
-end)
-getSessionInfo()
-
 function SimUtils.simTimeString()
 	return string.format("%02d:%02d:%02d", sim.timeHours, sim.timeMinutes, sim.timeSeconds)
 end
@@ -110,25 +87,39 @@ function SimUtils.simDateString()
 	return os.date("%B %d, %Y", sim.timestamp)
 end
 
-function SimUtils.sessionTimeLeftString()
-	if not sessionTimed[sim.currentSessionIndex] then
-		return string.format("%.0f laps left", sessionLimits[sim.currentSessionIndex] - sim.leaderLapCount)
-	end
+function SimUtils.session()
+	return ac.getSession(sim.currentSessionIndex)
+end
 
-	local totalSeconds = math.floor(sim.sessionTimeLeft / 1000)
+function SimUtils.timeToString(timeMs, remaining)
+	local totalSeconds = math.floor(timeMs / 1000)
 	local minutes = math.floor(totalSeconds / 60)
 	local seconds = totalSeconds % 60
-	local timeLeftString = string.format("%02d:%02d Remaining", minutes, seconds)
+	return string.format("%02d:%02d %s", minutes, seconds, remaining and "Remaining" or "")
+end
 
-	return sim.sessionTimeLeft <= 0 and "--" or timeLeftString
+function SimUtils.sessionTimeLeftString()
+	if SimUtils.session().durationMinutes == 0 then
+		if sim.raceSessionType == ac.SessionType.Race then
+			return string.format("%.0f laps left", SimUtils.session().laps - SimUtils.session().leaderCompletedLaps)
+		else
+			return SimUtils.timeToString(sim.currentSessionTime)
+		end
+	end
+
+	return sim.sessionTimeLeft <= 0 and "--" or SimUtils.timeToString(sim.sessionTimeLeft, true)
 end
 
 function SimUtils.sessionTotalTimeString()
-	return string.format(
-		"%s %s",
-		sessionLimits[sim.currentSessionIndex],
-		sessionTimed[sim.currentSessionIndex] and "min" or "laps"
-	)
+	if SimUtils.session().durationMinutes == 0 then
+		if sim.raceSessionType == ac.SessionType.Race then
+			return string.format("%.0f laps", SimUtils.session().laps)
+		else
+			return string.format("%.0f laps", car.lapCount)
+		end
+	end
+
+	return string.format("%.0f min", SimUtils.session().durationMinutes)
 end
 
 function SimUtils.sessionSkippable()
