@@ -1,4 +1,5 @@
 require("classes.SetupItem")
+require("classes.PitstopItem")
 
 local sim = ac.getSim()
 local car = ac.getCar(0)
@@ -8,423 +9,442 @@ local setupFixedFile = ac.getFolder(ac.FolderID.UserSetups) .. "\\server_temp.in
 local setupFixedINI = ac.INIConfig.load(setupFixedFile)
 local setupFixed = io.lastWriteTime(setupFixedFile) > os.time() - 10
 
+local gearSetupSpinners = {}
+local function createGearDefaults()
+        for i = 1, ac.getCar(0).gearCount do
+                gearSetupSpinners["INTERNAL_GEAR_" .. i] = { xPos = 0.5, yPos = i - 1, zeroDefault = false }
+        end
+        gearSetupSpinners["FINAL_RATIO"] = { xPos = 0.5, yPos = ac.getCar(0).gearCount, zeroDefault = false }
+end
+
+local electronicsDefaults = {}
+local electronicsIndex = 0
+local function createElectronicsDefaults()
+        if car.hasCockpitERSDelivery then
+                electronicsDefaults["MGUK_DELIVERY"] = { yPos = electronicsIndex }
+                electronicsIndex = electronicsIndex + 1
+        end
+
+        if car.hasCockpitERSRecovery then
+                electronicsDefaults["MGUK_RECOVERY"] = { yPos = electronicsIndex }
+                electronicsIndex = electronicsIndex + 1
+        end
+
+        if car.hasCockpitMGUHMode then
+                electronicsDefaults["MGUH_MODE"] = { yPos = electronicsIndex }
+                electronicsIndex = electronicsIndex + 1
+        end
+
+        if car.hasEngineBrakeSettings then
+                electronicsDefaults["BRAKE_ENGINE"] = { yPos = electronicsIndex }
+                electronicsIndex = electronicsIndex + 1
+        end
+
+        if car.absModes > 0 then
+                electronicsDefaults["ABS"] = { yPos = electronicsIndex }
+                electronicsIndex = electronicsIndex + 1
+        end
+
+        if car.tractionControlModes > 0 then
+                electronicsDefaults["TRACTION_CONTROL"] = { yPos = electronicsIndex }
+                electronicsIndex = electronicsIndex + 1
+        end
+
+        if car.tractionControl2Modes > 0 then
+                electronicsDefaults["TRACTION_CONTROL_2"] = { yPos = electronicsIndex }
+                electronicsIndex = electronicsIndex + 1
+        end
+end
+
 local pitstopsINI =
-	ac.INIConfig.load(string.format("%s\\%s", ac.getFolder(ac.FolderID.Root), "system\\cfg\\pitstop.ini"))
+        ac.INIConfig.load(string.format("%s\\%s", ac.getFolder(ac.FolderID.Root), "system\\cfg\\pitstop.ini"))
 local presetsCount = pitstopsINI:get("SETTINGS", "PRESETS_COUNT", 1)
 
-local pitstopSetupSpinners = {
-	["FUEL"] = { xPos = 0.5, yPos = 2, zeroDefault = true, label = "Add Liters" },
-	["COMPOUND"] = { xPos = 0.5, yPos = 3.5, zeroDefault = true },
-	["PRESSURE_LF"] = { xPos = 0, yPos = 5, zeroDefault = false },
-	["PRESSURE_RF"] = { xPos = 1, yPos = 5, zeroDefault = false },
-	["PRESSURE_LR"] = { xPos = 0, yPos = 6, zeroDefault = false },
-	["PRESSURE_RR"] = { xPos = 1, yPos = 6, zeroDefault = false },
-	-- ["WING_1"] = { xPos = 1, yPos = 8, zeroDefault = true },
-	-- ["WING_2"] = { xPos = 0, yPos = 8, zeroDefault = true },
+local pitstopStratItemDefaults = {
+        FUEL = { label = "Add Liters", units = "", xPos = 0.5, yPos = 2, default = 0 },
+        COMPOUND = { label = "Compound", units = "", xPos = 0.5, yPos = 3.5, default = -1 },
+        PRESSURE_LF = { label = "Pressure LF", units = "psi", xPos = 0, yPos = 5 },
+        PRESSURE_RF = { label = "Pressure RF", units = "psi", xPos = 1, yPos = 5 },
+        PRESSURE_LR = { label = "Pressure LR", units = "psi", xPos = 0, yPos = 6 },
+        PRESSURE_RR = { label = "Pressure RR", units = "psi", xPos = 1, yPos = 6 },
+        WING_1 = {
+                label = setupINI:get("WING_1", "NAME", "WING_1"),
+                units = "",
+                xPos = 1,
+                yPos = 8,
+                default = 0,
+        },
+        WING_2 = {
+                label = setupINI:get("WING_2", "NAME", "WING_2"),
+                units = "",
+                xPos = 0,
+                yPos = 8,
+                default = 0,
+        },
 }
 
-local gearSetupSpinners = {}
+local function createPitstopStratItems()
+        local pitstopStratItems = {}
 
-for i = 1, ac.getCar(0).gearCount do
-	gearSetupSpinners["INTERNAL_GEAR_" .. i] = { xPos = 0.5, yPos = i - 1, zeroDefault = false }
+        for preset = 1, presetsCount do
+                for psItemIndex, psItem in ipairs(ac.getPitstopSpinners()) do
+                        local id = psItem.name
+                        local index = psItemIndex
+                        local tab = "PITSTOP STRATEGY"
+                        local name = pitstopStratItemDefaults[id].label
+                        local min = psItem.min
+                        local max = psItem.max
+                        local step = 1
+                        local multiplier = 1
+                        local units = pitstopStratItemDefaults[id].units or ""
+                        local format = "%.0f " .. units
+                        local items = nil
+                        local xPos = pitstopStratItemDefaults[id].xPos
+                        local yPos = pitstopStratItemDefaults[id].yPos
+                        local default = pitstopStratItemDefaults[id].default and pitstopStratItemDefaults[id].default
+                                or ac.getSetupSpinnerValue(id, 0)
+
+                        if id == "COMPOUND" then
+                                items = {}
+
+                                format = "%s"
+
+                                items[0] = "NO CHANGE"
+
+                                for i = 1, psItem.max do
+                                        items[i] = ac.getTyresLongName(0, i - 1)
+                                end
+                                items[#items + 1] = "Over Index!"
+                                items[#items + 1] = "Over Index!"
+                        end
+
+                        table.insert(
+                                pitstopStratItems,
+                                PitstopItem(
+                                        id,
+                                        index,
+                                        preset - 1,
+                                        name,
+                                        min,
+                                        max,
+                                        step,
+                                        multiplier,
+                                        items,
+                                        format,
+                                        xPos,
+                                        yPos,
+                                        false,
+                                        default,
+                                        psItem.readOnly
+                                )
+                        )
+                end
+        end
+
+        table.insert(
+                pitstopStratItems,
+                PitstopItem(
+                        "PRESET",
+                        -1,
+                        -1,
+                        "Preset",
+                        1,
+                        presetsCount,
+                        1,
+                        1,
+                        {},
+                        "%.0f",
+                        0.5,
+                        0,
+                        true,
+                        1,
+                        1 == presetsCount
+                )
+        )
+
+        return pitstopStratItems
 end
-gearSetupSpinners["FINAL_RATIO"] = { xPos = 0.5, yPos = ac.getCar(0).gearCount, zeroDefault = false }
+createPitstopStratItems()
 
+local populatedTabs = {}
+local pairedItems = {}
+local setupSpinners = {}
 local function loadSetupSpinners()
-	local populatedTabs = {}
-	local pairedItems = {}
-	local setupSpinners = {}
+        createElectronicsDefaults()
+        createGearDefaults()
 
-	local electronicsSetupItems = {}
+        for i in ipairs(setupSpinners) do
+                setupSpinners[i] = nil
+        end
 
-	if car.hasCockpitERSDelivery then
-		table.insert(electronicsSetupItems, "MGUK_DELIVERY")
-	end
+        for _, v in pairs(ac.getSetupSpinners()) do
+                local id = v.name
+                local tab = setupINI:get(id, "TAB", "")
+                local name = v.label
+                local min = v.min
+                local max = v.max
+                local step = v.step
+                local multiplier = v.displayMultiplier or 1
+                local units = v.units or ""
+                local format = (multiplier == 1 and "%.0f " or "%.2f ") .. (units == "%" and "%%" or units)
+                local items = v.items or {}
+                local xPos = setupINI:get(id, "POS_X", 0.5)
+                local yPos = setupINI:get(id, "POS_Y", 0)
 
-	if car.hasCockpitERSRecovery then
-		table.insert(electronicsSetupItems, "MGUK_RECOVERY")
-	end
+                for i in ipairs(items) do
+                        if string.find(items[i], "%%") then items[i] = string.replace(items[i], "%", "%%") end
+                end
 
-	if car.hasCockpitMGUHMode then
-		table.insert(electronicsSetupItems, "MGUH_MODE")
-	end
+                if electronicsDefaults[id] then
+                        tab = "ELECTRONICS"
+                        yPos = electronicsDefaults[id].yPos
+                end
 
-	if car.hasEngineBrakeSettings then
-		table.insert(electronicsSetupItems, "BRAKE_ENGINE")
-	end
+                if tab == "ELECTRONICS" then yPos = math.round(yPos) end
 
-	if car.absModes > 0 then
-		table.insert(electronicsSetupItems, "ABS")
-	end
+                if id == "COMPOUND" then
+                        tab = "TYRES"
+                        min = 0
+                        max = #items - 1
+                end
 
-	if car.tractionControlModes > 0 then
-		table.insert(electronicsSetupItems, "TRACTION_CONTROL")
-	end
+                if id == "GEARSET" then
+                        name = "GEAR SET"
+                        tab = "GEARS"
+                        min = 0
+                        max = #items - 1
+                end
 
-	if car.tractionControl2Modes > 0 then
-		table.insert(electronicsSetupItems, "TRACTION_CONTROL_2")
-	end
+                if gearSetupSpinners[id] then
+                        tab = "GEARS"
+                        xPos = gearSetupSpinners[id].xPos
+                        yPos = gearSetupSpinners[id].yPos
+                end
 
-	for i in ipairs(setupSpinners) do
-		setupSpinners[i] = nil
-	end
+                if id == "FUEL" then tab = "FUEL" end
 
-	for _, v in pairs(ac.getSetupSpinners()) do
-		local id = v.name
-		local tab = setupINI:get(id, "TAB", "")
-		local name = v.label
-		local min = v.min
-		local max = v.max
-		local step = v.step
-		local multiplier = v.displayMultiplier or 1
-		local units = v.units or ""
-		local format = (multiplier == 1 and "%.0f " or "%.2f ") .. (units == "%" and "%%" or units)
-		local items = v.items or {}
-		local xPos = setupINI:get(id, "POS_X", 0.5)
-		local yPos = setupINI:get(id, "POS_Y", 0)
+                if tab == "GEARS" then xPos = 1 end
 
-		for i in ipairs(items) do
-			if string.find(items[i], "%%") then
-				items[i] = string.replace(items[i], "%", "%%")
-			end
-		end
+                local fixed = setupFixed and sim.isOnlineRace and setupFixedINI:get(id, "VALUE", -12345) ~= -12345
 
-		table.findFirst(electronicsSetupItems, function(item, index, callbackData)
-			if id == item then
-				tab = "ELECTRONICS"
+                if not table.contains(populatedTabs, tab) then table.insert(populatedTabs, tab) end
 
-				yPos = index - 1
-			end
-		end)
+                local uid = bit.tohex(ac.checksumXXH(stringify({ tab, xPos, yPos })))
 
-		if tab == "ELECTRONICS" then
-			yPos = math.round(yPos)
-		end
+                table.insert(
+                        setupSpinners,
+                        SetupItem(
+                                id,
+                                tab,
+                                name,
+                                min,
+                                max,
+                                step,
+                                multiplier,
+                                items,
+                                format,
+                                xPos,
+                                yPos,
+                                uid,
+                                false,
+                                nil,
+                                fixed or v.readOnly
+                        )
+                )
 
-		if id == "COMPOUND" then
-			tab = "TYRES"
-			min = 0
-			max = #items - 1
-		end
+                if not pairedItems[uid] then
+                        pairedItems[uid] = { id }
+                else
+                        table.insert(pairedItems[uid], 1, id)
+                end
+        end
 
-		if id == "GEARSET" then
-			name = "GEAR SETS"
-			tab = "GEARS"
-			min = 0
-			max = #items - 1
-		end
+        for uid, uidPairs in pairs(pairedItems) do
+                if #uidPairs > 1 then
+                        for _, parent in pairs(setupSpinners) do
+                                if parent.uid == uid then
+                                        if parent.id == uidPairs[1] then
+                                                parent.idPairs = uidPairs
+                                        else
+                                                parent.child = true
+                                        end
+                                end
+                        end
+                end
+        end
 
-		if gearSetupSpinners[id] then
-			tab = "GEARS"
-			xPos = gearSetupSpinners[id].xPos
-			yPos = gearSetupSpinners[id].yPos
-		end
-
-		if id == "FUEL" then
-			tab = "FUEL"
-		end
-
-		if tab == "GEARS" then
-			xPos = 1
-		end
-
-		local fixed = setupFixed and sim.isOnlineRace and setupFixedINI:get(id, "VALUE", -12345) ~= -12345
-
-		if not table.contains(populatedTabs, tab) then
-			table.insert(populatedTabs, tab)
-		end
-
-		local uid = bit.tohex(ac.checksumXXH(stringify({ tab, xPos, yPos })))
-
-		table.insert(
-			setupSpinners,
-			SetupItem(
-				id,
-				tab,
-				name,
-				min,
-				max,
-				step,
-				multiplier,
-				items,
-				format,
-				xPos,
-				yPos,
-				uid,
-				false,
-				nil,
-				fixed or v.readOnly
-			)
-		)
-
-		local insertedNoChange = false
-		if pitstopSetupSpinners[id] then
-			for i = 1, presetsCount do
-				if not insertedNoChange and id == "COMPOUND" then
-					items = table.clone(items, true)
-					table.insert(items, 1, "No Change")
-					max = #items - 1
-					insertedNoChange = true
-				end
-
-				if id == "WING_1" or id == "WING_2" then
-					min = -(max - min) * 2
-					max = -min
-				end
-
-				table.insert(
-					setupSpinners,
-					SetupItem(
-						id .. "_PRESET_" .. i - 1,
-						"PITSTOP STRATEGY",
-						name,
-						min,
-						max,
-						step,
-						multiplier,
-						items,
-						format,
-						pitstopSetupSpinners[v.name].xPos,
-						pitstopSetupSpinners[v.name].yPos,
-						bit.tohex(ac.checksumXXH(stringify({
-							"PITSTOP STRATEGY",
-							pitstopSetupSpinners[v.name].xPos,
-							pitstopSetupSpinners[v.name].yPos,
-						}))),
-						true,
-						pitstopSetupSpinners[v.name].zeroDefault and 0 or v.value
-					)
-				)
-			end
-		end
-
-		if not pairedItems[uid] then
-			pairedItems[uid] = { id }
-		else
-			table.insert(pairedItems[uid], 1, id)
-		end
-	end
-
-	table.insert(
-		setupSpinners,
-		SetupItem(
-			"PRESET",
-			"PITSTOP STRATEGY",
-			"PRESET",
-			1,
-			presetsCount,
-			1,
-			1,
-			{},
-			"%.0f",
-			0.5,
-			0,
-			bit.tohex(ac.checksumXXH(stringify({
-				"PITSTOP STRATEGY",
-				0.5,
-				0,
-			}))),
-			true,
-			1
-		)
-	)
-
-	for uid, uidPairs in pairs(pairedItems) do
-		if #uidPairs > 1 then
-			for _, parent in pairs(setupSpinners) do
-				if parent.uid == uid then
-					if parent.id == uidPairs[1] then
-						parent.idPairs = uidPairs
-					else
-						parent.child = true
-					end
-				end
-			end
-		end
-	end
-
-	return setupSpinners
+        return setupSpinners
 end
 
 SetupTab = class("SetupTab")
 
 function SetupTab:initialize(name)
-	self.name = name
-	self.setupSpinners = {}
+        self.name = name
+        self.setupSpinners = {}
 end
 
 SetupManager = class("SetupManager")
 
 function SetupManager:initialize()
-	self._setupSpinners = loadSetupSpinners()
-	self._defaultTabNames = { "ELECTRONICS", "PITSTOP STRATEGY", "FUEL", "TYRES", "GEARS", "APPS" }
-	self._tabNames = {}
-	self._tabCount = 0
-	self._defaultSetup = ac.stringifyCurrentSetup()
+        self._setupSpinners = loadSetupSpinners()
+        self._pitSpinners = createPitstopStratItems()
+        self._defaultTabNames = { "ELECTRONICS", "PITSTOP STRATEGY", "FUEL", "TYRES", "GEARS", "APPS" }
+        self._tabNames = {}
+        self._tabCount = 0
+        self._defaultSetup = ac.stringifyCurrentSetup()
 
-	for k, _ in pairs(setupINI.sections) do
-		local tabName = setupINI:get(k, "TAB", "")
+        for k, _ in pairs(setupINI.sections) do
+                local tabName = setupINI:get(k, "TAB", "")
 
-		if tabName ~= "" and not table.contains(self._defaultTabNames, tabName) then
-			table.insert(self._tabNames, tabName)
-		end
-	end
+                if tabName ~= "" and not table.contains(self._defaultTabNames, tabName) then
+                        table.insert(self._tabNames, tabName)
+                end
+        end
 
-	self._tabNames = table.distinct(self._tabNames)
-	table.removeItem(self._tabNames, "")
-	table.sort(self._tabNames)
+        self._tabNames = table.distinct(self._tabNames)
+        table.removeItem(self._tabNames, "")
+        table.sort(self._tabNames)
 
-	for i = 1, #self._defaultTabNames do
-		local tab = self._defaultTabNames[i]
-		table.insert(self._tabNames, 1, tab)
-	end
+        for i = 1, #self._defaultTabNames do
+                local tab = self._defaultTabNames[i]
+                table.insert(self._tabNames, 1, tab)
+        end
 
-	self.setupTabs = {}
+        self.setupTabs = {}
 
-	for i = 1, #self._tabNames do
-		table.insert(self.setupTabs, SetupTab(self._tabNames[i]))
-	end
+        for i = 1, #self._tabNames do
+                table.insert(self.setupTabs, SetupTab(self._tabNames[i]))
+        end
 
-	for k, v in pairs(self._setupSpinners) do
-		for i in ipairs(self.setupTabs) do
-			if self.setupTabs[i].name == v.tab then
-				table.insert(self.setupTabs[i].setupSpinners, self._setupSpinners[k])
-			end
-		end
-	end
+        for k, v in pairs(self._setupSpinners) do
+                for i in ipairs(self.setupTabs) do
+                        if self.setupTabs[i].name == v.tab then
+                                table.insert(self.setupTabs[i].setupSpinners, self._setupSpinners[k])
+                        end
+                end
+        end
 
-	for _, v in pairs(self.setupTabs) do
-		if
-			v.name ~= "SETUP I/O"
-			and v.name ~= "PITSTOP STRATEGY"
-			and v.name ~= "GEARS"
-			and #v.setupSpinners == 0
-			and v.name ~= "APPS"
-		then
-			table.removeItem(self.setupTabs, v)
-		else
-			self._tabCount = self._tabCount + 1
-		end
-	end
+        for _, v in pairs(self.setupTabs) do
+                if
+                        v.name ~= "SETUP I/O"
+                        and v.name ~= "PITSTOP STRATEGY"
+                        and v.name ~= "GEARS"
+                        and #v.setupSpinners == 0
+                        and v.name ~= "APPS"
+                then
+                        table.removeItem(self.setupTabs, v)
+                else
+                        self._tabCount = self._tabCount + 1
+                end
+        end
 
-	self.savedSetupDir = ac.getFolder(ac.FolderID.UserSetups) .. "\\" .. ac.getCarID(0)
+        self.savedSetupDir = ac.getFolder(ac.FolderID.UserSetups) .. "\\" .. ac.getCarID(0)
 
-	self._history = {}
-	self._history_pos = 0
+        self._history = {}
+        self._history_pos = 0
 
-	self:makeUndo()
+        self:makeUndo()
 end
 
-function SetupManager:resetSetup()
-	self:LoadStuff(self._defaultSetup)
-end
+function SetupManager:resetSetup() self:LoadStuff(self._defaultSetup) end
 
-function SetupManager:tabCount()
-	return self._tabCount
-end
+function SetupManager:tabCount() return self._tabCount end
 
 function SetupManager:LoadStuff(tbl)
-	ac.loadSetup(tbl)
+        ac.loadSetup(tbl)
 
-	for _, v in pairs(self._setupSpinners) do
-		if v.mirrored then
-			if ac.getSetupSpinnerValue(v.idMirror) ~= ac.getSetupSpinnerValue(v.id) then
-				v.mirrored = false
-			end
-		end
+        for _, v in pairs(self._setupSpinners) do
+                if v.mirrored then
+                        if ac.getSetupSpinnerValue(v.idMirror) ~= ac.getSetupSpinnerValue(v.id) then
+                                v.mirrored = false
+                        end
+                end
 
-		v:setValue(ac.getSetupSpinnerValue(v.id, v.default))
-	end
+                v:setValue(ac.getSetupSpinnerValue(v.id, v.default))
+        end
 
-	self:loadPitstopStrategy(tbl)
+        self:loadPitstopStrategy(tbl)
 end
 
 function SetupManager:loadPitstopStrategy(file)
-	local spFileString = string.replace(file, ".ini", ".sp")
+        local spFileString = string.replace(file, ".ini", ".sp")
 
-	if not io.fileExists(spFileString) then
-		return
-	end
+        if not io.fileExists(spFileString) then return end
 
-	local tempSpFile = ac.INIConfig.load(spFileString)
+        local tempSpFile = ac.INIConfig.load(spFileString)
 
-	for k, v in ipairs(self._setupSpinners) do
-		if string.find(v.id, "_PRESET_") then
-			local preset = string.split(v.id, "_PRESET_")[2]
-			local newValue = tempSpFile:get("PRESET_" .. preset, v.id:gsub("_PRESET_" .. preset, ""), v.default)
-			v:setValue(v.id:gsub("_PRESET_" .. preset, "") == "COMPOUND" and newValue + 1 or newValue)
-		end
-	end
+        for _, spinner in ipairs(self._pitSpinners) do
+                if spinner.index ~= -1 then
+                        local preset = spinner.preset
+                        local newValue = tempSpFile:get(
+                                "PRESET_" .. preset,
+                                spinner.id:gsub("_PRESET_" .. preset, ""),
+                                spinner.default
+                        )
+                        spinner:setValue(spinner.id == "COMPOUND" and newValue + 1 or newValue)
+                end
+        end
 end
 
 function SetupManager:saveSetup(file)
-	ac.saveCurrentSetup(file)
+        ac.saveCurrentSetup(file)
 
-	local spFileString = string.replace(file, ".ini", ".sp")
-	local tempSpFile = ac.INIConfig.load(spFileString)
+        local spFileString = string.replace(file, ".ini", ".sp")
+        local tempSpFile = ac.INIConfig.load(spFileString)
 
-	for k, v in ipairs(self._setupSpinners) do
-		if string.find(v.id, "_PRESET_") then
-			local preset = string.split(v.id, "_PRESET_")[2]
-			local setValue = string.find(v.id, "COMPOUND") and v.value - 1 or v.value
+        for _, spinner in ipairs(self._pitSpinners) do
+                if spinner.index ~= -1 then
+                        local preset = spinner.preset
+                        local setValue = string.find(spinner.id, "COMPOUND") and spinner.value - 1 or spinner.value
 
-			tempSpFile:set("PRESET_" .. preset, v.id:gsub("_PRESET_" .. preset, ""), setValue)
-		end
-	end
+                        tempSpFile:set("PRESET_" .. preset, spinner.id:gsub("_PRESET_" .. preset, ""), setValue)
+                end
+        end
 
-	tempSpFile:save(spFileString)
-end
-
-function SetupManager:applyPitstopStrategy()
-	sm:saveSetup(self.savedSetupDir .. "\\_temp.ini")
-	ac.loadSetup(self.savedSetupDir .. "\\_temp.ini")
+        tempSpFile:save(spFileString)
 end
 
 function SetupManager:undo()
-	if self._history_pos > 1 then
-		self._history_pos = self._history_pos - 1
-		self:LoadStuff(self._history[self._history_pos])
-	end
+        if self._history_pos > 1 then
+                self._history_pos = self._history_pos - 1
+                self:LoadStuff(self._history[self._history_pos])
+        end
 end
 
 function SetupManager:isUndoAvailable()
-	if self._history_pos > 1 then
-		return true
-	end
-	return false
+        if self._history_pos > 1 then return true end
+        return false
 end
 
 function SetupManager:redo()
-	if self._history_pos < #self._history then
-		self._history_pos = self._history_pos + 1
-		self:LoadStuff(self._history[self._history_pos])
-	end
+        if self._history_pos < #self._history then
+                self._history_pos = self._history_pos + 1
+                self:LoadStuff(self._history[self._history_pos])
+        end
 end
 
 function SetupManager:isRedoAvailable()
-	if self._history_pos < #self._history then
-		return true
-	end
-	return false
+        if self._history_pos < #self._history then return true end
+        return false
 end
 
 function SetupManager:cleanUndoHistory()
-	for i = #self._history, self._history_pos + 1, -1 do
-		table.remove(self._history, i)
-	end
+        for i = #self._history, self._history_pos + 1, -1 do
+                table.remove(self._history, i)
+        end
 end
 
 function SetupManager:makeUndo()
-	local tmp = ac.stringifyCurrentSetup()
+        local tmp = ac.stringifyCurrentSetup()
 
-	self:cleanUndoHistory()
+        self:cleanUndoHistory()
 
-	table.insert(self._history, self._history_pos + 1, tmp)
-	self._history_pos = #self._history
+        table.insert(self._history, self._history_pos + 1, tmp)
+        self._history_pos = #self._history
 end
 
 function SetupManager:resetUndo()
-	self._history = {}
-	self._history_pos = 0
-	self:makeUndo()
+        self._history = {}
+        self._history_pos = 0
+        self:makeUndo()
 end
