@@ -44,13 +44,12 @@ ui.onExclusiveHUD(function(mode)
         modeLast = mode
 end)
 
+ac.setWindowOpen("main", true)
 local windowTimeSync = 0
 function script.main()
         if not app.state.hasAppOpened then app.state.hasAppOpened = true end
-
         windowTimeSync = os.clock()
 end
-ac.setWindowOpen("main", true)
 
 teleportPitsCallback = nil
 function script.update(dt)
