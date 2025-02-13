@@ -12,10 +12,10 @@ local prevClickIn = false
 local prevClickOut = false
 
 local ersMapper = ac.connect({
-	ac.StructItem.key("ERS_MAPPER"),
-	connected = ac.StructItem.boolean(),
-	trackMapCanvasHandle = ac.StructItem.int64(),
-	ersMapCanvasHandle = ac.StructItem.int64(),
+        ac.StructItem.key("ERS_MAPPER"),
+        connected = ac.StructItem.boolean(),
+        trackMapCanvasHandle = ac.StructItem.int64(),
+        ersMapCanvasHandle = ac.StructItem.int64(),
 }, true, ac.SharedNamespace.CarDisplay)
 
 local drsIni = ac.INIConfig.trackData("drs_zones.ini")
@@ -26,21 +26,21 @@ local endLines = {}
 
 local zoneCount = 0
 for index, section in drsIni:iterate("ZONE") do
-	index = index - 1
-	detectionLines[index] = drsIni:get(section, "DETECTION", -1)
-	startLines[index] = drsIni:get(section, "START", -1)
-	endLines[index] = drsIni:get(section, "END", -1)
+        index = index - 1
+        detectionLines[index] = drsIni:get(section, "DETECTION", -1)
+        startLines[index] = drsIni:get(section, "START", -1)
+        endLines[index] = drsIni:get(section, "END", -1)
 
-	zoneCount = zoneCount + 1
+        zoneCount = zoneCount + 1
 
-	drsZonesPresent = true
+        drsZonesPresent = true
 end
 
 local colors = {
-	kDeploy = rgbm.colors.aqua,
-	hDeploy = rgbm(1, 0.2, 0.2, 1),
-	drs = rgbm(0.4, 1, 0.4, 0.85),
-	trackSplits = rgbm.colors.transparent,
+        kDeploy = rgbm.colors.aqua,
+        hDeploy = rgbm(1, 0.2, 0.2, 1),
+        drs = rgbm(0.4, 1, 0.4, 0.85),
+        trackSplits = rgbm.colors.transparent,
 }
 
 local scale = 12
@@ -53,29 +53,21 @@ local worldCoordXMax = nil
 local worldCoordZMin = nil
 local worldCoordZMax = nil
 for i = 0, points do
-	local splineStep = i / points
-	local worldCoord = ac.trackProgressToWorldCoordinate(splineStep)
+        local splineStep = i / points
+        local worldCoord = ac.trackProgressToWorldCoordinate(splineStep)
 
-	if not worldCoordXMin or worldCoord.x < worldCoordXMin then
-		worldCoordXMin = worldCoord.x
-	end
+        if not worldCoordXMin or worldCoord.x < worldCoordXMin then worldCoordXMin = worldCoord.x end
 
-	if not worldCoordXMax or worldCoord.x > worldCoordXMax then
-		worldCoordXMax = worldCoord.x
-	end
+        if not worldCoordXMax or worldCoord.x > worldCoordXMax then worldCoordXMax = worldCoord.x end
 
-	if not worldCoordZMin or worldCoord.z < worldCoordZMin then
-		worldCoordZMin = worldCoord.z
-	end
+        if not worldCoordZMin or worldCoord.z < worldCoordZMin then worldCoordZMin = worldCoord.z end
 
-	if not worldCoordZMax or worldCoord.z > worldCoordZMax then
-		worldCoordZMax = worldCoord.z
-	end
+        if not worldCoordZMax or worldCoord.z > worldCoordZMax then worldCoordZMax = worldCoord.z end
 end
 
 local xScale = false
 if math.abs(worldCoordXMax - worldCoordXMin) / 1024 > math.abs(worldCoordZMax - worldCoordZMin) / 1024 then
-	xScale = true
+        xScale = true
 end
 
 scale = math.max((math.abs(worldCoordXMax - worldCoordXMin)) / 768, (math.abs(worldCoordZMax - worldCoordZMin)) / 768)
@@ -86,11 +78,11 @@ local trackWidth = math.abs(worldCoordXMax - worldCoordXMin) / scale
 local trackHeight = math.abs(worldCoordZMax - worldCoordZMin) / scale
 
 if xScale then
-	xOffset = -xCoordMin + (768 - trackWidth) + 128
-	yOffset = -yCoordMin + (1024 - trackHeight) / 2
+        xOffset = -xCoordMin + (768 - trackWidth) + 128
+        yOffset = -yCoordMin + (1024 - trackHeight) / 2
 else
-	xOffset = -xCoordMin + (1024 - trackWidth) / 2
-	yOffset = -yCoordMin + (768 - trackHeight) + 128
+        xOffset = -xCoordMin + (1024 - trackWidth) / 2
+        yOffset = -yCoordMin + (768 - trackHeight) + 128
 end
 
 local mapCanvas = ui.ExtraCanvas(1024)
@@ -107,58 +99,54 @@ ersCanvas:setName("ers_map")
 
 local trackMapResolution = 5000
 local function drawMapSection(point1, point2, color, thickness)
-	for i = point1 * trackMapResolution, point2 * trackMapResolution do
-		local splineStep = i / points
-		local worldCoord = ac.trackProgressToWorldCoordinate(splineStep) / scale
+        for i = point1 * trackMapResolution, point2 * trackMapResolution do
+                local splineStep = i / points
+                local worldCoord = ac.trackProgressToWorldCoordinate(splineStep) / scale
 
-		ui.pathLineTo(vec2(worldCoord.x + xOffset, worldCoord.z + yOffset))
-	end
-	ui.pathStroke(color, false, thickness)
+                ui.pathLineTo(vec2(worldCoord.x + xOffset, worldCoord.z + yOffset))
+        end
+        ui.pathStroke(color, false, thickness)
 end
 
 local function updateMapSection(start, finish, color, thickness)
-	if start == finish then
-		return
-	end
+        if start == finish then return end
 
-	if finish < start then
-		drawMapSection(start, 1, color, thickness)
-		drawMapSection(0, finish, color, thickness)
-	else
-		drawMapSection(start, finish, color, thickness)
-	end
+        if finish < start then
+                drawMapSection(start, 1, color, thickness)
+                drawMapSection(0, finish, color, thickness)
+        else
+                drawMapSection(start, finish, color, thickness)
+        end
 end
 
 local function drawStartFinishLineMarker()
-	updateMapSection(sim.lapSplits[0] - 0.001, sim.lapSplits[0] + 0.001, rgbm.colors.white, 45)
+        updateMapSection(sim.lapSplits[0] - 0.001, sim.lapSplits[0] + 0.001, rgbm.colors.white, 45)
 end
 
 local function drawDrsMarkers()
-	for i = 0, zoneCount - 1 do
-		local drsDetectionLine = detectionLines[i]
-		local drsStartLine = startLines[i]
-		local drsEndLine = endLines[i]
+        for i = 0, zoneCount - 1 do
+                local drsDetectionLine = detectionLines[i]
+                local drsStartLine = startLines[i]
+                local drsEndLine = endLines[i]
 
-		updateMapSection(drsDetectionLine - 0.001, drsDetectionLine + 0.001, colors.drs, 45)
-		updateMapSection(drsStartLine, drsEndLine, colors.drs, 24)
-	end
+                updateMapSection(drsDetectionLine - 0.001, drsDetectionLine + 0.001, colors.drs, 45)
+                updateMapSection(drsStartLine, drsEndLine, colors.drs, 24)
+        end
 end
 
 local function drawTrack()
-	updateMapSection(0, 1, rgbm.colors.black, 15)
-	updateMapSection(0, 1, rgbm.colors.white, 5)
+        updateMapSection(0, 1, rgbm.colors.black, 15)
+        updateMapSection(0, 1, rgbm.colors.white, 5)
 end
 
 local function updateMapCanvas()
-	drawStartFinishLineMarker()
-	drawDrsMarkers()
-	drawTrack()
+        drawStartFinishLineMarker()
+        drawDrsMarkers()
+        drawTrack()
 end
 
 function drawMapCanvas()
-	mapCanvas:clear(rgbm.colors.transparent):update(function(dt)
-		updateMapCanvas()
-	end)
+        mapCanvas:clear(rgbm.colors.transparent):update(function(dt) updateMapCanvas() end)
 end
 
 drawMapCanvas()
@@ -285,61 +273,61 @@ local currentPanMapY = 80
 local currentZoom = 0.8
 
 function drawMap()
-	local mapWidth = ui.windowWidth()
-	local mapHeight = ui.windowHeight()
-	-- local targetPanMapX = ac.getSetupSpinnerValue(setupIDToSectionKeyMap["ERS_MAP_X"])
-	-- local targetPanMapY = ac.getSetupSpinnerValue(setupIDToSectionKeyMap["ERS_MAP_Y"])
-	-- local targetZoom = ac.getSetupSpinnerValue(setupIDToSectionKeyMap["ERS_MAP_ZOOM"]) / 1000
+        local mapWidth = ui.windowWidth()
+        local mapHeight = ui.windowHeight()
+        -- local targetPanMapX = ac.getSetupSpinnerValue(setupIDToSectionKeyMap["ERS_MAP_X"])
+        -- local targetPanMapY = ac.getSetupSpinnerValue(setupIDToSectionKeyMap["ERS_MAP_Y"])
+        -- local targetZoom = ac.getSetupSpinnerValue(setupIDToSectionKeyMap["ERS_MAP_ZOOM"]) / 1000
 
-	-- currentPanMapX = math.lerp(currentPanMapX, targetPanMapX - 680, 0.5)
-	-- currentPanMapY = math.lerp(currentPanMapY, targetPanMapY - 550, 0.5)
-	-- currentZoom = math.lerp(currentZoom, targetZoom, 0.5)
+        -- currentPanMapX = math.lerp(currentPanMapX, targetPanMapX - 680, 0.5)
+        -- currentPanMapY = math.lerp(currentPanMapY, targetPanMapY - 550, 0.5)
+        -- currentZoom = math.lerp(currentZoom, targetZoom, 0.5)
 
-	local mouseLocal = ui.mouseLocalPos()
+        local mouseLocal = ui.mouseLocalPos()
 
-	-- if mouseLocal > vec2(0, 0) and mouseLocal <= vec2(mapWidth, mapHeight) then
-	-- 	ui.newLine()
-	-- 	if not locked then
-	-- 		if ui.mouseWheel() ~= 0 then
-	-- 			local newZoom = ac.getSetupSpinnerValue(setupIDToSectionKeyMap["ERS_MAP_ZOOM"]) + ui.mouseWheel() * 10
-	-- 			ac.setSetupSpinnerValue(setupIDToSectionKeyMap["ERS_MAP_ZOOM"], newZoom)
+        -- if mouseLocal > vec2(0, 0) and mouseLocal <= vec2(mapWidth, mapHeight) then
+        -- 	ui.newLine()
+        -- 	if not locked then
+        -- 		if ui.mouseWheel() ~= 0 then
+        -- 			local newZoom = ac.getSetupSpinnerValue(setupIDToSectionKeyMap["ERS_MAP_ZOOM"]) + ui.mouseWheel() * 10
+        -- 			ac.setSetupSpinnerValue(setupIDToSectionKeyMap["ERS_MAP_ZOOM"], newZoom)
 
-	-- 			if (newZoom < 999 and ui.mouseWheel() > 0) or (newZoom > 356 and ui.mouseWheel() < 0) then
-	-- 				ac.setSetupSpinnerValue(setupIDToSectionKeyMap["ERS_MAP_X"], targetPanMapX - ui.mouseWheel() * 4)
-	-- 				ac.setSetupSpinnerValue(setupIDToSectionKeyMap["ERS_MAP_Y"], targetPanMapY - ui.mouseWheel() * 5.2)
-	-- 			end
-	-- 		else
-	-- 			if ui.isMouseDragging(ui.MouseButton.Middle) then
-	-- 				ui.setMouseCursor(ui.MouseCursor.ResizeAll)
-	-- 				local pan = ui.mouseDragDelta(ui.MouseButton.Middle)
-	-- 				ac.setSetupSpinnerValue(setupIDToSectionKeyMap["ERS_MAP_X"], targetPanMapX + pan.x)
-	-- 				ac.setSetupSpinnerValue(setupIDToSectionKeyMap["ERS_MAP_Y"], targetPanMapY + pan.y)
-	-- 				ui.resetMouseDragDelta(ui.MouseButton.Middle)
-	-- 			end
-	-- 		end
-	-- 	end
+        -- 			if (newZoom < 999 and ui.mouseWheel() > 0) or (newZoom > 356 and ui.mouseWheel() < 0) then
+        -- 				ac.setSetupSpinnerValue(setupIDToSectionKeyMap["ERS_MAP_X"], targetPanMapX - ui.mouseWheel() * 4)
+        -- 				ac.setSetupSpinnerValue(setupIDToSectionKeyMap["ERS_MAP_Y"], targetPanMapY - ui.mouseWheel() * 5.2)
+        -- 			end
+        -- 		else
+        -- 			if ui.isMouseDragging(ui.MouseButton.Middle) then
+        -- 				ui.setMouseCursor(ui.MouseCursor.ResizeAll)
+        -- 				local pan = ui.mouseDragDelta(ui.MouseButton.Middle)
+        -- 				ac.setSetupSpinnerValue(setupIDToSectionKeyMap["ERS_MAP_X"], targetPanMapX + pan.x)
+        -- 				ac.setSetupSpinnerValue(setupIDToSectionKeyMap["ERS_MAP_Y"], targetPanMapY + pan.y)
+        -- 				ui.resetMouseDragDelta(ui.MouseButton.Middle)
+        -- 			end
+        -- 		end
+        -- 	end
 
-	-- 	mapFocused = true
-	-- else
-	-- 	mapFocused = false
-	-- end
+        -- 	mapFocused = true
+        -- else
+        -- 	mapFocused = false
+        -- end
 
-	-- ui.beginRotation()
-	cui.setCursorX(currentPanMapX)
-	cui.setCursorY(currentPanMapY)
-	ui.image(mapCanvas, vec2(1024 * currentZoom, 1024 * currentZoom) * cui.scaleY())
-	cui.setCursorX(currentPanMapX)
-	cui.setCursorY(currentPanMapY)
-	ui.image(ersCanvas, vec2(1024 * currentZoom, 1024 * currentZoom) * cui.scaleY())
-	cui.setCursorX(currentPanMapX)
-	cui.setCursorY(currentPanMapY)
-	ui.image(ersSplitCanvas, vec2(1024 * currentZoom, 1024 * currentZoom) * cui.scaleY())
-	-- ui.endRotation(ac.getSetupSpinnerValue(setupIDToSectionKeyMap["ERS_MAP_ROTATION"]) / 100)
+        -- ui.beginRotation()
+        cui.setCursorX(currentPanMapX)
+        cui.setCursorY(currentPanMapY)
+        ui.image(mapCanvas, vec2(1024 * currentZoom, 1024 * currentZoom) * cui.scaleY())
+        cui.setCursorX(currentPanMapX)
+        cui.setCursorY(currentPanMapY)
+        ui.image(ersCanvas, vec2(1024 * currentZoom, 1024 * currentZoom) * cui.scaleY())
+        cui.setCursorX(currentPanMapX)
+        cui.setCursorY(currentPanMapY)
+        ui.image(ersSplitCanvas, vec2(1024 * currentZoom, 1024 * currentZoom) * cui.scaleY())
+        -- ui.endRotation(ac.getSetupSpinnerValue(setupIDToSectionKeyMap["ERS_MAP_ROTATION"]) / 100)
 
-	-- mapViewControls()
-	-- drawLegend()
+        -- mapViewControls()
+        -- drawLegend()
 
-	ersMapper.connected = true
+        ersMapper.connected = true
 end
 
 -- function drawScreenshotLegend()

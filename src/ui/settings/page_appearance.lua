@@ -9,9 +9,7 @@ local bottomBarButtons = {
         {
                 label = "BACK",
                 enabled = true,
-                func = function()
-                        pages:goToSettings()
-                end,
+                func = function() pages:goToSettings() end,
         },
         {
                 label = "APPLY",
@@ -30,21 +28,13 @@ local secondaryActive = false
 local tertiaryActive = false
 
 function page.draw()
-        ui.drawRectFilled(
-                vec2(0, 0),
-                vec2(ui.windowWidth(), ui.windowHeight()),
-                settings.Appearance.uiColor1 / 1.1
-        )
+        ui.drawRectFilled(vec2(0, 0), vec2(ui.windowWidth(), ui.windowHeight()), settings.Appearance.uiColor1 / 1.1)
 
         cui.pushWindowFitted("settings_appearance_window")
 
         topSubBar("/Settings/UI")
 
-        ui.drawRectFilled(
-                vec2(0, 0),
-                vec2(ui.windowWidth(), ui.windowHeight()),
-                settings.Appearance.uiColor1 / 1.1
-        )
+        ui.drawRectFilled(vec2(0, 0), vec2(ui.windowWidth(), ui.windowHeight()), settings.Appearance.uiColor1 / 1.1)
         ui.drawRectFilled(vec2(0, 2), vec2(ui.windowWidth(), ui.windowHeight()), rgbm(0, 0, 0, 0.2))
 
         ui.setCursorY(60)
@@ -60,8 +50,7 @@ function page.draw()
                 ui.slider("##ui_primary_slider", primaryOpacity * 100, 0, 100, "Opacity: %.0f%%")
 
         if primaryOpacityChanged then
-                settings.Appearance.uiColor1 =
-                        settings.Appearance.uiColor1:set(primaryColor, newPrimaryOpacity / 100)
+                settings.Appearance.uiColor1 = settings.Appearance.uiColor1:set(primaryColor, newPrimaryOpacity / 100)
         end
 
         ui.sameLine()
@@ -95,13 +84,8 @@ function page.draw()
         cui.setCursorX(210)
         ui.setNextItemWidth(275)
         local secondaryColor, secondaryOpacity = settings.Appearance.uiColor2:unpack()
-        local newSecondaryOpacity, secondaryOpacityChanged = ui.slider(
-                "##ui_secondary_slider",
-                secondaryOpacity * 100,
-                0,
-                100,
-                "Opacity: %.0f%%"
-        )
+        local newSecondaryOpacity, secondaryOpacityChanged =
+                ui.slider("##ui_secondary_slider", secondaryOpacity * 100, 0, 100, "Opacity: %.0f%%")
 
         if secondaryOpacityChanged then
                 settings.Appearance.uiColor2 =
@@ -109,13 +93,7 @@ function page.draw()
         end
 
         ui.sameLine()
-        if
-                ui.colorButton(
-                        "##secondary",
-                        settings.Appearance.uiColor2,
-                        ui.ColorPickerFlags.None
-                )
-        then
+        if ui.colorButton("##secondary", settings.Appearance.uiColor2, ui.ColorPickerFlags.None) then
                 secondaryActive = not secondaryActive
                 primaryActive = false
         end
@@ -149,8 +127,7 @@ function page.draw()
                 ui.slider("##ui_tertiary_slider", tertiaryOpacity * 100, 0, 100, "Opacity: %.0f%%")
 
         if tertiaryOpacityChanged then
-                settings.Appearance.uiColor3 =
-                        settings.Appearance.uiColor3:set(tertiaryColor, newtertiaryOpacity / 100)
+                settings.Appearance.uiColor3 = settings.Appearance.uiColor3:set(tertiaryColor, newtertiaryOpacity / 100)
         end
 
         ui.sameLine()

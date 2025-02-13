@@ -2,7 +2,7 @@ local app = require("app")
 local csp = require("csp")
 local cui = require("ui.cui")
 local settings = require("settings")
-local simutils = require("sim")
+local simutils = require("simutils")
 local style = require("style")
 local sim = ac.getSim()
 

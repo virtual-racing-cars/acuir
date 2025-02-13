@@ -7,9 +7,9 @@ local settings = require("settings")
 controls:initialize()
 
 local controlsINI = ac.INIConfig.load(ac.getFolder(ac.FolderID.Cfg) .. "\\controls.ini")
-ac.onControlSettingsChanged(function()
-        controlsINI = ac.INIConfig.load(ac.getFolder(ac.FolderID.Cfg) .. "\\controls.ini")
-end)
+ac.onControlSettingsChanged(
+        function() controlsINI = ac.INIConfig.load(ac.getFolder(ac.FolderID.Cfg) .. "\\controls.ini") end
+)
 
 -- local checkBoxSize = 20
 -- local checkBoxMargin = 5
@@ -37,50 +37,33 @@ local function checkbox(controlBinding)
                 vec2(selectedX + checkBoxSize, selectedY + checkBoxSize),
                 rgbm(0.175, 0.175, 0.175, 1)
         )
-        if
-                ui.modernButton(
-                        "##button" .. controlBinding.name,
-                        checkBoxSizeV,
-                        ui.ButtonFlags.None
-                )
-        then
+        if ui.modernButton("##button" .. controlBinding.name, checkBoxSizeV, ui.ButtonFlags.None) then
                 controlBinding:toggleMPS()
                 changed = true
         end
         if ui.itemHovered(ui.HoveredFlags.AllowWhenBlockedByActiveItem) then
-                ui.tooltip(function()
-                        ui.text(
-                                "Toggle binding modes from sequential\nand Multi-Position Switch (MPS)"
-                        )
-                end)
+                ui.tooltip(
+                        function() ui.text("Toggle binding modes from sequential\nand Multi-Position Switch (MPS)") end
+                )
         end
 
         if controlBinding.mpsToggle then
                 ui.sameLine()
                 ui.drawRectFilled(
                         vec2(selectedX + checkBoxMargin, selectedY + checkBoxMargin),
-                        vec2(
-                                selectedX + checkBoxSize - checkBoxMargin,
-                                selectedY + checkBoxSize - checkBoxMargin
-                        ),
+                        vec2(selectedX + checkBoxSize - checkBoxMargin, selectedY + checkBoxSize - checkBoxMargin),
                         rgbm.colors.white
                 )
 
                 if ac.getPatchVersionCode() > 2664 then
-                        if
-                                not controlBinding.buttonDown:disabled()
-                                or not controlBinding.buttonUp:disabled()
-                        then
+                        if not controlBinding.buttonDown:disabled() or not controlBinding.buttonUp:disabled() then
                                 controlBinding.buttonDown:setDisabled(true)
                                 controlBinding.buttonUp:setDisabled(true)
                         end
                 end
         else
                 if ac.getPatchVersionCode() > 2664 then
-                        if
-                                controlBinding.buttonDown:disabled()
-                                or controlBinding.buttonDown:disabled()
-                        then
+                        if controlBinding.buttonDown:disabled() or controlBinding.buttonDown:disabled() then
                                 controlBinding.buttonDown:setDisabled(false)
                                 controlBinding.buttonUp:setDisabled(false)
                         end
@@ -88,10 +71,7 @@ local function checkbox(controlBinding)
         end
 
         if ac.getPatchVersionCode() > 2664 then
-                if
-                        SETTINGS.disableBindDeactivation
-                        and (controlBinding:disabled() or controlBinding:disabled())
-                then
+                if SETTINGS.disableBindDeactivation and (controlBinding:disabled() or controlBinding:disabled()) then
                         controlBinding:setDisabled(true)
                         controlBinding:setDisabled(true)
                 end
@@ -144,9 +124,7 @@ local function helpInfoButton(controlBinding)
                 ui.pushStyleColor(ui.StyleColor.Button, rgbm(0, 0, 0, 0))
                 ui.iconButton(ui.Icons.Info, vec2(12, 12), rgbm.colors.white, nil, 1)
                 if ui.itemHovered(ui.HoveredFlags.AllowWhenBlockedByActiveItem) then
-                        ui.tooltip(function()
-                                ui.text(controlBinding.help)
-                        end)
+                        ui.tooltip(function() ui.text(controlBinding.help) end)
                 end
                 ui.popStyleColor(1)
         end
@@ -207,9 +185,7 @@ local function bindingDialog(name, bind)
                         rgbm.colors.red
                 )
 
-                if ui.keyPressed(ui.Key.Escape) then
-                        return true
-                end
+                if ui.keyPressed(ui.Key.Escape) then return true end
 
                 local button = controls:listener(2)
 
@@ -343,11 +319,7 @@ local function footerInfo()
         -- ui.drawSimpleLine(vec2(451, 600), vec2(351, 600), rgbm.colors.aqua)
         ui.setCursorY(ui.windowHeight() - 28)
         ui.setCursorX(0)
-        ui.textAligned(
-                "Info            Extended Physics            Lua    ",
-                vec2(0.5, 0),
-                vec2(ui.windowWidth())
-        )
+        ui.textAligned("Info            Extended Physics            Lua    ", vec2(0.5, 0), vec2(ui.windowWidth()))
         ui.setCursorY(ui.windowHeight() - 26)
         ui.setCursorX(130)
         ui.icon(ui.Icons.Info, vec2(12, 12), rgbm.colors.white, nil, 1)
@@ -417,9 +389,7 @@ function bindings:draw()
         ui.setCursor(0)
         local app = applicationControlsTabBar:draw(controls.apps)
         ui.newLine()
-        if not appsTabBars[app.name] then
-                appsTabBars[app.name] = TabBar()
-        end
+        if not appsTabBars[app.name] then appsTabBars[app.name] = TabBar() end
 
         drawAppControlsTabBar(app)
 

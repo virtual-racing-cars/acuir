@@ -18,9 +18,7 @@ local controls = {
 
 ac.reloadControlSettings()
 
-ac.onControlSettingsChanged(function()
-        controlsINI = ac.INIConfig.controlsConfig()
-end)
+ac.onControlSettingsChanged(function() controlsINI = ac.INIConfig.controlsConfig() end)
 
 -- local cfgInputGeneral = MappedConfig(ac.getFolder(ac.FolderID.ExtCfgUser) .. "/general.ini", {
 -- 	CONTROL = { NO_MOUSE_STEERING_FOR_INACTIVE = false },
@@ -50,21 +48,12 @@ local function controlsINIDefaults(bind, bindSection, key, default, isCMBind)
         if not bindSection[key] or bindSection[key][1] == "" or bindSection[key][1] == nil then
                 local initialValue = bindSection[key] and bindSection[key][1] or nil
 
-                if key == "NAME" then
-                        default = bind
-                end
+                if key == "NAME" then default = bind end
 
                 bindSection[key] = { default }
 
                 if initialValue ~= "" and not isCMBind and settings.General.developerMode then
-                        ac.log(
-                                "["
-                                        .. bind
-                                        .. "] Section is missing "
-                                        .. key
-                                        .. " key: Default value: "
-                                        .. default
-                        )
+                        ac.log("[" .. bind .. "] Section is missing " .. key .. " key: Default value: " .. default)
                 end
         end
 
@@ -121,9 +110,7 @@ local function getCarControls()
                 .. ac.getCarID(0)
                 .. "\\extension\\ext_car_controls.ini"
 
-        if not io.fileExists(carControlsFile) then
-                carControlsFile = ac.dirname() .. "\\cfg\\car_controls.ini"
-        end
+        if not io.fileExists(carControlsFile) then carControlsFile = ac.dirname() .. "\\cfg\\car_controls.ini" end
 
         local carControlsINI = ac.INIConfig.load(carControlsFile)
 
@@ -137,15 +124,11 @@ local function getAppControls()
         io.scanDir(luaDirectory, function(fileName, fileAttributes, callbackData)
                 local appDirectory = luaDirectory .. "\\" .. fileName
 
-                if not io.dirExists(appDirectory) then
-                        return
-                end
+                if not io.dirExists(appDirectory) then return end
 
                 local appControlsFile = appDirectory .. "\\ext_app_controls.ini"
 
-                if not io.fileExists(appControlsFile) then
-                        return
-                end
+                if not io.fileExists(appControlsFile) then return end
 
                 local appControlsINI = ac.INIConfig.load(appControlsFile)
 
@@ -250,33 +233,23 @@ local inputListeners = {
 function controls:listener(inputMethod)
         inputListeners[3]()
 
-        if inputMethod == 3 then
-                return
-        end
+        if inputMethod == 3 then return end
 
         return inputListeners[inputMethod]()
 end
 
 local function buttonString(button, buttonMod)
-        if button == -1 then
-                return ""
-        end
+        if button == -1 then return "" end
 
-        if buttonMod == -1 then
-                return string.format("Button %s", button)
-        end
+        if buttonMod == -1 then return string.format("Button %s", button) end
 
         return string.format("Button %s + Button %s", button, buttonMod)
 end
 
 local function keybindString(key, keyMod)
-        if not key or key == -1 then
-                return ""
-        end
+        if not key or key == -1 then return "" end
 
-        if not keyMod or keyMod == -1 then
-                return string.format("%s", key)
-        end
+        if not keyMod or keyMod == -1 then return string.format("%s", key) end
 
         return string.format("%s + %s", key, keyMod)
 end
@@ -320,9 +293,7 @@ local bindingBoxCon = {
         keyBoundTo,
 }
 
-function controls:boundTo(inputMethod, bind)
-        return bindingBoxCon[inputMethod](bind)
-end
+function controls:boundTo(inputMethod, bind) return bindingBoxCon[inputMethod](bind) end
 
 local inputMethods = {
         WHEEL = 1,
@@ -351,8 +322,7 @@ function controls:initialize()
                 for i in ipairs(inputDeviceKeys) do
                         local conIndex = controlsINI:get(string.upper(v[1]), inputDeviceKeys[i], -1)
                         if conIndex ~= -1 then
-                                local device =
-                                        controlsINI:get("CONTROLLERS", "CON%s" % conIndex, "")
+                                local device = controlsINI:get("CONTROLLERS", "CON%s" % conIndex, "")
 
                                 controls.boundDevices[k][2] = device
                         end

@@ -3,7 +3,7 @@ local page = {}
 local cui = require("ui.cui")
 local pages = require("ui.pages")
 local settings = require("settings")
-local simutils = require("sim")
+local simutils = require("simutils")
 local sim = ac.getSim()
 
 local acLogo = ac.getFolder(ac.FolderID.Root) .. "\\launcher\\themes\\default\\graphics\\btn_AC_logo.png"
