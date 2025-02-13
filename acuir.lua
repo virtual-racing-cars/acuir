@@ -5,6 +5,7 @@ require("audio")
 local app = require("app")
 local audio = require("audio")
 local csp = require("csp")
+local mod = require("install")
 local pages = require("ui.pages")
 local settings = require("settings")
 
