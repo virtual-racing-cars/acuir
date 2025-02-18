@@ -88,12 +88,12 @@ function mod:installMod(id, name, reason, downloadURL, cleanInstall)
         end)
 end
 
-mod:installMod(
-        "telemetrick",
-        "Telemetrick",
-        "Testing",
-        "https://github.com/WilliamGawlik/toolbox/releases/download/v0.0.1/telemetrick.zip",
-        false
-)
+-- mod:installMod(
+--         "telemetrick",
+--         "Telemetrick",
+--         "Testing",
+--         "https://github.com/WilliamGawlik/toolbox/releases/download/v0.0.1/telemetrick.zip",
+--         false
+-- )
 
 return mod

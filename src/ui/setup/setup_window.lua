@@ -102,7 +102,7 @@ local spinnerWidth = 600 * cui.scaleX()
 local spinnerHeight = 70 * cui.scaleY()
 
 local function drawSetupSpinner(sm, si)
-        if si.child then return end
+        if si.child or si.repair then return end
 
         si:run(true)
 

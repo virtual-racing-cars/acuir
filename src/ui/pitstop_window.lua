@@ -3,7 +3,7 @@ local settings = require("settings")
 local style = require("style")
 local sim = ac.getSim()
 
-local quickPitMenuFocused = true
+local quickPitMenuFocused = false
 
 local navControlToggleMenus = ac.ControlButton("ACUIR_COCKPIT_MENUS")
 local navControlRightButton =
@@ -90,6 +90,7 @@ end)
 navControlRightButton:onReleased(function() acCarControls.lookRight = false end)
 
 navControlDownButton:onPressed(function()
+        ac.log("hi")
         if not quickPitMenuFocused then acCarControls.lookBack = true end
 
         activeItemIndex = activeItemIndex < #ac.getPitstopSpinners() and activeItemIndex + 1 or 0
@@ -98,11 +99,12 @@ end)
 navControlDownButton:onReleased(function() acCarControls.lookBack = false end)
 
 navControlUpButton:onPressed(function()
-        if quickPitMenuFocused then return end
+        if not quickPitMenuFocused then return end
         activeItemIndex = activeItemIndex > 0 and activeItemIndex - 1 or #ac.getPitstopSpinners()
 end)
 
 ac.setWindowOpen("pitstopStrategyWidget", false)
+ac.disableQuickMenuPitstop(true)
 function script.pitstopStrategyWidget(dt)
         style:pushStyleMain()
         ac.disableQuickMenuPitstop(true)
@@ -157,14 +159,6 @@ function script.pitstopStrategyWidget(dt)
                         spinner:setValue(value)
                         ac.debug(spinner.name, spinner.value)
                 end
-        end
-
-        if navControlDownButton:pressed() then
-                activeItemIndex = activeItemIndex < #ac.getPitstopSpinners() and activeItemIndex + 1 or 0
-        end
-
-        if navControlUpButton:pressed() then
-                activeItemIndex = activeItemIndex > 0 and activeItemIndex - 1 or #ac.getPitstopSpinners()
         end
 
         style:popStyleMain()

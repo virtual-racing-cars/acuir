@@ -94,14 +94,23 @@ local pitstopStratItemDefaults = {
                 yPos = 8,
                 default = 0,
         },
-        REPAIR_BODY = { name = "Repair Body", nameAlt = "Body", tab = "Repair", repair = true },
+        REPAIR_BODY = { name = "Repair Body", nameAlt = "Body", tab = "Repair", repair = true, xPos = 0, yPos = -3 },
         REPAIR_SUSPENSION = {
                 name = "Repair Suspension",
                 nameAlt = "Suspension",
                 tab = "Repair",
                 repair = true,
+                xPos = 0,
+                yPos = -4,
         },
-        REPAIR_ENGINE = { name = "Repair Engine", nameAlt = "Engine", tab = "Repair", repair = true },
+        REPAIR_ENGINE = {
+                name = "Repair Engine",
+                nameAlt = "Engine",
+                tab = "Repair",
+                repair = true,
+                xPos = 0,
+                yPos = -5,
+        },
 }
 
 local function createPitstopStratItems()
