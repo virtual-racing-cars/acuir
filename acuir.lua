@@ -22,9 +22,6 @@ ui.onExclusiveHUD(function(mode)
         if mode == "menu" then
                 audio:driver(dt)
 
-                -- pages:goToTelemetry()
-                pages:goToSetup()
-
                 if modeLast ~= mode then pages:setParentMainMenu() end
 
                 modeLast = mode

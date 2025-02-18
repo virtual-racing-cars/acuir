@@ -233,17 +233,17 @@ local function saveSetupWindow(sm)
                 vec2Temp1:set(buttonWidth, iconButtonHeight)
         )
         ui.newLine()
-        ui.newLine()
+        -- ui.newLine()
 
-        ui.setCursorX(groupBegin)
-        saveSetup.description = cui.inputText(
-                "##SetupDescription",
-                "Description:",
-                saveSetup.description,
-                ui.InputTextFlags.None,
-                vec2Temp1:set(buttonWidth, iconButtonHeight)
-        )
-        ui.newLine()
+        -- ui.setCursorX(groupBegin)
+        -- saveSetup.description = cui.inputText(
+        --         "##SetupDescription",
+        --         "Description:",
+        --         saveSetup.description,
+        --         ui.InputTextFlags.None,
+        --         vec2Temp1:set(buttonWidth, iconButtonHeight)
+        -- )
+        -- ui.newLine()
 
         local setupFileExists = false
         if saveSetup.name ~= "" then
@@ -320,7 +320,7 @@ function setupIoDraw(sm)
 
         cui.contentWindow(
                 "setup_io_saved_setups",
-                vec2(0, ui.windowHeight() / 2),
+                vec2(0, (ui.windowHeight() / 4) * 3),
                 vec2(ui.windowWidth(), ui.windowHeight() / 2),
                 ui.WindowFlags.None,
                 function()
@@ -333,7 +333,7 @@ function setupIoDraw(sm)
         cui.contentWindow(
                 "load_setups",
                 vec2(0, 0),
-                vec2(ui.windowWidth(), ui.windowHeight() / 2),
+                vec2(ui.windowWidth(), (ui.windowHeight() / 4) * 3),
                 ui.WindowFlags.None,
                 function()
                         ui.setCursor(0)

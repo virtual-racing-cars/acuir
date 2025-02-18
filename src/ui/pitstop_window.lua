@@ -3,7 +3,7 @@ local settings = require("settings")
 local style = require("style")
 local sim = ac.getSim()
 
-local quickPitMenuFocused = false
+local quickPitMenuFocused = true
 
 local navControlToggleMenus = ac.ControlButton("ACUIR_COCKPIT_MENUS")
 local navControlRightButton =
@@ -16,10 +16,15 @@ local navControlUpButton =
         ac.ControlButton("ACUIR_COCKPIT_Y_UP", { keyboard = ac.KeyIndex.Up, gamepad = ac.GamepadButton.DPadUp })
 
 local activeItemIndex = 0
-local function mfdWidgetSpinner(name, index, value, format, min, max, items)
-        ui.invisibleButton("##pswidget" .. name .. index, vec2(ui.windowWidth(), 24 * cui.scaleY()))
+local function mfdWidgetSpinner(name, height, index, value, format, min, max, items)
+        local buttonSize = height
+
+        ui.invisibleButton("##pswidget" .. name .. index, vec2(ui.windowWidth(), buttonSize))
         local hovered = ui.itemHovered()
         local r1, r2 = ui.itemRect()
+
+        local fontSize = math.floor(buttonSize * 0.8)
+        fontSize = (fontSize % 2 == 0) and fontSize + 1 or fontSize
 
         local active = false
         if activeItemIndex == index then
@@ -29,32 +34,34 @@ local function mfdWidgetSpinner(name, index, value, format, min, max, items)
 
         ui.sameLine()
         ui.setCursorX(0)
+        cui.snapCursor()
         ui.dwriteTextAligned(
                 name,
-                18,
+                fontSize,
                 ui.Alignment.End,
                 ui.Alignment.Center,
-                vec2(ui.windowWidth() / 3, 24 * cui.scaleY())
+                vec2(ui.windowWidth() / 3, buttonSize)
         )
         ui.sameLine()
         ui.setCursorX(ui.windowWidth() / 2 - ui.windowWidth() / 12)
+        cui.snapCursor()
         ui.dwriteTextAligned(
-                "< - / + >",
-                18,
+                "< >",
+                fontSize,
                 ui.Alignment.Center,
                 ui.Alignment.Center,
-                vec2(ui.windowWidth() / 6, 24 * cui.scaleY())
+                vec2(ui.windowWidth() / 6, buttonSize)
         )
 
         local displayValue = items and items[value + 1] or string.format(format, value)
         ui.sameLine()
-        ui.offsetCursorY(-1)
+        cui.snapCursor()
         ui.dwriteTextAligned(
                 displayValue,
-                18,
+                fontSize,
                 ui.Alignment.Center,
                 ui.Alignment.Center,
-                vec2(ui.availableSpaceX(), 24 * cui.scaleY() + 1)
+                vec2(ui.availableSpaceX(), buttonSize)
         )
 
         if not active then return value end
@@ -90,7 +97,6 @@ end)
 navControlRightButton:onReleased(function() acCarControls.lookRight = false end)
 
 navControlDownButton:onPressed(function()
-        ac.log("hi")
         if not quickPitMenuFocused then acCarControls.lookBack = true end
 
         activeItemIndex = activeItemIndex < #ac.getPitstopSpinners() and activeItemIndex + 1 or 0
@@ -103,31 +109,95 @@ navControlUpButton:onPressed(function()
         activeItemIndex = activeItemIndex > 0 and activeItemIndex - 1 or #ac.getPitstopSpinners()
 end)
 
-ac.setWindowOpen("pitstopStrategyWidget", false)
+local car = ac.getCar(0)
+local carINI = ac.INIConfig.carData(0, "car.ini")
+local setupINI = ac.INIConfig.carData(0, "setup.ini")
+local pitstopTimes = {
+        FUEL = {
+                stepTime = carINI:get("PIT_STOP", "FUEL_LITER_TIME_SEC", 0),
+                time = function(addFuel, stepTime)
+                        return (addFuel + math.min(car.maxFuel - (car.fuel + addFuel), 0)) * stepTime
+                end,
+        },
+        COMPOUND = {
+                stepTime = carINI:get("PIT_STOP", "TYRE_CHANGE_TIME_SEC", 0),
+                time = function(compound, stepTime) return compound >= 0 and stepTime or 0 end,
+        },
+        WING_1 = {
+                stepTime = setupINI:get("WING_1", "PITSTOP", 0),
+                time = function(offset, stepTime) return offset ~= 0 and stepTime or 0 end,
+        },
+        WING_2 = {
+                stepTime = setupINI:get("WING_2", "PITSTOP", 0),
+                time = function(offset, stepTime) return offset ~= 0 and stepTime or 0 end,
+        },
+        REPAIR_BODY = {
+                stepTime = carINI:get("PIT_STOP", "BODY_REPAIR_TIME_SEC", 0),
+                time = function(repair, stepTime)
+                        if repair == 0 then return 0 end
+
+                        local totalBodyDamage = 0
+                        for i = 0, 3 do
+                                totalBodyDamage = totalBodyDamage + car.damage[i] * 100
+                        end
+
+                        return totalBodyDamage / 10 * stepTime
+                end,
+        },
+        REPAIR_ENGINE = {
+                stepTime = carINI:get("PIT_STOP", "ENGINE_REPAIR_TIME_SEC", 0),
+                time = function(repair, stepTime)
+                        return repair == 1 and (1000 - car.engineLifeLeft) / 100 * stepTime or 0
+                end,
+        },
+        REPAIR_SUSPENSION = {
+                stepTime = carINI:get("PIT_STOP", "SUSP_REPAIR_TIME_SEC", 0),
+                time = function(repair, stepTime)
+                        if repair == 0 then return 0 end
+
+                        local totalSuspensionDamage = 0
+                        for i = 0, 3 do
+                                totalSuspensionDamage = totalSuspensionDamage + car.wheels[i].suspensionDamage * 100
+                        end
+
+                        return totalSuspensionDamage / 10 * stepTime
+                end,
+        },
+}
+
+ac.setWindowOpen("pitstopStrategyWidget", quickPitMenuFocused)
 ac.disableQuickMenuPitstop(true)
 function script.pitstopStrategyWidget(dt)
+        local itemCount = #ac.getPitstopSpinners() <= 9 and #ac.getPitstopSpinners() + 7 or #ac.getPitstopSpinners() + 8
+        local itemHeight = 32 * cui.scaleY()
+        local windowHeight = itemHeight * itemCount
+        local fontSize = math.floor(itemHeight * 0.8)
+        fontSize = (fontSize % 2 == 0) and fontSize + 1 or fontSize
+
+        ui.beginToolWindow("toolWindowTest", ui.cursorScreenPos(), vec2(itemHeight * 14, windowHeight), true, true)
         style:pushStyleMain()
         ac.disableQuickMenuPitstop(true)
 
         ui.drawRectFilled(0, ui.availableSpace(), settings.Appearance.uiColor1 * 0.65)
-        ui.drawRectFilled(0, vec2(ui.windowWidth(), 40 * cui.scaleY()), settings.Appearance.uiColor1 * 0.65)
+        ui.drawRectFilled(0, vec2(ui.windowWidth(), itemHeight * 1.2), settings.Appearance.uiColor1 * 0.65)
 
         ui.setCursor(0)
 
         ui.dwriteTextAligned(
                 "PITSTOP",
-                20,
+                itemHeight,
                 ui.Alignment.Center,
                 ui.Alignment.Center,
-                vec2(ui.windowWidth(), 40 * cui.scaleY())
+                vec2(ui.windowWidth(), itemHeight * 1.2)
         )
-        ui.offsetCursorY(5)
 
+        local pitstopTimeEstimate = 0
         local lastSection = ""
         for _, spinner in ipairs(sm._pitSpinners) do
                 if spinner.preset == -1 then
                         local value = mfdWidgetSpinner(
                                 spinner.name,
+                                itemHeight,
                                 spinner.index + 1,
                                 spinner.value,
                                 spinner.format,
@@ -139,16 +209,23 @@ function script.pitstopStrategyWidget(dt)
                         if spinner.tab ~= lastSection and spinner.tab then
                                 lastSection = spinner.tab
                                 ui.setCursorX(0)
+                                ui.drawRectFilled(
+                                        ui.getCursor(),
+                                        ui.getCursor() + vec2(ui.windowWidth(), itemHeight),
+                                        settings.Appearance.uiColor1 * 0.65
+                                )
+
                                 ui.dwriteTextAligned(
                                         spinner.tab,
-                                        18,
+                                        fontSize,
                                         ui.Alignment.Center,
                                         ui.Alignment.Center,
-                                        vec2(ui.windowWidth(), 24 * cui.scaleY())
+                                        vec2(ui.windowWidth(), itemHeight)
                                 )
                         end
                         local value = mfdWidgetSpinner(
                                 spinner.nameAlt,
+                                itemHeight,
                                 spinner.index,
                                 spinner.value,
                                 spinner.format,
@@ -157,9 +234,28 @@ function script.pitstopStrategyWidget(dt)
                                 spinner.items
                         )
                         spinner:setValue(value)
-                        ac.debug(spinner.name, spinner.value)
+
+                        local timeSlot = pitstopTimes[spinner.id]
+
+                        if timeSlot then
+                                pitstopTimeEstimate = pitstopTimeEstimate
+                                        + timeSlot.time(spinner.value, timeSlot.stepTime)
+                        end
                 end
         end
+        ui.dummy(itemHeight)
+
+        cui.snapCursor()
+        ui.dwriteTextAligned(
+                "Estimated Stop Time: %.1f s" % pitstopTimeEstimate,
+                fontSize,
+                ui.Alignment.Center,
+                ui.Alignment.Center,
+                vec2(ui.windowWidth(), fontSize)
+        )
 
         style:popStyleMain()
+
+        ui.endToolWindow()
+        ui.setCursor(vec2(400, 500) * cui.scaleY())
 end

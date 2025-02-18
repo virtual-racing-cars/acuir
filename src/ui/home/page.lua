@@ -75,7 +75,7 @@ local menuButtonList = {
         },
         {
                 label = "TELEMETRY",
-                enabled = true,
+                enabled = false,
                 condition = function() end,
                 func = function() pages.manager:setPage("TelemetryPage") end,
         },
