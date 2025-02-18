@@ -529,7 +529,7 @@ end
 
 function CUI.treeNode(label, count, content, defaultOpen)
         local clicked, id =
-                CUI.treeNodeButton(label, vec2Temp1:set(ui.availableSpaceX(), 60 * CUI.scaleY()), false, true, count)
+                CUI.treeNodeButton(label, vec2Temp1:set(ui.availableSpaceX(), 48 * CUI.scaleY()), false, true, count)
         treeNodeParent = label
 
         if count < 1 then return clicked end

@@ -18,7 +18,7 @@ local bottomBarButtons = {
                 func = function() pages:goToMainMenu() end,
         },
         {
-                label = "RESET",
+                label = "RESET TO DEFAULT",
                 enabled = true,
                 func = function() sm:resetSetup() end,
         },

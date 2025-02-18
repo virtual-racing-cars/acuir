@@ -16,6 +16,8 @@ function PitstopItem:initialize(
         index,
         preset,
         name,
+        nameAlt,
+        tab,
         min,
         max,
         step,
@@ -32,6 +34,8 @@ function PitstopItem:initialize(
         self.index = index
         self.preset = preset
         self.name = name
+        self.nameAlt = nameAlt
+        self.tab = tab
         self.min = min
         self.max = max
         self.step = step

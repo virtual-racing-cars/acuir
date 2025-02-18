@@ -46,4 +46,6 @@ function pages:goToSettingsAppearance() pages.manager:setPage("SettingsAppearanc
 
 function pages:goToSettingsAi() pages.manager:setPage("SettingsAiPage") end
 
+function pages:goToTelemetry() pages.manager:setPage("TelemetryPage") end
+
 return pages

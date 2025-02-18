@@ -8,8 +8,8 @@ local setupsDir = ac.getFolder(ac.FolderID.UserSetups) .. "\\" .. ac.getCarID(0)
 local refreshingSetups = false
 local loadedSetups = {}
 local trackSortedSetups = {}
-local selectedSetup = { name = "", track = "", path = "", lastWriteTime = "" }
-local saveSetup = { name = "", track = ac.getTrackID(), path = "", lastWriteTime = "" }
+local selectedSetup = { name = "", track = "", description = "", path = "", lastWriteTime = "" }
+local saveSetup = { name = "", track = ac.getTrackID(), description = "", path = "", lastWriteTime = "" }
 local currentSetup = "generic/default"
 
 local function loadSetups()
@@ -207,7 +207,7 @@ local function promptOverwriteSetup()
 end
 
 local function saveSetupWindow(sm)
-        local iconButtonHeight = ui.windowHeight() / 5
+        local iconButtonHeight = ui.windowHeight() * 0.1
         local buttonWidth = (ui.windowWidth() / 24) * 22
         local groupBegin = (ui.windowWidth() / 24)
 
@@ -229,6 +229,17 @@ local function saveSetupWindow(sm)
                 "##SetupName",
                 saveSetup.track .. "/",
                 saveSetup.name,
+                ui.InputTextFlags.None,
+                vec2Temp1:set(buttonWidth, iconButtonHeight)
+        )
+        ui.newLine()
+        ui.newLine()
+
+        ui.setCursorX(groupBegin)
+        saveSetup.description = cui.inputText(
+                "##SetupDescription",
+                "Description:",
+                saveSetup.description,
                 ui.InputTextFlags.None,
                 vec2Temp1:set(buttonWidth, iconButtonHeight)
         )
@@ -309,8 +320,8 @@ function setupIoDraw(sm)
 
         cui.contentWindow(
                 "setup_io_saved_setups",
-                vec2(0, (ui.windowHeight() / 4) * 3),
-                vec2(ui.windowWidth(), ui.windowHeight() / 4),
+                vec2(0, ui.windowHeight() / 2),
+                vec2(ui.windowWidth(), ui.windowHeight() / 2),
                 ui.WindowFlags.None,
                 function()
                         ui.setCursor(0)
@@ -322,7 +333,7 @@ function setupIoDraw(sm)
         cui.contentWindow(
                 "load_setups",
                 vec2(0, 0),
-                vec2(ui.windowWidth(), (ui.windowHeight() / 4) * 3),
+                vec2(ui.windowWidth(), ui.windowHeight() / 2),
                 ui.WindowFlags.None,
                 function()
                         ui.setCursor(0)
@@ -345,7 +356,7 @@ function setupIoDraw(sm)
                                                                                 name,
                                                                                 vec2(
                                                                                         ui.windowWidth(),
-                                                                                        52 * cui.scaleY()
+                                                                                        48 * cui.scaleY()
                                                                                 ),
                                                                                 setupActive,
                                                                                 false

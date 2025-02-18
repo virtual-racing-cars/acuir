@@ -8,13 +8,14 @@ local style = require("style")
 
 pages.manager:registerPage("MainMenu", require("ui.home.page"))
 pages.manager:registerPage("SetupPage", require("ui.setup.page_setup"))
-pages.manager:registerPage("SettingsPage", require("ui.SETTINGS.page_settings"))
+pages.manager:registerPage("SettingsPage", require("ui.settings.page_settings"))
 pages.manager:registerPage("SetupAppsPage", require("ui.setup.page_apps"))
-pages.manager:registerPage("SettingsGeneralPage", require("ui.SETTINGS.page_general"))
-pages.manager:registerPage("SettingsControlsPage", require("ui.SETTINGS.page_controls"))
-pages.manager:registerPage("SettingsAudioPage", require("ui.SETTINGS.page_audio"))
-pages.manager:registerPage("SettingsAppearancePage", require("ui.SETTINGS.page_appearance"))
-pages.manager:registerPage("SettingsAiPage", require("ui.SETTINGS.page_ai"))
+pages.manager:registerPage("SettingsGeneralPage", require("ui.settings.page_general"))
+pages.manager:registerPage("SettingsControlsPage", require("ui.settings.page_controls"))
+pages.manager:registerPage("SettingsAudioPage", require("ui.settings.page_audio"))
+pages.manager:registerPage("SettingsAppearancePage", require("ui.settings.page_appearance"))
+pages.manager:registerPage("SettingsAiPage", require("ui.settings.page_ai"))
+pages.manager:registerPage("TelemetryPage", require("ui.telemetry.page_telemetry"))
 
 local exclusiveHudMode = ""
 

@@ -22,7 +22,7 @@ App.state = {
         appOpen = false,
         hasAppOpened = false,
         setupTab = 1,
-        debug = false,
+        debug = true,
 }
 
 local proxy = {}

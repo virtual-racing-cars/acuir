@@ -1,6 +1,7 @@
 package.add("src")
 require("ui.main_window")
 require("ui.pause.pause_window")
+require("ui.pitstop_window")
 require("audio")
 local app = require("app")
 local audio = require("audio")
@@ -20,6 +21,9 @@ ui.onExclusiveHUD(function(mode)
 
         if mode == "menu" then
                 audio:driver(dt)
+
+                -- pages:goToTelemetry()
+                pages:goToSetup()
 
                 if modeLast ~= mode then pages:setParentMainMenu() end
 
@@ -47,13 +51,21 @@ end)
 
 ac.setWindowOpen("main", true)
 local windowTimeSync = 0
-function script.main()
+function script.main(dt)
         if not app.state.hasAppOpened then app.state.hasAppOpened = true end
         windowTimeSync = os.clock()
 end
 
 teleportPitsCallback = nil
 function script.update(dt)
+        -- ac.log(csp.sim.cameraPosition)
+
+        local look = csp.sim.cameraLook
+        -- ac.setCameraDirection(vec3(look.x + 0.1, look.y - 0.2, look.z), vec3(0, 1, 0))
+
+        local pos = csp.sim.cameraPosition
+        -- ac.setCameraPosition(vec3(pos.x + 2, pos.y, pos.z))
+
         if teleportPitsCallback then
                 if teleportPitsCallback() then teleportPitsCallback = nil end
         end

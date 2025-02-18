@@ -1,13 +1,11 @@
 local page = {}
 
 require("src.classes.PlayerListButton")
-local app = require("app")
 local cui = require("ui.cui")
-local settings = require("settings")
-local sim = ac.getSim()
 local pages = require("ui.pages")
+local settings = require("settings")
 
--- require("src.ui.home.map")
+require("src.ui.home.map")
 
 function promptShutdownAC()
         local mouseMoved = false
@@ -63,14 +61,6 @@ function promptShutdownAC()
 end
 
 local menuButtonList = {
-        -- {
-        -- 	label = "DRIVE",
-        -- 	enabled = true,
-        -- 	condition = function() end,
-        -- 	func = function()
-        -- 		ac.tryToStart()
-        -- 	end,
-        -- },
         {
                 label = "VEHICLE SETUP",
                 enabled = true,
@@ -85,9 +75,9 @@ local menuButtonList = {
         },
         {
                 label = "TELEMETRY",
-                enabled = false,
+                enabled = true,
                 condition = function() end,
-                func = function() end,
+                func = function() pages.manager:setPage("TelemetryPage") end,
         },
         {
                 label = "SETTINGS",
@@ -95,26 +85,6 @@ local menuButtonList = {
                 condition = function() end,
                 func = function() pages:goToSettings() end,
         },
-        -- {
-        -- 	label = "SKIP SESSION",
-        -- 	enabled = true,
-        -- 	condition = function()
-        -- 		return not (sim.sessionsCount > 1 and sim.currentSessionIndex + 1 < sim.sessionsCount)
-        -- 	end,
-        -- 	func = function()
-        -- 		ac.tryToSkipSession()
-        -- 	end,
-        -- },
-        -- {
-        -- 	label = "RESTART SESSION",
-        -- 	enabled = true,
-        -- 	condition = function()
-        -- 		return sim.isOnlineRace
-        -- 	end,
-        -- 	func = function()
-        -- 		ac.tryToRestartSession()
-        -- 	end,
-        -- },
         {
                 label = "QUIT",
                 enabled = true,

@@ -9,6 +9,7 @@ dbStorage.configure(string.format("%s\\storage.db", dbPath))
 
 ---@type DbDictionaryStorage<{a: integer, b: string}>
 local dbList = {}
+local dbMotec = dbStorage.Dictionary("MOTEC")
 
 function db:register(dbKey, dbTable)
         if not dbList[dbKey] then dbList[dbKey] = dbStorage.Dictionary(dbKey) end
@@ -24,5 +25,9 @@ function db:get(dbKey, key)
 end
 
 function db:set(dbKey, key, value) dbList[dbKey]:set(key, { value = value }) end
+
+function db:setMotecData(key, value) dbMotec:set(key, value) end
+
+function db:getMotecData(key) return dbMotec:get(key) end
 
 return db

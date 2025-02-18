@@ -61,37 +61,82 @@ local pitstopsINI =
 local presetsCount = pitstopsINI:get("SETTINGS", "PRESETS_COUNT", 1)
 
 local pitstopStratItemDefaults = {
-        FUEL = { label = "Add Liters", units = "", xPos = 0.5, yPos = 2, default = 0 },
-        COMPOUND = { label = "Compound", units = "", xPos = 0.5, yPos = 3.5, default = -1 },
-        PRESSURE_LF = { label = "Pressure LF", units = "psi", xPos = 0, yPos = 5 },
-        PRESSURE_RF = { label = "Pressure RF", units = "psi", xPos = 1, yPos = 5 },
-        PRESSURE_LR = { label = "Pressure LR", units = "psi", xPos = 0, yPos = 6 },
-        PRESSURE_RR = { label = "Pressure RR", units = "psi", xPos = 1, yPos = 6 },
+        FUEL = { name = "Add Liters", nameAlt = "Fuel to Add", units = "L", xPos = 0.5, yPos = 2, default = 0 },
+        COMPOUND = {
+                name = "Compound",
+                nameAlt = "Compound",
+                tab = "Tyres",
+                units = "",
+                xPos = 0.5,
+                yPos = 3.5,
+                default = -1,
+        },
+        PRESSURE_LF = { name = "Pressure LF", nameAlt = "LF", tab = "Tyres", units = "psi", xPos = 0, yPos = 5 },
+        PRESSURE_RF = { name = "Pressure RF", nameAlt = "RF", tab = "Tyres", units = "psi", xPos = 1, yPos = 5 },
+        PRESSURE_LR = { name = "Pressure LR", nameAlt = "LR", tab = "Tyres", units = "psi", xPos = 0, yPos = 6 },
+        PRESSURE_RR = { name = "Pressure RR", nameAlt = "RR", tab = "Tyres", units = "psi", xPos = 1, yPos = 6 },
         WING_1 = {
-                label = setupINI:get("WING_1", "NAME", "WING_1"),
+                name = setupINI:get("WING_1", "NAME", "WING_1"),
+                nameAlt = "RF",
+                tab = "Wings",
                 units = "",
                 xPos = 1,
                 yPos = 8,
                 default = 0,
         },
         WING_2 = {
-                label = setupINI:get("WING_2", "NAME", "WING_2"),
+                name = setupINI:get("WING_2", "NAME", "WING_2"),
+                nameAlt = "LF",
+                tab = "Wings",
+
                 units = "",
                 xPos = 0,
                 yPos = 8,
                 default = 0,
         },
+        REPAIR_BODY = { name = "Repair Body", nameAlt = "Body", tab = "Repair", repair = true },
+        REPAIR_SUSPENSION = {
+                name = "Repair Suspension",
+                nameAlt = "Suspension",
+                tab = "Repair",
+                repair = true,
+        },
+        REPAIR_ENGINE = { name = "Repair Engine", nameAlt = "Engine", tab = "Repair", repair = true },
 }
 
 local function createPitstopStratItems()
         local pitstopStratItems = {}
 
+        table.insert(
+                pitstopStratItems,
+                PitstopItem(
+                        "PRESET",
+                        -1,
+                        -1,
+                        "Preset",
+                        "",
+                        "",
+                        1,
+                        presetsCount,
+                        1,
+                        1,
+                        {},
+                        "%.0f",
+                        0.5,
+                        0,
+                        true,
+                        1,
+                        1 == presetsCount
+                )
+        )
+
         for preset = 1, presetsCount do
                 for psItemIndex, psItem in ipairs(ac.getPitstopSpinners()) do
                         local id = psItem.name
                         local index = psItemIndex
-                        local tab = "PITSTOP STRATEGY"
-                        local name = pitstopStratItemDefaults[id].label
+                        local name = pitstopStratItemDefaults[id].name
+                        local nameAlt = pitstopStratItemDefaults[id].nameAlt
+                        local tab = pitstopStratItemDefaults[id].tab
                         local min = psItem.min
                         local max = psItem.max
                         local step = 1
@@ -111,12 +156,12 @@ local function createPitstopStratItems()
 
                                 items[0] = "NO CHANGE"
 
-                                for i = 1, psItem.max do
-                                        items[i] = ac.getTyresLongName(0, i - 1)
+                                for i = 1, psItem.max + 1 do
+                                        items[i] = ac.getTyresName(0, i - 1)
                                 end
-                                items[#items + 1] = "Over Index!"
-                                items[#items + 1] = "Over Index!"
                         end
+
+                        if tab == "Repair" then items = { "No", "Yes" } end
 
                         table.insert(
                                 pitstopStratItems,
@@ -125,6 +170,8 @@ local function createPitstopStratItems()
                                         index,
                                         preset - 1,
                                         name,
+                                        nameAlt,
+                                        tab,
                                         min,
                                         max,
                                         step,
@@ -140,27 +187,6 @@ local function createPitstopStratItems()
                         )
                 end
         end
-
-        table.insert(
-                pitstopStratItems,
-                PitstopItem(
-                        "PRESET",
-                        -1,
-                        -1,
-                        "Preset",
-                        1,
-                        presetsCount,
-                        1,
-                        1,
-                        {},
-                        "%.0f",
-                        0.5,
-                        0,
-                        true,
-                        1,
-                        1 == presetsCount
-                )
-        )
 
         return pitstopStratItems
 end
