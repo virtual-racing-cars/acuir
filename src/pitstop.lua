@@ -104,7 +104,12 @@ function pitstop:step(dt)
 
         if isInPitlane ~= car.isInPitlane then isInPitlane = car.isInPitlane end
 
-        if car.justJumped or not sim.isLive or sim.isInMainMenu then
+        if
+                car.justJumped
+                or not sim.isLive
+                or sim.isInMainMenu
+                or (sim.cameraMode ~= ac.CameraMode.Cockpit and sim.cameraMode ~= ac.CameraMode.Drivable)
+        then
                 pitstop:setWindowOpen(false)
                 return
         end
