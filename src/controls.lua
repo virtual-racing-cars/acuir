@@ -1,5 +1,5 @@
-require("classes.control_binding")
-require("classes.control_tabbar")
+require("classes.ControlBinding")
+require("classes.ControlTabBar")
 local keyIndexKey = require("keys")
 local settings = require("settings")
 local controlsINI = ac.INIConfig.controlsConfig()

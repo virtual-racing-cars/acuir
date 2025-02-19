@@ -17,13 +17,8 @@ pages.manager:registerPage("SettingsAppearancePage", require("ui.settings.page_a
 pages.manager:registerPage("SettingsAiPage", require("ui.settings.page_ai"))
 pages.manager:registerPage("TelemetryPage", require("ui.telemetry.page_telemetry"))
 
-local exclusiveHudMode = ""
-
 function MainMenuWindow(dt)
-        local perfTime = os.preciseClock()
-
-        ui.pushAllowKeyboardFocus(false)
-        exclusiveHudMode = ""
+        local exclusiveHudMode = ""
 
         if ac.isKeyPressed(ui.KeyIndex.XButton1) then
                 if pages:isUndoAvailable() then pages:undo() end
@@ -34,9 +29,9 @@ function MainMenuWindow(dt)
         end
 
         style:pushStyleMain()
+        ui.pushAllowKeyboardFocus(false)
 
         local mainWindowFlags = ui.WindowFlags.NoScrollbar + ui.WindowFlags.NoScrollWithMouse
-
         if cui.modalDialogCallback then
                 mainWindowFlags = mainWindowFlags
                         + ui.WindowFlags.NoInputs
@@ -72,10 +67,7 @@ function MainMenuWindow(dt)
         end
 
         style:popStyleMain()
-
         ui.popAllowKeyboardFocus()
-
-        ac.debug("perfTime", (os.preciseClock() - perfTime) * 1000)
 
         return app.state.debug and "debug" or exclusiveHudMode
 end

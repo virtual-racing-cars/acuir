@@ -132,7 +132,6 @@ function script.pitstopWindow(dt)
         ui.drawRectFilled(0, vec2(ui.windowWidth(), itemHeight * 1.2), settings.Appearance.uiColor1 * 0.65)
 
         ui.setCursor(0)
-
         ui.dwriteTextAligned(
                 "PITSTOP",
                 itemHeight,
@@ -199,7 +198,6 @@ function script.pitstopWindow(dt)
         )
 
         style:popStyleMain()
-
         ui.endToolWindow()
         ui.setCursor(windowSize)
 end

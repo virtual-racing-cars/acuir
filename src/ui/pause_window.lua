@@ -13,8 +13,6 @@ function PauseMenuWindow(dt)
         ui.pushAllowKeyboardFocus(false)
         style:pushStyleMain()
 
-        local perfTime = os.preciseClock()
-
         if ac.isKeyPressed(ui.KeyIndex.XButton1) then pages:undo() end
         if ac.isKeyPressed(ui.KeyIndex.XButton2) then pages:redo() end
 
@@ -68,8 +66,6 @@ function PauseMenuWindow(dt)
 
         ui.popAllowKeyboardFocus()
         style:popStyleMain()
-
-        ac.debug("perfTime", (os.preciseClock() - perfTime) * 1000)
 
         return app.state.debug and "debug" or exclusiveHudMode
 end
