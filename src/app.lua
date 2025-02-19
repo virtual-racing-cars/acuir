@@ -5,6 +5,7 @@ local appVersionString = appManifestINI:get("ABOUT", "VERSION", "0.0.0")
 local appfullName = appManifestINI:get("ABOUT", "FULL_NAME", "Application")
 local appName = appManifestINI:get("ABOUT", "NAME", "App")
 local appDescription = appManifestINI:get("ABOUT", "DESCRIPTION", "")
+local appDebugMode = appManifestINI:get("DEV", "DEBUG_MODE", 0) == 1
 
 function App.version() return appVersionString end
 
@@ -22,7 +23,7 @@ App.state = {
         appOpen = false,
         hasAppOpened = false,
         setupTab = 1,
-        debug = false,
+        debug = appDebugMode,
 }
 
 local proxy = {}

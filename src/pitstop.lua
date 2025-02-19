@@ -100,12 +100,12 @@ function pitstop:isVisible() return pitstop.visibilityTimer - os.clock() > 0 end
 
 local isInPitlane = false
 function pitstop:step(dt)
+        if isInPitlane ~= car.isInPitlane then isInPitlane = car.isInPitlane end
+
         if car.justJumped then
                 pitstop:setWindowOpen(false)
                 return
         end
-
-        if isInPitlane ~= car.isInPitlane then isInPitlane = car.isInPitlane end
 
         if sim.isReplayActive then
                 ac.setWindowOpen(pitstop.windowName, false)

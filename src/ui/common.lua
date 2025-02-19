@@ -137,7 +137,7 @@ local function sessionInfo()
         for i in ipairs(sessionInfoTable) do
                 ui.beginGroup()
 
-                ui.pushDWriteFont("Rajdhani;weight=bold")
+                style:pushFontBold()
                 cui.snapCursor()
                 ui.dwriteTextAligned(
                         string.upper(sessionInfoTable[i].label()) .. ":",
@@ -183,7 +183,6 @@ function topSubBar(path)
 
         cui.setCursorX(225)
         ui.setCursorY(topBarHeight / 2 - (100 * cui.scaleY()) / 2)
-        ui.pushDWriteFont(ui.DWriteFont("Rajdhani"):weight(ui.DWriteFont.Weight.SemiBold))
 
         ui.dwriteTextAligned(
                 path,
@@ -194,7 +193,6 @@ function topSubBar(path)
                 false,
                 rgbm(1, 1, 1, 1)
         )
-        ui.popDWriteFont()
 end
 
 function topBar(path)

@@ -4,29 +4,19 @@ local app = require("app")
 local cui = require("ui.cui")
 local pages = require("ui.pages")
 local settings = require("settings")
+local style = require("style")
 pages.manager:registerPage("PauseMenu", require("ui.pause.page_pause_home"))
 
-local exclusiveHudMode = ""
-
-local fontRegular = ui.DWriteFont("Rajdhani"):weight(ui.DWriteFont.Weight.SemiBold)
-local fontBold = ui.DWriteFont("Rajdhani"):weight(ui.DWriteFont.Weight.Bold)
-local fontSemiBold = ui.DWriteFont("Noto Sans SC"):weight(ui.DWriteFont.Weight.SemiBold)
-
 function PauseMenuWindow(dt)
-        exclusiveHudMode = ""
+        local exclusiveHudMode = ""
 
         ui.pushAllowKeyboardFocus(false)
+        style:pushStyleMain()
 
         local perfTime = os.preciseClock()
 
         if ac.isKeyPressed(ui.KeyIndex.XButton1) then pages:undo() end
-
         if ac.isKeyPressed(ui.KeyIndex.XButton2) then pages:redo() end
-
-        ui.pushDWriteFont(fontRegular)
-        ui.pushStyleColor(ui.StyleColor.ScrollbarGrab, settings.Appearance.uiColor2)
-        ui.pushStyleVar(ui.StyleVar.ScrollbarSize, 3)
-        ui.pushStyleVar(ui.StyleVar.ItemSpacing, 0)
 
         local childWindowWith = 2560 * cui.scaleX()
         local childWindowHeight = 1440 * cui.scaleY()
@@ -76,10 +66,8 @@ function PauseMenuWindow(dt)
                 )
         end
 
-        ui.popDWriteFont()
-        ui.popStyleVar(2)
-        ui.popStyleColor(1)
         ui.popAllowKeyboardFocus()
+        style:popStyleMain()
 
         ac.debug("perfTime", (os.preciseClock() - perfTime) * 1000)
 

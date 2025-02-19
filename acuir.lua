@@ -54,8 +54,6 @@ function script.main(dt)
         windowTimeSync = os.clock()
 end
 
-local car = ac.getCar(0)
-
 teleportPitsCallback = nil
 function script.update(dt)
         pitstop:step(dt)

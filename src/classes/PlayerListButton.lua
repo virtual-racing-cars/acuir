@@ -6,7 +6,6 @@ function playerListBanner(xPos, yPos, width, height)
         width = width - width / 50
 
         ui.beginGroup(width)
-        ui.pushDWriteFont(ui.DWriteFont("Rajdhani"):weight(ui.DWriteFont.Weight.SemiBold))
 
         local fontSize = math.floor(24 * cui.scaleY())
         fontSize = (fontSize % 2 == 0) and fontSize + 1 or fontSize
@@ -79,7 +78,6 @@ function playerListBanner(xPos, yPos, width, height)
                 rgbm.colors.white
         )
 
-        ui.popDWriteFont()
         ui.endGroup()
 end
 
@@ -87,7 +85,6 @@ function playerListButton(car, xPos, yPos, width, height)
         width = width - width / 50
 
         ui.beginGroup(width)
-        ui.pushDWriteFont(ui.DWriteFont("Rajdhani"):weight(ui.DWriteFont.Weight.SemiBold))
 
         local fontSize = height / 2
 
@@ -169,7 +166,6 @@ function playerListButton(car, xPos, yPos, width, height)
                 ui.drawLine(vec2(xPos, yPos), vec2(xPos + width, yPos), rgbm.colors.black)
                 ui.drawLine(vec2(xPos, yPos + height), vec2(xPos + width, yPos + height), rgbm.colors.black)
 
-                ui.popDWriteFont()
                 ui.endGroup()
 
                 return
@@ -220,6 +216,5 @@ function playerListButton(car, xPos, yPos, width, height)
         ui.drawLine(vec2(xPos, yPos), vec2(xPos + width, yPos), rgbm.colors.black)
         ui.drawLine(vec2(xPos, yPos + height), vec2(xPos + width, yPos + height), rgbm.colors.black)
 
-        ui.popDWriteFont()
         ui.endGroup()
 end

@@ -1,4 +1,4 @@
-local Style = {}
+local style = {}
 
 local settings = require("settings")
 
@@ -11,10 +11,14 @@ local styleMain = {
                 { ui.StyleVar.ScrollbarSize, 5 },
                 { ui.StyleVar.ItemSpacing, 0 },
         },
-        font = ui.DWriteFont("Rajdhani"):weight(ui.DWriteFont.Weight.SemiBold),
+        font = ui.DWriteFont("Rajdhani", ac.dirname() .. "\\assets\\fonts\\"),
 }
 
-function Style:pushStyleMain()
+function style:pushFontRegular() ui.pushDWriteFont(styleMain.font:weight(ui.DWriteFont.Weight.SemiBold)) end
+
+function style:pushFontBold() ui.pushDWriteFont(styleMain.font:weight(ui.DWriteFont.Weight.Bold)) end
+
+function style:pushStyleMain()
         for _, v in pairs(styleMain.colors) do
                 ui.pushStyleColor(v[1], v[2])
         end
@@ -23,10 +27,10 @@ function Style:pushStyleMain()
                 ui.pushStyleVar(v[1], v[2])
         end
 
-        ui.pushDWriteFont(styleMain.font)
+        style:pushFontRegular()
 end
 
-function Style:popStyleMain()
+function style:popStyleMain()
         ui.popStyleColor(#styleMain.colors)
         ui.popStyleVar(#styleMain.var)
         ui.popDWriteFont()
@@ -43,7 +47,7 @@ local spinnerButtonStyle = {
         font = nil,
 }
 
-function Style:pushSpinnerButtonStyle()
+function style:pushSpinnerButtonStyle()
         for _, v in pairs(spinnerButtonStyle.colors) do
                 ui.pushStyleColor(v[1], v[2])
         end
@@ -55,11 +59,11 @@ function Style:pushSpinnerButtonStyle()
         if spinnerButtonStyle.font then ui.pushDWriteFont(spinnerButtonStyle.font) end
 end
 
-function Style:popSpinnerButtonStyle()
+function style:popSpinnerButtonStyle()
         ui.popStyleColor(#spinnerButtonStyle.colors)
         ui.popStyleVar(#spinnerButtonStyle.var)
 
         if spinnerButtonStyle.font then ui.popDWriteFont() end
 end
 
-return Style
+return style

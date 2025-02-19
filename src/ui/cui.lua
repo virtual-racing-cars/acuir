@@ -3,6 +3,7 @@ local CUI = {}
 local audio = require("audio")
 local settings = require("settings")
 local simutils = require("simutils")
+local style = require("style")
 local sim = ac.getSim()
 local car = ac.getCar(0)
 
@@ -72,12 +73,6 @@ function CUI.contentWindow(id, position, size, flags, content, showBackground, s
         CUI.popWindow()
 end
 
-local fontRegular = ui.DWriteFont("Rajdhani"):weight(ui.DWriteFont.Weight.SemiBold)
-local fontBold = ui.DWriteFont("Rajdhani"):weight(ui.DWriteFont.Weight.Bold)
-local fontSemiBold = ui.DWriteFont("Noto Sans SC"):weight(ui.DWriteFont.Weight.SemiBold)
-
-function CUI.pushTitleFont() end
-
 CUI.modalDialogCallback = nil
 
 function CUI.modalDialog(callback) CUI.modalDialogCallback = callback end
@@ -102,7 +97,6 @@ function CUI.dwriteTextAligned(params)
 
         if params.yPos then ui.setCursorY(params.yPos * CUI.scaleY()) end
 
-        ui.pushDWriteFont(fontRegular)
         ui.dwriteTextAligned(
                 params.text,
                 params.fontSize * CUI.scaleY(),
@@ -112,7 +106,6 @@ function CUI.dwriteTextAligned(params)
                 false,
                 params.color
         )
-        ui.popDWriteFont()
 end
 
 function CUI.button(label, sizeX, sizeY, fontSize, horizontalAligment, verticalAlignment, flags, fontColor)
@@ -140,8 +133,6 @@ function CUI.button(label, sizeX, sizeY, fontSize, horizontalAligment, verticalA
         ui.offsetCursorY(1)
         ui.setCursor(tempCursor)
 
-        ui.pushDWriteFont(fontRegular)
-
         ui.dwriteTextAligned(
                 string.upper(label),
                 fontSize * scaleX,
@@ -151,8 +142,6 @@ function CUI.button(label, sizeX, sizeY, fontSize, horizontalAligment, verticalA
                 false,
                 fontColor
         )
-
-        ui.popDWriteFont()
 
         return clicked and not (flags == ui.ButtonFlags.Disabled)
 end
@@ -179,7 +168,7 @@ function CUI.settingsButton(label, sizeX, sizeY, flags, icon)
 
         ui.setCursor(tempCursor)
 
-        ui.pushDWriteFont(fontBold)
+        style:pushFontBold()
         ui.dwriteTextAligned(
                 string.upper(label),
                 fontSize,
@@ -218,8 +207,7 @@ function CUI.modalButton(label, sizeX, sizeY, flags)
         ui.offsetCursorY(1)
         ui.setCursor(tempCursor)
 
-        ui.pushDWriteFont(fontBold)
-
+        style:pushFontBold()
         ui.dwriteTextAligned(
                 string.upper(label),
                 fontSize,
@@ -237,9 +225,9 @@ end
 
 function CUI.menuButton(label, size, horizontalAligment, verticalAlignment, flags, active, bold)
         if bold then
-                ui.pushDWriteFont(fontBold)
+                style:pushFontBold()
         else
-                ui.pushDWriteFont(fontRegular)
+                style:pushFontRegular()
         end
 
         if not horizontalAligment then horizontalAligment = ui.Alignment.Center end
@@ -311,8 +299,6 @@ function CUI.menuButton(label, size, horizontalAligment, verticalAlignment, flag
 end
 
 function CUI.bindingButton(bind, device, button, size, flags)
-        ui.pushDWriteFont(fontRegular)
-
         if not flags then flags = ui.ButtonFlags.None end
 
         local sizeX = size.x
@@ -365,13 +351,11 @@ function CUI.bindingButton(bind, device, button, size, flags)
                 fontColor
         )
 
-        ui.popDWriteFont()
-
         return clicked and not (flags == ui.ButtonFlags.Disabled)
 end
 
 function CUI.specialButton(label, size, horizontalAligment, verticalAlignment)
-        ui.pushDWriteFont(fontBold)
+        style:pushFontBold()
 
         if not horizontalAligment then horizontalAligment = ui.Alignment.Center end
 
@@ -465,8 +449,6 @@ end
 
 local treeNodeParent = ""
 function CUI.treeNodeButton(label, size, active, bold, count)
-        ui.pushDWriteFont(fontRegular)
-
         if not count then count = 0 end
 
         local fontSize = math.floor(size.y * 0.55)
@@ -521,8 +503,6 @@ function CUI.treeNodeButton(label, size, active, bold, count)
                         nil
                 )
         end
-
-        ui.popDWriteFont()
 
         return clicked, id
 end
@@ -582,8 +562,6 @@ local inputTextBoxDragIndex = 0
 local inputTextBoxCursorIndex = 2
 
 function CUI.inputTextBox(label, stringPrefix, stringInput, size)
-        ui.pushDWriteFont(fontRegular)
-
         local fontSize = math.floor(size.y * 0.55)
         fontSize = (fontSize % 2 ~= 0) and fontSize + 1 or fontSize
 
@@ -695,7 +673,6 @@ function CUI.inputTextBox(label, stringPrefix, stringInput, size)
 
         ui.drawRect(r1, r2, settings.Appearance.uiColor1 * 2, 0, ui.CornerFlags.None, 2)
 
-        ui.popDWriteFont()
         ui.popClipRect()
 
         return itemActive
