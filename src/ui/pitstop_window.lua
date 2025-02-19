@@ -117,8 +117,6 @@ local function mfdWidgetSpinner(name, height, index, value, format, min, max, it
         return value
 end
 
-ac.disableQuickMenuPitstop(true)
-
 function script.pitstopWindow(dt)
         local itemCount = #ac.getPitstopSpinners() <= 9 and #ac.getPitstopSpinners() + 6 or #ac.getPitstopSpinners() + 7
         local itemHeight = 32 * cui.scaleY()
@@ -129,7 +127,6 @@ function script.pitstopWindow(dt)
 
         ui.beginToolWindow("toolWindowTest", ui.cursorScreenPos(), windowSize, true, true)
         style:pushStyleMain()
-        ac.disableQuickMenuPitstop(true)
 
         ui.drawRectFilled(0, ui.availableSpace(), settings.Appearance.uiColor1 * 0.65)
         ui.drawRectFilled(0, vec2(ui.windowWidth(), itemHeight * 1.2), settings.Appearance.uiColor1 * 0.65)

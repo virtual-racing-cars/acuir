@@ -100,6 +100,8 @@ function pitstop:isVisible() return pitstop.visibilityTimer - os.clock() > 0 end
 
 local isInPitlane = false
 function pitstop:step(dt)
+        ac.disableQuickMenuPitstop(true)
+
         if isInPitlane ~= car.isInPitlane then isInPitlane = car.isInPitlane end
 
         if car.justJumped or not sim.isLive or sim.isInMainMenu then

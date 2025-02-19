@@ -56,6 +56,11 @@ end
 
 teleportPitsCallback = nil
 function script.update(dt)
+        if not app.state.appOpen or ac.getLastError() then
+                ac.disableQuickMenuPitstop(false)
+                return
+        end
+
         pitstop:step(dt)
 
         if teleportPitsCallback then
