@@ -20,19 +20,34 @@ local navControlUpButton =
 navControlToggleMenus:onPressed(function() pitstop:toggleWindowOpen() end)
 
 navControlLeftButton:onPressed(function()
-        if not pitstop:windowIsOpen() then acCarControls.lookLeft = true end
+        if not pitstop:windowIsOpen() then
+                acCarControls.lookLeft = true
+                return
+        end
+
+        pitstop:resetVisibilityTimer()
 end)
 
 navControlLeftButton:onReleased(function() acCarControls.lookLeft = false end)
 
 navControlRightButton:onPressed(function()
-        if not pitstop:windowIsOpen() then acCarControls.lookRight = true end
+        if not pitstop:windowIsOpen() then
+                acCarControls.lookRight = true
+                return
+        end
+
+        pitstop:resetVisibilityTimer()
 end)
 
 navControlRightButton:onReleased(function() acCarControls.lookRight = false end)
 
 navControlDownButton:onPressed(function()
-        if not pitstop:windowIsOpen() then acCarControls.lookBack = true end
+        if not pitstop:windowIsOpen() then
+                acCarControls.lookBack = true
+                return
+        end
+
+        pitstop:resetVisibilityTimer()
 
         activeItemIndex = activeItemIndex < #ac.getPitstopSpinners() and activeItemIndex + 1 or 0
 end)
@@ -41,6 +56,9 @@ navControlDownButton:onReleased(function() acCarControls.lookBack = false end)
 
 navControlUpButton:onPressed(function()
         if not pitstop:windowIsOpen() then return end
+
+        pitstop:resetVisibilityTimer()
+
         activeItemIndex = activeItemIndex > 0 and activeItemIndex - 1 or #ac.getPitstopSpinners()
 end)
 
