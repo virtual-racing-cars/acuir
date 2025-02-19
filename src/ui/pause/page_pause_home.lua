@@ -105,7 +105,7 @@ function page.draw(dt)
                         ui.setCursorX(ui.windowWidth() / 8)
                         ui.beginGroup(ui.windowWidth() - (ui.windowWidth() / 8) * 2)
 
-                        local itemSpacing = ui.windowHeight() / 50
+                        local itemSpacing = 12 * cui.scaleY()
                         ui.pushStyleVar(ui.StyleVar.ItemSpacing, itemSpacing)
 
                         local menuButtonSize = vec2(ui.availableSpaceX(), ui.availableSpaceY() / 11)

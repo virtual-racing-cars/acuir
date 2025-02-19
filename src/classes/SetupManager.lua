@@ -60,6 +60,35 @@ local pitstopsINI =
         ac.INIConfig.load(string.format("%s\\%s", ac.getFolder(ac.FolderID.Root), "system\\cfg\\pitstop.ini"))
 local presetsCount = pitstopsINI:get("SETTINGS", "PRESETS_COUNT", 1)
 
+local function gisub(text, patterns)
+        for _, v in ipairs(patterns) do
+                local pattern = v[1]
+                local replacement = v[2]
+
+                local insensitivePattern = pattern:gsub(
+                        "%a",
+                        function(c) return string.format("[%s%s]", c:lower(), c:upper()) end
+                )
+
+                insensitivePattern = insensitivePattern:gsub("%s+", " ")
+                text = text:gsub(insensitivePattern, replacement)
+        end
+
+        return text
+end
+
+local wing1Name = setupINI:get("WING_1", "NAME", "WING_1")
+local wing2Name = setupINI:get("WING_2", "NAME", "WING_2")
+
+local positionShorthandDict = {
+        { "FRONT LEFT", "LF" },
+        { "FRONT RIGHT", "RF" },
+        { "LEFT FRONT", "LF" },
+        { "RIGHT FRONT", "RF" },
+        { "WINGS", "" },
+        { "WING", "" },
+}
+
 local pitstopStratItemDefaults = {
         FUEL = { name = "Add Liters", nameAlt = "Fuel to Add", units = "L", xPos = 0.5, yPos = 2, default = 0 },
         COMPOUND = {
@@ -76,8 +105,8 @@ local pitstopStratItemDefaults = {
         PRESSURE_LR = { name = "Pressure LR", nameAlt = "LR", tab = "Tyres", units = "psi", xPos = 0, yPos = 6 },
         PRESSURE_RR = { name = "Pressure RR", nameAlt = "RR", tab = "Tyres", units = "psi", xPos = 1, yPos = 6 },
         WING_1 = {
-                name = setupINI:get("WING_1", "NAME", "WING_1"),
-                nameAlt = "RF",
+                name = wing1Name,
+                nameAlt = gisub(wing1Name, positionShorthandDict),
                 tab = "Wings",
                 units = "",
                 xPos = 1,
@@ -85,8 +114,8 @@ local pitstopStratItemDefaults = {
                 default = 0,
         },
         WING_2 = {
-                name = setupINI:get("WING_2", "NAME", "WING_2"),
-                nameAlt = "LF",
+                name = wing2Name,
+                nameAlt = gisub(wing2Name, positionShorthandDict),
                 tab = "Wings",
 
                 units = "",
@@ -166,7 +195,13 @@ local function createPitstopStratItems()
                                 items[0] = "NO CHANGE"
 
                                 for i = 1, psItem.max + 1 do
-                                        items[i] = ac.getTyresName(0, i - 1)
+                                        items[#items + 1] = ac.getTyresLongName(0, i - 1)
+                                end
+
+                                items[#items + 1] = "NO CHANGE"
+
+                                for i = 1, psItem.max + 1 do
+                                        items[#items + 1] = ac.getTyresName(0, i - 1)
                                 end
                         end
 

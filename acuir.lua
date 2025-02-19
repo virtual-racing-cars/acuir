@@ -8,6 +8,7 @@ local audio = require("audio")
 local csp = require("csp")
 local mod = require("install")
 local pages = require("ui.pages")
+local pitstop = require("pitstop")
 local settings = require("settings")
 
 app.state.appOpen = settings.General.autoStart
@@ -53,15 +54,11 @@ function script.main(dt)
         windowTimeSync = os.clock()
 end
 
+local car = ac.getCar(0)
+
 teleportPitsCallback = nil
 function script.update(dt)
-        -- ac.log(csp.sim.cameraPosition)
-
-        local look = csp.sim.cameraLook
-        -- ac.setCameraDirection(vec3(look.x + 0.1, look.y - 0.2, look.z), vec3(0, 1, 0))
-
-        local pos = csp.sim.cameraPosition
-        -- ac.setCameraPosition(vec3(pos.x + 2, pos.y, pos.z))
+        pitstop:step(dt)
 
         if teleportPitsCallback then
                 if teleportPitsCallback() then teleportPitsCallback = nil end
