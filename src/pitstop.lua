@@ -102,13 +102,8 @@ local isInPitlane = false
 function pitstop:step(dt)
         if isInPitlane ~= car.isInPitlane then isInPitlane = car.isInPitlane end
 
-        if car.justJumped then
+        if car.justJumped or not sim.isLive or sim.isInMainMenu then
                 pitstop:setWindowOpen(false)
-                return
-        end
-
-        if sim.isReplayActive then
-                ac.setWindowOpen(pitstop.windowName, false)
                 return
         end
 
