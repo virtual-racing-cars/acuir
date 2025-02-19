@@ -90,7 +90,7 @@ local positionShorthandDict = {
 }
 
 local pitstopStratItemDefaults = {
-        FUEL = { name = "Add Liters", nameAlt = "Fuel to Add", units = "L", xPos = 0.5, yPos = 2, default = 0 },
+        FUEL = { name = "Fuel to Add", nameAlt = "Fuel to Add", units = "L", xPos = 0.5, yPos = 2, default = 0 },
         COMPOUND = {
                 name = "Compound",
                 nameAlt = "Compound",

@@ -1,6 +1,6 @@
 package.add("src")
 require("ui.main_window")
-require("ui.pause.pause_window")
+require("ui.pause_window")
 require("ui.pitstop_window")
 require("audio")
 local app = require("app")

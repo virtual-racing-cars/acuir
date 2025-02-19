@@ -5,7 +5,7 @@ local cui = require("ui.cui")
 local pages = require("ui.pages")
 local settings = require("settings")
 
-require("src.ui.home.map")
+require("src.ui.main.map")
 
 function promptShutdownAC()
         local mouseMoved = false

@@ -1,4 +1,4 @@
-local Audio = {}
+local audio = {}
 
 local delayTimer = 0
 local delayTime = 0.125
@@ -13,11 +13,11 @@ local function playAudio(file)
         delayTimer = os.clock() + delayTime
 end
 
-function Audio:driver(dt)
+function audio:driver(dt)
         if ui.anyItemHovered() and ui.mouseClicked(ui.MouseButton.Left) then playAudio("gui_click") end
 end
 
-function Audio:trigger()
+function audio:trigger()
         if ui.anyItemHovered() and ui.mouseClicked(ui.MouseButton.Left) then
                 playAudio("gui_click")
                 return
@@ -26,4 +26,4 @@ function Audio:trigger()
         playAudio("gui_nav")
 end
 
-return Audio
+return audio

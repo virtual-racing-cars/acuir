@@ -69,7 +69,7 @@ local pitstopTimes = {
 function pitstop:getEstimatedTime()
         local timeEstimate = 0
 
-        for i, v in ipairs(ac.getPitstopSpinners()) do
+        for _, v in ipairs(ac.getPitstopSpinners()) do
                 local timeSlot = pitstopTimes[v.name]
 
                 if timeSlot then timeEstimate = timeEstimate + timeSlot.time(v.value, timeSlot.stepTime) end

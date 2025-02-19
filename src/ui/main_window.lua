@@ -6,7 +6,7 @@ local pages = require("ui.pages")
 local settings = require("settings")
 local style = require("style")
 
-pages.manager:registerPage("MainMenu", require("ui.home.page"))
+pages.manager:registerPage("MainMenu", require("ui.main.page_main_home"))
 pages.manager:registerPage("SetupPage", require("ui.setup.page_setup"))
 pages.manager:registerPage("SettingsPage", require("ui.settings.page_settings"))
 pages.manager:registerPage("SetupAppsPage", require("ui.setup.page_apps"))
