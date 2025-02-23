@@ -18,8 +18,9 @@ local pitstop = {
         },
 }
 
-pitstop.wings[1].angle = math.round(cphys.wings[1].angle / pitstop.wings[1].step)
-pitstop.wings[2].angle = math.round(cphys.wings[2].angle / pitstop.wings[2].step)
+if cphys.wings[1] then pitstop.wings[1].angle = math.round(cphys.wings[1].angle / pitstop.wings[1].step) end
+
+if cphys.wings[2] then pitstop.wings[2].angle = math.round(cphys.wings[2].angle / pitstop.wings[2].step) end
 
 local pitstopTimes = {
         FUEL = {
@@ -114,8 +115,13 @@ function pitstop:step(dt)
         if isInPitlane ~= car.isInPitlane then isInPitlane = car.isInPitlane end
 
         if car.speedKmh <= 1 then
-                pitstop.wings[1].angle = math.round(cphys.wings[1].angle / pitstop.wings[1].step)
-                pitstop.wings[2].angle = math.round(cphys.wings[2].angle / pitstop.wings[2].step)
+                if cphys.wings[1] then
+                        pitstop.wings[1].angle = math.round(cphys.wings[1].angle / pitstop.wings[1].step)
+                end
+
+                if cphys.wings[2] then
+                        pitstop.wings[2].angle = math.round(cphys.wings[2].angle / pitstop.wings[2].step)
+                end
         end
 
         if

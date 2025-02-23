@@ -107,17 +107,17 @@ local sessionInfoTable = {
         },
         {
                 label = function() return "Track" end,
-                row1 = function() return string.format("Temp - %.1f° C", sim.roadTemperature) end,
+                row1 = function() return string.format("%.1f° C", sim.roadTemperature) end,
                 row2 = function() return string.format("%s - %.1f %%", simutils.trackGripString, sim.roadGrip * 100) end,
         },
         {
                 label = function() return "Air" end,
-                row1 = function() return string.format("Temp - %.1f° C", sim.ambientTemperature) end,
+                row1 = function() return string.format("%.1f° C", sim.ambientTemperature) end,
                 row2 = function() return string.format("Humidity - %.0f %%", ac.getAirHumidity(vec3(0, 0, 0)) * 100) end,
         },
         {
                 label = function() return "Wind" end,
-                row1 = function() return string.format("Speed - %.1f kmh", sim.windSpeedKmh) end,
+                row1 = function() return string.format("%.1f kmh", sim.windSpeedKmh) end,
                 row2 = function()
                         return string.format("%s - %.1f°", simutils.windDirectionString, sim.windDirectionDeg + 180)
                 end,

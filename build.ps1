@@ -33,8 +33,7 @@ $app_details = [ordered]@{
     "VERSION" = $build_ver
     "VERSION_CODE" = $build_code
     "VERSION_DATE" = $date
-    "REQUIRED_VERSION_STRING" = "1.80-preview218"
-    "REQUIRED_VERSION" = 3311
+    "REQUIRED_VERSION" = 3321
     "DESCRIPTION" = "Advanced UI replacement"
 }
 
