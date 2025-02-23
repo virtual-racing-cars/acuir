@@ -62,7 +62,7 @@ navControlUpButton:onPressed(function()
         activeItemIndex = activeItemIndex > 0 and activeItemIndex - 1 or #ac.getPitstopSpinners()
 end)
 
-local function mfdWidgetSpinner(name, height, index, value, format, min, max, items)
+local function mfdWidgetSpinner(name, height, index, value, format, min, max, items, wingIndex)
         local buttonSize = height
 
         ui.invisibleButton("##pswidget" .. name .. index, vec2(ui.windowWidth(), buttonSize))
@@ -99,10 +99,19 @@ local function mfdWidgetSpinner(name, height, index, value, format, min, max, it
         )
 
         local displayValue = items and items[value + 1] or string.format(format, value)
+
+        if wingIndex then
+                local delta = displayValue - pitstop.wings[wingIndex].angle
+
+                displayValue = string.format(delta == 0 and "%.0f (%.0f)" or "%+.0f (%.0f)", delta, displayValue)
+        else
+                displayValue = displayValue:match("%((.-)%)") or displayValue
+        end
+
         ui.sameLine()
         cui.snapCursor()
         ui.dwriteTextAligned(
-                displayValue:match("%((.-)%)") or displayValue,
+                displayValue,
                 fontSize,
                 ui.Alignment.Center,
                 ui.Alignment.Center,
@@ -179,7 +188,8 @@ function script.pitstopWindow(dt)
                                 spinner.format,
                                 spinner.min,
                                 spinner.max,
-                                spinner.items
+                                spinner.items,
+                                spinner.wingIndex
                         )
                         spinner:setValue(value)
                 end

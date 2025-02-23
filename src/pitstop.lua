@@ -1,5 +1,6 @@
 local car = ac.getCar(0)
 local sim = ac.getSim()
+local cphys = ac.getCarPhysics(0)
 local carINI = ac.INIConfig.carData(0, "car.ini")
 local setupINI = ac.INIConfig.carData(0, "setup.ini")
 local pitstopsINI =
@@ -11,7 +12,14 @@ local pitstop = {
         autoAppPitlane = pitstopsINI:get("SETTINGS", "AUTO_APP_ON_PITLANE", 1) == 1,
         visibilityMaxTime = pitstopsINI:get("SETTINGS", "VISIBILITY_MAX_TIME", 3),
         visibilityTimer = 0,
+        wings = {
+                { angle = 0, step = setupINI:get("WING_1", "STEP", 1) },
+                { angle = 0, step = setupINI:get("WING_2", "STEP", 1) },
+        },
 }
+
+pitstop.wings[1].angle = math.round(cphys.wings[1].angle / pitstop.wings[1].step)
+pitstop.wings[2].angle = math.round(cphys.wings[2].angle / pitstop.wings[2].step)
 
 local pitstopTimes = {
         FUEL = {
@@ -26,6 +34,7 @@ local pitstopTimes = {
         },
         WING_1 = {
                 stepTime = setupINI:get("WING_1", "PITSTOP", 0),
+                step = setupINI:get("WING_1", "STEP", 0),
                 time = function(offset, stepTime) return offset ~= 0 and stepTime or 0 end,
         },
         WING_2 = {
@@ -103,6 +112,11 @@ function pitstop:step(dt)
         ac.disableQuickMenuPitstop(true)
 
         if isInPitlane ~= car.isInPitlane then isInPitlane = car.isInPitlane end
+
+        if car.speedKmh <= 1 then
+                pitstop.wings[1].angle = math.round(cphys.wings[1].angle / pitstop.wings[1].step)
+                pitstop.wings[2].angle = math.round(cphys.wings[2].angle / pitstop.wings[2].step)
+        end
 
         if
                 car.justJumped

@@ -28,7 +28,8 @@ function PitstopItem:initialize(
         yPos,
         independentSpinner,
         default,
-        fixed
+        fixed,
+        wingIndex
 )
         self.id = id
         self.index = index
@@ -48,6 +49,7 @@ function PitstopItem:initialize(
         self.yPos = yPos
         self.help = ""
         self.fixed = fixed and true or false
+        self.wingIndex = wingIndex
 
         if self.fixed then
                 self.min = self.value

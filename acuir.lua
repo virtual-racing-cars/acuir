@@ -54,8 +54,17 @@ function script.main(dt)
         windowTimeSync = os.clock()
 end
 
+local cphys = ac.getCarPhysics(0)
+
+ac.onMessage(function(title, description, type, time) ac.log(title, description, type, time) end)
+
 teleportPitsCallback = nil
 function script.update(dt)
+        if csp.ui.ctrlDown and csp.ui.shiftDown and ui.keyboardButtonPressed(ui.KeyIndex.F5) then
+                settings.General.autoStart = not app.state.appOpen
+                app.state.appOpen = not app.state.appOpen
+        end
+
         if not app.state.appOpen or ac.getLastError() then
                 ac.disableQuickMenuPitstop(false)
                 return
@@ -76,13 +85,6 @@ function script.update(dt)
                 ac.tryToOpenRaceMenu("race")
                 ac.tryToOpenRaceMenu("setup")
         end
-
-        if csp.ui.ctrlDown and csp.ui.shiftDown and ui.keyboardButtonPressed(ui.KeyIndex.F5) then
-                settings.General.autoStart = not app.state.appOpen
-                app.state.appOpen = not app.state.appOpen
-        end
-
-        if not app.state.appOpen then return end
 
         local redirectVM = (csp.sim.isInMainMenu and ac.isWindowOpen("main")) or csp.sim.isPaused
         ac.redirectVirtualMirror(redirectVM)

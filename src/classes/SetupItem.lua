@@ -94,19 +94,35 @@ function SetupItem:getValue()
                 self.value = ac.getSetupSpinnerValue(self.id)
         end
 
-        for _, id in pairs(self.idPairs) do
+        for i = 2, #self.idPairs do
+                local id = self.idPairs[i]
+
                 local pairValue = ac.getSetupSpinnerValue(id)
-                if pairValue ~= self.value then ac.setSetupSpinnerValue(id, self.value) end
+                if pairValue ~= self.value then self:setValue(self.value) end
         end
+end
+
+local setups = ac.getSetupSpinners()
+local getByID = function(id)
+        for _, v in ipairs(setups) do
+                if v.name == id then return v end
+        end
+        return nil
 end
 
 function SetupItem:setValue(value)
         local changed = self.value ~= value
-
         self.value = value
+        ac.setSetupSpinnerValue(self.id, self.value)
 
-        for _, id in pairs(self.idPairs) do
-                ac.setSetupSpinnerValue(id, self.value)
+        for i = 2, #self.idPairs do
+                local id = self.idPairs[i]
+                local pairedSpinner = getByID(id)
+
+                ac.setSetupSpinnerValue(
+                        id,
+                        math.lerp(pairedSpinner.min, pairedSpinner.max, math.lerpInvSat(self.value, self.min, self.max))
+                )
         end
 
         if self.mirrored then self:mirror() end

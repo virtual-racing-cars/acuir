@@ -3,6 +3,7 @@ require("classes.PitstopItem")
 
 local sim = ac.getSim()
 local car = ac.getCar(0)
+local pitstop = require("pitstop")
 local setupINI = ac.INIConfig.carData(0, "setup.ini")
 
 local setupFixedFile = ac.getFolder(ac.FolderID.UserSetups) .. "\\server_temp.ini"
@@ -111,7 +112,7 @@ local pitstopStratItemDefaults = {
                 units = "",
                 xPos = 1,
                 yPos = 8,
-                default = 0,
+                default = pitstop.wings[1].angle,
         },
         WING_2 = {
                 name = wing2Name,
@@ -121,7 +122,7 @@ local pitstopStratItemDefaults = {
                 units = "",
                 xPos = 0,
                 yPos = 8,
-                default = 0,
+                default = pitstop.wings[2].angle,
         },
         REPAIR_BODY = { name = "Repair Body", nameAlt = "Body", tab = "Repair", repair = true, xPos = 0, yPos = -3 },
         REPAIR_SUSPENSION = {
@@ -186,6 +187,9 @@ local function createPitstopStratItems()
                         local yPos = pitstopStratItemDefaults[id].yPos
                         local default = pitstopStratItemDefaults[id].default and pitstopStratItemDefaults[id].default
                                 or ac.getSetupSpinnerValue(id, 0)
+                        local wingIndex = nil
+
+                        if tab == "Wings" then wingIndex = tonumber(id:gsub("WING_", "")[1]) end
 
                         if id == "COMPOUND" then
                                 items = {}
@@ -226,7 +230,8 @@ local function createPitstopStratItems()
                                         yPos,
                                         false,
                                         default,
-                                        psItem.readOnly
+                                        psItem.readOnly,
+                                        wingIndex
                                 )
                         )
                 end
