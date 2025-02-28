@@ -88,6 +88,7 @@ function PitstopItem:getValue()
 
         if self.mirrored then
                 self.value = getPitstopSpinnerValue(self.index + 1, self.preset)
+                self:setValue(self.value)
         else
                 self.value = getPitstopSpinnerValue(self.index, self.preset)
         end

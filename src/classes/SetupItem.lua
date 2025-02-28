@@ -72,7 +72,11 @@ function SetupItem:initialize(
                 self.idMirror = string.replace(self.id, "LR", "RR")
         end
 
-        if self.idMirror ~= nil and ac.getSetupSpinnerValue(self.idMirror, -12345) ~= -12345 then
+        if
+                not table.contains(self.idPairs, self.idMirror)
+                and self.idMirror ~= nil
+                and ac.getSetupSpinnerValue(self.idMirror, -12345) ~= -12345
+        then
                 self.mirrored = true
                 self.mirrorAvailable = true
         end
@@ -94,11 +98,9 @@ function SetupItem:getValue()
                 self.value = ac.getSetupSpinnerValue(self.id)
         end
 
-        for i = 2, #self.idPairs do
-                local id = self.idPairs[i]
-
+        for _, id in pairs(self.idPairs) do
                 local pairValue = ac.getSetupSpinnerValue(id)
-                if pairValue ~= self.value then self:setValue(self.value) end
+                if pairValue ~= self.value then ac.setSetupSpinnerValue(id, self.value) end
         end
 end
 
@@ -121,7 +123,13 @@ function SetupItem:setValue(value)
 
                 ac.setSetupSpinnerValue(
                         id,
-                        math.lerp(pairedSpinner.min, pairedSpinner.max, math.lerpInvSat(self.value, self.min, self.max))
+                        math.round(
+                                math.lerp(
+                                        pairedSpinner.min,
+                                        pairedSpinner.max,
+                                        math.lerpInvSat(self.value, self.min, self.max)
+                                )
+                        )
                 )
         end
 
