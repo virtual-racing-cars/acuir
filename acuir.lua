@@ -54,10 +54,6 @@ function script.main(dt)
         windowTimeSync = os.clock()
 end
 
-local cphys = ac.getCarPhysics(0)
-
-ac.onMessage(function(title, description, type, time) ac.log(title, description, type, time) end)
-
 teleportPitsCallback = nil
 function script.update(dt)
         if csp.ui.ctrlDown and csp.ui.shiftDown and ui.keyboardButtonPressed(ui.KeyIndex.F5) then
