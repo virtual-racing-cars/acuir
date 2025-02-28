@@ -5,9 +5,7 @@ local style = require("style")
 local sim = ac.getSim()
 
 local activeItemIndex = 0
-local acCarControls = ac.overrideCarControls(0)
 
-local navControlToggleMenus = ac.ControlButton("ACUIR_COCKPIT_MENUS")
 local navControlRightButton =
         ac.ControlButton("ACUIR_COCKPIT_X_R", { keyboard = ac.KeyIndex.Left, gamepad = ac.GamepadButton.DPadLeft })
 local navControlLeftButton =
@@ -17,47 +15,18 @@ local navControlDownButton =
 local navControlUpButton =
         ac.ControlButton("ACUIR_COCKPIT_Y_UP", { keyboard = ac.KeyIndex.Up, gamepad = ac.GamepadButton.DPadUp })
 
-navControlToggleMenus:onPressed(function() pitstop:toggleWindowOpen() end)
+navControlLeftButton:onPressed(function() pitstop:setWindowOpen(true) end)
 
-navControlLeftButton:onPressed(function()
-        if not pitstop:windowIsOpen() then
-                acCarControls.lookLeft = true
-                return
-        end
-
-        pitstop:resetVisibilityTimer()
-end)
-
-navControlLeftButton:onReleased(function() acCarControls.lookLeft = false end)
-
-navControlRightButton:onPressed(function()
-        if not pitstop:windowIsOpen() then
-                acCarControls.lookRight = true
-                return
-        end
-
-        pitstop:resetVisibilityTimer()
-end)
-
-navControlRightButton:onReleased(function() acCarControls.lookRight = false end)
+navControlRightButton:onPressed(function() pitstop:setWindowOpen(true) end)
 
 navControlDownButton:onPressed(function()
-        if not pitstop:windowIsOpen() then
-                acCarControls.lookBack = true
-                return
-        end
-
-        pitstop:resetVisibilityTimer()
+        pitstop:setWindowOpen(true)
 
         activeItemIndex = activeItemIndex < #ac.getPitstopSpinners() and activeItemIndex + 1 or 0
 end)
 
-navControlDownButton:onReleased(function() acCarControls.lookBack = false end)
-
 navControlUpButton:onPressed(function()
-        if not pitstop:windowIsOpen() then return end
-
-        pitstop:resetVisibilityTimer()
+        pitstop:setWindowOpen(true)
 
         activeItemIndex = activeItemIndex > 0 and activeItemIndex - 1 or #ac.getPitstopSpinners()
 end)

@@ -27,11 +27,11 @@ function bottomBar(buttons)
                 ui.dwriteTextAligned(
                         versionString,
                         26 * cui.scaleY(),
-                        ui.Alignment.End,
+                        ui.Alignment.Center,
                         ui.Alignment.End,
                         ui.availableSpace() - vec2(40, 10) * cui.scaleY(),
                         false,
-                        rgbm(0.8, 0.8, 0.8, 1)
+                        rgbm(0.8, 0.8, 0.8, 0.2)
                 )
         end
 
@@ -56,6 +56,7 @@ function bottomBar(buttons)
                 ui.sameLine()
                 ui.offsetCursor(-1)
         end
+
         ui.popStyleColor(1)
 end
 
