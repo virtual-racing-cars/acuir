@@ -6,6 +6,7 @@ Set-Alias Compress-7ZIPPER $7zipPath
 
 $app_dir_name = "ACUIR"
 $app_dir = "$PSScriptRoot"
+$temp_build_root_dir = "$app_dir/assettocorsa"
 $temp_build_dir = "$app_dir/assettocorsa/apps/lua/$app_dir_name"
 $manifest = "$app_dir/manifest.ini"
 $manifest_content = Get-Content $manifest
@@ -69,7 +70,7 @@ if (Test-Path $target_file) {
   Remove-Item $target_file
 }
 
-Compress-7ZIPPER a -t7z -mx9 -m0=LZMA2 -md=64m -mfb=273 -ms=on $target_file $temp_build_dir
+Compress-7ZIPPER a -t7z -mx9 -m0=LZMA2 -md=64m -mfb=273 -ms=on $target_file $temp_build_root_dir
 
 if ((Test-Path "$app_dir/assettocorsa")) {
     Remove-Item "$app_dir/assettocorsa" -Recurse -Force
