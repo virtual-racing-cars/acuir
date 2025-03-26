@@ -125,7 +125,8 @@ function pitstop:step(dt)
         end
 
         if
-                car.justJumped
+                sim.closelyFocusedCar ~= 0
+                or car.justJumped
                 or not sim.isLive
                 or sim.isInMainMenu
                 or (sim.cameraMode ~= ac.CameraMode.Cockpit and sim.cameraMode ~= ac.CameraMode.Drivable)

@@ -1,12 +1,13 @@
 local settings = {
         General = {
-                { key = "autoStart", label = "Auto-Start new UI", default = true, widget = 1 },
                 {
                         key = "hideOtherTrackSetups",
                         label = "Hide Other Track Setups",
                         default = false,
                         widget = 1,
                 },
+                { key = "autoStart", label = "Auto-Start new UI", default = true, widget = 1 },
+                { key = "showConfirmDialogs", label = "Show Confirmation Dialogs", default = true, widget = 1 },
                 { key = "showVersions", label = "Show App and CSP versions", default = true, widget = 1 },
                 { key = "developerMode", label = "Developer Mode", default = false, widget = 1 },
         },

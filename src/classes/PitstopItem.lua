@@ -5,8 +5,7 @@ local function getPitstopSpinnerValue(pitstopSpinnerIndex, preset)
 end
 
 local function setPitstopSpinnerValue(pitstopSpinnerIndex, value, preset)
-        local name = ac.getPitstopSpinners()[pitstopSpinnerIndex].name
-        ac.setPitstopSpinnerValue(name, value, preset)
+        ac.setPitstopSpinnerValue(ac.getPitstopSpinners()[pitstopSpinnerIndex].name, value, preset)
 end
 
 PitstopItem = class("PitstopItem")

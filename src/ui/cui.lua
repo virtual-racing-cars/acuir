@@ -81,7 +81,6 @@ function CUI.dwriteTextWrapped(text, font) ui.dwriteTextWrapped(text, font * CUI
 
 function CUI.dwriteText(params)
         if params.xPos then ui.setCursorX(params.xPos * CUI.scaleX()) end
-
         if params.yPos then ui.setCursorY(params.yPos * CUI.scaleY()) end
 
         local fontSize = params.fontSize * CUI.scaleY()
@@ -94,7 +93,6 @@ function CUI.dwriteTextAligned(params)
         if not params.size then params.size = vec2Temp1:set(350, 100) end
 
         if params.xPos then ui.setCursorX(params.xPos * CUI.scaleX()) end
-
         if params.yPos then ui.setCursorY(params.yPos * CUI.scaleY()) end
 
         ui.dwriteTextAligned(
@@ -220,7 +218,8 @@ function CUI.modalButton(label, sizeX, sizeY, flags)
 
         ui.popDWriteFont()
 
-        return clicked and not (flags == ui.ButtonFlags.Disabled)
+        return (clicked and not (flags == ui.ButtonFlags.Disabled))
+                or (label == "Confirm" and not settings.General.showConfirmDialogs)
 end
 
 function CUI.menuButton(label, size, horizontalAligment, verticalAlignment, flags, active, bold)

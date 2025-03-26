@@ -14,7 +14,7 @@ local settingsPages = {
         {
                 label = "Controls",
                 icon = ui.Icons.SteeringWheel,
-                enabled = false,
+                enabled = true,
                 func = function() pages:goToSettingsControls() end,
         },
         {
