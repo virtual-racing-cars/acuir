@@ -28,7 +28,7 @@ function page:draw(dt)
         cui.pushWindow(
                 "telemetry_viewer_window",
                 0,
-                200 * cui.scaleY(),
+                180 * cui.scaleY(),
                 ui.windowWidth(),
                 ui.windowHeight() - 303 * cui.scaleY()
         )

@@ -127,9 +127,9 @@ local sessionInfoTable = {
 }
 
 local function sessionInfo()
-        local startX = (ui.windowWidth() / 4) * 3 + 20 * cui.scaleY()
+        local startX = (ui.windowWidth() / 4) * 3 + 120 * cui.scaleY()
         local startY = 12 * cui.scaleY()
-        local sizeX = 192 * cui.scaleX()
+        local sizeX = 170 * cui.scaleX()
         local sizeY = 32 * cui.scaleY()
 
         local fontSize = math.floor(sizeY * 0.7)
@@ -162,7 +162,6 @@ local function sessionInfo()
                         vec2(sizeX, sizeY)
                 )
                 ui.sameLine()
-                ui.offsetCursorX(20 * cui.scaleY())
 
                 cui.snapCursor()
                 ui.dwriteTextAligned(
@@ -199,7 +198,7 @@ end
 
 function topBar(path)
         local driveButtonWidth = 400 * cui.scaleY()
-        local driveButtonHeight = 60 * cui.scaleY()
+        local driveButtonHeight = 70 * cui.scaleY()
 
         ui.drawRectFilled(0, vec2(ui.windowWidth(), topBarHeight), rgbm(0.1, 0.1, 0.1, 0.95))
 
@@ -207,45 +206,21 @@ function topBar(path)
 
         ui.setCursorY(topBarHeight / 2 - driveButtonHeight / 2)
         ui.setCursorX(ui.windowWidth() / 2 - driveButtonWidth / 2)
-        ui.offsetCursorX(-driveButtonHeight * 4.5)
-        if
-                cui.iconButton(
-                        "Setup",
-                        ui.Icons.Wrench,
-                        driveButtonHeight,
-                        driveButtonHeight,
-                        simutils.sessionRestartable and ui.ButtonFlags.None or ui.ButtonFlags.Disabled
-                )
-        then
+        ui.offsetCursorX(-driveButtonHeight * 5.25)
+        if cui.iconButton("Setup", ui.Icons.Wrench, driveButtonHeight, driveButtonHeight, ui.ButtonFlags.None) then
                 pages:goToSetup()
         end
-        ui.offsetCursorX(driveButtonHeight * 0.5)
+        ui.offsetCursorX(driveButtonHeight * 0.75)
 
-        if
-                cui.iconButton(
-                        "Laps",
-                        ui.Icons.Stopwatch,
-                        driveButtonHeight,
-                        driveButtonHeight,
-                        simutils.sessionRestartable and ui.ButtonFlags.None or ui.ButtonFlags.Disabled
-                )
-        then
+        if cui.iconButton("Laps", ui.Icons.List, driveButtonHeight, driveButtonHeight, ui.ButtonFlags.Disabled) then
                 ac.tryToRestartSession()
         end
-        ui.offsetCursorX(driveButtonHeight * 0.5)
+        ui.offsetCursorX(driveButtonHeight * 0.75)
 
-        if
-                cui.iconButton(
-                        "Settings",
-                        ui.Icons.Settings,
-                        driveButtonHeight,
-                        driveButtonHeight,
-                        simutils.sessionRestartable and ui.ButtonFlags.None or ui.ButtonFlags.Disabled
-                )
-        then
+        if cui.iconButton("Settings", ui.Icons.Settings, driveButtonHeight, driveButtonHeight, ui.ButtonFlags.None) then
                 pages:goToSettings()
         end
-        ui.offsetCursorX(driveButtonHeight * 0.5)
+        ui.offsetCursorX(driveButtonHeight * 0.75)
 
         if
                 cui.specialButton(
@@ -260,7 +235,7 @@ function topBar(path)
                 ac.tryToStart()
         end
         ui.sameLine()
-        ui.offsetCursorX(driveButtonHeight * 0.5)
+        ui.offsetCursorX(driveButtonHeight * 0.75)
 
         if
                 cui.iconButton(
@@ -273,7 +248,7 @@ function topBar(path)
         then
                 ac.tryToRestartSession()
         end
-        ui.offsetCursorX(driveButtonHeight * 0.5)
+        ui.offsetCursorX(driveButtonHeight * 0.75)
 
         if
                 cui.iconButton(
@@ -286,17 +261,9 @@ function topBar(path)
         then
                 ac.tryToSkipSession()
         end
-        ui.offsetCursorX(driveButtonHeight * 0.5)
+        ui.offsetCursorX(driveButtonHeight * 0.75)
 
-        if
-                cui.iconButton(
-                        "Quit",
-                        ui.Icons.Leave,
-                        driveButtonHeight,
-                        driveButtonHeight,
-                        simutils.sessionRestartable and ui.ButtonFlags.None or ui.ButtonFlags.Disabled
-                )
-        then
+        if cui.iconButton("Quit", ui.Icons.Leave, driveButtonHeight, driveButtonHeight, ui.ButtonFlags.None) then
                 promptShutdownAC()
         end
 

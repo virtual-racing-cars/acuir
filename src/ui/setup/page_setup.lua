@@ -166,7 +166,7 @@ function page:draw()
         cui.pushWindow(
                 "car_setup_window",
                 0,
-                200 * cui.scaleY(),
+                180 * cui.scaleY(),
                 ui.windowWidth(),
                 ui.windowHeight() - 303 * cui.scaleY()
         )

@@ -39,6 +39,8 @@ end)
 local tabBarScrollDisabled = false
 
 function setupTabBar(tabs)
+        ui.drawRectFilled(vec2(0, 0), vec2(ui.windowWidth(), 56 * cui.scaleY()), settings.Appearance.uiColor1 / 1.3)
+
         if ui.mouseLocalPos() >= vec2(0, 0) and ui.mouseLocalPos() < vec2(ui.windowWidth(), 56 * cui.scaleY()) then
                 if ui.mouseWheel() > 0 then
                         currentApp = currentApp >= #tabs - 1 and 0 or currentApp + 1
@@ -113,7 +115,7 @@ local function drawSetupSpinner(sm, si)
         }
 
         local xPos = positions[si.xPos]
-        local yPos = (si.yPos * 97 + 61) * cui.scaleY()
+        local yPos = (si.yPos * 97 + 20) * cui.scaleY()
 
         if si.items then
                 if #si.items > 0 then si.format = si.items[si.value + 1] end
