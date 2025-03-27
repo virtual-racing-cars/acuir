@@ -1,5 +1,5 @@
-require("ui.common")
 require("classes.PageManager")
+require("ui.common")
 local app = require("app")
 local cui = require("ui.cui")
 local pages = require("ui.pages")

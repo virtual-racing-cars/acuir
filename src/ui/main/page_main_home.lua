@@ -2,7 +2,6 @@ local page = {}
 
 require("src.classes.PlayerListButton")
 local cui = require("ui.cui")
-local pages = require("ui.pages")
 local settings = require("settings")
 
 require("src.ui.main.map")
@@ -60,46 +59,12 @@ function promptShutdownAC()
         end)
 end
 
-local menuButtonList = {
-        {
-                label = "VEHICLE SETUP",
-                enabled = true,
-                condition = function() end,
-                func = function() pages:goToSetup() end,
-        },
-        {
-                label = "TIME TABLE",
-                enabled = false,
-                condition = function() end,
-                func = function() end,
-        },
-        {
-                label = "TELEMETRY",
-                enabled = false,
-                condition = function() end,
-                func = function() pages.manager:setPage("TelemetryPage") end,
-        },
-        {
-                label = "SETTINGS",
-                enabled = true,
-                condition = function() end,
-                func = function() pages:goToSettings() end,
-        },
-        {
-                label = "QUIT",
-                enabled = true,
-                condition = function() end,
-                func = function() promptShutdownAC() end,
-        },
-}
-
 function page.update() end
 
 function page.draw()
         cui.pushWindowFitted("main_menu_page_window")
 
         topBar()
-        homeBar(menuButtonList)
 
         cui.pushWindow(
                 "home_leaderboard_window",

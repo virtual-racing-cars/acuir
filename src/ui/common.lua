@@ -1,6 +1,7 @@
 local app = require("app")
 local csp = require("csp")
 local cui = require("ui.cui")
+local pages = require("ui.pages")
 local settings = require("settings")
 local simutils = require("simutils")
 local style = require("style")
@@ -129,7 +130,7 @@ local function sessionInfo()
         local startX = (ui.windowWidth() / 4) * 3 + 20 * cui.scaleY()
         local startY = 12 * cui.scaleY()
         local sizeX = 192 * cui.scaleX()
-        local sizeY = 35 * cui.scaleY()
+        local sizeY = 32 * cui.scaleY()
 
         local fontSize = math.floor(sizeY * 0.7)
         fontSize = (fontSize % 2 ~= 0) and fontSize + 1 or fontSize
@@ -198,23 +199,31 @@ end
 
 function topBar(path)
         local driveButtonWidth = 400 * cui.scaleY()
-        local driveButtonHeight = 80 * cui.scaleY()
+        local driveButtonHeight = 60 * cui.scaleY()
 
         ui.drawRectFilled(0, vec2(ui.windowWidth(), topBarHeight), rgbm(0.1, 0.1, 0.1, 0.95))
-        ui.drawRectFilled(
-                vec2(0, topBarHeight),
-                vec2(ui.windowWidth(), (topBarHeight + menuButtonSize * cui.scaleY())),
-                settings.Appearance.uiColor1 / 1.3
-        )
 
         topSubBar(path)
 
         ui.setCursorY(topBarHeight / 2 - driveButtonHeight / 2)
         ui.setCursorX(ui.windowWidth() / 2 - driveButtonWidth / 2)
-        ui.offsetCursorX(-driveButtonHeight * 3)
+        ui.offsetCursorX(-driveButtonHeight * 4.5)
         if
                 cui.iconButton(
-                        "##resetSession",
+                        "Setup",
+                        ui.Icons.Wrench,
+                        driveButtonHeight,
+                        driveButtonHeight,
+                        simutils.sessionRestartable and ui.ButtonFlags.None or ui.ButtonFlags.Disabled
+                )
+        then
+                pages:goToSetup()
+        end
+        ui.offsetCursorX(driveButtonHeight * 0.5)
+
+        if
+                cui.iconButton(
+                        "Laps",
                         ui.Icons.Stopwatch,
                         driveButtonHeight,
                         driveButtonHeight,
@@ -223,52 +232,39 @@ function topBar(path)
         then
                 ac.tryToRestartSession()
         end
-        ui.sameLine()
+        ui.offsetCursorX(driveButtonHeight * 0.5)
 
         if
                 cui.iconButton(
-                        "##resetSession",
+                        "Settings",
                         ui.Icons.Settings,
                         driveButtonHeight,
                         driveButtonHeight,
                         simutils.sessionRestartable and ui.ButtonFlags.None or ui.ButtonFlags.Disabled
                 )
         then
-                ac.tryToRestartSession()
+                pages:goToSettings()
         end
-        ui.sameLine()
+        ui.offsetCursorX(driveButtonHeight * 0.5)
 
-        if
-                cui.iconButton(
-                        "##resetSession",
-                        ui.Icons.Settings,
-                        driveButtonHeight,
-                        driveButtonHeight,
-                        simutils.sessionRestartable and ui.ButtonFlags.None or ui.ButtonFlags.Disabled
-                )
-        then
-                ac.tryToRestartSession()
-        end
-        ui.sameLine()
-
-        ui.pushStyleColor(ui.StyleColor.Button, rgbm.colors.green)
         if
                 cui.specialButton(
-                        "Drive Now",
+                        string.upper(simutils.controlsLocked and "Controls Locked" or "Drive Now"),
                         vec2(driveButtonWidth, driveButtonHeight),
                         ui.Alignment.Center,
-                        ui.Alignment.Center
+                        ui.Alignment.Center,
+                        rgbm.colors.green,
+                        simutils.controlsLocked
                 )
         then
                 ac.tryToStart()
         end
-
-        ui.popStyleColor(1)
         ui.sameLine()
+        ui.offsetCursorX(driveButtonHeight * 0.5)
 
         if
                 cui.iconButton(
-                        "##resetSession",
+                        "Restart",
                         ui.Icons.Reset,
                         driveButtonHeight,
                         driveButtonHeight,
@@ -277,11 +273,11 @@ function topBar(path)
         then
                 ac.tryToRestartSession()
         end
-        ui.sameLine()
+        ui.offsetCursorX(driveButtonHeight * 0.5)
 
         if
                 cui.iconButton(
-                        "##skipSession",
+                        "Skip",
                         ui.Icons.Skip,
                         driveButtonHeight,
                         driveButtonHeight,
@@ -290,19 +286,33 @@ function topBar(path)
         then
                 ac.tryToSkipSession()
         end
-        ui.sameLine()
+        ui.offsetCursorX(driveButtonHeight * 0.5)
 
         if
                 cui.iconButton(
-                        "##resetSession",
+                        "Quit",
                         ui.Icons.Leave,
                         driveButtonHeight,
                         driveButtonHeight,
                         simutils.sessionRestartable and ui.ButtonFlags.None or ui.ButtonFlags.Disabled
                 )
         then
-                ac.tryToRestartSession()
+                promptShutdownAC()
         end
+
+        -- ui.setCursorY(topBarHeight / 2 + driveButtonHeight / 4)
+        -- ui.setCursorX(ui.windowWidth() / 2 - driveButtonWidth / 2)
+        -- if
+        --         cui.specialButton(
+        --                 "Vehicle Setup",
+        --                 vec2(driveButtonWidth, driveButtonHeight),
+        --                 ui.Alignment.Center,
+        --                 ui.Alignment.Center,
+        --                 rgbm.colors.blue
+        --         )
+        -- then
+        --         pages:goToSetup()
+        -- end
 
         sessionInfo()
 end
@@ -316,5 +326,5 @@ end
 
 function updateCommon()
         acLogoSize = ui.imageSize(acLogo) * cui.scaleY()
-        topBarHeight = 200 * cui.scaleY()
+        topBarHeight = 180 * cui.scaleY()
 end

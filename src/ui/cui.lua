@@ -353,7 +353,7 @@ function CUI.bindingButton(bind, device, button, size, flags)
         return clicked and not (flags == ui.ButtonFlags.Disabled)
 end
 
-function CUI.specialButton(label, size, horizontalAligment, verticalAlignment)
+function CUI.specialButton(label, size, horizontalAligment, verticalAlignment, color, locked)
         style:pushFontBold()
 
         if not horizontalAligment then horizontalAligment = ui.Alignment.Center end
@@ -370,17 +370,15 @@ function CUI.specialButton(label, size, horizontalAligment, verticalAlignment)
 
         local fontColor = nil
 
-        local locked = simutils.controlsLocked
-
         if locked then
                 ui.pushStyleColor(ui.StyleColor.ButtonHovered, rgbm(0.6, 0.6, 0.6, 1))
                 ui.pushStyleColor(ui.StyleColor.ButtonActive, rgbm(0.4, 0.4, 0.4, 1))
                 ui.pushStyleColor(ui.StyleColor.Button, rgbm(0.5, 0.5, 0.5, 1))
                 fontColor = rgbm.colors.black
         else
-                ui.pushStyleColor(ui.StyleColor.ButtonHovered, rgbm(0, 0.6, 0, 1))
-                ui.pushStyleColor(ui.StyleColor.ButtonActive, rgbm(0, 0.4, 0, 1))
-                ui.pushStyleColor(ui.StyleColor.Button, rgbm.colors.green)
+                ui.pushStyleColor(ui.StyleColor.ButtonHovered, color * 1.1)
+                ui.pushStyleColor(ui.StyleColor.ButtonActive, color * 0.9)
+                ui.pushStyleColor(ui.StyleColor.Button, color)
         end
 
         local tempCursor = ui.getCursor()
@@ -394,15 +392,7 @@ function CUI.specialButton(label, size, horizontalAligment, verticalAlignment)
         ui.offsetCursorY(1)
         ui.setCursor(tempCursor)
         CUI.snapCursor()
-        ui.dwriteTextAligned(
-                string.upper(locked and "Controls Locked" or "Drive Now"),
-                fontSize,
-                horizontalAligment,
-                verticalAlignment,
-                buttonSize,
-                false,
-                fontColor
-        )
+        ui.dwriteTextAligned(label, fontSize, horizontalAligment, verticalAlignment, buttonSize, false, fontColor)
 
         if locked then
                 ui.setCursor(tempCursor)
@@ -417,7 +407,7 @@ function CUI.specialButton(label, size, horizontalAligment, verticalAlignment)
                         fontColor
                 )
         else
-                ui.glowRectFilled(r1, r2, rgbm.colors.green)
+                ui.glowRectFilled(r1, r2, color)
         end
 
         ui.popDWriteFont()
@@ -435,13 +425,19 @@ function CUI.iconButton(label, icon, sizeX, sizeY, flags)
         local disabled = false
         if bit.band(flags, ui.ButtonFlags.Disabled) ~= 0 then disabled = true end
 
+        local tempCursor = ui.getCursor()
         local clicked = ui.invisibleButton("##" .. label, vec2(sizeX, sizeY))
         local hovered = ui.itemHovered()
 
         local iconColor = disabled and rgbm(0.3, 0.3, 0.3, 0.8)
                 or (hovered and settings.Appearance.uiColor2 or settings.Appearance.uiColor3)
 
-        ui.addIcon(icon, vec2(sizeY, sizeY) * 0.4, vec2(0.5, 0.5), iconColor)
+        ui.addIcon(icon, vec2(sizeY, sizeY) * 0.7, vec2(0.5, 0), iconColor)
+
+        ui.setCursorX(tempCursor.x)
+        CUI.snapCursor()
+        ui.dwriteTextAligned(label, 18, ui.Alignment.Center, ui.Alignment.Start, sizeY, false)
+        ui.setCursor(tempCursor + vec2(sizeX, 0))
 
         return clicked and not disabled
 end
