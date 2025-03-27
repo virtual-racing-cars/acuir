@@ -197,7 +197,7 @@ function topSubBar(path)
 end
 
 function topBar(path)
-        local driveButtonWidth = 500 * cui.scaleY()
+        local driveButtonWidth = 400 * cui.scaleY()
         local driveButtonHeight = 80 * cui.scaleY()
 
         ui.drawRectFilled(0, vec2(ui.windowWidth(), topBarHeight), rgbm(0.1, 0.1, 0.1, 0.95))
@@ -211,11 +211,37 @@ function topBar(path)
 
         ui.setCursorY(topBarHeight / 2 - driveButtonHeight / 2)
         ui.setCursorX(ui.windowWidth() / 2 - driveButtonWidth / 2)
-        ui.offsetCursorX(-driveButtonHeight)
+        ui.offsetCursorX(-driveButtonHeight * 3)
         if
                 cui.iconButton(
                         "##resetSession",
-                        ui.Icons.Reset,
+                        ui.Icons.Stopwatch,
+                        driveButtonHeight,
+                        driveButtonHeight,
+                        simutils.sessionRestartable and ui.ButtonFlags.None or ui.ButtonFlags.Disabled
+                )
+        then
+                ac.tryToRestartSession()
+        end
+        ui.sameLine()
+
+        if
+                cui.iconButton(
+                        "##resetSession",
+                        ui.Icons.Settings,
+                        driveButtonHeight,
+                        driveButtonHeight,
+                        simutils.sessionRestartable and ui.ButtonFlags.None or ui.ButtonFlags.Disabled
+                )
+        then
+                ac.tryToRestartSession()
+        end
+        ui.sameLine()
+
+        if
+                cui.iconButton(
+                        "##resetSession",
+                        ui.Icons.Settings,
                         driveButtonHeight,
                         driveButtonHeight,
                         simutils.sessionRestartable and ui.ButtonFlags.None or ui.ButtonFlags.Disabled
@@ -242,6 +268,19 @@ function topBar(path)
 
         if
                 cui.iconButton(
+                        "##resetSession",
+                        ui.Icons.Reset,
+                        driveButtonHeight,
+                        driveButtonHeight,
+                        simutils.sessionRestartable and ui.ButtonFlags.None or ui.ButtonFlags.Disabled
+                )
+        then
+                ac.tryToRestartSession()
+        end
+        ui.sameLine()
+
+        if
+                cui.iconButton(
                         "##skipSession",
                         ui.Icons.Skip,
                         driveButtonHeight,
@@ -250,6 +289,19 @@ function topBar(path)
                 )
         then
                 ac.tryToSkipSession()
+        end
+        ui.sameLine()
+
+        if
+                cui.iconButton(
+                        "##resetSession",
+                        ui.Icons.Leave,
+                        driveButtonHeight,
+                        driveButtonHeight,
+                        simutils.sessionRestartable and ui.ButtonFlags.None or ui.ButtonFlags.Disabled
+                )
+        then
+                ac.tryToRestartSession()
         end
 
         sessionInfo()
