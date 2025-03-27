@@ -69,7 +69,7 @@ function page.draw()
         cui.pushWindow(
                 "home_leaderboard_window",
                 0,
-                286 * cui.scaleY(),
+                216 * cui.scaleY(),
                 750 * cui.scaleX(),
                 ui.windowHeight() - 459 * cui.scaleY(),
                 true
