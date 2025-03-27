@@ -62,6 +62,7 @@ function script.update(dt)
         end
 
         if not app.state.appOpen or ac.getLastError() then
+                pitstop:setWindowOpen(false)
                 ac.disableQuickMenuPitstop(false)
                 return
         end

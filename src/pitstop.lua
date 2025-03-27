@@ -1,3 +1,5 @@
+local app = require("app")
+
 local car = ac.getCar(0)
 local sim = ac.getSim()
 local cphys = ac.getCarPhysics(0)
@@ -125,7 +127,8 @@ function pitstop:step(dt)
         end
 
         if
-                sim.closelyFocusedCar ~= 0
+                not app.state.appOpen
+                or sim.closelyFocusedCar ~= 0
                 or car.justJumped
                 or not sim.isLive
                 or sim.isInMainMenu
