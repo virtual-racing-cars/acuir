@@ -437,7 +437,7 @@ function CUI.iconButton(label, icon, sizeX, sizeY, flags)
         ui.setCursorX(tempCursor.x)
         CUI.snapCursor()
         style:pushFontBold()
-        ui.dwriteTextAligned(label, 18, ui.Alignment.Center, ui.Alignment.Start, sizeY, false)
+        ui.dwriteTextAligned(label, 18 * scaleY, ui.Alignment.Center, ui.Alignment.Start, sizeY, false)
         ui.popDWriteFont()
         ui.setCursor(tempCursor + vec2(sizeX, 0))
 

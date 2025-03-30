@@ -182,12 +182,12 @@ function topSubBar(path)
         ui.setCursorY(topBarHeight / 2 - acLogoSize.y / 2)
         ui.image(acLogo, acLogoSize)
 
-        cui.setCursorX(225)
+        cui.setCursorX(180)
         ui.setCursorY(topBarHeight / 2 - (100 * cui.scaleY()) / 2)
 
         ui.dwriteTextAligned(
                 path,
-                60 * cui.scaleY(),
+                50 * cui.scaleY(),
                 ui.Alignment.Start,
                 ui.Alignment.Center,
                 vec2(600 * cui.scaleX(), 100 * cui.scaleY()),
@@ -292,6 +292,6 @@ function settingsMenuCommon(path, bottomBarButtons)
 end
 
 function updateCommon()
-        acLogoSize = ui.imageSize(acLogo) * cui.scaleY()
+        acLogoSize = ui.imageSize(acLogo) * 0.85 * cui.scaleY()
         topBarHeight = 180 * cui.scaleY()
 end
