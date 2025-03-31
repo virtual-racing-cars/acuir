@@ -2,6 +2,7 @@ package.add("src")
 require("ui.main_window")
 require("ui.pause_window")
 require("ui.pitstop_window")
+require("ui.results_window")
 require("audio")
 local app = require("app")
 local audio = require("audio")
@@ -9,6 +10,8 @@ local csp = require("csp")
 local mod = require("install")
 local pages = require("ui.pages")
 local pitstop = require("pitstop")
+local race = require("race")
+local replay = require("replay")
 local settings = require("settings")
 
 app.state.appOpen = settings.General.autoStart
@@ -30,11 +33,29 @@ ui.onExclusiveHUD(function(mode)
                 return MainMenuWindow(dt)
         end
 
+        if mode == "replay" then
+                audio:driver(dt)
+
+                if modeLast ~= mode then pages:setParentMainMenu() end
+
+                modeLast = mode
+
+                return MainMenuWindow(dt)
+        end
+
+        if mode == "results" then
+                audio:driver(dt)
+
+                if modeLast ~= mode then pages:setParentResultsMenu() end
+                modeLast = mode
+
+                return ResultsMenuWindow()
+        end
+
         if mode == "pause" then
                 audio:driver(dt)
 
                 if modeLast ~= mode then pages:setParentPauseMenu() end
-
                 modeLast = mode
 
                 return PauseMenuWindow()
@@ -67,7 +88,9 @@ function script.update(dt)
                 return
         end
 
+        race:step()
         pitstop:step(dt)
+        replay:step(dt)
 
         if teleportPitsCallback then
                 if teleportPitsCallback() then teleportPitsCallback = nil end

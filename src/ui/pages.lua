@@ -28,6 +28,13 @@ function pages:setParentPauseMenu()
         pages:goToPauseMenu()
 end
 
+function pages:goToResults() pages.manager:setPage("ResultsMenu") end
+
+function pages:setParentResultsMenu()
+        pages.manager:setParentPageName("ResultsMenu")
+        pages:goToResults()
+end
+
 function pages:goToParent() pages.manager:setPage(pages.manager.parentName) end
 
 function pages:goToSetup() pages.manager:setPage("SetupPage") end

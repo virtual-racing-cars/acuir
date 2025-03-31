@@ -61,40 +61,6 @@ function bottomBar(buttons)
         ui.popStyleColor(1)
 end
 
-function homeBar(buttons)
-        ui.setCursorX(0)
-        ui.setCursorY(topBarHeight)
-
-        ui.pushStyleColor(ui.StyleColor.Button, settings.Appearance.uiColor1)
-
-        for i in ipairs(buttons) do
-                local menuButton = buttons[i]
-                local enabled = menuButton.enabled
-                local hidden = false
-
-                if menuButton.condition() then hidden = true end
-
-                if
-                        not hidden
-                        and cui.menuButton(
-                                menuButton.label,
-                                menuButtonSize,
-                                ui.Alignment.Center,
-                                ui.Alignment.Center,
-                                enabled and ui.ButtonFlags.None or ui.ButtonFlags.Disabled,
-                                false,
-                                i == 1
-                        )
-                then
-                        menuButton.func()
-                end
-
-                ui.sameLine()
-        end
-
-        ui.popStyleColor(1)
-end
-
 local sessionInfoTable = {
         {
                 label = function() return "Sim Time" end,
