@@ -229,7 +229,7 @@ local function saveSetupWindow(sm)
                 "##SetupName",
                 saveSetup.track .. "/",
                 saveSetup.name,
-                ui.InputTextFlags.None,
+                "[%w_ .;,><%-]",
                 vec2Temp1:set(buttonWidth, iconButtonHeight)
         )
         ui.newLine()

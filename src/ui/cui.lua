@@ -682,11 +682,12 @@ function CUI.inputTextBox(label, stringPrefix, stringInput, size)
         return itemActive
 end
 
-function CUI.inputText(label, stringPrefix, stringInput, flags, size)
-        if not CUI.inputTextBox(label, stringPrefix, stringInput, size) then return stringInput end
+function CUI.inputText(label, stringPrefix, stringInput, filter, size)
+        if not CUI.inputTextBox(label, stringPrefix, stringInput, size) then return stringInput, false end
 
         local captured = ui.captureKeyboard(true, true, true)
         local charToAdd = nil
+        local skip = false
 
         if ui.mouseDoubleClicked(ui.MouseButton.Left) then
                 inputTextBoxDragIndex = 0
@@ -696,6 +697,7 @@ function CUI.inputText(label, stringPrefix, stringInput, flags, size)
         if ui.keyPressed(ui.Key.D) and ui.keyboardButtonDown(ui.KeyIndex.Control) then
                 inputTextBoxDragIndex = #stringInput
                 inputTextBoxCursorIndex = inputTextBoxCursorIndex
+                return stringInput, true
         end
 
         if ui.keyPressed(ui.Key.Left) then
@@ -715,6 +717,8 @@ function CUI.inputText(label, stringPrefix, stringInput, flags, size)
                 inputTextBoxCursorIndex = #stringInput
         end
 
+        if ui.keyPressed(ui.Key.Backspace) or ui.keyPressed(ui.Key.Delete) then captured = "" end
+
         if
                 (ui.keyPressed(ui.Key.Backspace) or ui.keyPressed(ui.Key.Delete) or #captured > 0)
                 and #stringInput > 0
@@ -733,8 +737,10 @@ function CUI.inputText(label, stringPrefix, stringInput, flags, size)
                 end
                 audio:trigger()
         elseif ui.keyPressed(ui.Key.Backspace) and #stringInput > 0 then
+                ac.debug("inputTextBoxCursorIndex", inputTextBoxCursorIndex)
+                ac.debug("inputTextBoxDragIndex", inputTextBoxDragIndex)
+                skip = true
                 stringInput = stringInput:sub(1, inputTextBoxCursorIndex - 1)
-                        .. stringInput:sub(inputTextBoxCursorIndex + 1)
                 inputTextBoxCursorIndex = inputTextBoxCursorIndex - 1
                 inputTextBoxDragIndex = inputTextBoxCursorIndex
         elseif ui.keyPressed(ui.Key.Delete) and #stringInput > 0 then
@@ -744,9 +750,9 @@ function CUI.inputText(label, stringPrefix, stringInput, flags, size)
                 inputTextBoxDragIndex = inputTextBoxCursorIndex
         end
 
-        if #captured > 0 then
+        if #captured > 0 and not skip then
                 charToAdd = captured:queue()
-                if #charToAdd == 1 and charToAdd:match("[%w_ .;,><%-]") then
+                if #charToAdd == 1 and charToAdd:match(filter) then
                         inputTextBoxCursorIndex = inputTextBoxCursorIndex + 1
                         inputTextBoxDragIndex = inputTextBoxCursorIndex
 
@@ -760,7 +766,7 @@ function CUI.inputText(label, stringPrefix, stringInput, flags, size)
 
         stringInput = stringInput:gsub("\n", "")
 
-        return stringInput
+        return stringInput, true
 end
 
 function CUI.dummy(x, y) ui.dummy(vec2Temp1:set(x * scaleY, y * scaleY)) end
