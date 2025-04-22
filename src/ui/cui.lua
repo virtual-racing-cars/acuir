@@ -6,6 +6,7 @@ local simutils = require("simutils")
 local style = require("style")
 local sim = ac.getSim()
 local car = ac.getCar(0)
+local guiINI = ac.INIConfig.cspModule(ac.CSPModuleID.GUI)
 
 local vec2Temp1 = vec2()
 local vec2Temp2 = vec2()
@@ -17,10 +18,19 @@ local windowMaxWidth = 0
 local windowMaxHeight = 0
 
 local scaleY = math.min(sim.windowHeight / defaultHeight, sim.windowWidth / defaultWidth)
+        / guiINI:get("NEW_UI", "UI_SCALE", 1)
 local scaleX = scaleY
 
 ac.onResolutionChange(function(newSize, makingScreenshot)
-        scaleY = math.min(newSize.y / defaultHeight, newSize.x / defaultWidth)
+        scaleY = math.min(newSize.y / defaultHeight, newSize.x / defaultWidth) / guiINI:get("NEW_UI", "UI_SCALE", 1)
+        scaleX = scaleY
+end)
+
+ac.onCSPConfigChanged(ac.CSPModuleID.GUI, function()
+        guiINI = ac.INIConfig.cspModule(ac.CSPModuleID.GUI)
+
+        scaleY = math.min(sim.windowHeight / defaultHeight, sim.windowWidth / defaultWidth)
+                / guiINI:get("NEW_UI", "UI_SCALE", 1)
         scaleX = scaleY
 end)
 
