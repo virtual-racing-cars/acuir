@@ -1,24 +1,30 @@
+local settings = require("src.settings")
+
 local setup = {
         current = "generic/default",
         loaded = {},
-
+        loadedSorted = {},
         selected = { name = "", track = "", description = "", path = "", lastWriteTime = "" },
         input = { name = "", track = ac.getTrackID(), description = "", path = "", lastWriteTime = "" },
 }
 
+local setupsDir = ac.getFolder(ac.FolderID.UserSetups) .. "\\" .. ac.getCarID(0)
+
 function setup:getFiles() end
 
 function setup:load()
-        for track, _ in pairs(loadedSetups) do
-                for i in ipairs(loadedSetups[track]) do
-                        loadedSetups[track][i] = nil
+        for track, _ in pairs(setup.loaded) do
+                for i in ipairs(setup.loaded[track]) do
+                        setup.loaded[track][i] = nil
                 end
-                loadedSetups[track] = nil
+                setup.loaded[track] = nil
         end
 
-        trackSortedSetups = {}
+        for track, _ in pairs(setup.loadedSorted) do
+                setup.loadedSorted[track] = nil
+        end
 
-        loadedSetups[ac.getTrackID()] = {}
+        setup.loaded[ac.getTrackID()] = {}
 
         io.scanDir(setupsDir, function(dirName)
                 if settings.General.hideOtherTrackSetups then
@@ -29,12 +35,12 @@ function setup:load()
                         return
                 end
 
-                if loadedSetups[dirName] == nil then loadedSetups[dirName] = {} end
+                if setup.loaded[dirName] == nil then setup.loaded[dirName] = {} end
 
                 io.scanDir(setupsDir .. "\\" .. dirName, function(fileName, fileAttributes)
                         if string.find(fileName, ".sp") or string.find(fileName, ".txt") then return end
 
-                        table.insert(loadedSetups[dirName], {
+                        table.insert(setup.loaded[dirName], {
                                 name = fileName,
                                 track = dirName,
                                 path = setupsDir .. "\\" .. dirName .. "\\" .. fileName,
@@ -43,29 +49,33 @@ function setup:load()
                 end)
         end)
 
-        for track, setupList in pairs(loadedSetups) do
+        for _, setupList in pairs(setup.loaded) do
                 table.sort(setupList, function(a, b) return a.lastWriteTime > b.lastWriteTime end)
         end
 
         -- Create a sorted list of track names
-        for track in pairs(loadedSetups) do
-                table.insert(trackSortedSetups, track)
+        for track in pairs(setup.loaded) do
+                table.insert(setup.loadedSorted, track)
         end
-        table.sort(trackSortedSetups)
-        table.removeItem(trackSortedSetups, "generic")
-        table.insert(trackSortedSetups, 1, "generic")
-        table.removeItem(trackSortedSetups, ac.getTrackID())
-        table.insert(trackSortedSetups, 1, ac.getTrackID())
+        table.sort(setup.loadedSorted)
+        table.removeItem(setup.loadedSorted, "generic")
+        table.insert(setup.loadedSorted, 1, "generic")
+        table.removeItem(setup.loadedSorted, ac.getTrackID())
+        table.insert(setup.loadedSorted, 1, ac.getTrackID())
 end
 
-function setup:save()
-        ac.setActiveSetupName(saveSetup.name, saveSetup.track)
-        sm:saveSetup(saveSetup.path)
+ac.onSetupsListRefresh(function() setup:load() end)
 
-        currentSetup = saveSetup.track .. "/" .. saveSetup.name
-        selectedSetup = table.clone(saveSetup, true)
+setup:load()
 
-        loadSetups()
+function setup:save(sm)
+        ac.setActiveSetupName(setup.input.name, setup.input.track)
+        sm:saveSetup(setup.input.path)
+
+        setup.current = setup.input.track .. "/" .. setup.input.name
+        setup.selected = table.clone(setup.input, true)
+
+        setup:load()
 end
 
 function setup:delete()

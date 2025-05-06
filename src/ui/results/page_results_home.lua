@@ -77,7 +77,7 @@ local pauseButtons = {
                 label = "Quit",
                 enabled = true,
                 condition = function() end,
-                func = function() promptShutdownAC() end,
+                func = function() cui:promptShutdownAC() end,
         },
 }
 
@@ -176,7 +176,7 @@ function page.draw(dt)
                                 ui.ButtonFlags.None
                         )
                 then
-                        promptShutdownAC()
+                        cui:promptShutdownAC()
                 end
         end)
 

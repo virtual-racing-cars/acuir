@@ -1,86 +1,12 @@
 local cui = require("ui.cui")
 
+local carSetup = require("src.car_setup")
 local settings = require("settings")
 
 local vec2Temp1 = vec2()
 
 local setupsDir = ac.getFolder(ac.FolderID.UserSetups) .. "\\" .. ac.getCarID(0)
 local refreshingSetups = false
-local loadedSetups = {}
-local trackSortedSetups = {}
-local selectedSetup = { name = "", track = "", description = "", path = "", lastWriteTime = "" }
-local saveSetup = { name = "", track = ac.getTrackID(), description = "", path = "", lastWriteTime = "" }
-local currentSetup = "generic/default"
-
-local function loadSetups()
-        refreshingSetups = true
-
-        for track, _ in pairs(loadedSetups) do
-                for i in ipairs(loadedSetups[track]) do
-                        loadedSetups[track][i] = nil
-                end
-                loadedSetups[track] = nil
-        end
-
-        trackSortedSetups = {}
-
-        loadedSetups[ac.getTrackID()] = {}
-
-        io.scanDir(setupsDir, function(dirName)
-                if settings.General.hideOtherTrackSetups then
-                        if dirName ~= ac.getTrackID() and dirName ~= "generic" then return end
-                end
-
-                if string.find(dirName, ".sp") or string.find(dirName, ".ini") or string.find(dirName, ".txt") then
-                        return
-                end
-
-                if loadedSetups[dirName] == nil then loadedSetups[dirName] = {} end
-
-                io.scanDir(setupsDir .. "\\" .. dirName, function(fileName, fileAttributes)
-                        if string.find(fileName, ".sp") or string.find(fileName, ".txt") then return end
-
-                        table.insert(loadedSetups[dirName], {
-                                name = fileName,
-                                track = dirName,
-                                path = setupsDir .. "\\" .. dirName .. "\\" .. fileName,
-                                lastWriteTime = fileAttributes.lastWriteTime,
-                        })
-                end)
-        end)
-
-        for track, setupList in pairs(loadedSetups) do
-                table.sort(setupList, function(a, b) return a.lastWriteTime > b.lastWriteTime end)
-        end
-
-        -- Create a sorted list of track names
-        for track in pairs(loadedSetups) do
-                table.insert(trackSortedSetups, track)
-        end
-        table.sort(trackSortedSetups)
-        table.removeItem(trackSortedSetups, "generic")
-        table.insert(trackSortedSetups, 1, "generic")
-        table.removeItem(trackSortedSetups, ac.getTrackID())
-        table.insert(trackSortedSetups, 1, ac.getTrackID())
-
-        refreshingSetups = false
-end
-
-loadSetups()
-
-local function deleteSetup()
-        if not io.fileExists(saveSetup.path) then return end
-
-        io.deleteFile(saveSetup.path)
-        io.deleteFile(string.trim(saveSetup.path, ".ini") .. ".sp")
-
-        saveSetup.name = ""
-        saveSetup.path = ""
-
-        selectedSetup = { name = "", track = "", path = "", lastWriteTime = "" }
-
-        loadSetups()
-end
 
 local function promptDeleteSetup()
         local mouseMoved = false
@@ -102,7 +28,7 @@ local function promptDeleteSetup()
 
                 ui.setCursorX(0)
                 ui.dwriteTextAligned(
-                        string.format("%s/%s", selectedSetup.track, selectedSetup.name),
+                        string.format("%s/%s", carSetup.selected.track, carSetup.selected.name),
                         textBoxHeight / 4,
                         nil,
                         nil,
@@ -125,7 +51,7 @@ local function promptDeleteSetup()
 
                 ui.setCursorX(ui.windowWidth() / 2 + 5 * cui.scaleY())
                 if cui.modalButton("Confirm", ui.windowWidth() / 3, 50 * cui.scaleY(), ui.ButtonFlags.None) then
-                        deleteSetup()
+                        carSetup:delete()
                         ui.popStyleVar(1)
 
                         return true
@@ -135,22 +61,10 @@ local function promptDeleteSetup()
         end, false)
 end
 
-local function saveSetupFile()
-        ac.setActiveSetupName(saveSetup.name, saveSetup.track)
-        sm:saveSetup(saveSetup.path)
-
-        currentSetup = saveSetup.track .. "/" .. saveSetup.name
-        selectedSetup = table.clone(saveSetup, true)
-
-        loadSetups()
-end
-
 local function promptOverwriteSetup()
         local mouseMoved = false
 
         cui.modalDialog(function()
-                -- ui.text(string.format("%s/%s", selectedSetup.track, selectedSetup.name))
-
                 ui.pushStyleVar(ui.StyleVar.ItemSpacing, 0)
                 local textBoxHeight = ui.windowHeight() / 4
 
@@ -173,7 +87,7 @@ local function promptOverwriteSetup()
 
                 ui.setCursorX(0)
                 ui.dwriteTextAligned(
-                        string.format("%s/%s", selectedSetup.track, selectedSetup.name),
+                        string.format("%s/%s", carSetup.selected.track, carSetup.selected.name),
                         textBoxHeight / 4,
                         nil,
                         nil,
@@ -196,7 +110,7 @@ local function promptOverwriteSetup()
 
                 ui.setCursorX(ui.windowWidth() / 2 + 5 * cui.scaleY())
                 if cui.modalButton("Confirm", ui.windowWidth() / 3, 50 * cui.scaleY(), ui.ButtonFlags.None) then
-                        saveSetupFile()
+                        carSetup:save(sm)
                         ui.popStyleVar(1)
 
                         return true
@@ -217,7 +131,7 @@ local function saveSetupWindow(sm)
         ui.setCursor(0)
 
         ui.dwriteTextAligned(
-                "Current Setup - " .. currentSetup,
+                "Current Setup - " .. carSetup.current,
                 fontSize,
                 ui.Alignment.Center,
                 ui.Alignment.Center,
@@ -225,30 +139,19 @@ local function saveSetupWindow(sm)
         )
 
         ui.setCursorX(groupBegin)
-        saveSetup.name = cui.inputText(
+        carSetup.input.name = cui.inputText(
                 "##SetupName",
-                saveSetup.track .. "/",
-                saveSetup.name,
+                carSetup.input.track .. "/",
+                carSetup.input.name,
                 "[%w_ .;,><%-]",
                 vec2Temp1:set(buttonWidth, iconButtonHeight)
         )
         ui.newLine()
-        -- ui.newLine()
-
-        -- ui.setCursorX(groupBegin)
-        -- saveSetup.description = cui.inputText(
-        --         "##SetupDescription",
-        --         "Description:",
-        --         saveSetup.description,
-        --         ui.InputTextFlags.None,
-        --         vec2Temp1:set(buttonWidth, iconButtonHeight)
-        -- )
-        -- ui.newLine()
 
         local setupFileExists = false
-        if saveSetup.name ~= "" then
-                saveSetup.path = setupsDir .. "\\" .. saveSetup.track .. "\\" .. saveSetup.name .. ".ini"
-                setupFileExists = io.fileExists(saveSetup.path)
+        if carSetup.input.name ~= "" then
+                carSetup.input.path = setupsDir .. "\\" .. carSetup.input.track .. "\\" .. carSetup.input.name .. ".ini"
+                setupFileExists = io.fileExists(carSetup.input.path)
         end
 
         ui.setCursorX(groupBegin)
@@ -270,8 +173,8 @@ local function saveSetupWindow(sm)
                         setupFileExists and ui.ButtonFlags.None or ui.ButtonFlags.Disabled
                 )
         then
-                sm:LoadStuff(selectedSetup.path)
-                currentSetup = selectedSetup.track .. "/" .. selectedSetup.name
+                sm:LoadStuff(carSetup.selected.path)
+                carSetup.current = carSetup.selected.track .. "/" .. carSetup.selected.name
         end
         ui.newLine()
 
@@ -292,7 +195,7 @@ local function saveSetupWindow(sm)
                         setupFileExists and ui.ButtonFlags.None or ui.ButtonFlags.Disabled
                 )
         then
-                if #selectedSetup.name > 0 then promptDeleteSetup() end
+                if #carSetup.selected.name > 0 then promptDeleteSetup() end
         end
         ui.sameLine()
 
@@ -306,7 +209,7 @@ local function saveSetupWindow(sm)
                 if setupFileExists then
                         promptOverwriteSetup(sm)
                 else
-                        saveSetupFile(sm)
+                        carSetup:save(sm)
                 end
         end
 end
@@ -314,9 +217,9 @@ end
 local lastHide = settings.General.hideOtherTrackSetups
 
 function setupIoDraw(sm)
-        if lastHide ~= settings.General.hideOtherTrackSetups then loadSetups() end
+        if lastHide ~= settings.General.hideOtherTrackSetups then carSetup:load() end
 
-        if ui.keyPressed(ui.Key.Delete) then deleteSetup() end
+        if ui.keyPressed(ui.Key.Delete) then carSetup:delete() end
 
         cui.contentWindow(
                 "setup_io_saved_setups",
@@ -341,13 +244,13 @@ function setupIoDraw(sm)
                         if refreshingSetups then
                                 ui.icon(ui.Icons.LoadingSpinner, ui.availableSpace())
                         else
-                                for i, track in ipairs(trackSortedSetups) do
+                                for i, track in ipairs(carSetup.loadedSorted) do
                                         ui.setCursorX(0)
                                         if
-                                                cui.treeNode(track, #loadedSetups[track], function()
-                                                        for i in ipairs(loadedSetups[track]) do
-                                                                local setup = loadedSetups[track][i]
-                                                                local setupActive = selectedSetup.path == setup.path
+                                                cui.treeNode(track, #carSetup.loaded[track], function()
+                                                        for i in ipairs(carSetup.loaded[track]) do
+                                                                local setup = carSetup.loaded[track][i]
+                                                                local setupActive = carSetup.selected.path == setup.path
                                                                 local name = string.replace(setup.name, ".ini", "")
                                                                 ui.setCursorX(0)
 
@@ -362,14 +265,14 @@ function setupIoDraw(sm)
                                                                                 false
                                                                         )
                                                                 then
-                                                                        selectedSetup = {
+                                                                        carSetup.selected = {
                                                                                 name = name,
                                                                                 track = track,
                                                                                 path = setup.path,
                                                                                 lastWriteTime = setup.lastWriteTime,
                                                                         }
 
-                                                                        saveSetup = {
+                                                                        carSetup.input = {
                                                                                 name = name,
                                                                                 track = track,
                                                                                 path = setup.path,
@@ -377,16 +280,16 @@ function setupIoDraw(sm)
                                                                         }
 
                                                                         if ac.getUI().isMouseLeftKeyDoubleClicked then
-                                                                                sm:LoadStuff(selectedSetup.path)
-                                                                                currentSetup = selectedSetup.track
+                                                                                sm:LoadStuff(carSetup.selected.path)
+                                                                                carSetup.current = carSetup.selected.track
                                                                                         .. "/"
-                                                                                        .. selectedSetup.name
+                                                                                        .. carSetup.selected.name
                                                                         end
                                                                 end
                                                         end
                                                 end, i == 1)
                                         then
-                                                saveSetup.track = track
+                                                carSetup.input.track = track
                                         end
                                 end
                         end

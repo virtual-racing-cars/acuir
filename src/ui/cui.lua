@@ -779,6 +779,52 @@ function CUI.inputText(label, stringPrefix, stringInput, filter, size)
         return stringInput, true
 end
 
+function CUI:promptShutdownAC()
+        local mouseMoved = false
+
+        CUI.modalDialog(function()
+                ui.pushStyleVar(ui.StyleVar.ItemSpacing, 0)
+                local textBoxHeight = ui.windowHeight() / 4
+
+                ui.setCursor(0)
+                ui.dwriteTextAligned("Quit Session", textBoxHeight / 2, nil, nil, vec2(ui.windowWidth(), textBoxHeight))
+                local titleTextWidth = ui.measureDWriteText(" Quit Session ", textBoxHeight / 2).x
+
+                ui.setCursorX(0)
+                ui.dwriteTextAligned(
+                        "Abandon the current session and return to Content Manager?",
+                        textBoxHeight / 4,
+                        nil,
+                        nil,
+                        vec2(ui.windowWidth(), textBoxHeight)
+                )
+
+                local buttonWidth = ui.windowWidth() / 3
+                ui.setCursorX(ui.windowWidth() / 2 - buttonWidth - 5 * CUI.scaleY())
+                if CUI.modalButton("Cancel", ui.windowWidth() / 3, 50 * CUI.scaleY(), ui.ButtonFlags.None) then
+                        ui.popStyleVar(1)
+
+                        return true
+                end
+                ui.sameLine()
+
+                if not mouseMoved then
+                        ac.setMousePosition(ui.cursorScreenPos() + vec2(ui.availableSpaceX() / 2, 20))
+                        mouseMoved = true
+                end
+
+                ui.setCursorX(ui.windowWidth() / 2 + 5 * CUI.scaleY())
+                if CUI.modalButton("Confirm", ui.windowWidth() / 3, 50 * CUI.scaleY(), ui.ButtonFlags.None) then
+                        ac.shutdownAssettoCorsa()
+                        ui.popStyleVar(1)
+
+                        return true
+                end
+
+                ui.popStyleVar(1)
+        end)
+end
+
 function CUI.dummy(x, y) ui.dummy(vec2Temp1:set(x * scaleY, y * scaleY)) end
 
 local margins = 15

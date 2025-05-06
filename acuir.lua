@@ -19,6 +19,8 @@ app.state.hasAppOpened = false
 
 local modeLast = ""
 ui.onExclusiveHUD(function(mode)
+        ui.forceSimplifiedComposition()
+
         if not app.state.appOpen or ac.getLastError() then return end
 
         local dt = ac.getScriptDeltaT()

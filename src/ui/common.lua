@@ -230,7 +230,7 @@ function topBar(path)
         ui.offsetCursorX(driveButtonHeight * 0.75)
 
         if cui.iconButton("Quit", ui.Icons.Leave, driveButtonHeight, driveButtonHeight, ui.ButtonFlags.None) then
-                promptShutdownAC()
+                cui:promptShutdownAC()
         end
 
         -- ui.setCursorY(topBarHeight / 2 + driveButtonHeight / 4)
