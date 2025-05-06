@@ -89,6 +89,24 @@ local function carStatusWindow()
         cui.popWindow()
 end
 
+local setupExchangeDir = ac.getFolder(ac.FolderID.ACAppsLua) .. "\\SetupExchange"
+local seManifest = ac.INIConfig.load(setupExchangeDir .. "\\manifest.ini", ac.INIFormat.Extended)
+local seSetupWindowID = ""
+
+package.add("..\\SetupExchange")
+local seApp = require("SetupExchange")
+
+for index, section in seManifest:iterate("WINDOW") do
+        local windowFlags = seManifest:get(section, "FLAGS", {})
+        if table.contains(windowFlags, "SETUP_INLINE") then
+                seSetupWindowID = seManifest:get(section, "ID", "main")
+
+                ac.log(seSetupWindowID)
+        end
+end
+
+local function setupExchange() script.windowSetup() end
+
 local function setupIoWindow()
         ui.setCursor(0)
         cui.contentWindow(
@@ -128,7 +146,8 @@ local function setupIoWindow()
                                 vec2(0, ui.windowHeight() / 20),
                                 vec2(ui.windowWidth(), ui.windowHeight() - ui.windowHeight() / 20),
                                 ui.WindowFlags.None,
-                                function() setupIoDraw(sm) end
+                                -- function() setupIoDraw(sm) end
+                                function() setupExchange(sm) end
                         )
                 end
         )

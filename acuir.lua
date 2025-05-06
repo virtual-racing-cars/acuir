@@ -20,10 +20,21 @@ app.state.hasAppOpened = false
 local intializationTimer = os.clock() + 0.1
 
 local modeLast = ""
+
 ui.onExclusiveHUD(function(mode)
         ui.forceSimplifiedComposition()
 
         if not app.state.appOpen or ac.getLastError() then return end
+
+        if
+                csp.sim.cameraMode == ac.CameraMode.OnBoardFree
+                and csp.ui.ctrlDown
+                and ui.mouseDown(ui.MouseButton.Left)
+        then
+                ui.passthroughIMGUI()
+
+                return ""
+        end
 
         local dt = ac.getScriptDeltaT()
 
@@ -86,6 +97,9 @@ function script.main(dt)
 end
 
 teleportPitsCallback = nil
+
+local fov = csp.sim.cameraFOV
+
 function script.update(dt)
         if csp.ui.ctrlDown and csp.ui.shiftDown and ui.keyboardButtonPressed(ui.KeyIndex.F5) then
                 settings.General.autoStart = not app.state.appOpen
@@ -96,6 +110,14 @@ function script.update(dt)
                 pitstop:setWindowOpen(false)
                 ac.disableQuickMenuPitstop(false)
                 return
+        end
+
+        if csp.sim.isInMainMenu then
+                if ui.mouseWheel() ~= 0 then fov = math.clamp(fov - ui.mouseWheel(), 2, 170) end
+
+                ac.setCameraFOV(fov)
+        else
+                fov = csp.sim.cameraFOV
         end
 
         race:step()

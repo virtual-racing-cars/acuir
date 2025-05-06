@@ -1,3 +1,5 @@
+local settings = require("settings")
+
 local pages = {}
 
 pages.manager = PageManager()
@@ -17,8 +19,18 @@ end
 function pages:goToMainMenu() pages.manager:setPage("MainMenu") end
 
 function pages:setParentMainMenu()
-        pages.manager:setParentPageName("MainMenu")
-        pages:goToMainMenu()
+        if not pages.manager.parentName then
+                pages.manager:setParentPageName("MainMenu")
+
+                if settings.General.defaultSetupPage then
+                        pages:goToSetup()
+                else
+                        pages:goToMainMenu()
+                end
+        else
+                pages.manager:setParentPageName("MainMenu")
+                pages:goToMainMenu()
+        end
 end
 
 function pages:goToPauseMenu() pages.manager:setPage("PauseMenu") end
