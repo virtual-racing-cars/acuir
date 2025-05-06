@@ -89,19 +89,11 @@ function SetupItem:initialize(
         self.helpWindowShow = false
 end
 
-function SetupItem:getValue()
-        if self.independentSpinner then return end
-
-        if self.mirrored then
-                self.value = ac.getSetupSpinnerValue(self.idMirror)
-        else
-                self.value = ac.getSetupSpinnerValue(self.id)
-        end
-
-        for _, id in pairs(self.idPairs) do
-                local pairValue = ac.getSetupSpinnerValue(id)
-                if pairValue ~= self.value then ac.setSetupSpinnerValue(id, self.value) end
-        end
+function SetupItem:setValueLerped(spinner, value)
+        ac.setSetupSpinnerValue(
+                id,
+                math.round(math.lerp(spinner.min, spinner.max, math.lerpInvSat(self.value, self.min, self.max)))
+        )
 end
 
 local setups = ac.getSetupSpinners()
@@ -112,10 +104,14 @@ local getByID = function(id)
         return nil
 end
 
-function SetupItem:setValue(value)
-        local changed = self.value ~= value
-        self.value = value
-        ac.setSetupSpinnerValue(self.id, self.value)
+function SetupItem:getValue()
+        if self.independentSpinner then return end
+
+        if self.mirrored then
+                self.value = ac.getSetupSpinnerValue(self.idMirror)
+        else
+                self.value = ac.getSetupSpinnerValue(self.id)
+        end
 
         for i = 2, #self.idPairs do
                 local id = self.idPairs[i]
@@ -132,6 +128,12 @@ function SetupItem:setValue(value)
                         )
                 )
         end
+end
+
+function SetupItem:setValue(value)
+        local changed = self.value ~= value
+        self.value = value
+        ac.setSetupSpinnerValue(self.id, self.value)
 
         if self.mirrored then self:mirror() end
 

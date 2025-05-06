@@ -5,7 +5,6 @@ local settings = require("settings")
 local simutils = require("simutils")
 local style = require("style")
 local sim = ac.getSim()
-local car = ac.getCar(0)
 local guiINI = ac.INIConfig.cspModule(ac.CSPModuleID.GUI)
 
 local vec2Temp1 = vec2()
@@ -830,7 +829,7 @@ function CUI.dummy(x, y) ui.dummy(vec2Temp1:set(x * scaleY, y * scaleY)) end
 local margins = 15
 
 function CUI.pushWindow(id, x, y, width, height, scroll)
-        local windowFlags = ui.WindowFlags.NoResize
+        local windowFlags = bit.bor(ui.WindowFlags.NoResize)
 
         if not scroll then windowFlags = windowFlags + ui.WindowFlags.NoScrollbar + ui.WindowFlags.NoScrollWithMouse end
 

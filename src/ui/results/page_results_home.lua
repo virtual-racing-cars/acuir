@@ -107,7 +107,7 @@ function page.draw(dt)
                         70 * cui.scaleY(),
                         ui.Alignment.Start,
                         ui.Alignment.Center,
-                        vec2(300, 160),
+                        vec2(300 * cui.scaleY(), 140 * cui.scaleY()),
                         false,
                         rgbm.colors.white
                 )
@@ -115,7 +115,7 @@ function page.draw(dt)
                 cui.pushWindow(
                         "home_leaderboard_window",
                         ui.windowWidth() / 20,
-                        500 * cui.scaleY(),
+                        450 * cui.scaleY(),
                         1000 * cui.scaleX(),
                         ui.windowHeight() - 459 * cui.scaleY(),
                         true
@@ -137,9 +137,10 @@ function page.draw(dt)
                 cui.popWindow(true)
                 cui.popWindow()
 
-                ui.setCursorX(ui.windowWidth() / 2)
-                cui.setCursorY(1300)
                 local driveButtonHeight = 70 * cui.scaleY()
+
+                ui.setCursorX(ui.windowWidth() * 0.5 - (driveButtonHeight * 5) * 0.5)
+                cui.setCursorY(1300)
 
                 if
                         cui.iconButton(
@@ -152,7 +153,7 @@ function page.draw(dt)
                 then
                         ac.tryToRestartSession()
                 end
-                ui.offsetCursorX(driveButtonHeight * 0.75)
+                ui.offsetCursorX(driveButtonHeight)
 
                 if
                         cui.iconButton(
@@ -165,7 +166,7 @@ function page.draw(dt)
                 then
                         ac.tryToToggleReplay(true, 30)
                 end
-                ui.offsetCursorX(driveButtonHeight * 0.75)
+                ui.offsetCursorX(driveButtonHeight)
 
                 if
                         cui.iconButton(

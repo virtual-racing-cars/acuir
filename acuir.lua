@@ -17,6 +17,8 @@ local settings = require("settings")
 app.state.appOpen = settings.General.autoStart
 app.state.hasAppOpened = false
 
+local intializationTimer = os.clock() + 0.1
+
 local modeLast = ""
 ui.onExclusiveHUD(function(mode)
         ui.forceSimplifiedComposition()
@@ -24,6 +26,12 @@ ui.onExclusiveHUD(function(mode)
         if not app.state.appOpen or ac.getLastError() then return end
 
         local dt = ac.getScriptDeltaT()
+
+        if intializationTimer > os.clock() then
+                ui.drawRectFilled(vec2(0, 0), ui.windowWidth(), rgbm.colors.black)
+
+                return "apps"
+        end
 
         if mode == "menu" then
                 audio:driver(dt)

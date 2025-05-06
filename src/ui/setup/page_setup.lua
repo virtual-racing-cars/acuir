@@ -34,13 +34,6 @@ local bottomBarButtons = {
         },
 }
 
-sm = nil
-
-local initTimer = 0
-
-local acLogo = ac.getFolder(ac.FolderID.Root) .. "\\launcher\\themes\\default\\graphics\\btn_AC_logo.png"
-local acLogoSize = ui.imageSize(acLogo) * 2 * cui.scaleY()
-
 sm = SetupManager()
 
 local function setupItemWindow()
@@ -142,23 +135,6 @@ local function setupIoWindow()
 end
 
 function page:draw()
-        if not sm then
-                if initTimer == 0 then
-                        initTimer = os.clock() + 2
-                elseif initTimer < os.clock() then
-                        sm = SetupManager()
-                end
-
-                ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiColor1 / 1.25)
-                acLogoSize = ui.imageSize(acLogo) * 2 * cui.scaleY()
-
-                ui.setCursorX(ui.windowWidth() / 2 - acLogoSize.x / 2)
-                ui.setCursorY(ui.windowHeight() / 2 - acLogoSize.y / 2)
-                ui.image(acLogo, acLogoSize)
-
-                return
-        end
-
         cui.pushWindowFitted("setup_page_window")
 
         topBar("/ Vehicle Setup")
