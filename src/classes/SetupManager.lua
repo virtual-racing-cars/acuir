@@ -5,6 +5,7 @@ local sim = ac.getSim()
 local car = ac.getCar(0)
 local pitstop = require("pitstop")
 local setupINI = ac.INIConfig.carData(0, "setup.ini")
+local assistsINI = ac.INIConfig.load(ac.getFolder(ac.FolderID.Cfg) .. "\\assists.ini")
 
 local setupFixedFile = ac.getFolder(ac.FolderID.UserSetups) .. "\\server_temp.ini"
 local setupFixedINI = ac.INIConfig.load(setupFixedFile)
@@ -21,6 +22,21 @@ end
 local electronicsDefaults = {}
 local electronicsIndex = 0
 local function createElectronicsDefaults()
+        if car.tractionControlModes > 0 or assistsINI:get("ASSISTS", "TRACTION_CONTROL", 0) == 2 then
+                electronicsDefaults["TRACTION_CONTROL"] = { yPos = electronicsIndex }
+                electronicsIndex = electronicsIndex + 1
+        end
+
+        if car.tractionControl2Modes > 0 then
+                electronicsDefaults["TRACTION_CONTROL_2"] = { yPos = electronicsIndex }
+                electronicsIndex = electronicsIndex + 1
+        end
+
+        if car.absModes > 0 or assistsINI:get("ASSISTS", "ABS", 0) == 2 then
+                electronicsDefaults["ABS"] = { yPos = electronicsIndex }
+                electronicsIndex = electronicsIndex + 1
+        end
+
         if car.hasCockpitERSDelivery then
                 electronicsDefaults["MGUK_DELIVERY"] = { yPos = electronicsIndex }
                 electronicsIndex = electronicsIndex + 1
@@ -38,21 +54,6 @@ local function createElectronicsDefaults()
 
         if car.hasEngineBrakeSettings then
                 electronicsDefaults["BRAKE_ENGINE"] = { yPos = electronicsIndex }
-                electronicsIndex = electronicsIndex + 1
-        end
-
-        if car.absModes > 0 then
-                electronicsDefaults["ABS"] = { yPos = electronicsIndex }
-                electronicsIndex = electronicsIndex + 1
-        end
-
-        if car.tractionControlModes > 0 then
-                electronicsDefaults["TRACTION_CONTROL"] = { yPos = electronicsIndex }
-                electronicsIndex = electronicsIndex + 1
-        end
-
-        if car.tractionControl2Modes > 0 then
-                electronicsDefaults["TRACTION_CONTROL_2"] = { yPos = electronicsIndex }
                 electronicsIndex = electronicsIndex + 1
         end
 end

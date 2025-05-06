@@ -74,6 +74,8 @@ local function chatInput(height)
 end
 
 function chat:draw(xPos, yPos, width, height)
+        if true then return end
+
         local chatInputHeight = 50 * cui.scaleY()
 
         cui.pushWindow("chat_widget_window", xPos, yPos, width, height, false)
