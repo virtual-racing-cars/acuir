@@ -2,8 +2,6 @@ local simutils = {}
 
 local sim = ac.getSim()
 local car = ac.getCar(0)
-local carINI = ac.INIConfig.carData(0, "car.ini")
-local minRideHeight = carINI:get("RULES", "MIN_HEIGHT", 0)
 
 local round = math.ceil
 
@@ -119,10 +117,10 @@ function simutils.sessionRestartable() return car.sessionID == -1 end
 
 function simutils.controlsLocked() return car.currentPenaltyType == ac.PenaltyType.TeleportToPits end
 
-function simutils.rideHeightValid() return car.rideHeight[0] >= minRideHeight and car.rideHeight[1] >= minRideHeight end
+function simutils.rideHeightValid() return car.rideHeight[0] >= car.minHeight and car.rideHeight[1] >= car.minHeight end
 
 function simutils.sessionWaitTime()
-        if sim.sessionTimeLeft > 0 then return 0 end
+        if sim.sessionTimeLeft > 0 or sim.sessionsCount == 1 then return 0 end
 
         if sim.raceSessionType == ac.SessionType.Practice or sim.raceSessionType == ac.SessionType.Qualify then
                 return (90000 + sim.sessionTimeLeft) / 1000
