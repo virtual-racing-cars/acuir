@@ -196,5 +196,9 @@ function car_setup(sm)
                 end
         end
 
+        if sm._apps[tab.name] and tab.name ~= "Setup Exchange" then
+                sm._apps[tab.name].script[sm._apps[tab.name].setupWindow]()
+        end
+
         if changed then sm:makeUndo() end
 end

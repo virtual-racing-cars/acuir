@@ -414,6 +414,12 @@ function SetupManager:initialize()
                 end
         end
 
+        self._apps = require("setup_apps")
+
+        for appName, app in pairs(self._apps) do
+                if app.inline then table.insert(self.setupTabs, { name = appName, setupSpinners = {} }) end
+        end
+
         self.savedSetupDir = ac.getFolder(ac.FolderID.UserSetups) .. "\\" .. ac.getCarID(0)
 
         self._history = {}

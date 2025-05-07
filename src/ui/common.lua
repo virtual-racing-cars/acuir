@@ -188,14 +188,29 @@ function topBar(path)
         end
         ui.offsetCursorX(driveButtonHeight * 0.75)
 
+        local driveButtonText = "Drive Now"
+        local reason = ""
+
+        if simutils.sessionOvertime then
+                driveButtonText = "Wait-Time"
+                reason = string.format("%.0f seconds", simutils.sessionWaitTime)
+        elseif simutils.controlsLocked then
+                driveButtonText = "Drive Now"
+                reason = "%s seconds" % simutils.controlsLockedTimeRemaining
+        elseif not simutils.rideHeightValid then
+                driveButtonText = "Fix Setup"
+                reason = "Ride height is too low"
+        end
+
         if
                 cui.specialButton(
-                        string.upper(simutils.controlsLocked and "Controls Locked" or "Drive Now"),
+                        string.upper(driveButtonText),
                         vec2(driveButtonWidth, driveButtonHeight),
                         ui.Alignment.Center,
                         ui.Alignment.Center,
                         rgbm.colors.green,
-                        simutils.controlsLocked
+                        not simutils.readyToDrive,
+                        reason
                 )
         then
                 ac.tryToStart()

@@ -2,6 +2,10 @@ local simutils = {}
 
 local sim = ac.getSim()
 local car = ac.getCar(0)
+local carINI = ac.INIConfig.carData(0, "car.ini")
+local minRideHeight = carINI:get("RULES", "MIN_HEIGHT", 0)
+
+local round = math.ceil
 
 local windDirectionStrings = {
         "N",
@@ -114,6 +118,29 @@ function simutils.sessionSkippable() return sim.sessionsCount > 1 and sim.curren
 function simutils.sessionRestartable() return car.sessionID == -1 end
 
 function simutils.controlsLocked() return car.currentPenaltyType == ac.PenaltyType.TeleportToPits end
+
+function simutils.rideHeightValid() return car.rideHeight[0] >= minRideHeight and car.rideHeight[1] >= minRideHeight end
+
+function simutils.sessionWaitTime()
+        if sim.sessionTimeLeft > 0 then return 0 end
+
+        if sim.raceSessionType == ac.SessionType.Practice or sim.raceSessionType == ac.SessionType.Qualify then
+                return (90000 + sim.sessionTimeLeft) / 1000
+        elseif sim.raceSessionType == ac.SessionType.Race then
+                return simutils.session().overtimeMs / 1000
+        end
+
+        return 0
+end
+
+function simutils.sessionOvertime() return simutils.sessionWaitTime() > 0 end
+
+function simutils.readyToDrive()
+        return not simutils.controlsLocked()
+                and simutils.rideHeightValid()
+                and not simutils.sessionOvertime()
+                and (sim.isSessionStarted or (not sim.isSessionStarted and sim.timeToSessionStart > 0))
+end
 
 function simutils.controlsLockedTimeRemaining() return simutils.controlsLocked() and car.currentPenaltyParameter or 0 end
 

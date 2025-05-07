@@ -89,23 +89,7 @@ local function carStatusWindow()
         cui.popWindow()
 end
 
-local setupExchangeDir = ac.getFolder(ac.FolderID.ACAppsLua) .. "\\SetupExchange"
-local seManifest = ac.INIConfig.load(setupExchangeDir .. "\\manifest.ini", ac.INIFormat.Extended)
-local seSetupWindowID = ""
-
-package.add("..\\SetupExchange")
-local seApp = require("SetupExchange")
-
-for index, section in seManifest:iterate("WINDOW") do
-        local windowFlags = seManifest:get(section, "FLAGS", {})
-        if table.contains(windowFlags, "SETUP_INLINE") then
-                seSetupWindowID = seManifest:get(section, "ID", "main")
-
-                ac.log(seSetupWindowID)
-        end
-end
-
-local function setupExchange() script.windowSetup() end
+local setupExchangeActive = false
 
 local function setupIoWindow()
         ui.setCursor(0)
@@ -119,26 +103,34 @@ local function setupIoWindow()
                         ui.drawRectFilled(0, ui.windowSize(), rgbm(0, 0, 0, 0.5))
                         ui.drawRectFilled(0, vec2(ui.windowWidth(), ui.windowHeight() / 20), rgbm(0, 0, 0, 1))
 
-                        cui.menuButton(
-                                "Local Setups",
-                                vec2Temp1:set(ui.windowWidth() / 2, ui.windowHeight() / 20),
-                                0,
-                                0,
-                                0,
-                                false,
-                                false
-                        )
+                        if
+                                cui.menuButton(
+                                        "Local Setups",
+                                        vec2Temp1:set(ui.windowWidth() / 2, ui.windowHeight() / 20),
+                                        0,
+                                        0,
+                                        0,
+                                        not setupExchangeActive,
+                                        false
+                                )
+                        then
+                                setupExchangeActive = false
+                        end
                         ui.sameLine()
 
-                        cui.menuButton(
-                                "Setup Exchange",
-                                vec2Temp1:set(ui.windowWidth() / 2, ui.windowHeight() / 20),
-                                0,
-                                0,
-                                ui.ButtonFlags.Disabled,
-                                false,
-                                false
-                        )
+                        if
+                                cui.menuButton(
+                                        "Setup Exchange",
+                                        vec2Temp1:set(ui.windowWidth() / 2, ui.windowHeight() / 20),
+                                        0,
+                                        0,
+                                        0,
+                                        setupExchangeActive,
+                                        false
+                                )
+                        then
+                                setupExchangeActive = true
+                        end
 
                         ui.setCursor(0)
                         cui.contentWindow(
@@ -146,8 +138,14 @@ local function setupIoWindow()
                                 vec2(0, ui.windowHeight() / 20),
                                 vec2(ui.windowWidth(), ui.windowHeight() - ui.windowHeight() / 20),
                                 ui.WindowFlags.None,
-                                -- function() setupIoDraw(sm) end
-                                function() setupExchange(sm) end
+                                function()
+                                        if setupExchangeActive then
+                                                ui.drawRectFilled(vec2(0, 0), ui.windowSize(), rgbm(0.1, 0.1, 0.1, 1))
+                                                sm._apps["Setup Exchange"].script[sm._apps["Setup Exchange"].setupWindow]()
+                                        else
+                                                setupIoDraw(sm)
+                                        end
+                                end
                         )
                 end
         )

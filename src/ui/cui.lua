@@ -362,7 +362,7 @@ function CUI.bindingButton(bind, device, button, size, flags)
         return clicked and not (flags == ui.ButtonFlags.Disabled)
 end
 
-function CUI.specialButton(label, size, horizontalAligment, verticalAlignment, color, locked)
+function CUI.specialButton(label, size, horizontalAligment, verticalAlignment, color, locked, reason)
         style:pushFontBold()
 
         if not horizontalAligment then horizontalAligment = ui.Alignment.Center end
@@ -407,7 +407,7 @@ function CUI.specialButton(label, size, horizontalAligment, verticalAlignment, c
                 ui.setCursor(tempCursor)
                 CUI.snapCursor()
                 ui.dwriteTextAligned(
-                        "%s seconds" % simutils.controlsLockedTimeRemaining,
+                        reason,
                         fontSize / 2.5,
                         horizontalAligment,
                         ui.Alignment.End,

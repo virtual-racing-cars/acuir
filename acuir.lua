@@ -13,6 +13,7 @@ local pitstop = require("pitstop")
 local race = require("race")
 local replay = require("replay")
 local settings = require("settings")
+local simutils = require("simutils")
 
 app.state.appOpen = settings.General.autoStart
 app.state.hasAppOpened = false
@@ -27,9 +28,8 @@ ui.onExclusiveHUD(function(mode)
         if not app.state.appOpen or ac.getLastError() then return end
 
         if
-                csp.sim.cameraMode == ac.CameraMode.OnBoardFree
+                (csp.sim.cameraMode == ac.CameraMode.OnBoardFree or csp.sim.cameraMode == ac.CameraMode.Free)
                 and csp.ui.ctrlDown
-                and ui.mouseDown(ui.MouseButton.Left)
         then
                 ui.passthroughIMGUI()
 
@@ -113,7 +113,7 @@ function script.update(dt)
         end
 
         if csp.sim.isInMainMenu then
-                if ui.mouseWheel() ~= 0 then fov = math.clamp(fov - ui.mouseWheel(), 2, 170) end
+                if csp.ui.ctrlDown and ui.mouseWheel() ~= 0 then fov = math.clamp(fov - ui.mouseWheel(), 2, 170) end
 
                 ac.setCameraFOV(fov)
         else
