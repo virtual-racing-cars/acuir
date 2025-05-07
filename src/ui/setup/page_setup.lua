@@ -124,7 +124,7 @@ local function setupIoWindow()
                                         vec2Temp1:set(ui.windowWidth() / 2, ui.windowHeight() / 20),
                                         0,
                                         0,
-                                        0,
+                                        sm._apps["Setup Exchange"] and ui.ButtonFlags.None or ui.ButtonFlags.Disabled,
                                         setupExchangeActive,
                                         false
                                 )

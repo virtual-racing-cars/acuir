@@ -100,7 +100,11 @@ teleportPitsCallback = nil
 
 local fov = csp.sim.cameraFOV
 
+if not app.state.debug then ac.log = function() end end
+
 function script.update(dt)
+        ac.setLogSilent(true)
+
         if csp.ui.ctrlDown and csp.ui.shiftDown and ui.keyboardButtonPressed(ui.KeyIndex.F5) then
                 settings.General.autoStart = not app.state.appOpen
                 app.state.appOpen = not app.state.appOpen
