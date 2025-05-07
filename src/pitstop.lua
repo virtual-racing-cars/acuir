@@ -81,11 +81,19 @@ local pitstopTimes = {
 function pitstop:getEstimatedTime()
         local timeEstimate = 0
 
+        local parallelTime = 0
+
         for _, v in ipairs(ac.getPitstopSpinners()) do
                 local timeSlot = pitstopTimes[v.name]
 
-                if timeSlot then timeEstimate = timeEstimate + timeSlot.time(v.value, timeSlot.stepTime) end
+                if timeSlot then
+                        if timeSlot.time(v.value, timeSlot.stepTime) > parallelTime then
+                                parallelTime = timeSlot.time(v.value, timeSlot.stepTime)
+                        end
+                end
         end
+
+        timeEstimate = timeEstimate + parallelTime
 
         return timeEstimate
 end
