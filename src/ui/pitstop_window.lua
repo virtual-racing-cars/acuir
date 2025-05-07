@@ -6,30 +6,60 @@ local sim = ac.getSim()
 
 local activeItemIndex = 0
 
-local navControlRightButton =
-        ac.ControlButton("ACUIR_COCKPIT_X_R", { keyboard = ac.KeyIndex.Left, gamepad = ac.GamepadButton.DPadLeft })
-local navControlLeftButton =
-        ac.ControlButton("ACUIR_COCKPIT_X_L", { keyboard = ac.KeyIndex.Right, gamepad = ac.GamepadButton.DPadRight })
-local navControlDownButton =
-        ac.ControlButton("ACUIR_COCKPIT_Y_DN", { keyboard = ac.KeyIndex.Down, gamepad = ac.GamepadButton.DPadDown })
-local navControlUpButton =
-        ac.ControlButton("ACUIR_COCKPIT_Y_UP", { keyboard = ac.KeyIndex.Up, gamepad = ac.GamepadButton.DPadUp })
+local navControlRightButton = ac.ControlButton(
+        "ACUIR_COCKPIT_X_R",
+        { keyboard = ac.KeyIndex.Left, gamepad = ac.GamepadButton.DPadLeft, period = 1 }
+)
+local navControlLeftButton = ac.ControlButton(
+        "ACUIR_COCKPIT_X_L",
+        { keyboard = ac.KeyIndex.Right, gamepad = ac.GamepadButton.DPadRight, period = 1 }
+)
+local navControlDownButton = ac.ControlButton(
+        "ACUIR_COCKPIT_Y_DN",
+        { keyboard = ac.KeyIndex.Down, gamepad = ac.GamepadButton.DPadDown, period = 1 }
+)
+local navControlUpButton = ac.ControlButton(
+        "ACUIR_COCKPIT_Y_UP",
+        { keyboard = ac.KeyIndex.Up, gamepad = ac.GamepadButton.DPadUp, period = 1 }
+)
+
+local delayTimer = 0
 
 navControlLeftButton:onPressed(function() pitstop:setWindowOpen(true) end)
+navControlLeftButton:onReleased(function() delayTimer = 0 end)
 
 navControlRightButton:onPressed(function() pitstop:setWindowOpen(true) end)
+navControlRightButton:onReleased(function() delayTimer = 0 end)
 
 navControlDownButton:onPressed(function()
         pitstop:setWindowOpen(true)
 
+        if delayTimer > os.clock() then return end
+
         activeItemIndex = activeItemIndex < #ac.getPitstopSpinners() and activeItemIndex + 1 or 0
+
+        if delayTimer < os.clock() - 1 then
+                delayTimer = os.clock() + 0.5
+        else
+                delayTimer = os.clock() + 0.2
+        end
 end)
+navControlDownButton:onReleased(function() delayTimer = 0 end)
 
 navControlUpButton:onPressed(function()
         pitstop:setWindowOpen(true)
 
+        if delayTimer > os.clock() then return end
+
         activeItemIndex = activeItemIndex > 0 and activeItemIndex - 1 or #ac.getPitstopSpinners()
+
+        if delayTimer < os.clock() - 1 then
+                delayTimer = os.clock() + 0.5
+        else
+                delayTimer = os.clock() + 0.2
+        end
 end)
+navControlUpButton:onReleased(function() delayTimer = 0 end)
 
 local function mfdWidgetSpinner(name, height, index, value, format, min, max, items, wingIndex)
         local buttonSize = height
@@ -89,8 +119,22 @@ local function mfdWidgetSpinner(name, height, index, value, format, min, max, it
 
         if not active then return value end
 
-        if navControlLeftButton:pressed() then value = value > min and value - 1 or max end
-        if navControlRightButton:pressed() then value = value < max and value + 1 or min end
+        if navControlLeftButton:pressed() and delayTimer <= os.clock() then
+                value = value > min and value - 1 or max
+                if delayTimer < os.clock() - 1 then
+                        delayTimer = os.clock() + 0.5
+                else
+                        delayTimer = os.clock() + 0.1
+                end
+        end
+        if navControlRightButton:pressed() and delayTimer <= os.clock() then
+                value = value < max and value + 1 or min
+                if delayTimer < os.clock() - 1 then
+                        delayTimer = os.clock() + 0.5
+                else
+                        delayTimer = os.clock() + 0.1
+                end
+        end
 
         return value
 end
