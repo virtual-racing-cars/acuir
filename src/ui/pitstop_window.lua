@@ -8,19 +8,19 @@ local activeItemIndex = 0
 
 local navControlRightButton = ac.ControlButton(
         "ACUIR_COCKPIT_X_R",
-        { keyboard = ac.KeyIndex.Left, gamepad = ac.GamepadButton.DPadLeft, period = 1 }
+        { keyboard = ac.KeyIndex.Left, gamepad = ac.GamepadButton.DPadLeft, period = 0.1 }
 )
 local navControlLeftButton = ac.ControlButton(
         "ACUIR_COCKPIT_X_L",
-        { keyboard = ac.KeyIndex.Right, gamepad = ac.GamepadButton.DPadRight, period = 1 }
+        { keyboard = ac.KeyIndex.Right, gamepad = ac.GamepadButton.DPadRight, period = 0.1 }
 )
 local navControlDownButton = ac.ControlButton(
         "ACUIR_COCKPIT_Y_DN",
-        { keyboard = ac.KeyIndex.Down, gamepad = ac.GamepadButton.DPadDown, period = 1 }
+        { keyboard = ac.KeyIndex.Down, gamepad = ac.GamepadButton.DPadDown, period = 0.1 }
 )
 local navControlUpButton = ac.ControlButton(
         "ACUIR_COCKPIT_Y_UP",
-        { keyboard = ac.KeyIndex.Up, gamepad = ac.GamepadButton.DPadUp, period = 1 }
+        { keyboard = ac.KeyIndex.Up, gamepad = ac.GamepadButton.DPadUp, period = 0.1 }
 )
 
 local delayTimer = 0
@@ -41,7 +41,7 @@ navControlDownButton:onPressed(function()
         if delayTimer < os.clock() - 1 then
                 delayTimer = os.clock() + 0.5
         else
-                delayTimer = os.clock() + 0.2
+                delayTimer = os.clock() + 0.1
         end
 end)
 navControlDownButton:onReleased(function() delayTimer = 0 end)
@@ -56,7 +56,7 @@ navControlUpButton:onPressed(function()
         if delayTimer < os.clock() - 1 then
                 delayTimer = os.clock() + 0.5
         else
-                delayTimer = os.clock() + 0.2
+                delayTimer = os.clock() + 0.1
         end
 end)
 navControlUpButton:onReleased(function() delayTimer = 0 end)
