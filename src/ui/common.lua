@@ -173,7 +173,34 @@ function topBar(path)
         ui.setCursorY(topBarHeight / 2 - driveButtonHeight / 2)
         ui.setCursorX(ui.windowWidth() / 2 - driveButtonWidth / 2)
         ui.offsetCursorX(-driveButtonHeight * 5.25)
-        if cui.iconButton("Setup", ui.Icons.Wrench, driveButtonHeight, driveButtonHeight, ui.ButtonFlags.None) then
+        if
+                cui.iconButton(
+                        "Leaderboard",
+                        ui.Icons.Leaderboard,
+                        driveButtonHeight,
+                        driveButtonHeight,
+                        ui.ButtonFlags.None,
+                        false,
+                        nil,
+                        pages.manager.currentPageName == "MainMenu"
+                )
+        then
+                pages:goToMainMenu()
+        end
+        ui.offsetCursorX(driveButtonHeight * 0.75)
+
+        if
+                cui.iconButton(
+                        "Setup",
+                        ui.Icons.Wrench,
+                        driveButtonHeight,
+                        driveButtonHeight,
+                        ui.ButtonFlags.None,
+                        false,
+                        nil,
+                        pages.manager.currentPageName == "SetupPage"
+                )
+        then
                 pages:goToSetup()
         end
         ui.offsetCursorX(driveButtonHeight * 0.75)

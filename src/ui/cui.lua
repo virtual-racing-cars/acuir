@@ -441,7 +441,7 @@ function CUI.modernButton(label, sizeX, sizeY, flags, icon)
         return clicked and not (flags == ui.ButtonFlags.Disabled)
 end
 
-function CUI.iconButton(label, icon, sizeX, sizeY, flags, flipped, iconScale)
+function CUI.iconButton(label, icon, sizeX, sizeY, flags, flipped, iconScale, active)
         if not iconScale then iconScale = 1 end
 
         local disabled = false
@@ -452,7 +452,7 @@ function CUI.iconButton(label, icon, sizeX, sizeY, flags, flipped, iconScale)
         local hovered = ui.itemHovered()
 
         local iconColor = disabled and rgbm(0.3, 0.3, 0.3, 0.8)
-                or (hovered and settings.Appearance.uiColor2 or settings.Appearance.uiColor3)
+                or ((hovered or active) and settings.Appearance.uiColor2 or settings.Appearance.uiColor3)
 
         local iconSize = sizeY
         if flipped then iconSize = -iconSize end
@@ -460,10 +460,17 @@ function CUI.iconButton(label, icon, sizeX, sizeY, flags, flipped, iconScale)
         ui.addIcon(icon, vec2(iconSize, iconSize) * 0.7 * iconScale, vec2(0.5, 0.5), iconColor)
 
         if not label:startsWith("##") then
-                ui.setCursorX(tempCursor.x)
+                ui.setCursorX(tempCursor.x - sizeX * 0.5)
                 CUI.snapCursor()
                 style:pushFontBold()
-                ui.dwriteTextAligned(label, 18 * scaleY, ui.Alignment.Center, ui.Alignment.Start, sizeY, false)
+                ui.dwriteTextAligned(
+                        label,
+                        18 * scaleY,
+                        ui.Alignment.Center,
+                        ui.Alignment.Start,
+                        vec2(sizeX * 2, sizeY),
+                        false
+                )
                 ui.popDWriteFont()
                 ui.setCursor(tempCursor + vec2(sizeX, 0))
         end

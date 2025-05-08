@@ -20,7 +20,7 @@ function page.update() end
 function page.draw()
         cui.pushWindowFitted("main_menu_page_window")
 
-        topBar()
+        topBar("/ Leaderboard")
 
         cui.pushWindow(
                 "home_leaderboard_window",
