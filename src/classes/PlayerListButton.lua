@@ -24,7 +24,7 @@ function playerListBanner(xPos, yPos, width, height)
                 fontSize,
                 ui.Alignment.Start,
                 ui.Alignment.Center,
-                vec2(ui.availableSpaceX() * 0.2, height)
+                vec2(ui.availableSpaceX() * 0.35, height)
         )
         ui.sameLine()
 
@@ -33,7 +33,7 @@ function playerListBanner(xPos, yPos, width, height)
                 fontSize,
                 ui.Alignment.Start,
                 ui.Alignment.Center,
-                vec2(ui.availableSpaceX() * 0.42, height)
+                vec2(ui.availableSpaceX() * 0.3, height)
         )
         ui.sameLine()
 
@@ -161,7 +161,7 @@ function playerListButton(car, xPos, yPos, width, height)
                 fontSize,
                 ui.Alignment.Start,
                 ui.Alignment.Center,
-                vec2(ui.availableSpaceX() * 0.2, height)
+                vec2(ui.availableSpaceX() * 0.35, height)
         )
         ui.sameLine()
 
@@ -171,7 +171,7 @@ function playerListButton(car, xPos, yPos, width, height)
                 fontSize,
                 ui.Alignment.Start,
                 ui.Alignment.Center,
-                vec2(ui.availableSpaceX() * 0.42, height)
+                vec2(ui.availableSpaceX() * 0.3, height)
         )
         ui.sameLine()
 
