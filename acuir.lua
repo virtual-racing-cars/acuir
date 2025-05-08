@@ -120,7 +120,7 @@ function script.update(dt)
 
         race:step()
         pitstop:step(dt)
-        replay:step(dt)
+        -- replay:step(dt)
 
         if teleportPitsCallback then
                 if teleportPitsCallback() then teleportPitsCallback = nil end
