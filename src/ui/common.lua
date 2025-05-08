@@ -189,7 +189,8 @@ function topBar(path)
         ui.offsetCursorX(driveButtonHeight * 0.75)
 
         local readyToDriveState = simutils.readyToDriveState
-        local readyToDrive, driveButtonText, reason = readyToDriveState[1], readyToDriveState[2], readyToDriveState[3]
+        local readyToDrive, driveButtonText, reason, driveButtonColor =
+                readyToDriveState[1], readyToDriveState[2], readyToDriveState[3], readyToDriveState[4]
 
         if
                 cui.specialButton(
@@ -197,7 +198,7 @@ function topBar(path)
                         vec2(driveButtonWidth, driveButtonHeight),
                         ui.Alignment.Center,
                         ui.Alignment.Center,
-                        rgbm.colors.green,
+                        driveButtonColor,
                         not readyToDrive,
                         reason
                 )

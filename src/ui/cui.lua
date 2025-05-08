@@ -383,10 +383,9 @@ function CUI.specialButton(label, size, horizontalAligment, verticalAlignment, c
         local fontColor = nil
 
         if locked then
-                ui.pushStyleColor(ui.StyleColor.ButtonHovered, rgbm(0.6, 0.6, 0.6, 1))
-                ui.pushStyleColor(ui.StyleColor.ButtonActive, rgbm(0.4, 0.4, 0.4, 1))
-                ui.pushStyleColor(ui.StyleColor.Button, rgbm(0.5, 0.5, 0.5, 1))
-                fontColor = rgbm.colors.black
+                ui.pushStyleColor(ui.StyleColor.ButtonHovered, color)
+                ui.pushStyleColor(ui.StyleColor.ButtonActive, color)
+                ui.pushStyleColor(ui.StyleColor.Button, color)
         else
                 ui.pushStyleColor(ui.StyleColor.ButtonHovered, color * 1.1)
                 ui.pushStyleColor(ui.StyleColor.ButtonActive, color * 0.9)
@@ -401,12 +400,20 @@ function CUI.specialButton(label, size, horizontalAligment, verticalAlignment, c
         ui.popStyleColor(3)
 
         ui.sameLine()
-        ui.offsetCursorY(1)
         ui.setCursor(tempCursor)
-        CUI.snapCursor()
-        ui.dwriteTextAligned(label, fontSize, horizontalAligment, verticalAlignment, buttonSize, false, fontColor)
 
-        if locked then
+        if reason ~= "" then
+                CUI.snapCursor()
+                ui.dwriteTextAligned(
+                        label,
+                        fontSize,
+                        horizontalAligment,
+                        ui.Alignment.Start,
+                        buttonSize,
+                        false,
+                        fontColor
+                )
+
                 ui.setCursor(tempCursor)
                 CUI.snapCursor()
                 ui.dwriteTextAligned(
@@ -419,8 +426,19 @@ function CUI.specialButton(label, size, horizontalAligment, verticalAlignment, c
                         fontColor
                 )
         else
-                ui.glowRectFilled(r1, r2, color)
+                CUI.snapCursor()
+                ui.dwriteTextAligned(
+                        label,
+                        fontSize,
+                        horizontalAligment,
+                        verticalAlignment,
+                        buttonSize,
+                        false,
+                        fontColor
+                )
         end
+
+        if not locked then ui.glowRectFilled(r1, r2, color) end
 
         ui.popDWriteFont()
 

@@ -137,20 +137,22 @@ function simutils.sessionOvertime() return simutils.sessionWaitTime() > 0 end
 
 function simutils.readyToDriveState()
         if simutils.controlsLocked() then
-                return { false, "Controls Locked", simutils.controlsLockedTimeRemaining() }
+                return { false, "Controls Locked", simutils.controlsLockedTimeRemaining(), rgbm.colors.gray }
         end
 
-        -- if not simutils.rideHeightValid() then
+        if simutils.sessionOvertime() then
+                return { false, "Wait-Time", simutils.sessionWaitTime(), rgbm.colors.gray }
+        end
 
-        -- end
+        local carSetupState, invalidReason = ac.getCarSetupState()
+        if carSetupState == "validating" then return { false, "Validating Setup", "", rgbm.colors.gray } end
+        if carSetupState == "illegal" then
+                if not simutils.rideHeightValid() then invalidReason = "Ride height is below minimum" end
 
-        if simutils.sessionOvertime() then return { false, "Wait-Time", simutils.sessionWaitTime() } end
+                return { false, "Illegal Setup", invalidReason, rgbm.colors.red }
+        end
 
-        local carSetupState = ac.getCarSetupState()
-        if carSetupState[1] == "validating" then return { false, "Validating Setup", "" } end
-        if carSetupState[1] == "illegal" then return { false, "Illegal Setup", carSetupState[2] } end
-
-        return { true, "Drive", "" }
+        return { true, "Drive", "", rgbm.colors.green }
 end
 
 local proxy = {}
