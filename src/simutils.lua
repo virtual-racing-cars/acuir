@@ -117,6 +117,8 @@ function simutils.sessionRestartable() return car.sessionID == -1 end
 
 function simutils.controlsLocked() return car.currentPenaltyType == ac.PenaltyType.TeleportToPits end
 
+function simutils.controlsLockedTimeRemaining() return simutils.controlsLocked() and car.currentPenaltyParameter or 0 end
+
 function simutils.rideHeightValid() return car.rideHeight[0] >= car.minHeight and car.rideHeight[1] >= car.minHeight end
 
 function simutils.sessionWaitTime()
@@ -133,14 +135,23 @@ end
 
 function simutils.sessionOvertime() return simutils.sessionWaitTime() > 0 end
 
-function simutils.readyToDrive()
-        return not simutils.controlsLocked()
-                and simutils.rideHeightValid()
-                and not simutils.sessionOvertime()
-                and (sim.isSessionStarted or (not sim.isSessionStarted and sim.timeToSessionStart > 0))
-end
+function simutils.readyToDriveState()
+        if simutils.controlsLocked() then
+                return { false, "Controls Locked", simutils.controlsLockedTimeRemaining() }
+        end
 
-function simutils.controlsLockedTimeRemaining() return simutils.controlsLocked() and car.currentPenaltyParameter or 0 end
+        -- if not simutils.rideHeightValid() then
+
+        -- end
+
+        if simutils.sessionOvertime() then return { false, "Wait-Time", simutils.sessionWaitTime() } end
+
+        local carSetupState = ac.getCarSetupState()
+        if carSetupState[1] == "validating" then return { false, "Validating Setup", "" } end
+        if carSetupState[1] == "illegal" then return { false, "Illegal Setup", carSetupState[2] } end
+
+        return { true, "Drive", "" }
+end
 
 local proxy = {}
 setmetatable(proxy, {

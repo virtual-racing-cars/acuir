@@ -54,15 +54,15 @@ ui.onExclusiveHUD(function(mode)
                 return MainMenuWindow(dt)
         end
 
-        if mode == "replay" then
-                audio:driver(dt)
+        -- if mode == "replay" then
+        --         audio:driver(dt)
 
-                if modeLast ~= mode then pages:setParentMainMenu() end
+        --         if modeLast ~= mode then pages:setParentMainMenu() end
 
-                modeLast = mode
+        --         modeLast = mode
 
-                return MainMenuWindow(dt)
-        end
+        --         return MainMenuWindow(dt)
+        -- end
 
         if mode == "results" then
                 audio:driver(dt)
