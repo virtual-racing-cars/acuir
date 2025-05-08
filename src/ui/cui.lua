@@ -82,6 +82,9 @@ function CUI.contentWindow(id, position, size, flags, content, showBackground, s
         CUI.popWindow()
 end
 
+CUI.menuPanAvailable = false
+CUI.menuZoomAvailable = false
+
 CUI.modalDialogCallback = nil
 
 function CUI.modalDialog(callback) CUI.modalDialogCallback = callback end

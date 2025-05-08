@@ -7,6 +7,7 @@ require("audio")
 local app = require("app")
 local audio = require("audio")
 local csp = require("csp")
+local cui = require("ui.cui")
 local mod = require("install")
 local pages = require("ui.pages")
 local pitstop = require("pitstop")
@@ -108,10 +109,7 @@ function script.update(dt)
         end
 
         if csp.sim.isInMainMenu then
-                if
-                        (csp.sim.cameraMode == ac.CameraMode.OnBoardFree or csp.sim.cameraMode == ac.CameraMode.Free)
-                        and ui.mouseWheel() ~= 0
-                then
+                if cui.menuZoomAvailable and ui.mouseWheel() ~= 0 then
                         fov = math.clamp(fov - ui.mouseWheel(), 2, 170)
                 end
 
