@@ -170,9 +170,15 @@ function topBar(path)
 
         topSubBar(path)
 
+        -- ui.drawSimpleLine(
+        --         vec2(ui.windowWidth() * 0.5, 0),
+        --         vec2(ui.windowWidth() * 0.5, ui.windowHeight()),
+        --         rgbm.colors.aqua
+        -- )
+
         ui.setCursorY(topBarHeight / 2 - driveButtonHeight / 2)
         ui.setCursorX(ui.windowWidth() / 2 - driveButtonWidth / 2)
-        ui.offsetCursorX(-driveButtonHeight * 5.25)
+        ui.offsetCursorX(-driveButtonHeight * 7)
         if
                 cui.iconButton(
                         "Leaderboard",
