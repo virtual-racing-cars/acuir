@@ -145,11 +145,11 @@ function simutils.readyToDriveState()
         end
 
         local carSetupState, invalidReason = ac.getCarSetupState()
-        if carSetupState == "validating" then return { false, "Validating Setup", "", rgbm.colors.gray } end
+        if carSetupState == "validating" then return { false, "Validating Setup", "", rgbm.colors.orange } end
         if carSetupState == "illegal" then
-                if not simutils.rideHeightValid() then invalidReason = "Ride height is below minimum" end
+                if not simutils.rideHeightValid() then invalidReason = "Ride height is too low" end
 
-                return { false, "Illegal Setup", invalidReason, rgbm.colors.red }
+                return { false, "Invalid Setup", invalidReason, rgbm.colors.gray }
         end
 
         return { true, "Drive", "", rgbm.colors.green }

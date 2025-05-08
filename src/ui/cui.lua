@@ -380,8 +380,6 @@ function CUI.specialButton(label, size, horizontalAligment, verticalAlignment, c
         fontSize = (fontSize % 2 ~= 0) and fontSize + 1 or fontSize
         local buttonSize = vec2Temp1(sizeX, sizeY)
 
-        local fontColor = nil
-
         if locked then
                 ui.pushStyleColor(ui.StyleColor.ButtonHovered, color)
                 ui.pushStyleColor(ui.StyleColor.ButtonActive, color)
@@ -411,31 +409,23 @@ function CUI.specialButton(label, size, horizontalAligment, verticalAlignment, c
                         ui.Alignment.Start,
                         buttonSize,
                         false,
-                        fontColor
+                        rgbm.colors.black
                 )
 
                 ui.setCursor(tempCursor)
                 CUI.snapCursor()
                 ui.dwriteTextAligned(
                         reason,
-                        fontSize / 2.5,
+                        fontSize * 0.5,
                         horizontalAligment,
                         ui.Alignment.End,
                         buttonSize,
                         false,
-                        fontColor
+                        rgbm.colors.black
                 )
         else
                 CUI.snapCursor()
-                ui.dwriteTextAligned(
-                        label,
-                        fontSize,
-                        horizontalAligment,
-                        verticalAlignment,
-                        buttonSize,
-                        false,
-                        fontColor
-                )
+                ui.dwriteTextAligned(label, fontSize, horizontalAligment, verticalAlignment, buttonSize, false)
         end
 
         if not locked then ui.glowRectFilled(r1, r2, color) end
