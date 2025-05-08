@@ -5,6 +5,7 @@ local cui = require("ui.cui")
 local pages = require("ui.pages")
 local settings = require("settings")
 local style = require("style")
+local sim = ac.getSim()
 
 pages.manager:registerPage("MainMenu", require("ui.main.page_main_home"))
 pages.manager:registerPage("SetupPage", require("ui.setup.page_setup"))
@@ -16,6 +17,8 @@ pages.manager:registerPage("SettingsAudioPage", require("ui.settings.page_audio"
 pages.manager:registerPage("SettingsAppearancePage", require("ui.settings.page_appearance"))
 pages.manager:registerPage("SettingsAiPage", require("ui.settings.page_ai"))
 pages.manager:registerPage("TelemetryPage", require("ui.telemetry.page_telemetry"))
+
+local passthroughActive = false
 
 function MainMenuWindow(dt)
         local exclusiveHudMode = ""
@@ -68,6 +71,16 @@ function MainMenuWindow(dt)
 
         style:popStyleMain()
         ui.popAllowKeyboardFocus()
+
+        if ui.mouseClicked(ui.MouseButton.Left) then passthroughActive = ui.getHoveredID() == 0 end
+        if ui.mouseReleased(ui.MouseButton.Left) then passthroughActive = false end
+
+        ui.setCursor(0)
+        ui.childWindow("##Panner", vec2(10, 10), false, ui.WindowFlags.None, function()
+                if passthroughActive then ui.passthroughIMGUI() end
+
+                ui.drawRectFilled(vec2(0, 0), ui.windowSize(), rgbm.colors.transparent)
+        end)
 
         return app.state.debug and "debug" or exclusiveHudMode
 end
