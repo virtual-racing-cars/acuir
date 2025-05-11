@@ -19,8 +19,6 @@ local simutils = require("simutils")
 app.state.appOpen = settings.General.autoStart
 app.state.hasAppOpened = false
 
-local intializationTimer = os.clock() + 0.1
-
 local modeLast = ""
 
 ui.onExclusiveHUD(function(mode)
@@ -29,12 +27,6 @@ ui.onExclusiveHUD(function(mode)
         if mode == "menu" and app.state.setupTab ~= 1 then ui.forceSimplifiedComposition() end
 
         local dt = ac.getScriptDeltaT()
-
-        if intializationTimer > os.clock() then
-                ui.drawRectFilled(vec2(0, 0), ui.windowWidth(), rgbm.colors.black)
-
-                return "apps"
-        end
 
         -- pages:goToSetup()
 
@@ -83,13 +75,6 @@ ui.onExclusiveHUD(function(mode)
         modeLast = mode
 end)
 
-ac.setWindowOpen("main", true)
-local windowTimeSync = 0
-function script.main(dt)
-        if not app.state.hasAppOpened then app.state.hasAppOpened = true end
-        windowTimeSync = os.clock()
-end
-
 teleportPitsCallback = nil
 
 local fov = csp.sim.cameraFOV
@@ -104,6 +89,11 @@ function script.update(dt)
                 app.state.appOpen = not app.state.appOpen
         end
 
+        if app.state.appOpen and csp.sim.isInMainMenu then
+                ac.tryToOpenRaceMenu(nil)
+                ac.tryToOpenRaceMenu("setup")
+        end
+
         if not app.state.appOpen or ac.getLastError() then
                 pitstop:setWindowOpen(false)
                 ac.disableQuickMenuPitstop(false)
@@ -111,6 +101,9 @@ function script.update(dt)
         end
 
         if csp.sim.isInMainMenu then
+                ac.tryToOpenRaceMenu(nil)
+                ac.tryToOpenRaceMenu("setup")
+
                 if cui.menuZoomAvailable and ui.mouseWheel() ~= 0 then
                         fov = math.clamp(fov - ui.mouseWheel(), 2, 170)
                 end
@@ -133,16 +126,6 @@ function script.update(dt)
         if teleportPitsCallback then
                 if teleportPitsCallback() then teleportPitsCallback = nil end
         end
-
-        -- if
-        --         csp.sim.isInMainMenu
-        --         and settings.General.autoStart
-        --         and not app.state.hasAppOpened
-        --         and windowTimeSync < os.clock() - 1
-        -- then
-        --         ac.tryToOpenRaceMenu("race")
-        --         ac.tryToOpenRaceMenu("setup")
-        -- end
 
         local redirectVM = (csp.sim.isInMainMenu and ac.isWindowOpen("main")) or csp.sim.isPaused
         ac.redirectVirtualMirror(redirectVM)

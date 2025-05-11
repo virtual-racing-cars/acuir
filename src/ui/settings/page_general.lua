@@ -66,7 +66,7 @@ function page.draw()
                         settings.General[v.key] = drawSpinner(
                                 v.label,
                                 v.label,
-                                ui.windowWidth() / 2 - 600 / 2,
+                                ui.windowWidth() / 2 - 600 * cui.scaleY() / 2,
                                 ui.getCursorY(),
                                 620 * cui.scaleY(),
                                 74 * cui.scaleY(),
