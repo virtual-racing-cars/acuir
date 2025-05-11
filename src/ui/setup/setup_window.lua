@@ -161,7 +161,7 @@ function car_setup(sm)
                 if v.yPos > -2 then
                         if v.tab == "GEARS" and #tab.setupSpinners == 1 then
                                 v.xPos = 0.5
-                                v.yPos = -0.7
+                                v.yPos = 6
                         end
 
                         if drawSetupSpinner(sm, v) then changed = true end
