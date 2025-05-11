@@ -151,15 +151,15 @@ function topSubBar(path)
         cui.setCursorX(180)
         ui.setCursorY(topBarHeight / 2 - (100 * cui.scaleY()) / 2)
 
-        ui.dwriteTextAligned(
-                path,
-                50 * cui.scaleY(),
-                ui.Alignment.Start,
-                ui.Alignment.Center,
-                vec2(600 * cui.scaleX(), 100 * cui.scaleY()),
-                false,
-                rgbm(1, 1, 1, 1)
-        )
+        -- ui.dwriteTextAligned(
+        --         path,
+        --         50 * cui.scaleY(),
+        --         ui.Alignment.Start,
+        --         ui.Alignment.Center,
+        --         vec2(600 * cui.scaleX(), 100 * cui.scaleY()),
+        --         false,
+        --         rgbm(1, 1, 1, 1)
+        -- )
 end
 
 function topBar(path)
@@ -197,7 +197,7 @@ function topBar(path)
 
         if
                 cui.iconButton(
-                        "Setup",
+                        "Garage",
                         ui.Icons.Wrench,
                         driveButtonHeight,
                         driveButtonHeight,

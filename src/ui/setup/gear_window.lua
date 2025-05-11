@@ -22,13 +22,13 @@ local maxSpeedWithGear = {
 local maxSpeed = nil
 
 function gearWindow(spinnerCount)
-        local yMin = ui.windowHeight() / 5
-        local yMax = ui.windowHeight() - yMin
-        local height = yMax - yMin
-
-        local xMin = ui.windowWidth() / 2 / 8
-        local xMax = ui.windowWidth() / 2 + xMin / 2
+        local xMin = ui.windowWidth() * 0.5 + 50 * cui.scaleY()
+        local xMax = ui.windowWidth() - 30 * cui.scaleY()
         local width = xMax - xMin
+
+        local yMin = 110 * cui.scaleY()
+        local yMax = 110 + width
+        local height = yMax - yMin
 
         if spinnerCount <= 1 then
                 xMin = ui.windowWidth() / 2 - width / 2

@@ -79,7 +79,7 @@ function CUI.contentWindow(id, position, size, flags, content, showBackground, s
 
         content()
 
-        CUI.popWindow()
+        CUI.popWindow(scroll)
 end
 
 CUI.menuPanAvailable = false
@@ -869,7 +869,12 @@ function CUI.pushWindow(id, x, y, width, height, scroll)
 end
 
 function CUI.popWindow(scroll)
-        if not scroll then ui.popClipRect() end
+        if not scroll then
+                ui.popClipRect()
+        else
+                if ui.getScrollY() < 5 * scaleY then ui.setScrollY(0) end
+                if ui.getScrollMaxY() - ui.getScrollY() < 5 * scaleY then ui.setScrollY(ui.getScrollMaxY()) end
+        end
 
         ui.endGroup()
         ui.endChild()

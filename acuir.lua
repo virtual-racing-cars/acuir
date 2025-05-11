@@ -24,9 +24,9 @@ local intializationTimer = os.clock() + 0.1
 local modeLast = ""
 
 ui.onExclusiveHUD(function(mode)
-        ui.forceSimplifiedComposition()
-
         if not app.state.appOpen or ac.getLastError() then return end
+
+        if mode == "menu" and app.state.setupTab ~= 1 then ui.forceSimplifiedComposition() end
 
         local dt = ac.getScriptDeltaT()
 
@@ -124,15 +124,15 @@ function script.update(dt)
                 if teleportPitsCallback() then teleportPitsCallback = nil end
         end
 
-        if
-                csp.sim.isInMainMenu
-                and settings.General.autoStart
-                and not app.state.hasAppOpened
-                and windowTimeSync < os.clock() - 1
-        then
-                ac.tryToOpenRaceMenu("race")
-                ac.tryToOpenRaceMenu("setup")
-        end
+        -- if
+        --         csp.sim.isInMainMenu
+        --         and settings.General.autoStart
+        --         and not app.state.hasAppOpened
+        --         and windowTimeSync < os.clock() - 1
+        -- then
+        --         ac.tryToOpenRaceMenu("race")
+        --         ac.tryToOpenRaceMenu("setup")
+        -- end
 
         local redirectVM = (csp.sim.isInMainMenu and ac.isWindowOpen("main")) or csp.sim.isPaused
         ac.redirectVirtualMirror(redirectVM)

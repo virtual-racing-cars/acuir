@@ -132,7 +132,7 @@ function CarStatusWindow()
                 local infoBlock = cornerStatusInfo[i]
                 for j = 0, 3 do
                         local xPos = (j % 2 == 0) and 20 or 326
-                        local yPos = j < 2 and 10 or 700
+                        local yPos = j < 2 and 10 or 870
                         local row = (i > 1 and j > 1) and i - 1 or i
 
                         if i == 2 and j > 1 then goto continue end
@@ -169,7 +169,7 @@ function CarStatusWindow()
         for i = 1, #centerStatusInfo do
                 local infoBlock = centerStatusInfo[i]
                 local xPos = 130
-                local yPos = 240
+                local yPos = 325
                 local row = i
 
                 cui.dwriteText({

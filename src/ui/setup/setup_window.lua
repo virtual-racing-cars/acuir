@@ -4,28 +4,15 @@ local app = require("app")
 local audio = require("audio")
 local cui = require("ui.cui")
 local settings = require("settings")
-local sim = ac.getSim()
 
 local currentApp = app.state.setupTab
 local tabBarPosition = 0
 local tabItemPositions = { [0] = 0 }
 
 local function tabItem(index, title)
-        if
-                cui.menuButton(
-                        title,
-                        56,
-                        ui.Alignment.Center,
-                        ui.Alignment.Center,
-                        ui.ButtonFlags.None,
-                        currentApp == index
-                )
-        then
+        if cui.treeNodeButton(title, vec2(ui.windowWidth(), 56 * cui.scaleY()), currentApp == index, true) then
                 currentApp = index
         end
-
-        ui.sameLine()
-        ui.offsetCursorX(-1)
 end
 
 ac.onResolutionChange(function(newSize, makingScreenshot)
@@ -36,40 +23,25 @@ ac.onResolutionChange(function(newSize, makingScreenshot)
         tabBarPosition = 0
 end)
 
-local tabBarScrollDisabled = false
-
 function setupTabBar(tabs)
         ui.drawRectFilled(vec2(0, 0), vec2(ui.windowWidth(), 56 * cui.scaleY()), settings.Appearance.uiColor1 / 1.3)
 
         if ui.mouseLocalPos() >= vec2(0, 0) and ui.mouseLocalPos() < vec2(ui.windowWidth(), 56 * cui.scaleY()) then
                 if ui.mouseWheel() > 0 then
-                        currentApp = currentApp >= #tabs - 1 and 0 or currentApp + 1
+                        -- currentApp = currentApp >= #tabs - 1 and 0 or currentApp + 1
                         audio:trigger()
                 elseif ui.mouseWheel() < 0 then
-                        currentApp = currentApp == 0 and #tabs - 1 or currentApp - 1
+                        -- currentApp = currentApp == 0 and #tabs - 1 or currentApp - 1
                         audio:trigger()
                 end
         end
 
-        if not tabBarScrollDisabled and tabItemPositions[currentApp] then
-                tabBarPosition = math.applyLag(
-                        tabBarPosition,
-                        -math.max(tabItemPositions[currentApp] - ui.windowWidth() / 2, 0),
-                        0.4,
-                        ac.getScriptDeltaT()
-                )
-        end
-
         ui.setCursorX(tabBarPosition)
-        ui.setCursorY(0)
         ui.pushStyleColor(ui.StyleColor.Button, settings.Appearance.uiColor1)
         for i in ipairs(tabs) do
+                ui.setCursorX(0)
                 tabItem(i - 1, tabs[i].name)
-
-                if not tabItemPositions[i - 1] then tabItemPositions[i - 1] = ui.getCursorX() end
         end
-
-        if tabItemPositions[#tabs - 1] <= ui.windowWidth() then tabBarScrollDisabled = true end
 
         ui.popStyleColor(1)
 
@@ -101,7 +73,7 @@ local function linkButton(name, size, linked)
 end
 
 local spinnerWidth = 600 * cui.scaleX()
-local spinnerHeight = 70 * cui.scaleY()
+local spinnerHeight = 90 * cui.scaleY()
 
 local function drawSetupSpinner(sm, si)
         if si.child or si.repair then return end
@@ -109,13 +81,13 @@ local function drawSetupSpinner(sm, si)
         si:run(true)
 
         local positions = {
-                [0] = 0,
+                [0] = -20 * cui.scaleY(),
                 [0.5] = ui.windowWidth() / 2 - spinnerWidth / 2,
-                [1] = (ui.windowWidth() - spinnerWidth),
+                [1] = (ui.windowWidth() - spinnerWidth) + 20 * cui.scaleY(),
         }
 
         local xPos = positions[si.xPos]
-        local yPos = (si.yPos * 97 + 20) * cui.scaleY()
+        local yPos = (si.yPos * 110 + 90) * cui.scaleY()
 
         if si.items then
                 if #si.items > 0 then si.format = si.items[si.value + 1] end
@@ -166,8 +138,8 @@ end
 
 local currentQuickPitPreset = 0
 function car_setup(sm)
-        spinnerWidth = 620 * cui.scaleX()
-        spinnerHeight = 70 * cui.scaleY()
+        spinnerWidth = 640 * cui.scaleX()
+        spinnerHeight = 75 * cui.scaleY()
 
         local changed = false
         local tab = sm.setupTabs[tonumber(app.state.setupTab)]
@@ -189,7 +161,7 @@ function car_setup(sm)
                 if v.yPos > -2 then
                         if v.tab == "GEARS" and #tab.setupSpinners == 1 then
                                 v.xPos = 0.5
-                                v.yPos = 0
+                                v.yPos = -0.7
                         end
 
                         if drawSetupSpinner(sm, v) then changed = true end
