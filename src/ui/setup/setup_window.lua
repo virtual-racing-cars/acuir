@@ -25,16 +25,20 @@ ac.onResolutionChange(function(newSize, makingScreenshot)
         tabBarPosition = 0
 end)
 
+local scrollDelayTimer = 0
+
 function setupTabBar(tabs)
         ui.drawRectFilled(vec2(0, 0), vec2(ui.windowWidth(), 56 * cui.scaleY()), settings.Appearance.uiColor1 / 1.3)
 
-        if ui.windowHovered() then
+        if ui.windowHovered() and scrollDelayTimer < os.clock() then
                 if ui.mouseWheel() > 0 then
                         currentApp = currentApp == 0 and #tabs - 1 or currentApp - 1
                         audio:trigger()
+                        scrollDelayTimer = os.clock() + 0.025
                 elseif ui.mouseWheel() < 0 then
                         currentApp = currentApp >= #tabs - 1 and 0 or currentApp + 1
                         audio:trigger()
+                        scrollDelayTimer = os.clock() + 0.025
                 end
         end
 

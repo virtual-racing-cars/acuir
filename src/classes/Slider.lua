@@ -44,6 +44,8 @@ local function drawSpinnerButton(direction, size, disabled)
         return clicked
 end
 
+local scrollDelayTimer = 0
+
 function drawSlider(
         id,
         name,
@@ -92,7 +94,8 @@ function drawSlider(
         local sliderHovered = ui.mouseLocalPos() > vec2Temp1:set(xPos, yPos)
                 and ui.mouseLocalPos() <= vec2Temp2:set(xPos + width, yPos + height)
         local sliderClicked = ui.mouseClicked(ui.MouseButton.Left) and not ui.itemHovered(ui.HoveredFlags.None)
-        local sliderScrolling = ui.mouseWheel() ~= 0 and not noScroll
+        local sliderScrolling = ui.mouseWheel() ~= 0 and not noScroll and scrollDelayTimer < os.clock()
+        if sliderScrolling then scrollDelayTimer = os.clock() + 0.025 end
 
         if active or (sliderHovered and (sliderClicked or sliderScrolling)) then
                 if sliderScrolling then
