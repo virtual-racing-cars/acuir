@@ -244,7 +244,7 @@ function setupIoDraw(sm)
                         if refreshingSetups then
                                 ui.icon(ui.Icons.LoadingSpinner, ui.availableSpace())
                         else
-                                for i, track in ipairs(carSetup.loadedSorted) do
+                                for i, track in ipairs(carSetup.trackList) do
                                         ui.setCursorX(0)
                                         if
                                                 cui.treeNode(track, #carSetup.loaded[track], function()

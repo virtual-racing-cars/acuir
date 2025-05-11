@@ -3,7 +3,7 @@ local settings = require("src.settings")
 local setup = {
         current = "generic/default",
         loaded = {},
-        loadedSorted = {},
+        trackList = {},
         selected = { name = "", track = "", description = "", path = "", lastWriteTime = "" },
         input = { name = "", track = ac.getTrackID(), description = "", path = "", lastWriteTime = "" },
 }
@@ -20,8 +20,8 @@ function setup:load()
                 setup.loaded[track] = nil
         end
 
-        for track, _ in pairs(setup.loadedSorted) do
-                setup.loadedSorted[track] = nil
+        for track, _ in pairs(setup.trackList) do
+                setup.trackList[track] = nil
         end
 
         setup.loaded[ac.getTrackID()] = {}
@@ -55,13 +55,19 @@ function setup:load()
 
         -- Create a sorted list of track names
         for track in pairs(setup.loaded) do
-                table.insert(setup.loadedSorted, track)
+                table.insert(setup.trackList, track)
         end
-        table.sort(setup.loadedSorted)
-        table.removeItem(setup.loadedSorted, "generic")
-        table.insert(setup.loadedSorted, 1, "generic")
-        table.removeItem(setup.loadedSorted, ac.getTrackID())
-        table.insert(setup.loadedSorted, 1, ac.getTrackID())
+
+        table.sort(setup.trackList)
+        table.removeItem(setup.trackList, "generic")
+        table.insert(setup.trackList, 1, "generic")
+        table.removeItem(setup.trackList, ac.getTrackID())
+        table.insert(setup.trackList, 1, ac.getTrackID())
+
+        for i = #setup.trackList, 3, -1 do
+                local track = setup.trackList[i]
+                if setup.loaded[track] and #setup.loaded[track] == 0 then table.removeItem(setup.trackList, track) end
+        end
 end
 
 ac.onSetupsListRefresh(function() setup:load() end)

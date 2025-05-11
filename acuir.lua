@@ -36,6 +36,8 @@ ui.onExclusiveHUD(function(mode)
                 return "apps"
         end
 
+        -- pages:goToSetup()
+
         if mode == "menu" then
                 audio:driver(dt)
 

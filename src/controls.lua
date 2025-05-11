@@ -146,7 +146,7 @@ local function getContentManagerControls()
         local contentManagerControlsFile = ac.dirname() .. "\\cfg\\cm_controls.ini"
         local contentManagerControlsINI = ac.INIConfig.load(contentManagerControlsFile)
 
-        return loadControls("Content Manager", contentManagerControlsINI)
+        return loadControls("General", contentManagerControlsINI)
 end
 
 controls.apps = nil
