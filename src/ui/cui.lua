@@ -33,8 +33,11 @@ ac.onCSPConfigChanged(ac.CSPModuleID.GUI, function()
         scaleX = scaleY
 end)
 
-function CUI.loadStoredBool(id)
-        if storedBools[id] == nil then storedBools[id] = false end
+function CUI.loadStoredBool(id, defaultTrue)
+        if storedBools[id] == nil then
+                ac.log(id, defaultTrue)
+                storedBools[id] = defaultTrue and true or false
+        end
 
         return storedBools[id]
 end
@@ -75,11 +78,11 @@ end
 function CUI.childWindow(id, size, border, flags, content) ui.childWindow(id, size, false, flags, content) end
 
 function CUI.contentWindow(id, position, size, flags, content, showBackground, scroll)
-        CUI.pushWindow(id .. "test", position.x, position.y, size.x, size.y, scroll)
+        CUI.pushWindow(id .. "test", position.x, position.y, size.x, size.y, scroll, flags)
 
         content()
 
-        CUI.popWindow(scroll)
+        CUI.popWindow(scroll, flags)
 end
 
 CUI.menuPanAvailable = false
@@ -479,7 +482,7 @@ function CUI.iconButton(label, icon, sizeX, sizeY, flags, flipped, iconScale, ac
 end
 
 local treeNodeParent = ""
-function CUI.treeNodeButton(label, size, active, bold, count)
+function CUI.treeNodeButton(label, size, active, bold, count, defaultOpen)
         if not count then count = 0 end
 
         local fontSize = math.floor(size.y * 0.55)
@@ -500,6 +503,7 @@ function CUI.treeNodeButton(label, size, active, bold, count)
         )
         local hovered = ui.itemHovered() and not CUI.modalDialogCallback
         local id = ui.getLastID()
+        local open = CUI.loadStoredBool(id, defaultOpen)
 
         if active then
                 ui.popStyleColor(1)
@@ -535,19 +539,22 @@ function CUI.treeNodeButton(label, size, active, bold, count)
                 )
         end
 
-        return clicked, id
+        return id, clicked, open
 end
 
 function CUI.treeNode(label, count, content, defaultOpen)
-        local clicked, id =
-                CUI.treeNodeButton(label, vec2Temp1:set(ui.availableSpaceX(), 48 * CUI.scaleY()), false, true, count)
+        local id, clicked, open = CUI.treeNodeButton(
+                label,
+                vec2Temp1:set(ui.availableSpaceX(), 48 * CUI.scaleY()),
+                false,
+                true,
+                count,
+                defaultOpen
+        )
         treeNodeParent = label
 
         if count < 1 then return clicked end
 
-        if defaultOpen and not storedBools[id] then CUI.storeBool(id, true) end
-
-        local open = CUI.loadStoredBool(id)
         if clicked then CUI.storeBool(id, not open) end
 
         if open then
@@ -846,8 +853,10 @@ function CUI.dummy(x, y) ui.dummy(vec2Temp1:set(x * scaleY, y * scaleY)) end
 
 local margins = 15
 
-function CUI.pushWindow(id, x, y, width, height, scroll)
-        local windowFlags = bit.bor(ui.WindowFlags.NoResize)
+function CUI.pushWindow(id, x, y, width, height, scroll, flags)
+        if not flags then flags = 0 end
+
+        local windowFlags = bit.bor(ui.WindowFlags.NoResize + flags)
 
         if not scroll then windowFlags = windowFlags + ui.WindowFlags.NoScrollbar + ui.WindowFlags.NoScrollWithMouse end
 
@@ -868,10 +877,10 @@ function CUI.pushWindow(id, x, y, width, height, scroll)
         ui.beginGroup(tabWidth)
 end
 
-function CUI.popWindow(scroll)
+function CUI.popWindow(scroll, flags)
         if not scroll then
                 ui.popClipRect()
-        else
+        elseif flags ~= ui.WindowFlags.NoScrollWithMouse then
                 if ui.getScrollY() < 5 * scaleY then ui.setScrollY(0) end
                 if ui.getScrollMaxY() - ui.getScrollY() < 5 * scaleY then ui.setScrollY(ui.getScrollMaxY()) end
         end

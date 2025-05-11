@@ -97,7 +97,7 @@ local function setupIoWindow()
 
                         if
                                 cui.menuButton(
-                                        "Setup",
+                                        "Edit Setup",
                                         vec2Temp1:set(ui.windowWidth() / 2, genericButtonHeight),
                                         0,
                                         0,
@@ -121,7 +121,7 @@ local function setupIoWindow()
                                                         "setup_garage_window",
                                                         vec2(0, 0),
                                                         vec2(ui.windowWidth(), ui.windowHeight() - genericButtonHeight),
-                                                        ui.WindowFlags.None,
+                                                        ui.WindowFlags.NoScrollWithMouse,
                                                         function()
                                                                 ui.setCursorY(0)
 

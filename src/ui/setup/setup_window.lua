@@ -10,6 +10,8 @@ local tabBarPosition = 0
 local tabItemPositions = { [0] = 0 }
 
 local function tabItem(index, title)
+        if currentApp == index then ui.setScrollFromPosY((index - 1) * 56) end
+
         if cui.treeNodeButton(title, vec2(ui.windowWidth(), 56 * cui.scaleY()), currentApp == index, true) then
                 currentApp = index
         end
@@ -26,12 +28,12 @@ end)
 function setupTabBar(tabs)
         ui.drawRectFilled(vec2(0, 0), vec2(ui.windowWidth(), 56 * cui.scaleY()), settings.Appearance.uiColor1 / 1.3)
 
-        if ui.mouseLocalPos() >= vec2(0, 0) and ui.mouseLocalPos() < vec2(ui.windowWidth(), 56 * cui.scaleY()) then
+        if ui.windowHovered() then
                 if ui.mouseWheel() > 0 then
-                        -- currentApp = currentApp >= #tabs - 1 and 0 or currentApp + 1
+                        currentApp = currentApp == 0 and #tabs - 1 or currentApp - 1
                         audio:trigger()
                 elseif ui.mouseWheel() < 0 then
-                        -- currentApp = currentApp == 0 and #tabs - 1 or currentApp - 1
+                        currentApp = currentApp >= #tabs - 1 and 0 or currentApp + 1
                         audio:trigger()
                 end
         end
