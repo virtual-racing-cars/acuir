@@ -34,10 +34,7 @@ ac.onCSPConfigChanged(ac.CSPModuleID.GUI, function()
 end)
 
 function CUI.loadStoredBool(id, defaultTrue)
-        if storedBools[id] == nil then
-                ac.log(id, defaultTrue)
-                storedBools[id] = defaultTrue and true or false
-        end
+        if storedBools[id] == nil then storedBools[id] = defaultTrue and true or false end
 
         return storedBools[id]
 end
