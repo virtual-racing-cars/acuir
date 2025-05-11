@@ -84,6 +84,8 @@ setTimeout(function()
                                 ac.getTrackID()
                         )
                 )
+
+                setup.current = ac.getTrackID() .. "/last"
         end
 end, 1, "autoLoadLastSetup")
 
