@@ -38,7 +38,7 @@ function setup:load()
                 if setup.loaded[dirName] == nil then setup.loaded[dirName] = {} end
 
                 io.scanDir(setupsDir .. "\\" .. dirName, function(fileName, fileAttributes)
-                        if string.find(fileName, ".sp") or string.find(fileName, ".txt") then return end
+                        if string.find(fileName, "%.sp") or string.find(fileName, "%.txt") then return end
 
                         table.insert(setup.loaded[dirName], {
                                 name = fileName,
