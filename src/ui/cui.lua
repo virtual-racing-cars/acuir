@@ -539,11 +539,11 @@ function CUI.treeNodeButton(label, size, active, bold, count, defaultOpen)
                 )
         end
 
-        return id, clicked, open
+        return clicked, open, id
 end
 
 function CUI.treeNode(label, count, content, defaultOpen)
-        local id, clicked, open = CUI.treeNodeButton(
+        local clicked, open, id = CUI.treeNodeButton(
                 label,
                 vec2Temp1:set(ui.availableSpaceX(), 48 * CUI.scaleY()),
                 false,
