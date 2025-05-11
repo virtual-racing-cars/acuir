@@ -9,8 +9,14 @@ local settings = {
                 { key = "autoStart", label = "Auto-Start new UI", default = true, widget = 1 },
                 { key = "showConfirmDialogs", label = "Show Confirmation Dialogs", default = true, widget = 1 },
                 { key = "showVersions", label = "Show App and CSP versions", default = true, widget = 1 },
-                { key = "developerMode", label = "Developer Mode", default = false, widget = 1 },
                 { key = "defaultSetupPage", label = "Open Setup Page on Startup", default = false, widget = 1 },
+                {
+                        key = "autoLoadLastSetup",
+                        label = "Load Last Setup on Startup",
+                        default = true,
+                        widget = 1,
+                },
+                { key = "developerMode", label = "Developer Mode", default = false, widget = 1 },
         },
         Appearance = {
                 { key = "uiColor1", label = "Primay UI Color", default = rgbm.new("#3e3c46"), widget = 1 },

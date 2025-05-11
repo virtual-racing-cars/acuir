@@ -68,6 +68,19 @@ ac.onSetupsListRefresh(function() setup:load() end)
 
 setup:load()
 
+setTimeout(function()
+        if settings.General.autoLoadLastSetup then
+                sm:LoadStuff(
+                        string.format(
+                                "%s\\%s\\_%s_last.ini",
+                                ac.getFolder(ac.FolderID.UserSetups),
+                                ac.getCarID(0),
+                                ac.getTrackID()
+                        )
+                )
+        end
+end, 1, "autoLoadLastSetup")
+
 function setup:save(sm)
         ac.setActiveSetupName(setup.input.name, setup.input.track)
         sm:saveSetup(setup.input.path)

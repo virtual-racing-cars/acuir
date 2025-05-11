@@ -94,6 +94,8 @@ local fov = csp.sim.cameraFOV
 
 if not app.state.debug then ac.log = function() end end
 
+local isInMainMenuLast = csp.sim.isInMainMenu
+
 function script.update(dt)
         if csp.ui.ctrlDown and csp.ui.shiftDown and ui.keyboardButtonPressed(ui.KeyIndex.F5) then
                 settings.General.autoStart = not app.state.appOpen
@@ -114,6 +116,12 @@ function script.update(dt)
                 ac.setCameraFOV(fov)
         else
                 fov = csp.sim.cameraFOV
+        end
+
+        if isInMainMenuLast ~= csp.sim.isInMainMenu then
+                if isInMainMenuLast then sm:saveSetup(string.format("_%s_last.ini", ac.getTrackID())) end
+
+                isInMainMenuLast = csp.sim.isInMainMenu
         end
 
         race:step()
