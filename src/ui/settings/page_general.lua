@@ -36,7 +36,7 @@ function page.draw()
         )
 
         for i, v in ipairs(settings.General) do
-                cui.setCursorY(200 + 125 * i)
+                cui.setCursorY(150 + 125 * i)
 
                 if v.widget == 1 then
                         local value = settings.General[v.key] and 1 or 0

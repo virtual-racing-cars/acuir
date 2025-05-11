@@ -111,7 +111,7 @@ function drawSlider(
                 changed = true
         end
 
-        if sliderScrolling then scrollDelayTimer = os.clock() + 0.025 end
+        if sliderScrolling then scrollDelayTimer = os.clock() + settings.General.scrollDelayTimeMs / 1000 end
 
         value = math.round(math.clamp(value, 0, max))
 

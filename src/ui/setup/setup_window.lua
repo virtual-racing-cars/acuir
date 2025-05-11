@@ -34,11 +34,11 @@ function setupTabBar(tabs)
                 if ui.mouseWheel() > 0 then
                         currentApp = currentApp == 0 and #tabs - 1 or currentApp - 1
                         audio:trigger()
-                        scrollDelayTimer = os.clock() + 0.025
+                        scrollDelayTimer = os.clock() + settings.General.scrollDelayTimeMs / 1000
                 elseif ui.mouseWheel() < 0 then
                         currentApp = currentApp >= #tabs - 1 and 0 or currentApp + 1
                         audio:trigger()
-                        scrollDelayTimer = os.clock() + 0.025
+                        scrollDelayTimer = os.clock() + settings.General.scrollDelayTimeMs / 1000
                 end
         end
 
