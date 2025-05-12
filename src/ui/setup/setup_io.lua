@@ -1,5 +1,6 @@
 local cui = require("ui.cui")
 
+local callback = require("callback")
 local carSetup = require("src.car_setup")
 local settings = require("settings")
 
@@ -52,6 +53,8 @@ local function promptDeleteSetup()
                 ui.setCursorX(ui.windowWidth() / 2 + 5 * cui.scaleY())
                 if cui.modalButton("Confirm", ui.windowWidth() / 3, 50 * cui.scaleY(), ui.ButtonFlags.None) then
                         carSetup:delete()
+                        cui.menuBanner("Deleted Setup", nil, rgbm.colors.red)
+
                         ui.popStyleVar(1)
 
                         return true
@@ -111,6 +114,8 @@ local function promptOverwriteSetup()
                 ui.setCursorX(ui.windowWidth() / 2 + 5 * cui.scaleY())
                 if cui.modalButton("Confirm", ui.windowWidth() / 3, 50 * cui.scaleY(), ui.ButtonFlags.None) then
                         carSetup:save(sm)
+                        cui.menuBanner("Saved Setup", nil, rgbm.colors.green)
+
                         ui.popStyleVar(1)
 
                         return true
@@ -173,6 +178,7 @@ local function saveSetupWindow(sm)
                         setupFileExists and ui.ButtonFlags.None or ui.ButtonFlags.Disabled
                 )
         then
+                cui.menuBanner("Loaded Setup", nil, rgbm.colors.green)
                 sm:LoadStuff(carSetup.selected.path)
                 carSetup.current = carSetup.selected.track .. "/" .. carSetup.selected.name
         end
@@ -210,6 +216,7 @@ local function saveSetupWindow(sm)
                         promptOverwriteSetup(sm)
                 else
                         carSetup:save(sm)
+                        cui.menuBanner("Saved Setup", nil, rgbm.colors.green)
                 end
         end
 end
@@ -219,7 +226,10 @@ local lastHide = settings.General.hideOtherTrackSetups
 function setupIoDraw(sm)
         if lastHide ~= settings.General.hideOtherTrackSetups then carSetup:load() end
 
-        if ui.keyPressed(ui.Key.Delete) then carSetup:delete() end
+        if ui.keyPressed(ui.Key.Delete) then
+                carSetup:delete()
+                cui.menuBanner("Deleted Setup", nil, rgbm.colors.red)
+        end
 
         cui.contentWindow(
                 "setup_io_saved_setups",

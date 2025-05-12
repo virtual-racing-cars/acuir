@@ -113,7 +113,9 @@ end
 
 function simutils.sessionSkippable() return sim.sessionsCount > 1 and sim.currentSessionIndex < sim.sessionsCount - 1 end
 
-function simutils.sessionRestartable() return car.sessionID == -1 end
+function simutils.sessionRestartable()
+        return car.sessionID == -1
+end
 
 function simutils.controlsLocked() return car.currentPenaltyType == ac.PenaltyType.TeleportToPits end
 
@@ -125,9 +127,9 @@ function simutils.sessionWaitTime()
         if sim.sessionTimeLeft > 0 or sim.sessionsCount == 1 then return 0 end
 
         if sim.raceSessionType == ac.SessionType.Practice or sim.raceSessionType == ac.SessionType.Qualify then
-                return (90000 + sim.sessionTimeLeft) / 1000
+                return round((90000 + sim.sessionTimeLeft) / 1000)
         elseif sim.raceSessionType == ac.SessionType.Race then
-                return simutils.session().overtimeMs / 1000
+                return round(simutils.session().overtimeMs / 1000)
         end
 
         return 0

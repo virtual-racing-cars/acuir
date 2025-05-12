@@ -1,4 +1,5 @@
 local app = require("app")
+local callback = require("callback")
 local csp = require("csp")
 local cui = require("ui.cui")
 local pages = require("ui.pages")
@@ -67,12 +68,6 @@ local sessionInfoTable = {
                 row1 = function() return simutils.simDateString end,
                 row2 = function() return simutils.simTimeString end,
         },
-
-        {
-                label = function() return simutils.raceSessionTypeString end,
-                row1 = function() return simutils.sessionTotalTimeString end,
-                row2 = function() return simutils.sessionTimeLeftString end,
-        },
         {
                 label = function() return "Track" end,
                 row1 = function() return string.format("%.1f° C", sim.roadTemperature) end,
@@ -96,7 +91,7 @@ local function sessionInfo()
         local startX = (ui.windowWidth() / 4) * 3 + 120 * cui.scaleY()
         local startY = 12 * cui.scaleY()
         local sizeX = 170 * cui.scaleX()
-        local sizeY = 32 * cui.scaleY()
+        local sizeY = 28 * cui.scaleY()
 
         local fontSize = math.floor(sizeY * 0.7)
         fontSize = (fontSize % 2 ~= 0) and fontSize + 1 or fontSize
@@ -163,18 +158,75 @@ function topSubBar(path)
 end
 
 function topBar(path)
-        local driveButtonWidth = 400 * cui.scaleY()
+        local driveButtonWidth = 500 * cui.scaleY()
         local driveButtonHeight = 70 * cui.scaleY()
 
         ui.drawRectFilled(0, vec2(ui.windowWidth(), topBarHeight), rgbm(0.1, 0.1, 0.1, 0.95))
 
-        topSubBar(path)
+        cui.contentWindow(
+                "top_bar_banner",
+                vec2(0, topBarHeight),
+                vec2(ui.windowWidth(), 50 * cui.scaleY()),
+                ui.WindowFlags.None,
+                function()
+                        ui.drawRectFilledMultiColor(
+                                vec2(0, 0),
+                                vec2(ui.windowWidth() * 0.5, ui.windowHeight()),
+                                rgbm(0.1, 0.1, 0.1, 0),
+                                rgbm(0.1, 0.1, 0.1, 0.95),
+                                rgbm(0.1, 0.1, 0.1, 0.95),
+                                rgbm(0.1, 0.1, 0.1, 0)
+                        )
 
-        -- ui.drawSimpleLine(
-        --         vec2(ui.windowWidth() * 0.5, 0),
-        --         vec2(ui.windowWidth() * 0.5, ui.windowHeight()),
-        --         rgbm.colors.aqua
-        -- )
+                        ui.drawRectFilledMultiColor(
+                                vec2(ui.windowWidth() * 0.5, 0),
+                                vec2(ui.windowWidth(), ui.windowHeight()),
+                                rgbm(0.1, 0.1, 0.1, 0.95),
+                                rgbm(0.1, 0.1, 0.1, 0),
+                                rgbm(0.1, 0.1, 0.1, 0),
+                                rgbm(0.1, 0.1, 0.1, 0.95)
+                        )
+
+                        ui.setCursorX(ui.windowWidth() * 0.5 - 180)
+                        ui.setCursorY(0)
+                        cui.snapCursor()
+
+                        ui.dwriteTextAligned(
+                                simutils.raceSessionTypeString,
+                                28,
+                                ui.Alignment.Start,
+                                ui.Alignment.Center,
+                                vec2(100 * cui.scaleY(), ui.windowHeight())
+                        )
+                        ui.sameLine()
+                        ui.setCursorX(ui.windowWidth() * 0.5 - 50)
+                        cui.snapCursor()
+
+                        ui.dwriteTextAligned(
+                                simutils.sessionTotalTimeString,
+                                28,
+                                ui.Alignment.Center,
+                                ui.Alignment.Center,
+                                vec2(100 * cui.scaleY(), ui.windowHeight())
+                        )
+                        ui.sameLine()
+                        ui.setCursorX(ui.windowWidth() * 0.5 + 80)
+                        cui.snapCursor()
+
+                        ui.dwriteTextAligned(
+                                simutils.sessionTimeLeftString,
+                                28,
+                                ui.Alignment.End,
+                                ui.Alignment.Center,
+                                vec2(100 * cui.scaleY(), ui.windowHeight())
+                        )
+
+                        if callback.info then callback.info() end
+                        if callback.vote then callback.vote() end
+                end
+        )
+
+        topSubBar(path)
 
         ui.setCursorY(topBarHeight / 2 - driveButtonHeight / 2)
         ui.setCursorX(ui.windowWidth() / 2 - driveButtonWidth / 2)
@@ -243,27 +295,33 @@ function topBar(path)
 
         if
                 cui.iconButton(
-                        "Restart",
+                        sim.isOnlineRace and "Vote Restart" or "Restart",
                         ui.Icons.Reset,
                         driveButtonHeight,
                         driveButtonHeight,
-                        simutils.sessionRestartable and ui.ButtonFlags.None or ui.ButtonFlags.Disabled
+                        ui.ButtonFlags.None
                 )
         then
-                ac.tryToRestartSession()
+                if sim.isOnlineRace then
+                else
+                        ac.tryToRestartSession()
+                end
         end
         ui.offsetCursorX(driveButtonHeight * 0.75)
 
         if
                 cui.iconButton(
-                        "Skip",
+                        sim.isOnlineRace and "Vote Skip" or "Skip",
                         ui.Icons.Skip,
                         driveButtonHeight,
                         driveButtonHeight,
                         simutils.sessionSkippable and ui.ButtonFlags.None or ui.ButtonFlags.Disabled
                 )
         then
-                ac.tryToSkipSession()
+                if sim.isOnlineRace then
+                else
+                        ac.tryToSkipSession()
+                end
         end
         ui.offsetCursorX(driveButtonHeight * 0.75)
 
@@ -297,5 +355,5 @@ end
 
 function updateCommon()
         acLogoSize = ui.imageSize(acLogo) * 0.85 * cui.scaleY()
-        topBarHeight = 180 * cui.scaleY()
+        topBarHeight = 130 * cui.scaleY()
 end

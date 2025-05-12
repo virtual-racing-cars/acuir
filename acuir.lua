@@ -6,6 +6,7 @@ require("ui.results_window")
 require("audio")
 local app = require("app")
 local audio = require("audio")
+local callback = require("callback")
 local csp = require("csp")
 local cui = require("ui.cui")
 local mod = require("install")
@@ -19,6 +20,8 @@ local simutils = require("simutils")
 app.state.appOpen = settings.General.autoStart
 app.state.hasAppOpened = false
 
+-- { timeTotal = 20, type = "restart", voted = true, timeLeft = 16.668933868408 }
+-- { timeLeft = 17.191181182861, timeTotal = 20, type = "skip", voted = true }
 local modeLast = ""
 
 ui.onExclusiveHUD(function(mode)
@@ -36,6 +39,28 @@ ui.onExclusiveHUD(function(mode)
                 if modeLast ~= mode then pages:setParentMainMenu() end
 
                 modeLast = mode
+
+                local voteDetails = ac.getCurrentVoteDetails()
+                if voteDetails then
+                        if voteDetails.type ~= "unknown" then
+                                cui.menuBanner(
+                                        string.upper(
+                                                string.format(
+                                                        "Vote %s %s %s",
+                                                        voteDetails.type,
+                                                        voteDetails.type == "kick"
+                                                                        and ac.getDriverName(voteDetails.targetIndex)
+                                                                or "Session",
+                                                        voteDetails.voted and "" or "Yes [Y] No [N]"
+                                                )
+                                        ),
+                                        voteDetails.timeLeft,
+                                        rgbm.colors.red,
+                                        true,
+                                        "vote"
+                                )
+                        end
+                end
 
                 return MainMenuWindow(dt)
         end
@@ -75,8 +100,6 @@ ui.onExclusiveHUD(function(mode)
         modeLast = mode
 end)
 
-teleportPitsCallback = nil
-
 local fov = csp.sim.cameraFOV
 
 if not app.state.debug then ac.log = function() end end
@@ -84,6 +107,7 @@ if not app.state.debug then ac.log = function() end end
 local isInMainMenuLast = csp.sim.isInMainMenu
 
 function script.update(dt)
+        os.runConsoleProcess({ filename = "", arguments = {} })
         if csp.ui.ctrlDown and csp.ui.shiftDown and ui.keyboardButtonPressed(ui.KeyIndex.F5) then
                 settings.General.autoStart = not app.state.appOpen
                 app.state.appOpen = not app.state.appOpen
@@ -123,8 +147,8 @@ function script.update(dt)
         pitstop:step(dt)
         -- replay:step(dt)
 
-        if teleportPitsCallback then
-                if teleportPitsCallback() then teleportPitsCallback = nil end
+        if callback.sim then
+                if callback.sim() then callback.sim = nil end
         end
 
         local redirectVM = (csp.sim.isInMainMenu and ac.isWindowOpen("main")) or csp.sim.isPaused

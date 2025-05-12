@@ -1,5 +1,6 @@
 local page = {}
 
+local callback = require("callback")
 local cui = require("ui.cui")
 local pages = require("ui.pages")
 local replay = require("replay")
@@ -46,7 +47,7 @@ local pauseButtons = {
                 func = function()
                         ac.tryToPause(false)
                         ac.tryToTeleportToPits()
-                        teleportPitsCallback = function()
+                        callback.sim = function()
                                 pages:goToSetup()
                                 ac.tryToOpenRaceMenu()
                                 ac.tryToOpenRaceMenu("setup")

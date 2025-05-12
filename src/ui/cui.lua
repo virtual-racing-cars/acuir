@@ -1,6 +1,7 @@
 local CUI = {}
 
 local audio = require("audio")
+local callback = require("callback")
 local settings = require("settings")
 local simutils = require("simutils")
 local style = require("style")
@@ -88,6 +89,54 @@ CUI.menuZoomAvailable = false
 CUI.modalDialogCallback = nil
 
 function CUI.modalDialog(callback) CUI.modalDialogCallback = callback end
+
+function CUI.menuBanner(label, time, bannerColor, rightSide, callbackType)
+        if not callbackType then callbackType = "info" end
+
+        callback[callbackType] = function()
+                local xStart = rightSide and ui.windowWidth() or 0
+                local xEnd = rightSide and ui.windowWidth() * 0.5 or ui.windowWidth() * 0.5
+                local xText = rightSide and ui.windowWidth() * 0.75 or 0
+                local alignment = rightSide and ui.Alignment.End or ui.Alignment.Start
+                local margin = rightSide and -20 * scaleY or 20 * scaleY
+
+                ui.drawRectFilledMultiColor(
+                        vec2(xStart, 0),
+                        vec2(xEnd, ui.windowHeight()),
+                        bannerColor,
+                        rgbm(0, 0, 0, 0),
+                        rgbm(0, 0, 0, 0),
+                        bannerColor
+                )
+
+                ui.setCursor(vec2(xText + margin, 0))
+
+                ui.dwriteTextAligned(
+                        label,
+                        28 * scaleY,
+                        alignment,
+                        ui.Alignment.Center,
+                        vec2(ui.windowWidth() * 0.2, ui.windowHeight()),
+                        false,
+                        rgbm.colors.white
+                )
+
+                if time then
+                        ui.sameLine()
+                        ui.dwriteTextAligned(
+                                string.format("%.1f s", time),
+                                28 * scaleY,
+                                ui.Alignment.End,
+                                ui.Alignment.Center,
+                                vec2(ui.windowWidth() * 0.05, ui.windowHeight()),
+                                false,
+                                rgbm.colors.white
+                        )
+                end
+        end
+
+        setTimeout(function() callback[callbackType] = nil end, 2, callbackType .. "banner")
+end
 
 function CUI.dwriteTextWrapped(text, font) ui.dwriteTextWrapped(text, font * CUI.scaleY()) end
 
@@ -448,6 +497,8 @@ function CUI.iconButton(label, icon, sizeX, sizeY, flags, flipped, iconScale, ac
         if bit.band(flags, ui.ButtonFlags.Disabled) ~= 0 then disabled = true end
 
         local tempCursor = ui.getCursor()
+        ui.offsetCursorY(-sizeY * 0.2)
+
         local clicked = ui.invisibleButton("##" .. label, vec2(sizeX, sizeY))
         local hovered = ui.itemHovered()
 
