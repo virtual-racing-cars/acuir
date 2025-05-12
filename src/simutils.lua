@@ -77,11 +77,11 @@ function simutils.simDateString() return os.date("%B %d, %Y", sim.timestamp) end
 
 function simutils.session() return ac.getSession(sim.currentSessionIndex) end
 
-function simutils.timeToString(timeMs, remaining)
+function simutils.timeToString(timeMs, postfix)
         local totalSeconds = math.floor(timeMs / 1000)
         local minutes = math.floor(totalSeconds / 60)
         local seconds = totalSeconds % 60
-        return string.format("%02d:%02d %s", minutes, seconds, remaining and "Remaining" or "")
+        return string.format("%s %02d:%02d", postfix, minutes, seconds)
 end
 
 function simutils.sessionTimeLeftString()
@@ -92,11 +92,17 @@ function simutils.sessionTimeLeftString()
                                 simutils.session().laps - simutils.session().leaderCompletedLaps
                         )
                 else
-                        return simutils.timeToString(sim.currentSessionTime)
+                        return simutils.timeToString(sim.currentSessionTime, "")
                 end
         end
 
-        return sim.sessionTimeLeft <= 0 and "--" or simutils.timeToString(sim.sessionTimeLeft, true)
+        if sim.sessionTimeLeft <= 0 then
+                return "Session Over"
+        elseif sim.timeToSessionStart > 0 then
+                return simutils.timeToString(sim.timeToSessionStart, "Starts in")
+        else
+                return simutils.timeToString(sim.sessionTimeLeft, "Remaining")
+        end
 end
 
 function simutils.sessionTotalTimeString()
@@ -113,9 +119,7 @@ end
 
 function simutils.sessionSkippable() return sim.sessionsCount > 1 and sim.currentSessionIndex < sim.sessionsCount - 1 end
 
-function simutils.sessionRestartable()
-        return car.sessionID == -1
-end
+function simutils.sessionRestartable() return car.sessionID == -1 end
 
 function simutils.controlsLocked() return car.currentPenaltyType == ac.PenaltyType.TeleportToPits end
 
@@ -126,13 +130,7 @@ function simutils.rideHeightValid() return car.rideHeight[0] >= car.minHeight an
 function simutils.sessionWaitTime()
         if sim.sessionTimeLeft > 0 or sim.sessionsCount == 1 then return 0 end
 
-        if sim.raceSessionType == ac.SessionType.Practice or sim.raceSessionType == ac.SessionType.Qualify then
-                return round((90000 + sim.sessionTimeLeft) / 1000)
-        elseif sim.raceSessionType == ac.SessionType.Race then
-                return round(simutils.session().overtimeMs / 1000)
-        end
-
-        return 0
+        return round(sim.resultScreenTime + sim.sessionTimeLeft / 1000)
 end
 
 function simutils.sessionOvertime() return simutils.sessionWaitTime() > 0 end

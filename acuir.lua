@@ -20,8 +20,6 @@ local simutils = require("simutils")
 app.state.appOpen = settings.General.autoStart
 app.state.hasAppOpened = false
 
--- { timeTotal = 20, type = "restart", voted = true, timeLeft = 16.668933868408 }
--- { timeLeft = 17.191181182861, timeTotal = 20, type = "skip", voted = true }
 local modeLast = ""
 
 ui.onExclusiveHUD(function(mode)

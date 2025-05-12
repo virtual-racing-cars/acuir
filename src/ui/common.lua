@@ -161,6 +161,12 @@ function topBar(path)
         local driveButtonWidth = 500 * cui.scaleY()
         local driveButtonHeight = 70 * cui.scaleY()
 
+        -- ui.drawSimpleLine(
+        --         vec2(ui.windowWidth() * 0.5, 0),
+        --         vec2(ui.windowWidth() * 0.5, ui.windowHeight()),
+        --         rgbm.colors.aqua
+        -- )
+
         ui.drawRectFilled(0, vec2(ui.windowWidth(), topBarHeight), rgbm(0.1, 0.1, 0.1, 0.95))
 
         cui.contentWindow(
@@ -187,38 +193,27 @@ function topBar(path)
                                 rgbm(0.1, 0.1, 0.1, 0.95)
                         )
 
-                        ui.setCursorX(ui.windowWidth() * 0.5 - 180)
+                        ui.setCursorX(ui.windowWidth() * 0.5 - 320)
                         ui.setCursorY(0)
                         cui.snapCursor()
 
                         ui.dwriteTextAligned(
-                                simutils.raceSessionTypeString,
+                                simutils.raceSessionTypeString .. " " .. simutils.sessionTotalTimeString,
                                 28,
-                                ui.Alignment.Start,
+                                ui.Alignment.End,
                                 ui.Alignment.Center,
-                                vec2(100 * cui.scaleY(), ui.windowHeight())
+                                vec2(300 * cui.scaleY(), ui.windowHeight())
                         )
                         ui.sameLine()
-                        ui.setCursorX(ui.windowWidth() * 0.5 - 50)
-                        cui.snapCursor()
-
-                        ui.dwriteTextAligned(
-                                simutils.sessionTotalTimeString,
-                                28,
-                                ui.Alignment.Center,
-                                ui.Alignment.Center,
-                                vec2(100 * cui.scaleY(), ui.windowHeight())
-                        )
-                        ui.sameLine()
-                        ui.setCursorX(ui.windowWidth() * 0.5 + 80)
+                        ui.setCursorX(ui.windowWidth() * 0.5 + 20)
                         cui.snapCursor()
 
                         ui.dwriteTextAligned(
                                 simutils.sessionTimeLeftString,
                                 28,
-                                ui.Alignment.End,
+                                ui.Alignment.Start,
                                 ui.Alignment.Center,
-                                vec2(100 * cui.scaleY(), ui.windowHeight())
+                                vec2(300 * cui.scaleY(), ui.windowHeight())
                         )
 
                         if callback.info then callback.info() end
@@ -230,7 +225,23 @@ function topBar(path)
 
         ui.setCursorY(topBarHeight / 2 - driveButtonHeight / 2)
         ui.setCursorX(ui.windowWidth() / 2 - driveButtonWidth / 2)
-        ui.offsetCursorX(-driveButtonHeight * 7)
+        ui.offsetCursorX(-driveButtonHeight * 8.75)
+        if
+                cui.iconButton(
+                        "Session",
+                        ui.Icons.Info,
+                        driveButtonHeight,
+                        driveButtonHeight,
+                        ui.ButtonFlags.Disabled,
+                        false,
+                        nil,
+                        pages.manager.currentPageName == "MainMenu"
+                )
+        then
+                pages:goToMainMenu()
+        end
+        ui.offsetCursorX(driveButtonHeight * 0.75)
+
         if
                 cui.iconButton(
                         "Leaderboard",
@@ -303,6 +314,7 @@ function topBar(path)
                 )
         then
                 if sim.isOnlineRace then
+                        ac.castVote("restart", true)
                 else
                         ac.tryToRestartSession()
                 end
@@ -315,10 +327,11 @@ function topBar(path)
                         ui.Icons.Skip,
                         driveButtonHeight,
                         driveButtonHeight,
-                        simutils.sessionSkippable and ui.ButtonFlags.None or ui.ButtonFlags.Disabled
+                        ui.ButtonFlags.None
                 )
         then
                 if sim.isOnlineRace then
+                        ac.castVote("skip", true)
                 else
                         ac.tryToSkipSession()
                 end
@@ -328,20 +341,6 @@ function topBar(path)
         if cui.iconButton("Quit", ui.Icons.Leave, driveButtonHeight, driveButtonHeight, ui.ButtonFlags.None) then
                 cui:promptShutdownAC()
         end
-
-        -- ui.setCursorY(topBarHeight / 2 + driveButtonHeight / 4)
-        -- ui.setCursorX(ui.windowWidth() / 2 - driveButtonWidth / 2)
-        -- if
-        --         cui.specialButton(
-        --                 "Vehicle Setup",
-        --                 vec2(driveButtonWidth, driveButtonHeight),
-        --                 ui.Alignment.Center,
-        --                 ui.Alignment.Center,
-        --                 rgbm.colors.blue
-        --         )
-        -- then
-        --         pages:goToSetup()
-        -- end
 
         sessionInfo()
 end
