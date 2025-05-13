@@ -25,9 +25,9 @@ function page.draw()
         cui.pushWindow(
                 "home_leaderboard_window",
                 0,
-                216 * cui.scaleY(),
+                180 * cui.scaleY(),
                 ui.windowWidth() * 0.5,
-                ui.windowHeight() - 500 * cui.scaleY(),
+                ui.windowHeight() - 420 * cui.scaleY(),
                 true
         )
 

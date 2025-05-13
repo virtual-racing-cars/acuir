@@ -508,7 +508,7 @@ function CUI.iconButton(label, icon, sizeX, sizeY, flags, flipped, iconScale, ac
         local iconSize = sizeY * 0.8
         if flipped then iconSize = -iconSize end
 
-        ui.addIcon(icon, vec2(iconSize, iconSize) * 0.7 * iconScale, vec2(0.5, 0.5), iconColor)
+        ui.addIcon(icon, vec2(iconSize, iconSize) * 0.7 * iconScale, vec2(0.5, 0.5), iconColor, 0)
 
         if not label:startsWith("##") then
                 ui.setCursorX(tempCursor.x - sizeX * 0.5)

@@ -204,9 +204,6 @@ function playerListButton(car, xPos, yPos, width, height)
         if not car.isConnected then
                 ui.drawRectFilled(vec2(xPos, yPos), vec2(xPos + width, yPos + height), rgbm(0.1, 0.1, 0.1, 0.6))
 
-                ui.drawLine(vec2(xPos, yPos), vec2(xPos + width, yPos), rgbm.colors.black)
-                ui.drawLine(vec2(xPos, yPos + height), vec2(xPos + width, yPos + height), rgbm.colors.black)
-
                 ui.endGroup()
 
                 return
@@ -277,9 +274,6 @@ function playerListButton(car, xPos, yPos, width, height)
                         rgbm.colors.white
                 )
         end
-
-        ui.drawLine(vec2(xPos, yPos), vec2(xPos + width, yPos), rgbm.colors.black)
-        ui.drawLine(vec2(xPos, yPos + height), vec2(xPos + width, yPos + height), rgbm.colors.black)
 
         ui.endGroup()
 end
