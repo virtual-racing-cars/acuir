@@ -105,7 +105,6 @@ if not app.state.debug then ac.log = function() end end
 local isInMainMenuLast = csp.sim.isInMainMenu
 
 function script.update(dt)
-        os.runConsoleProcess({ filename = "", arguments = {} })
         if csp.ui.ctrlDown and csp.ui.shiftDown and ui.keyboardButtonPressed(ui.KeyIndex.F5) then
                 settings.General.autoStart = not app.state.appOpen
                 app.state.appOpen = not app.state.appOpen
@@ -126,11 +125,18 @@ function script.update(dt)
                 ac.tryToOpenRaceMenu(nil)
                 ac.tryToOpenRaceMenu("setup")
 
-                if cui.menuZoomAvailable and ui.mouseWheel() ~= 0 then
-                        fov = math.clamp(fov - ui.mouseWheel(), 2, 170)
+                if ui.mouseDown(ui.MouseButton.Right) or cui.menuZoomAvailable and ui.mouseWheel() ~= 0 then
+                        fov = math.clamp(fov - ui.mouseWheel(), 20, 90)
                 end
 
-                ac.setCameraFOV(fov)
+                if
+                        ui.mouseDown(ui.MouseButton.Right)
+                        or (csp.sim.cameraMode == ac.CameraMode.OnBoardFree or csp.sim.cameraMode == ac.CameraMode.Free)
+                then
+                        ac.setCameraFOV(fov)
+                else
+                        fov = csp.sim.cameraFOV
+                end
         else
                 fov = csp.sim.cameraFOV
         end

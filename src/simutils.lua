@@ -92,29 +92,29 @@ function simutils.sessionTimeLeftString()
                                 simutils.session().laps - simutils.session().leaderCompletedLaps
                         )
                 else
-                        return simutils.timeToString(sim.currentSessionTime, "")
+                        return simutils.timeToString(sim.currentSessionTime, "Time -")
                 end
         end
 
         if sim.sessionTimeLeft <= 0 then
                 return "Session Over"
         elseif sim.timeToSessionStart > 0 then
-                return simutils.timeToString(sim.timeToSessionStart, "Starts in")
+                return simutils.timeToString(sim.timeToSessionStart, "Starts in -")
         else
-                return simutils.timeToString(sim.sessionTimeLeft, "Remaining")
+                return simutils.timeToString(sim.sessionTimeLeft, "Remaining -")
         end
 end
 
 function simutils.sessionTotalTimeString()
         if simutils.session().durationMinutes == 0 then
                 if sim.raceSessionType == ac.SessionType.Race then
-                        return string.format("%.0f laps", simutils.session().laps)
+                        return string.format("- %.0f laps", simutils.session().laps)
                 else
-                        return string.format("%.0f laps", car.lapCount)
+                        return string.format("- %.0f laps", car.lapCount)
                 end
         end
 
-        return string.format("%.0f min", simutils.session().durationMinutes)
+        return string.format("- %.0f min", simutils.session().durationMinutes)
 end
 
 function simutils.sessionSkippable() return sim.sessionsCount > 1 and sim.currentSessionIndex < sim.sessionsCount - 1 end

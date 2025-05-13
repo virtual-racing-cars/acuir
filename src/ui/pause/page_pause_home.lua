@@ -6,6 +6,7 @@ local pages = require("ui.pages")
 local settings = require("settings")
 local simutils = require("simutils")
 local sim = ac.getSim()
+local car = ac.getCar(0)
 
 local acLogo = ac.getFolder(ac.FolderID.Root) .. "\\launcher\\themes\\default\\graphics\\btn_AC_logo.png"
 local acLogoSize = ui.imageSize(acLogo)
@@ -42,10 +43,11 @@ local pauseButtons = {
                 condition = function() end,
                 func = function()
                         ac.tryToPause(false)
-                        ac.tryToTeleportToPits()
+
+                        if not car.isInPit then ac.tryToTeleportToPits() end
                         callback.sim = function()
                                 pages:goToSetup()
-                                ac.tryToOpenRaceMenu()
+                                ac.tryToOpenRaceMenu(nil)
                                 ac.tryToOpenRaceMenu("setup")
 
                                 if sim.isInMainMenu then return true end

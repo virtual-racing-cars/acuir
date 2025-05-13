@@ -5,7 +5,7 @@ local audio = require("audio")
 local cui = require("ui.cui")
 local settings = require("settings")
 
-local currentApp = app.state.setupTab
+local currentApp = app.state.setupTab - 1
 local tabBarPosition = 0
 local tabItemPositions = { [0] = 0 }
 

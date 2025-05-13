@@ -124,7 +124,7 @@ function CUI.menuBanner(label, time, bannerColor, rightSide, callbackType)
                 if time then
                         ui.sameLine()
                         ui.dwriteTextAligned(
-                                string.format("%.1f s", time),
+                                string.format("%.1f", time),
                                 28 * scaleY,
                                 ui.Alignment.End,
                                 ui.Alignment.Center,

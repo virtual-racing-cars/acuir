@@ -46,6 +46,7 @@ function MainMenuWindow(dt)
         cui.popWindow(false)
 
         if cui.modalDialogCallback then
+                exclusiveHudMode = ""
                 cui.pushWindowFull("callback_window")
                 ui.setCursor(0)
                 ui.drawRectFilled(vec2(0, 0), ui.availableSpace(), settings.Appearance.uiColor1 / 1.2)
