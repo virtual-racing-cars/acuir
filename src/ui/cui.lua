@@ -579,6 +579,9 @@ function CUI.treeNodeButton(label, size, active, bold, count, defaultOpen)
                 false,
                 hovered and rgbm(1, 1, 1, 1) or fontColor
         )
+
+        ui.setCursorY(tempCursor.y + size.y)
+
         if bold and count > 0 then
                 ui.addIcon(
                         CUI.loadStoredBool(id) and ui.Icons.Minus or ui.Icons.Plus,
@@ -587,8 +590,6 @@ function CUI.treeNodeButton(label, size, active, bold, count, defaultOpen)
                         nil
                 )
         end
-
-        ui.setCursorY(tempCursor.y + size.y)
 
         return clicked, open, id
 end
