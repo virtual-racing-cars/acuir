@@ -134,8 +134,8 @@ local function setupIoWindow()
                                                 ui.setCursorX(0)
                                                 if
                                                         cui.menuButton(
-                                                                "Reset",
-                                                                vec2Temp1:set(ui.windowWidth() / 3, genericButtonHeight),
+                                                                "Reset Setup To Default",
+                                                                vec2Temp1:set(ui.windowWidth(), genericButtonHeight),
                                                                 0,
                                                                 0,
                                                                 0,
@@ -143,38 +143,43 @@ local function setupIoWindow()
                                                                 false
                                                         )
                                                 then
-                                                        sm:resetSetup()
+                                                        ac.resetSetupToDefault()
+                                                        cui.menuBanner("Setup reset to default", nil, rgbm.colors.green)
                                                 end
                                                 ui.sameLine()
 
-                                                if
-                                                        cui.menuButton(
-                                                                "Undo",
-                                                                vec2Temp1:set(ui.windowWidth() / 3, genericButtonHeight),
-                                                                0,
-                                                                0,
-                                                                sm:isUndoAvailable() and 0 or ui.ButtonFlags.Disabled,
-                                                                false,
-                                                                false
-                                                        )
-                                                then
-                                                        sm:undo()
-                                                end
-                                                ui.sameLine()
+                                                -- if
+                                                --         cui.menuButton(
+                                                --                 "Undo",
+                                                --                 vec2Temp1:set(ui.windowWidth() / 3, genericButtonHeight),
+                                                --                 0,
+                                                --                 0,
+                                                --                 ui.ButtonFlags.Disabled,
+                                                --                 -- sm:isUndoAvailable() and 0 or ui.ButtonFlags.Disabled,
+                                                --                 false,
+                                                --                 false
+                                                --         )
+                                                -- then
+                                                --         sm:undo()
+                                                --         cui.menuBanner("Undo", nil, rgbm.colors.green)
+                                                -- end
+                                                -- ui.sameLine()
 
-                                                if
-                                                        cui.menuButton(
-                                                                "Redo",
-                                                                vec2Temp1:set(ui.windowWidth() / 3, genericButtonHeight),
-                                                                0,
-                                                                0,
-                                                                sm:isRedoAvailable() and 0 or ui.ButtonFlags.Disabled,
-                                                                false,
-                                                                false
-                                                        )
-                                                then
-                                                        sm:redo()
-                                                end
+                                                -- if
+                                                --         cui.menuButton(
+                                                --                 "Redo",
+                                                --                 vec2Temp1:set(ui.windowWidth() / 3, genericButtonHeight),
+                                                --                 0,
+                                                --                 0,
+                                                --                 ui.ButtonFlags.Disabled,
+                                                --                 -- sm:isRedoAvailable() and 0 or ui.ButtonFlags.Disabled,
+                                                --                 false,
+                                                --                 false
+                                                --         )
+                                                -- then
+                                                --         sm:redo()
+                                                --         cui.menuBanner("Redo", nil, rgbm.colors.green)
+                                                -- end
 
                                                 return
                                         end
