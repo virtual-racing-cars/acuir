@@ -505,7 +505,7 @@ function CUI.iconButton(label, icon, sizeX, sizeY, flags, flipped, iconScale, ac
         local iconColor = disabled and rgbm(0.3, 0.3, 0.3, 0.8)
                 or ((hovered or active) and settings.Appearance.uiColor2 or settings.Appearance.uiColor3)
 
-        local iconSize = sizeY
+        local iconSize = sizeY * 0.8
         if flipped then iconSize = -iconSize end
 
         ui.addIcon(icon, vec2(iconSize, iconSize) * 0.7 * iconScale, vec2(0.5, 0.5), iconColor)
@@ -520,7 +520,8 @@ function CUI.iconButton(label, icon, sizeX, sizeY, flags, flipped, iconScale, ac
                         ui.Alignment.Center,
                         ui.Alignment.Start,
                         vec2(sizeX * 2, sizeY),
-                        false
+                        false,
+                        iconColor
                 )
                 ui.popDWriteFont()
                 ui.setCursor(tempCursor + vec2(sizeX, 0))

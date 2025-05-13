@@ -148,7 +148,6 @@ function simutils.readyToDriveState()
         if carSetupState == "validating" then return { false, "Validating Setup", "", rgbm.colors.orange } end
         if carSetupState == "illegal" then
                 if not simutils.rideHeightValid() then invalidReason = "Ride height is too low" end
-
                 return { false, "Invalid Setup", invalidReason, rgbm.colors.gray }
         end
 

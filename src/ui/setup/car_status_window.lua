@@ -1,5 +1,7 @@
 local cui = require("ui.cui")
 
+local round = math.round
+
 local car = ac.getCar(0)
 local carINI = ac.INIConfig.carData(0, "car.ini")
 local kgPerL = carINI:get("FUEL_EXT", "KG_PER_LITER", 0.7339)
@@ -72,7 +74,8 @@ local centerStatusInfo = {
                 label = "Front Ride Height",
                 value = function(i) return car.rideHeight[0] * 1000 end,
                 round = 1,
-                unit = "mm",
+                unit = "mm (min: %s)" % round(car.minHeight * 1000),
+                warn = function() return car.rideHeight[0] < car.minHeight end,
         },
         {
                 label = "Sprung CoG Height",
@@ -118,7 +121,8 @@ local centerStatusInfo = {
                 label = "Rear Ride Height",
                 value = function(i) return car.rideHeight[1] * 1000 end,
                 round = 1,
-                unit = "mm",
+                unit = "mm (min: %s)" % round(car.minHeight * 1000),
+                warn = function() return car.rideHeight[1] < car.minHeight end,
         },
 }
 
@@ -183,6 +187,7 @@ function CarStatusWindow()
                         fontSize = 25,
                         xPos = xPos + 240,
                         yPos = yPos + row * 50,
+                        color = (infoBlock.warn and infoBlock.warn()) and rgbm.colors.red or rgbm.colors.white,
                 })
         end
 end

@@ -193,24 +193,24 @@ function topBar(path)
                                 rgbm(0.1, 0.1, 0.1, 0.95)
                         )
 
-                        ui.setCursorX(ui.windowWidth() * 0.5 - 320)
+                        ui.setCursorX(ui.windowWidth() * 0.5 - 320 * cui.scaleY())
                         ui.setCursorY(0)
                         cui.snapCursor()
 
                         ui.dwriteTextAligned(
                                 simutils.raceSessionTypeString .. " " .. simutils.sessionTotalTimeString,
-                                28,
+                                28 * cui.scaleY(),
                                 ui.Alignment.End,
                                 ui.Alignment.Center,
                                 vec2(300 * cui.scaleY(), ui.windowHeight())
                         )
                         ui.sameLine()
-                        ui.setCursorX(ui.windowWidth() * 0.5 + 20)
+                        ui.setCursorX(ui.windowWidth() * 0.5 + 20 * cui.scaleY())
                         cui.snapCursor()
 
                         ui.dwriteTextAligned(
                                 simutils.sessionTimeLeftString,
-                                28,
+                                28 * cui.scaleY(),
                                 ui.Alignment.Start,
                                 ui.Alignment.Center,
                                 vec2(300 * cui.scaleY(), ui.windowHeight())
