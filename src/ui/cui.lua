@@ -588,6 +588,8 @@ function CUI.treeNodeButton(label, size, active, bold, count, defaultOpen)
                 )
         end
 
+        ui.setCursorY(tempCursor.y + size.y)
+
         return clicked, open, id
 end
 
