@@ -92,7 +92,7 @@ function card:draw(xPos, yPos, width, height)
                 18 * cui.scaleY(),
                 ui.Alignment.Start,
                 ui.Alignment.Center,
-                vec2(ui.windowWidth() / 3, 36)
+                vec2(ui.windowWidth() / 3, 36 * cui.scaleY())
         )
         ui.sameLine()
 
@@ -102,7 +102,7 @@ function card:draw(xPos, yPos, width, height)
                 18 * cui.scaleY(),
                 ui.Alignment.Start,
                 ui.Alignment.Center,
-                vec2(ui.windowWidth() / 3, 36)
+                vec2(ui.windowWidth() / 3, 36 * cui.scaleY())
         )
         ui.sameLine()
 
@@ -112,7 +112,7 @@ function card:draw(xPos, yPos, width, height)
                 18 * cui.scaleY(),
                 ui.Alignment.Start,
                 ui.Alignment.Center,
-                vec2(ui.windowWidth() / 3, 36)
+                vec2(ui.windowWidth() / 3, 36 * cui.scaleY())
         )
 
         cui.setCursorX(15)
@@ -123,7 +123,7 @@ function card:draw(xPos, yPos, width, height)
                 36 * cui.scaleY(),
                 ui.Alignment.Start,
                 ui.Alignment.Center,
-                vec2(ui.windowWidth() / 3, 36)
+                vec2(ui.windowWidth() / 3, 36 * cui.scaleY())
         )
         ui.sameLine()
 
@@ -133,7 +133,7 @@ function card:draw(xPos, yPos, width, height)
                 36 * cui.scaleY(),
                 ui.Alignment.Start,
                 ui.Alignment.Center,
-                vec2(ui.windowWidth() / 3, 36)
+                vec2(ui.windowWidth() / 3, 36 * cui.scaleY())
         )
         ui.sameLine()
 
@@ -143,7 +143,7 @@ function card:draw(xPos, yPos, width, height)
                 36 * cui.scaleY(),
                 ui.Alignment.Start,
                 ui.Alignment.Center,
-                vec2(ui.windowWidth() / 3, 36)
+                vec2(ui.windowWidth() / 3, 36 * cui.scaleY())
         )
         ui.sameLine()
 
@@ -166,22 +166,26 @@ function card:draw(xPos, yPos, width, height)
                 40 * cui.scaleY(),
                 ui.Alignment.Center,
                 ui.Alignment.Center,
-                vec2(80, ui.windowHeight())
+                vec2(80 * cui.scaleY(), ui.windowHeight())
         )
 
         local barPosition = ui.windowHeight() / 20 * 2
+        local barWdith = 100 * cui.scaleY()
 
         local steer = spectatedCar.steer / spectatedCar.steerLock
 
         ui.drawSimpleLine(
-                vec2(100, barPosition),
-                vec2(100 + ui.windowWidth(), barPosition),
+                vec2(barWdith, barPosition),
+                vec2(barWdith + ui.windowWidth(), barPosition),
                 rgbm(0.3, 0.3, 0.3, 1),
                 border
         )
         ui.drawSimpleLine(
-                vec2(100 + (ui.windowWidth() - 100) * 0.5, barPosition),
-                vec2(100 + (ui.windowWidth() - 100) * 0.5 + (ui.windowWidth() - 100) * 0.5 * steer, barPosition),
+                vec2(barWdith + (ui.windowWidth() - barWdith) * 0.5, barPosition),
+                vec2(
+                        barWdith + (ui.windowWidth() - barWdith) * 0.5 + (ui.windowWidth() - barWdith) * 0.5 * steer,
+                        barPosition
+                ),
                 rgbm(1, 0.5, 0, 1),
                 border
         )
@@ -189,15 +193,15 @@ function card:draw(xPos, yPos, width, height)
         barPosition = (ui.windowHeight() / 20) * 7
 
         ui.drawSimpleLine(
-                vec2(100, barPosition),
-                vec2(100 + (ui.windowWidth() - 100), barPosition),
+                vec2(barWdith, barPosition),
+                vec2(barWdith + (ui.windowWidth() - barWdith), barPosition),
                 rgbm(0.3, 0.3, 0.3, 1),
                 border
         )
 
         ui.drawSimpleLine(
-                vec2(100, barPosition),
-                vec2(100 + (ui.windowWidth() - 100) * spectatedCar.gas, barPosition),
+                vec2(barWdith, barPosition),
+                vec2(barWdith + (ui.windowWidth() - barWdith) * spectatedCar.gas, barPosition),
                 rgbm(0, 0.8, 0, 1),
                 border
         )
@@ -205,14 +209,14 @@ function card:draw(xPos, yPos, width, height)
         barPosition = (ui.windowHeight() / 20) * 12
 
         ui.drawSimpleLine(
-                vec2(100, barPosition),
-                vec2(100 + (ui.windowWidth() - 100), barPosition),
+                vec2(barWdith, barPosition),
+                vec2(barWdith + (ui.windowWidth() - barWdith), barPosition),
                 rgbm(0.3, 0.3, 0.3, 1),
                 border
         )
         ui.drawSimpleLine(
-                vec2(100, barPosition),
-                vec2(100 + (ui.windowWidth() - 100) * spectatedCar.brake, barPosition),
+                vec2(barWdith, barPosition),
+                vec2(barWdith + (ui.windowWidth() - barWdith) * spectatedCar.brake, barPosition),
                 rgbm(1, 0.3, 0.3, 1),
                 border
         )
@@ -220,14 +224,14 @@ function card:draw(xPos, yPos, width, height)
         barPosition = (ui.windowHeight() / 20) * 17
 
         ui.drawSimpleLine(
-                vec2(100, barPosition),
-                vec2(100 + ui.windowWidth(), barPosition),
+                vec2(barWdith, barPosition),
+                vec2(barWdith + ui.windowWidth(), barPosition),
                 rgbm(0.3, 0.3, 0.3, 1),
                 border
         )
         ui.drawSimpleLine(
-                vec2(100, barPosition),
-                vec2(100 + (ui.windowWidth() - 100) * (1 - spectatedCar.clutch), barPosition),
+                vec2(barWdith, barPosition),
+                vec2(barWdith + (ui.windowWidth() - barWdith) * (1 - spectatedCar.clutch), barPosition),
                 rgbm(0.1, 0.4, 1, 1),
                 border
         )
