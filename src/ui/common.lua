@@ -327,7 +327,7 @@ function topBar(path)
                         ui.Icons.Skip,
                         driveButtonHeight,
                         driveButtonHeight,
-                        ui.ButtonFlags.None
+                        simutils.sessionSkippable and ui.ButtonFlags.None or ui.ButtonFlags.Disabled
                 )
         then
                 if sim.isOnlineRace then

@@ -1,3 +1,4 @@
+local app = require("app")
 local settings = require("src.settings")
 
 local setup = {
@@ -75,15 +76,17 @@ ac.onSetupsListRefresh(function() setup:load() end)
 setup:load()
 
 setTimeout(function()
-        if settings.General.autoLoadLastSetup then
-                sm:LoadStuff(
-                        string.format(
-                                "%s\\%s\\_%s_last.ini",
-                                ac.getFolder(ac.FolderID.UserSetups),
-                                ac.getCarID(0),
-                                ac.getTrackID()
-                        )
+        if settings.General.autoLoadLastSetup and app.state.appOpen then
+                local lastSetupFile = string.format(
+                        "%s\\%s\\_%s_last.ini",
+                        ac.getFolder(ac.FolderID.UserSetups),
+                        ac.getCarID(0),
+                        ac.getTrackID()
                 )
+
+                if not io.fileExists(lastSetupFile) then return end
+
+                sm:LoadStuff(lastSetupFile)
 
                 setup.current = ac.getTrackID() .. "/last"
         end

@@ -117,7 +117,9 @@ function simutils.sessionTotalTimeString()
         return string.format("- %.0f min", simutils.session().durationMinutes)
 end
 
-function simutils.sessionSkippable() return sim.sessionsCount > 1 and sim.currentSessionIndex < sim.sessionsCount - 1 end
+function simutils.sessionSkippable()
+        return (sim.sessionsCount > 1 and sim.currentSessionIndex < sim.sessionsCount - 1) or car.sessionID ~= -1
+end
 
 function simutils.sessionRestartable() return car.sessionID == -1 end
 
