@@ -25,6 +25,8 @@ local function createElectronicsDefaults()
         if car.tractionControlModes > 0 or assistsINI:get("ASSISTS", "TRACTION_CONTROL", 0) == 2 then
                 electronicsDefaults["TRACTION_CONTROL"] = { yPos = electronicsIndex }
                 electronicsIndex = electronicsIndex + 1
+
+                if car.tractionControlModes == 0 then ac.setSetupSpinnerValue("TRACTION_CONTROL", 1) end
         end
 
         if car.tractionControl2Modes > 0 then
@@ -35,6 +37,8 @@ local function createElectronicsDefaults()
         if car.absModes > 0 or assistsINI:get("ASSISTS", "ABS", 0) == 2 then
                 electronicsDefaults["ABS"] = { yPos = electronicsIndex }
                 electronicsIndex = electronicsIndex + 1
+
+                if car.absModes == 0 then ac.setSetupSpinnerValue("ABS", 1) end
         end
 
         if car.hasCockpitERSDelivery then
