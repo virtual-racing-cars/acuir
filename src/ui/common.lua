@@ -88,9 +88,9 @@ local sessionInfoTable = {
 }
 
 local function sessionInfo()
-        local startX = (ui.windowWidth() / 4) * 3 + 120 * cui.uiScale()
+        local startX = (ui.windowWidth() / 5) * 4 + 15 * cui.uiScale()
         local startY = 12 * cui.uiScale()
-        local sizeX = 170 * cui.uiScale()
+        local sizeX = 160 * cui.uiScale()
         local sizeY = 28 * cui.uiScale()
 
         local fontSize = math.floor(sizeY * 0.7)
