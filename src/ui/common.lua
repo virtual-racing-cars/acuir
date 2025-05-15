@@ -321,6 +321,8 @@ function topBar(path)
         end
         ui.offsetCursorX(driveButtonHeight * 0.75)
 
+        ac.log(simutils.sessionSkippable)
+
         if
                 cui.iconButton(
                         sim.isOnlineRace and "Vote Skip" or "Skip",
