@@ -500,8 +500,15 @@ function CUI.iconButton(label, icon, sizeX, sizeY, flags, flipped, iconScale, ac
         local clicked = ui.invisibleButton("##" .. label, vec2(sizeX, sizeY))
         local hovered = ui.itemHovered()
 
-        local iconColor = disabled and rgbm(0.3, 0.3, 0.3, 0.8)
-                or ((hovered or active) and settings.Appearance.uiColor2 or settings.Appearance.uiColor3)
+        local iconColor = settings.Appearance.uiColor3
+
+        if disabled then
+                iconColor = rgbm(0.3, 0.3, 0.3, 0.8)
+        elseif hovered then
+                iconColor = settings.Appearance.uiColor2 * 2
+        elseif active then
+                iconColor = settings.Appearance.uiColor2
+        end
 
         local iconSize = sizeY * 0.8
         if flipped then iconSize = -iconSize end

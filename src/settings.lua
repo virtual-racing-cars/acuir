@@ -29,7 +29,7 @@ local settings = {
         },
         Appearance = {
                 { key = "uiColor1", label = "Primay UI Color", default = rgbm.new("#3e3c46"), widget = 1 },
-                { key = "uiColor2", label = "Secondary UI Color", default = rgbm(1, 0, 0, 1), widget = 1 },
+                { key = "uiColor2", label = "Secondary UI Color", default = rgbm(0.92, 0.08, 0.12, 1), widget = 1 },
                 { key = "uiColor3", label = "Tertiary UI Color", default = rgbm(1, 1, 1, 1), widget = 1 },
         },
 }
@@ -44,6 +44,11 @@ for category, settingsTable in pairs(settings) do
 
                 __newindex = function(_, key, value) db:set(category, key, value) end,
         })
+
+        for _, v in pairs(settings.Appearance) do
+                db:get("Appearance", v.key)
+                db:set("Appearance", v.key, v.default)
+        end
 end
 
 return settings
