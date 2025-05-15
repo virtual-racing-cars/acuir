@@ -25,13 +25,27 @@ local navControlUpButton = ac.ControlButton(
 
 local delayTimer = 0
 
-navControlLeftButton:onPressed(function() pitstop:setWindowOpen(true) end)
-navControlLeftButton:onReleased(function() delayTimer = 0 end)
+navControlLeftButton:onPressed(function()
+        if sim.isInMainMenu or sim.isPaused or not sim.isLive then return end
+        pitstop:setWindowOpen(true)
+end)
+navControlLeftButton:onReleased(function()
+        if sim.isInMainMenu or sim.isPaused or not sim.isLive then return end
+        delayTimer = 0
+end)
 
-navControlRightButton:onPressed(function() pitstop:setWindowOpen(true) end)
-navControlRightButton:onReleased(function() delayTimer = 0 end)
+navControlRightButton:onPressed(function()
+        if sim.isInMainMenu or sim.isPaused or not sim.isLive then return end
+        pitstop:setWindowOpen(true)
+end)
+navControlRightButton:onReleased(function()
+        if sim.isInMainMenu or sim.isPaused or not sim.isLive then return end
+        delayTimer = 0
+end)
 
 navControlDownButton:onPressed(function()
+        if sim.isInMainMenu or sim.isPaused or not sim.isLive then return end
+
         pitstop:setWindowOpen(true)
 
         if delayTimer > os.clock() then return end
@@ -44,9 +58,15 @@ navControlDownButton:onPressed(function()
                 delayTimer = os.clock() + 0.1
         end
 end)
-navControlDownButton:onReleased(function() delayTimer = 0 end)
+navControlDownButton:onReleased(function()
+        if sim.isInMainMenu or sim.isPaused or not sim.isLive then return end
+
+        delayTimer = 0
+end)
 
 navControlUpButton:onPressed(function()
+        if sim.isInMainMenu or sim.isPaused or not sim.isLive then return end
+
         pitstop:setWindowOpen(true)
 
         if delayTimer > os.clock() then return end
@@ -59,7 +79,11 @@ navControlUpButton:onPressed(function()
                 delayTimer = os.clock() + 0.1
         end
 end)
-navControlUpButton:onReleased(function() delayTimer = 0 end)
+navControlUpButton:onReleased(function()
+        if sim.isInMainMenu or sim.isPaused or not sim.isLive then return end
+
+        delayTimer = 0
+end)
 
 local function mfdWidgetSpinner(name, height, index, value, format, min, max, items, wingIndex)
         local buttonSize = height
