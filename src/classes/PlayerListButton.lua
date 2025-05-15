@@ -11,7 +11,7 @@ function playerListBanner(xPos, yPos, width, height)
         fontSize = (fontSize % 2 == 0) and fontSize + 1 or fontSize
 
         ui.beginGroup(width)
-        ui.drawRectFilled(vec2(0, yPos), vec2(width, yPos + height), settings.Appearance.uiThemeColor1)
+        ui.drawRectFilled(vec2(0, yPos), vec2(width, yPos + height), rgbm(0.1, 0.1, 0.1, 0.95))
 
         ui.setCursorX(0)
         ui.setCursorY(yPos)
