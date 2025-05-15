@@ -74,7 +74,7 @@ local centerStatusInfo = {
                 label = "Front Ride Height",
                 value = function(i) return car.rideHeight[0] * 1000 end,
                 round = 1,
-                unit = "mm (min: %s)" % round(car.minHeight * 1000),
+                unit = "mm (min: %s)" % math.max(round(car.minHeight * 1000), 0),
                 warn = function() return car.rideHeight[0] < car.minHeight end,
         },
         {
@@ -121,7 +121,7 @@ local centerStatusInfo = {
                 label = "Rear Ride Height",
                 value = function(i) return car.rideHeight[1] * 1000 end,
                 round = 1,
-                unit = "mm (min: %s)" % round(car.minHeight * 1000),
+                unit = "mm (min: %s)" % math.max(round(car.minHeight * 1000), 0),
                 warn = function() return car.rideHeight[1] < car.minHeight end,
         },
 }
