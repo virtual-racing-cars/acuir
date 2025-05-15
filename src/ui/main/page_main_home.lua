@@ -31,12 +31,23 @@ function page.draw()
                 true
         )
 
-        local height = 50 * cui.uiScale()
+        local height = 44 * cui.uiScale()
         playerListBanner(0, 0, ui.windowWidth(), height)
 
         cui.pushWindow("home_leaderboard_entrant_window", 0, height, ui.windowWidth(), ui.windowHeight() - height, true)
-        for i, car in ac.iterateCars.leaderboard() do
-                playerListButton(car, 0, (i - 1) * height, ui.windowWidth(), height)
+        local leaderboardIndex = 0
+        for _, slot in ipairs(race.leaderboard) do
+                if slot.car.isConnected then
+                        leaderboardIndex = leaderboardIndex + 1
+                        playerListButton(
+                                slot,
+                                leaderboardIndex,
+                                0,
+                                (leaderboardIndex - 1) * height,
+                                ui.windowWidth(),
+                                height
+                        )
+                end
         end
         cui.popWindow(true)
         cui.popWindow()

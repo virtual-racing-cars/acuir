@@ -1,10 +1,9 @@
-local app = require("app")
-
 local sim = ac.getSim()
 
 local session = {
         lapMarkers = {},
         lapTimes = {},
+        leaderboard = table.new(sim.carsCount, 0),
         leaderboardGaps = {},
         trackGaps = {},
         intervals = {},
@@ -21,11 +20,29 @@ for i = 0, 1, trackLegnth do
         session.timingGates[timingGateCount] = i
 end
 
+ac.log(sim.carsCount)
 --
 function session:step()
+        for i = 0, #ac.getSession(sim.currentSessionIndex).leaderboard - 1 do
+                local leaderboardSlot = ac.getSession(sim.currentSessionIndex).leaderboard[i]
+                session.leaderboard[i + 1] = leaderboardSlot
+        end
+
         local carAheadIndex = -1
 
-        for pos, car in ac.iterateCars.leaderboard() do
+        for pos, slot in ipairs(session.leaderboard) do
+                local car = slot.car
+
+                if pos > 1 and sim.raceSessionType ~= ac.SessionType.Race then
+                        if slot.bestLapTimeMs > 0 then
+                                session.intervals[car.index] = slot.bestLapTimeMs - session.leaderboard[1].bestLapTimeMs
+                                session.leaderboardGaps[car.index] = slot.bestLapTimeMs
+                                        - session.leaderboard[pos - 1].bestLapTimeMs
+                        end
+
+                        goto continue
+                end
+
                 if not session.lapMarkers[car.index] then session.lapMarkers[car.index] = {} end
                 if not session.lapTimes[car.index] then session.lapTimes[car.index] = {} end
                 if not session.timingGateIndexes[car.index] then session.timingGateIndexes[car.index] = 1 end

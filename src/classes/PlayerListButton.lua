@@ -15,7 +15,7 @@ function playerListBanner(xPos, yPos, width, height)
 
         ui.setCursorX(0)
         ui.setCursorY(yPos)
-        ui.dwriteTextAligned("Pos", fontSize, ui.Alignment.Center, ui.Alignment.Center, vec2(height, height))
+        ui.dwriteTextAligned("P", fontSize, ui.Alignment.Center, ui.Alignment.Center, vec2(height, height))
         ui.sameLine(height)
 
         cui.snapCursor()
@@ -24,7 +24,7 @@ function playerListBanner(xPos, yPos, width, height)
                 fontSize,
                 ui.Alignment.Start,
                 ui.Alignment.Center,
-                vec2(ui.availableSpaceX() * 0.35, height)
+                vec2(ui.availableSpaceX() * 0.3, height)
         )
         ui.sameLine()
 
@@ -33,23 +33,11 @@ function playerListBanner(xPos, yPos, width, height)
                 fontSize,
                 ui.Alignment.Start,
                 ui.Alignment.Center,
-                vec2(ui.availableSpaceX() * 0.3, height)
+                vec2(ui.availableSpaceX() * 0.35, height)
         )
         ui.sameLine()
 
-        local infoWidth = (width - ui.getCursorX()) / 6
-
-        cui.snapCursor()
-        ui.dwriteTextAligned(
-                "Last",
-                fontSize,
-                ui.Alignment.Center,
-                ui.Alignment.Center,
-                vec2(infoWidth, height),
-                false,
-                rgbm.colors.white
-        )
-        ui.sameLine()
+        local infoWidth = (width - ui.getCursorX()) / 5
 
         cui.snapCursor()
         ui.dwriteTextAligned(
@@ -113,7 +101,9 @@ function playerListBanner(xPos, yPos, width, height)
         ui.endGroup()
 end
 
-function playerListButton(car, xPos, yPos, width, height)
+function playerListButton(slot, index, xPos, yPos, width, height)
+        local car = slot.car
+
         width = width - width / 50
 
         ui.beginGroup(width)
@@ -126,7 +116,7 @@ function playerListButton(car, xPos, yPos, width, height)
                 if car.isConnected then ac.focusCar(car.index) end
         end
 
-        local evenCar = car.racePosition % 2 == 0
+        local evenCar = index % 2 == 0
         ui.drawRectFilled(
                 vec2(xPos, yPos),
                 vec2(xPos + width, yPos + height),
@@ -144,8 +134,8 @@ function playerListButton(car, xPos, yPos, width, height)
         ui.setCursorY(yPos)
         cui.snapCursor()
         ui.dwriteTextAligned(
-                car.racePosition,
-                fontSize * 1.3,
+                index,
+                fontSize * 1.2,
                 ui.Alignment.End,
                 ui.Alignment.Center,
                 vec2(height * 0.8, height),
@@ -161,7 +151,7 @@ function playerListButton(car, xPos, yPos, width, height)
                 fontSize,
                 ui.Alignment.Start,
                 ui.Alignment.Center,
-                vec2(ui.availableSpaceX() * 0.35, height)
+                vec2(ui.availableSpaceX() * 0.3, height)
         )
         ui.sameLine()
 
@@ -171,27 +161,15 @@ function playerListButton(car, xPos, yPos, width, height)
                 fontSize,
                 ui.Alignment.Start,
                 ui.Alignment.Center,
-                vec2(ui.availableSpaceX() * 0.3, height)
+                vec2(ui.availableSpaceX() * 0.35, height)
         )
         ui.sameLine()
 
-        local infoWidth = (width - ui.getCursorX()) / 6
+        local infoWidth = (width - ui.getCursorX()) / 5
 
         cui.snapCursor()
         ui.dwriteTextAligned(
-                ac.lapTimeToString(car.previousLapTimeMs),
-                fontSize,
-                ui.Alignment.Center,
-                ui.Alignment.Center,
-                vec2(infoWidth, height),
-                false,
-                rgbm.colors.white
-        )
-        ui.sameLine()
-
-        cui.snapCursor()
-        ui.dwriteTextAligned(
-                ac.lapTimeToString(car.bestLapTimeMs),
+                ac.lapTimeToString(slot.bestLapTimeMs),
                 fontSize,
                 ui.Alignment.Center,
                 ui.Alignment.Center,
@@ -211,7 +189,8 @@ function playerListButton(car, xPos, yPos, width, height)
 
         cui.snapCursor()
         ui.dwriteTextAligned(
-                string.format("%.3f", race.leaderboardGaps[car.index] / 1000),
+                race.leaderboardGaps[car.index] and string.format("%+.3f", race.leaderboardGaps[car.index] / 1000)
+                        or "-.---",
                 fontSize,
                 ui.Alignment.Center,
                 ui.Alignment.Center,
@@ -223,7 +202,7 @@ function playerListButton(car, xPos, yPos, width, height)
 
         cui.snapCursor()
         ui.dwriteTextAligned(
-                string.format("%.3f", race.intervals[car.index] / 1000),
+                race.intervals[car.index] and string.format("%+.3f", race.intervals[car.index] / 1000) or "-.---",
                 fontSize,
                 ui.Alignment.Center,
                 ui.Alignment.Center,
@@ -245,35 +224,38 @@ function playerListButton(car, xPos, yPos, width, height)
         )
         ui.sameLine()
 
-        if car.isInPitlane or car.isRetired then
+        local statusText = ac.getTyresName(car.index, car.compoundIndex)
+        local altStatus = false
+
+        if car.isRetired then
+                statusText = "DNF"
+                altStatus = true
+        elseif car.isInPit then
+                statusText = "PIT"
+                altStatus = true
+        elseif car.isInPitlane then
+                statusText = "PIT LANE"
+                altStatus = true
+        end
+
+        if altStatus then
                 ui.drawRectFilled(
                         vec2(ui.getCursorX(), yPos),
                         vec2(ui.getCursorX() + infoWidth, yPos + height),
                         settings.Appearance.uiColor3
                 )
-
-                cui.snapCursor()
-                ui.dwriteTextAligned(
-                        car.isRetired and "DNF" or "PIT",
-                        fontSize,
-                        ui.Alignment.Center,
-                        ui.Alignment.Center,
-                        vec2(infoWidth, height),
-                        false,
-                        rgbm.colors.black
-                )
-        else
-                cui.snapCursor()
-                ui.dwriteTextAligned(
-                        ac.getTyresName(car.index, car.compoundIndex),
-                        fontSize,
-                        ui.Alignment.Center,
-                        ui.Alignment.Center,
-                        vec2(infoWidth, height),
-                        false,
-                        rgbm.colors.white
-                )
         end
+
+        cui.snapCursor()
+        ui.dwriteTextAligned(
+                statusText,
+                fontSize,
+                ui.Alignment.Center,
+                ui.Alignment.Center,
+                vec2(infoWidth, height),
+                false,
+                altStatus and rgbm.colors.black or rgbm.colors.white
+        )
 
         ui.endGroup()
 end
