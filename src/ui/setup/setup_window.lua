@@ -12,7 +12,7 @@ local tabItemPositions = { [0] = 0 }
 local function tabItem(index, title)
         if currentApp == index then ui.setScrollFromPosY((index - 1) * 56) end
 
-        if cui.treeNodeButton(title, vec2(ui.windowWidth(), 56 * cui.scaleY()), currentApp == index, true) then
+        if cui.treeNodeButton(title, vec2(ui.windowWidth(), 56 * cui.uiScale()), currentApp == index, true) then
                 currentApp = index
         end
 end
@@ -28,7 +28,7 @@ end)
 local scrollDelayTimer = 0
 
 function setupTabBar(tabs)
-        ui.drawRectFilled(vec2(0, 0), vec2(ui.windowWidth(), 56 * cui.scaleY()), settings.Appearance.uiColor1 / 1.3)
+        ui.drawRectFilled(vec2(0, 0), vec2(ui.windowWidth(), 56 * cui.uiScale()), settings.Appearance.uiColor1 / 1.3)
 
         if ui.windowHovered() and scrollDelayTimer < os.clock() then
                 if ui.mouseWheel() > 0 then
@@ -78,8 +78,8 @@ local function linkButton(name, size, linked)
         return clicked
 end
 
-local spinnerWidth = 600 * cui.scaleX()
-local spinnerHeight = 90 * cui.scaleY()
+local spinnerWidth = 600 * cui.uiScale()
+local spinnerHeight = 90 * cui.uiScale()
 
 local function drawSetupSpinner(sm, si)
         if si.child or si.repair then return end
@@ -87,13 +87,13 @@ local function drawSetupSpinner(sm, si)
         si:run(true)
 
         local positions = {
-                [0] = -20 * cui.scaleY(),
+                [0] = -20 * cui.uiScale(),
                 [0.5] = ui.windowWidth() / 2 - spinnerWidth / 2,
-                [1] = (ui.windowWidth() - spinnerWidth) + 20 * cui.scaleY(),
+                [1] = (ui.windowWidth() - spinnerWidth) + 20 * cui.uiScale(),
         }
 
         local xPos = positions[si.xPos]
-        local yPos = (si.yPos * 110 + 90) * cui.scaleY()
+        local yPos = (si.yPos * 110 + 90) * cui.uiScale()
 
         if si.items then
                 if #si.items > 0 then si.format = si.items[si.value + 1] end
@@ -144,8 +144,8 @@ end
 
 local currentQuickPitPreset = 0
 function car_setup(sm)
-        spinnerWidth = 640 * cui.scaleX()
-        spinnerHeight = 75 * cui.scaleY()
+        spinnerWidth = 640 * cui.uiScale()
+        spinnerHeight = 75 * cui.uiScale()
 
         local changed = false
         local tab = sm.setupTabs[tonumber(app.state.setupTab)]

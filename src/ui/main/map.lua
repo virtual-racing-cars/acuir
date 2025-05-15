@@ -164,8 +164,8 @@
 -- -- 		if
 -- -- 			ui.iconButton(
 -- -- 				locked and ui.Icons.Padlock or ui.Icons.PadlockUnlocked,
--- -- 				vec2(25, 25) * cui.scaleY(),
--- -- 				5 * cui.scaleY()
+-- -- 				vec2(25, 25) * cui.uiScale(),
+-- -- 				5 * cui.uiScale()
 -- -- 			)
 -- -- 		then
 -- -- 			locked = not locked
@@ -174,8 +174,8 @@
 
 -- -- 		ui.iconButton(
 -- -- 			ui.Icons.TurnSignalLeft,
--- -- 			vec2(25, 25) * cui.scaleY(),
--- -- 			5 * cui.scaleY(),
+-- -- 			vec2(25, 25) * cui.uiScale(),
+-- -- 			5 * cui.uiScale(),
 -- -- 			true,
 -- -- 			viewControlButtonFlags
 -- -- 		)
@@ -198,8 +198,8 @@
 -- -- 		ui.sameLine()
 -- -- 		ui.iconButton(
 -- -- 			ui.Icons.TurnSignalRight,
--- -- 			vec2(25, 25) * cui.scaleY(),
--- -- 			5 * cui.scaleY(),
+-- -- 			vec2(25, 25) * cui.uiScale(),
+-- -- 			5 * cui.uiScale(),
 -- -- 			true,
 -- -- 			viewControlButtonFlags
 -- -- 		)
@@ -223,8 +223,8 @@
 
 -- -- 		ui.iconButton(
 -- -- 			ui.Icons.ZoomOut,
--- -- 			vec2(25, 25) * cui.scaleY(),
--- -- 			5 * cui.scaleY(),
+-- -- 			vec2(25, 25) * cui.uiScale(),
+-- -- 			5 * cui.uiScale(),
 -- -- 			true,
 -- -- 			currentZoom > 355 and viewControlButtonFlags or ui.ButtonFlags.Disabled
 -- -- 		)
@@ -244,8 +244,8 @@
 
 -- -- 		ui.iconButton(
 -- -- 			ui.Icons.ZoomIn,
--- -- 			vec2(25, 25) * cui.scaleY(),
--- -- 			5 * cui.scaleY(),
+-- -- 			vec2(25, 25) * cui.uiScale(),
+-- -- 			5 * cui.uiScale(),
 -- -- 			true,
 -- -- 			currentZoom < 1000 and viewControlButtonFlags or ui.ButtonFlags.Disabled
 -- -- 		)
@@ -315,13 +315,13 @@
 --         -- ui.beginRotation()
 --         cui.setCursorX(currentPanMapX)
 --         cui.setCursorY(currentPanMapY)
---         ui.image(mapCanvas, vec2(1024 * currentZoom, 1024 * currentZoom) * cui.scaleY())
+--         ui.image(mapCanvas, vec2(1024 * currentZoom, 1024 * currentZoom) * cui.uiScale())
 --         cui.setCursorX(currentPanMapX)
 --         cui.setCursorY(currentPanMapY)
---         ui.image(ersCanvas, vec2(1024 * currentZoom, 1024 * currentZoom) * cui.scaleY())
+--         ui.image(ersCanvas, vec2(1024 * currentZoom, 1024 * currentZoom) * cui.uiScale())
 --         cui.setCursorX(currentPanMapX)
 --         cui.setCursorY(currentPanMapY)
---         ui.image(ersSplitCanvas, vec2(1024 * currentZoom, 1024 * currentZoom) * cui.scaleY())
+--         ui.image(ersSplitCanvas, vec2(1024 * currentZoom, 1024 * currentZoom) * cui.uiScale())
 --         -- ui.endRotation(ac.getSetupSpinnerValue(setupIDToSectionKeyMap["ERS_MAP_ROTATION"]) / 100)
 
 --         -- mapViewControls()
@@ -373,10 +373,10 @@
 
 -- -- 	cui.setCursorY(yAlign)
 -- -- 	cui.setCursorX(xAlign)
--- -- 	ui.dwriteText("MGU-K Deploy", 10 * cui.scaleY())
+-- -- 	ui.dwriteText("MGU-K Deploy", 10 * cui.uiScale())
 -- -- 	ui.drawRectFilled(
--- -- 		vec2(xAlign - 25, yAlign) * cui.scaleY(),
--- -- 		vec2(xAlign - 10, yAlign + 15) * cui.scaleY(),
+-- -- 		vec2(xAlign - 25, yAlign) * cui.uiScale(),
+-- -- 		vec2(xAlign - 10, yAlign + 15) * cui.uiScale(),
 -- -- 		colors.kDeploy,
 -- -- 		2,
 -- -- 		ui.CornerFlags.All
@@ -385,10 +385,10 @@
 
 -- -- 	cui.setCursorY(yAlign)
 -- -- 	cui.setCursorX(xAlign)
--- -- 	ui.dwriteText("E-Boost Turbo", 10 * cui.scaleY())
+-- -- 	ui.dwriteText("E-Boost Turbo", 10 * cui.uiScale())
 -- -- 	ui.drawRectFilled(
--- -- 		vec2(xAlign - 25, yAlign) * cui.scaleY(),
--- -- 		vec2(xAlign - 10, yAlign + 15) * cui.scaleY(),
+-- -- 		vec2(xAlign - 25, yAlign) * cui.uiScale(),
+-- -- 		vec2(xAlign - 10, yAlign + 15) * cui.uiScale(),
 -- -- 		colors.hDeploy,
 -- -- 		2,
 -- -- 		ui.CornerFlags.All
@@ -397,10 +397,10 @@
 
 -- -- 	cui.setCursorY(yAlign)
 -- -- 	cui.setCursorX(xAlign)
--- -- 	ui.dwriteText("Overrun Regen", 10 * cui.scaleY())
+-- -- 	ui.dwriteText("Overrun Regen", 10 * cui.uiScale())
 -- -- 	ui.drawRectFilled(
--- -- 		vec2(xAlign - 25, yAlign) * cui.scaleY(),
--- -- 		vec2(xAlign - 10, yAlign + 15) * cui.scaleY(),
+-- -- 		vec2(xAlign - 25, yAlign) * cui.uiScale(),
+-- -- 		vec2(xAlign - 10, yAlign + 15) * cui.uiScale(),
 -- -- 		rgbm.colors.white,
 -- -- 		2,
 -- -- 		ui.CornerFlags.All
@@ -409,10 +409,10 @@
 
 -- -- 	cui.setCursorY(yAlign)
 -- -- 	cui.setCursorX(xAlign)
--- -- 	ui.dwriteText("DRS Zone", 10 * cui.scaleY())
+-- -- 	ui.dwriteText("DRS Zone", 10 * cui.uiScale())
 -- -- 	ui.drawRectFilled(
--- -- 		vec2(xAlign - 25, yAlign) * cui.scaleY(),
--- -- 		vec2(xAlign - 10, yAlign + 15) * cui.scaleY(),
+-- -- 		vec2(xAlign - 25, yAlign) * cui.uiScale(),
+-- -- 		vec2(xAlign - 10, yAlign + 15) * cui.uiScale(),
 -- -- 		colors.drs,
 -- -- 		2,
 -- -- 		ui.CornerFlags.All

@@ -21,7 +21,7 @@ function TabBar:initialize(id)
 end
 
 function TabBar:draw(tabs)
-        if ui.mouseLocalPos() >= vec2(0, 0) and ui.mouseLocalPos() < vec2(ui.windowWidth(), 56 * cui.scaleY()) then
+        if ui.mouseLocalPos() >= vec2(0, 0) and ui.mouseLocalPos() < vec2(ui.windowWidth(), 56 * cui.uiScale()) then
                 if ui.mouseWheel() > 0 then
                         self.currentTab = self.currentTab >= #tabs and 1 or self.currentTab + 1
                         audio:trigger()
@@ -43,7 +43,7 @@ function TabBar:draw(tabs)
         ui.setCursorX(self.position)
         ui.pushStyleColor(ui.StyleColor.Button, settings.Appearance.uiColor1)
         for i in ipairs(tabs) do
-                local buttonSize = self.scrollDisabled and vec2(ui.windowWidth() / #tabs, 56 * cui.scaleY()) or 56
+                local buttonSize = self.scrollDisabled and vec2(ui.windowWidth() / #tabs, 56 * cui.uiScale()) or 56
                 if
                         cui.menuButton(
                                 tabs[i].name,

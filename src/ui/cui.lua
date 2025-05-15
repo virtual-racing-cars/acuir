@@ -17,21 +17,21 @@ local defaultHeight = 1440
 local windowMaxWidth = 0
 local windowMaxHeight = 0
 
-local scaleY = math.min(sim.windowHeight / defaultHeight, sim.windowWidth / defaultWidth)
+local uiScale = math.min(sim.windowHeight / defaultHeight, sim.windowWidth / defaultWidth)
         / guiINI:get("NEW_UI", "UI_SCALE", 1)
-local scaleX = scaleY
 
-ac.onResolutionChange(function(newSize, makingScreenshot)
-        scaleY = math.min(newSize.y / defaultHeight, newSize.x / defaultWidth) / guiINI:get("NEW_UI", "UI_SCALE", 1)
-        scaleX = scaleY
-end)
+ac.onResolutionChange(
+        function(newSize, makingScreenshot)
+                uiScale = math.min(newSize.y / defaultHeight, newSize.x / defaultWidth)
+                        / guiINI:get("NEW_UI", "UI_SCALE", 1)
+        end
+)
 
 ac.onCSPConfigChanged(ac.CSPModuleID.GUI, function()
         guiINI = ac.INIConfig.cspModule(ac.CSPModuleID.GUI)
 
-        scaleY = math.min(sim.windowHeight / defaultHeight, sim.windowWidth / defaultWidth)
+        uiScale = math.min(sim.windowHeight / defaultHeight, sim.windowWidth / defaultWidth)
                 / guiINI:get("NEW_UI", "UI_SCALE", 1)
-        scaleX = scaleY
 end)
 
 function CUI.loadStoredBool(id, defaultTrue)
@@ -48,19 +48,17 @@ function CUI.windowMaxHeight() return windowMaxHeight end
 
 function CUI.availableSpaceX() return ui.availableSpaceX() end
 
-function CUI.availableSpaceY() return ui.availableSpaceY() * scaleY end
+function CUI.availableSpaceY() return ui.availableSpaceY() * uiScale end
 
-function CUI.scaleX() return scaleX end
+function CUI.uiScale() return uiScale end
 
-function CUI.scaleY() return scaleY end
+function CUI.setCursorX(v) ui.setCursorX(v * uiScale) end
 
-function CUI.setCursorX(v) ui.setCursorX(v * scaleX) end
+function CUI.setCursorY(v) ui.setCursorY(v * uiScale) end
 
-function CUI.setCursorY(v) ui.setCursorY(v * scaleY) end
+function CUI.offsetCursorX(v) ui.offsetCursorX(v * uiScale) end
 
-function CUI.offsetCursorX(v) ui.offsetCursorX(v * scaleX) end
-
-function CUI.offsetCursorY(v) ui.offsetCursorY(v * scaleY) end
+function CUI.offsetCursorY(v) ui.offsetCursorY(v * uiScale) end
 
 function CUI.snapCursor()
         local x, y = ui.getCursorX(), ui.getCursorY()
@@ -98,7 +96,7 @@ function CUI.menuBanner(label, time, bannerColor, rightSide, callbackType)
                 local xEnd = rightSide and ui.windowWidth() * 0.5 or ui.windowWidth() * 0.5
                 local xText = rightSide and ui.windowWidth() * 0.75 or 0
                 local alignment = rightSide and ui.Alignment.End or ui.Alignment.Start
-                local margin = rightSide and -20 * scaleY or 20 * scaleY
+                local margin = rightSide and -20 * uiScale or 20 * uiScale
 
                 ui.drawRectFilledMultiColor(
                         vec2(xStart, 0),
@@ -113,7 +111,7 @@ function CUI.menuBanner(label, time, bannerColor, rightSide, callbackType)
 
                 ui.dwriteTextAligned(
                         label,
-                        28 * scaleY,
+                        28 * uiScale,
                         alignment,
                         ui.Alignment.Center,
                         vec2(ui.windowWidth() * 0.2, ui.windowHeight()),
@@ -125,7 +123,7 @@ function CUI.menuBanner(label, time, bannerColor, rightSide, callbackType)
                         ui.sameLine()
                         ui.dwriteTextAligned(
                                 string.format("%.1f", time),
-                                28 * scaleY,
+                                28 * uiScale,
                                 ui.Alignment.End,
                                 ui.Alignment.Center,
                                 vec2(ui.windowWidth() * 0.05, ui.windowHeight()),
@@ -138,13 +136,13 @@ function CUI.menuBanner(label, time, bannerColor, rightSide, callbackType)
         setTimeout(function() callback[callbackType] = nil end, 2, callbackType .. "banner")
 end
 
-function CUI.dwriteTextWrapped(text, font) ui.dwriteTextWrapped(text, font * CUI.scaleY()) end
+function CUI.dwriteTextWrapped(text, font) ui.dwriteTextWrapped(text, font * CUI.uiScale()) end
 
 function CUI.dwriteText(params)
-        if params.xPos then ui.setCursorX(params.xPos * CUI.scaleX()) end
-        if params.yPos then ui.setCursorY(params.yPos * CUI.scaleY()) end
+        if params.xPos then ui.setCursorX(params.xPos * CUI.uiScale()) end
+        if params.yPos then ui.setCursorY(params.yPos * CUI.uiScale()) end
 
-        local fontSize = params.fontSize * CUI.scaleY()
+        local fontSize = params.fontSize * CUI.uiScale()
         fontSize = (fontSize % 2 ~= 0) and fontSize + 1 or fontSize
 
         ui.dwriteText(params.text, fontSize, params.color)
@@ -153,15 +151,15 @@ end
 function CUI.dwriteTextAligned(params)
         if not params.size then params.size = vec2Temp1:set(350, 100) end
 
-        if params.xPos then ui.setCursorX(params.xPos * CUI.scaleX()) end
-        if params.yPos then ui.setCursorY(params.yPos * CUI.scaleY()) end
+        if params.xPos then ui.setCursorX(params.xPos * CUI.uiScale()) end
+        if params.yPos then ui.setCursorY(params.yPos * CUI.uiScale()) end
 
         ui.dwriteTextAligned(
                 params.text,
-                params.fontSize * CUI.scaleY(),
+                params.fontSize * CUI.uiScale(),
                 params.xAlign,
                 params.yAlign,
-                vec2Temp1:set(params.size.x * CUI.scaleX(), params.size.y * CUI.scaleY()),
+                vec2Temp1:set(params.size.x * CUI.uiScale(), params.size.y * CUI.uiScale()),
                 false,
                 params.color
         )
@@ -174,7 +172,7 @@ function CUI.button(label, sizeX, sizeY, fontSize, horizontalAligment, verticalA
 
         if not flags then flags = ui.ButtonFlags.None end
 
-        local textWidth = ui.measureDWriteText(string.upper(label), fontSize * scaleX).x
+        local textWidth = ui.measureDWriteText(string.upper(label), fontSize * uiScale).x
         local fontColor = fontColor
 
         if flags == ui.ButtonFlags.Disabled then
@@ -183,7 +181,7 @@ function CUI.button(label, sizeX, sizeY, fontSize, horizontalAligment, verticalA
         end
 
         local tempCursor = ui.getCursor()
-        local clicked = ui.button("##" .. label, vec2Temp1:set(textWidth + 30 * scaleX, sizeY * scaleY), flags)
+        local clicked = ui.button("##" .. label, vec2Temp1:set(textWidth + 30 * uiScale, sizeY * uiScale), flags)
         local hovered = ui.itemHovered()
 
         if flags == ui.ButtonFlags.Disabled then ui.popStyleColor(1) end
@@ -194,10 +192,10 @@ function CUI.button(label, sizeX, sizeY, fontSize, horizontalAligment, verticalA
 
         ui.dwriteTextAligned(
                 string.upper(label),
-                fontSize * scaleX,
+                fontSize * uiScale,
                 horizontalAligment,
                 verticalAlignment,
-                vec2Temp1:set(textWidth + 30 * scaleX, sizeY * scaleY),
+                vec2Temp1:set(textWidth + 30 * uiScale, sizeY * uiScale),
                 false,
                 fontColor
         )
@@ -299,12 +297,12 @@ function CUI.menuButton(label, size, horizontalAligment, verticalAlignment, flag
         local sizeX, sizeY, buttonSize, fontSize
 
         if type(size) == "number" then
-                size = size * scaleY
+                size = size * uiScale
                 sizeY = size
                 fontSize = math.floor(sizeY * 0.55)
                 fontSize = (fontSize % 2 ~= 0) and fontSize + 1 or fontSize
                 buttonSize = vec2Temp1:set(
-                        math.round(ui.measureDWriteText(string.upper(label), fontSize).x + 100 * CUI.scaleY()),
+                        math.round(ui.measureDWriteText(string.upper(label), fontSize).x + 100 * CUI.uiScale()),
                         size
                 )
         else
@@ -485,7 +483,7 @@ function CUI.specialButton(label, size, horizontalAligment, verticalAlignment, c
 end
 
 function CUI.modernButton(label, sizeX, sizeY, flags, icon)
-        local clicked = ui.modernButton(label, vec2(sizeX, sizeY) * scaleY, flags, icon, 16 * scaleY)
+        local clicked = ui.modernButton(label, vec2(sizeX, sizeY) * uiScale, flags, icon, 16 * uiScale)
         local hovered = ui.itemHovered()
         return clicked and not (flags == ui.ButtonFlags.Disabled)
 end
@@ -516,7 +514,7 @@ function CUI.iconButton(label, icon, sizeX, sizeY, flags, flipped, iconScale, ac
                 style:pushFontBold()
                 ui.dwriteTextAligned(
                         label,
-                        18 * scaleY,
+                        18 * uiScale,
                         ui.Alignment.Center,
                         ui.Alignment.Start,
                         vec2(sizeX * 2, sizeY),
@@ -597,7 +595,7 @@ end
 function CUI.treeNode(label, count, content, defaultOpen)
         local clicked, open, id = CUI.treeNodeButton(
                 label,
-                vec2Temp1:set(ui.availableSpaceX(), 48 * CUI.scaleY()),
+                vec2Temp1:set(ui.availableSpaceX(), 48 * CUI.uiScale()),
                 false,
                 true,
                 count,
@@ -754,10 +752,10 @@ function CUI.inputTextBox(label, stringPrefix, stringInput, size)
                 local pos = tempCursor.x
                         + ui.measureDWriteText(stringInput:gsub(" ", "."):sub(1, inputTextBoxCursorIndex), fontSize).x
                 ui.drawSimpleLine(
-                        vec2(pos, r1.y + 10 * CUI.scaleY()),
-                        vec2(pos, r1.y - 10 * CUI.scaleY()) + vec2(0, size.y),
+                        vec2(pos, r1.y + 10 * CUI.uiScale()),
+                        vec2(pos, r1.y - 10 * CUI.uiScale()) + vec2(0, size.y),
                         rgbm.colors.white / 1.25,
-                        2 * CUI.scaleY()
+                        2 * CUI.uiScale()
                 )
         end
 
@@ -876,8 +874,8 @@ function CUI:promptShutdownAC()
                 )
 
                 local buttonWidth = ui.windowWidth() / 3
-                ui.setCursorX(ui.windowWidth() / 2 - buttonWidth - 5 * CUI.scaleY())
-                if CUI.modalButton("Cancel", ui.windowWidth() / 3, 50 * CUI.scaleY(), ui.ButtonFlags.None) then
+                ui.setCursorX(ui.windowWidth() / 2 - buttonWidth - 5 * CUI.uiScale())
+                if CUI.modalButton("Cancel", ui.windowWidth() / 3, 50 * CUI.uiScale(), ui.ButtonFlags.None) then
                         ui.popStyleVar(1)
 
                         return true
@@ -889,8 +887,8 @@ function CUI:promptShutdownAC()
                         mouseMoved = true
                 end
 
-                ui.setCursorX(ui.windowWidth() / 2 + 5 * CUI.scaleY())
-                if CUI.modalButton("Confirm", ui.windowWidth() / 3, 50 * CUI.scaleY(), ui.ButtonFlags.None) then
+                ui.setCursorX(ui.windowWidth() / 2 + 5 * CUI.uiScale())
+                if CUI.modalButton("Confirm", ui.windowWidth() / 3, 50 * CUI.uiScale(), ui.ButtonFlags.None) then
                         ac.shutdownAssettoCorsa()
                         ui.popStyleVar(1)
 
@@ -901,7 +899,7 @@ function CUI:promptShutdownAC()
         end)
 end
 
-function CUI.dummy(x, y) ui.dummy(vec2Temp1:set(x * scaleY, y * scaleY)) end
+function CUI.dummy(x, y) ui.dummy(vec2Temp1:set(x * uiScale, y * uiScale)) end
 
 local margins = 15
 
@@ -933,8 +931,8 @@ function CUI.popWindow(scroll, flags)
         if not scroll then
                 ui.popClipRect()
         elseif flags ~= ui.WindowFlags.NoScrollWithMouse then
-                if ui.getScrollY() < 5 * scaleY then ui.setScrollY(0) end
-                if ui.getScrollMaxY() - ui.getScrollY() < 5 * scaleY then ui.setScrollY(ui.getScrollMaxY()) end
+                if ui.getScrollY() < 5 * uiScale then ui.setScrollY(0) end
+                if ui.getScrollMaxY() - ui.getScrollY() < 5 * uiScale then ui.setScrollY(ui.getScrollMaxY()) end
         end
 
         ui.endGroup()
@@ -943,8 +941,8 @@ function CUI.popWindow(scroll, flags)
 end
 
 function CUI.pushWindowFitted(id, flags, scroll)
-        local childWindowWith = (2560 - 120) * CUI.scaleX()
-        local childWindowHeight = (1440 - 80) * CUI.scaleX()
+        local childWindowWith = (2560 - 120) * CUI.uiScale()
+        local childWindowHeight = (1440 - 80) * CUI.uiScale()
 
         CUI.pushWindow(
                 id,

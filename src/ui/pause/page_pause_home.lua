@@ -81,8 +81,8 @@ local pauseButtons = {
 }
 
 function page.draw(dt)
-        local childWindowWith = (2560 * cui.scaleX()) / 5
-        local childWindowHeight = (1440 * cui.scaleY()) * 0.5
+        local childWindowWith = (2560 * cui.uiScale()) / 5
+        local childWindowHeight = (1440 * cui.uiScale()) * 0.5
         local mainWindowFlags = ui.WindowFlags.NoScrollbar + ui.WindowFlags.NoScrollWithMouse
 
         if cui.modalDialogCallback then
@@ -100,7 +100,7 @@ function page.draw(dt)
                 function()
                         ui.drawRectFilled(vec2(0, 0), ui.availableSpace(), settings.Appearance.uiColor1 / 1.5)
 
-                        acLogoSize = ui.imageSize(acLogo) * 1.25 * cui.scaleY()
+                        acLogoSize = ui.imageSize(acLogo) * 1.25 * cui.uiScale()
                         ui.setCursorX(ui.windowWidth() / 2 - acLogoSize.x / 2)
                         ui.image(acLogo, acLogoSize)
                         ui.newLine()
@@ -108,7 +108,7 @@ function page.draw(dt)
                         ui.setCursorX(ui.windowWidth() / 8)
                         ui.beginGroup(ui.windowWidth() - (ui.windowWidth() / 8) * 2)
 
-                        local itemSpacing = 12 * cui.scaleY()
+                        local itemSpacing = 12 * cui.uiScale()
                         ui.pushStyleVar(ui.StyleVar.ItemSpacing, itemSpacing)
 
                         local menuButtonSize = vec2(ui.availableSpaceX(), ui.availableSpaceY() / 11)

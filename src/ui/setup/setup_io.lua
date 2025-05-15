@@ -37,8 +37,8 @@ local function promptDeleteSetup()
                 )
 
                 local buttonWidth = ui.windowWidth() / 3
-                ui.setCursorX(ui.windowWidth() / 2 - buttonWidth - 5 * cui.scaleY())
-                if cui.modalButton("Cancel", ui.windowWidth() / 3, 50 * cui.scaleY(), ui.ButtonFlags.None) then
+                ui.setCursorX(ui.windowWidth() / 2 - buttonWidth - 5 * cui.uiScale())
+                if cui.modalButton("Cancel", ui.windowWidth() / 3, 50 * cui.uiScale(), ui.ButtonFlags.None) then
                         ui.popStyleVar(1)
 
                         return true
@@ -50,8 +50,8 @@ local function promptDeleteSetup()
                         mouseMoved = true
                 end
 
-                ui.setCursorX(ui.windowWidth() / 2 + 5 * cui.scaleY())
-                if cui.modalButton("Confirm", ui.windowWidth() / 3, 50 * cui.scaleY(), ui.ButtonFlags.None) then
+                ui.setCursorX(ui.windowWidth() / 2 + 5 * cui.uiScale())
+                if cui.modalButton("Confirm", ui.windowWidth() / 3, 50 * cui.uiScale(), ui.ButtonFlags.None) then
                         carSetup:delete()
                         cui.menuBanner("Deleted Setup", nil, rgbm.colors.red)
 
@@ -98,8 +98,8 @@ local function promptOverwriteSetup()
                 )
 
                 local buttonWidth = ui.windowWidth() / 3
-                ui.setCursorX(ui.windowWidth() / 2 - buttonWidth - 5 * cui.scaleY())
-                if cui.modalButton("Cancel", ui.windowWidth() / 3, 50 * cui.scaleY(), ui.ButtonFlags.None) then
+                ui.setCursorX(ui.windowWidth() / 2 - buttonWidth - 5 * cui.uiScale())
+                if cui.modalButton("Cancel", ui.windowWidth() / 3, 50 * cui.uiScale(), ui.ButtonFlags.None) then
                         ui.popStyleVar(1)
 
                         return true
@@ -111,8 +111,8 @@ local function promptOverwriteSetup()
                         mouseMoved = true
                 end
 
-                ui.setCursorX(ui.windowWidth() / 2 + 5 * cui.scaleY())
-                if cui.modalButton("Confirm", ui.windowWidth() / 3, 50 * cui.scaleY(), ui.ButtonFlags.None) then
+                ui.setCursorX(ui.windowWidth() / 2 + 5 * cui.uiScale())
+                if cui.modalButton("Confirm", ui.windowWidth() / 3, 50 * cui.uiScale(), ui.ButtonFlags.None) then
                         carSetup:save(sm)
                         cui.menuBanner("Saved Setup", nil, rgbm.colors.green)
 
@@ -130,7 +130,7 @@ local function saveSetupWindow(sm)
         local buttonWidth = (ui.windowWidth() / 24) * 22
         local groupBegin = (ui.windowWidth() / 24)
 
-        local fontSize = math.floor(24 * cui.scaleY())
+        local fontSize = math.floor(24 * cui.uiScale())
         fontSize = (fontSize % 2 == 0) and fontSize + 1 or fontSize
 
         ui.setCursor(0)
@@ -184,7 +184,7 @@ local function saveSetupWindow(sm)
         end
         ui.newLine()
 
-        buttonWidth = buttonWidth - 10 * cui.scaleY()
+        buttonWidth = buttonWidth - 10 * cui.uiScale()
 
         ui.setCursorX(groupBegin)
         ui.drawRectFilled(
@@ -205,7 +205,7 @@ local function saveSetupWindow(sm)
         end
         ui.sameLine()
 
-        ui.offsetCursorX(10 * cui.scaleY())
+        ui.offsetCursorX(10 * cui.uiScale())
         ui.drawRectFilled(
                 ui.getCursor(),
                 ui.getCursor() + vec2Temp1:set(buttonWidth / 2, iconButtonHeight),
@@ -269,7 +269,7 @@ function setupIoDraw(sm)
                                                                                 name,
                                                                                 vec2(
                                                                                         ui.windowWidth(),
-                                                                                        48 * cui.scaleY()
+                                                                                        48 * cui.uiScale()
                                                                                 ),
                                                                                 setupActive,
                                                                                 false

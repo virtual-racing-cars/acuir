@@ -40,11 +40,11 @@ local function logWindow(height)
 
         for i, line in ipairs(chat.log) do
                 if line.sender == -1 then
-                        ui.dwriteText(line.msg, 18 * cui.scaleY(), rgbm.colors.orange)
+                        ui.dwriteText(line.msg, 18 * cui.uiScale(), rgbm.colors.orange)
                 else
                         ui.dwriteText(
                                 string.format("%s: %s", ac.getDriverName(line.sender), line.msg),
-                                18 * cui.scaleY(),
+                                18 * cui.uiScale(),
                                 line.color
                         )
                 end
@@ -76,7 +76,7 @@ end
 function chat:draw(xPos, yPos, width, height)
         if true then return end
 
-        local chatInputHeight = 50 * cui.scaleY()
+        local chatInputHeight = 50 * cui.uiScale()
 
         cui.pushWindow("chat_widget_window", xPos, yPos, width, height, false)
         ui.drawRectFilled(vec2(0, 0), vec2(ui.windowWidth(), ui.windowHeight()), settings.Appearance.uiColor1)

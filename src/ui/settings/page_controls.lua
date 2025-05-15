@@ -32,9 +32,9 @@ function page.draw()
         cui.pushWindow(
                 "settings_controls_window",
                 0,
-                180 * cui.scaleY(),
+                180 * cui.uiScale(),
                 ui.windowWidth(),
-                ui.windowHeight() - 303 * cui.scaleY(),
+                ui.windowHeight() - 303 * cui.uiScale(),
                 false
         )
 

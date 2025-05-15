@@ -9,16 +9,16 @@ local style = require("style")
 local sim = ac.getSim()
 
 local acLogo = ac.getFolder(ac.FolderID.Root) .. "\\launcher\\themes\\default\\graphics\\btn_AC_logo.png"
-local acLogoSize = ui.imageSize(acLogo) * cui.scaleY()
+local acLogoSize = ui.imageSize(acLogo) * cui.uiScale()
 
-local topBarHeight = 200 * cui.scaleY()
+local topBarHeight = 200 * cui.uiScale()
 
 local menuButtonSize = 56
 local versionString = string.format("%s: %s, CSP: %s (%s)", app.name, app.version, csp.version, csp.versionCode)
 
 function bottomBar(buttons)
         ui.drawRectFilled(
-                vec2(0, ui.windowHeight() - 56 * cui.scaleY()),
+                vec2(0, ui.windowHeight() - 56 * cui.uiScale()),
                 vec2(ui.windowWidth(), ui.windowHeight()),
                 settings.Appearance.uiColor1 / 3
         )
@@ -28,10 +28,10 @@ function bottomBar(buttons)
                 ui.setCursorY(10)
                 ui.dwriteTextAligned(
                         versionString,
-                        26 * cui.scaleY(),
+                        26 * cui.uiScale(),
                         ui.Alignment.Center,
                         ui.Alignment.End,
-                        ui.availableSpace() - vec2(40, 10) * cui.scaleY(),
+                        ui.availableSpace() - vec2(40, 10) * cui.uiScale(),
                         false,
                         rgbm(0.8, 0.8, 0.8, 0.2)
                 )
@@ -39,7 +39,7 @@ function bottomBar(buttons)
 
         ui.pushStyleColor(ui.StyleColor.Button, rgbm.colors.transparent)
         ui.setCursorX(0)
-        ui.setCursorY(ui.windowHeight() - 56 * cui.scaleY())
+        ui.setCursorY(ui.windowHeight() - 56 * cui.uiScale())
         for i in ipairs(buttons) do
                 local menuButton = buttons[i]
 
@@ -88,10 +88,10 @@ local sessionInfoTable = {
 }
 
 local function sessionInfo()
-        local startX = (ui.windowWidth() / 4) * 3 + 120 * cui.scaleY()
-        local startY = 12 * cui.scaleY()
-        local sizeX = 170 * cui.scaleX()
-        local sizeY = 28 * cui.scaleY()
+        local startX = (ui.windowWidth() / 4) * 3 + 120 * cui.uiScale()
+        local startY = 12 * cui.uiScale()
+        local sizeX = 170 * cui.uiScale()
+        local sizeY = 28 * cui.uiScale()
 
         local fontSize = math.floor(sizeY * 0.7)
         fontSize = (fontSize % 2 ~= 0) and fontSize + 1 or fontSize
@@ -112,7 +112,7 @@ local function sessionInfo()
                 ui.popDWriteFont()
                 ui.sameLine()
 
-                ui.offsetCursorX(-50 * cui.scaleY())
+                ui.offsetCursorX(-50 * cui.uiScale())
 
                 cui.snapCursor()
                 ui.dwriteTextAligned(
@@ -144,22 +144,22 @@ function topSubBar(path)
         ui.image(acLogo, acLogoSize)
 
         cui.setCursorX(180)
-        ui.setCursorY(topBarHeight / 2 - (100 * cui.scaleY()) / 2)
+        ui.setCursorY(topBarHeight / 2 - (100 * cui.uiScale()) / 2)
 
         -- ui.dwriteTextAligned(
         --         path,
-        --         50 * cui.scaleY(),
+        --         50 * cui.uiScale(),
         --         ui.Alignment.Start,
         --         ui.Alignment.Center,
-        --         vec2(600 * cui.scaleX(), 100 * cui.scaleY()),
+        --         vec2(600 * cui.uiScale(), 100 * cui.uiScale()),
         --         false,
         --         rgbm(1, 1, 1, 1)
         -- )
 end
 
 function topBar(path)
-        local driveButtonWidth = 500 * cui.scaleY()
-        local driveButtonHeight = 70 * cui.scaleY()
+        local driveButtonWidth = 500 * cui.uiScale()
+        local driveButtonHeight = 70 * cui.uiScale()
 
         -- ui.drawSimpleLine(
         --         vec2(ui.windowWidth() * 0.5, 0),
@@ -172,7 +172,7 @@ function topBar(path)
         cui.contentWindow(
                 "top_bar_banner",
                 vec2(0, topBarHeight),
-                vec2(ui.windowWidth(), 50 * cui.scaleY()),
+                vec2(ui.windowWidth(), 50 * cui.uiScale()),
                 ui.WindowFlags.None,
                 function()
                         ui.drawRectFilledMultiColor(
@@ -193,27 +193,27 @@ function topBar(path)
                                 rgbm(0.1, 0.1, 0.1, 0.95)
                         )
 
-                        ui.setCursorX(ui.windowWidth() * 0.5 - 320 * cui.scaleY())
+                        ui.setCursorX(ui.windowWidth() * 0.5 - 320 * cui.uiScale())
                         ui.setCursorY(0)
                         cui.snapCursor()
 
                         ui.dwriteTextAligned(
                                 simutils.raceSessionTypeString .. " " .. simutils.sessionTotalTimeString,
-                                28 * cui.scaleY(),
+                                28 * cui.uiScale(),
                                 ui.Alignment.End,
                                 ui.Alignment.Center,
-                                vec2(300 * cui.scaleY(), ui.windowHeight())
+                                vec2(300 * cui.uiScale(), ui.windowHeight())
                         )
                         ui.sameLine()
-                        ui.setCursorX(ui.windowWidth() * 0.5 + 20 * cui.scaleY())
+                        ui.setCursorX(ui.windowWidth() * 0.5 + 20 * cui.uiScale())
                         cui.snapCursor()
 
                         ui.dwriteTextAligned(
                                 simutils.sessionTimeLeftString,
-                                28 * cui.scaleY(),
+                                28 * cui.uiScale(),
                                 ui.Alignment.Start,
                                 ui.Alignment.Center,
-                                vec2(300 * cui.scaleY(), ui.windowHeight())
+                                vec2(300 * cui.uiScale(), ui.windowHeight())
                         )
 
                         if callback.info then callback.info() end
@@ -353,6 +353,6 @@ function settingsMenuCommon(path, bottomBarButtons)
 end
 
 function updateCommon()
-        acLogoSize = ui.imageSize(acLogo) * 0.85 * cui.scaleY()
-        topBarHeight = 130 * cui.scaleY()
+        acLogoSize = ui.imageSize(acLogo) * 0.85 * cui.uiScale()
+        topBarHeight = 130 * cui.uiScale()
 end

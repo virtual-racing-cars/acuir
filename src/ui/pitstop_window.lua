@@ -141,7 +141,7 @@ end
 
 function script.pitstopWindow(dt)
         local itemCount = #ac.getPitstopSpinners() <= 9 and #ac.getPitstopSpinners() + 6 or #ac.getPitstopSpinners() + 7
-        local itemHeight = 32 * cui.scaleY()
+        local itemHeight = 32 * cui.uiScale()
         local windowHeight = itemHeight * itemCount
         local fontSize = math.floor(itemHeight * 0.8)
         fontSize = (fontSize % 2 == 0) and fontSize + 1 or fontSize

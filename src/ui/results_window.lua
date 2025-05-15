@@ -16,8 +16,8 @@ function ResultsMenuWindow(dt)
         if ac.isKeyPressed(ui.KeyIndex.XButton1) then pages:undo() end
         if ac.isKeyPressed(ui.KeyIndex.XButton2) then pages:redo() end
 
-        local childWindowWith = 2560 * cui.scaleX()
-        local childWindowHeight = 1440 * cui.scaleY()
+        local childWindowWith = 2560 * cui.uiScale()
+        local childWindowHeight = 1440 * cui.uiScale()
         local mainWindowFlags = ui.WindowFlags.NoScrollbar + ui.WindowFlags.NoScrollWithMouse
 
         if cui.modalDialogCallback then

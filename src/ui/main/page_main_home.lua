@@ -25,13 +25,13 @@ function page.draw()
         cui.pushWindow(
                 "home_leaderboard_window",
                 0,
-                180 * cui.scaleY(),
+                180 * cui.uiScale(),
                 ui.windowWidth() * 0.5,
-                ui.windowHeight() - 420 * cui.scaleY(),
+                ui.windowHeight() - 420 * cui.uiScale(),
                 true
         )
 
-        local height = 50 * cui.scaleY()
+        local height = 50 * cui.uiScale()
         playerListBanner(0, 0, ui.windowWidth(), height)
 
         cui.pushWindow("home_leaderboard_entrant_window", 0, height, ui.windowWidth(), ui.windowHeight() - height, true)
@@ -44,18 +44,18 @@ function page.draw()
         cui.pushWindow(
                 "home_bottom_bar",
                 0,
-                ui.windowHeight() - 240 * cui.scaleY(),
+                ui.windowHeight() - 240 * cui.uiScale(),
                 ui.windowWidth(),
-                240 * cui.scaleY(),
+                240 * cui.uiScale(),
                 true
         )
         ui.drawRectFilled(vec2(0, 0), vec2(ui.windowWidth(), ui.windowHeight()), rgbm(0.1, 0.1, 0.1, 0.95))
 
-        border = 15 * cui.scaleY()
+        border = 15 * cui.uiScale()
 
-        local widgetYPos = ui.windowHeight() - 240 * cui.scaleY() + border
+        local widgetYPos = ui.windowHeight() - 240 * cui.uiScale() + border
         local widgetWidth = ui.windowWidth() / 3 - border
-        local widgetHeight = 240 * cui.scaleY() - border * 2
+        local widgetHeight = 240 * cui.uiScale() - border * 2
 
         cardWidget:draw(border, widgetYPos, widgetWidth, widgetHeight)
         replayWidget:draw(ui.windowWidth() * 0.5 - widgetWidth * 0.5, widgetYPos, widgetWidth, widgetHeight)

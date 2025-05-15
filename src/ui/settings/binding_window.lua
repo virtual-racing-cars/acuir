@@ -206,13 +206,13 @@ local function bindingBoxes(name, label, button, bind, yOffset)
         --         return
         -- end
 
-        ui.setCursorX(20 * cui.scaleY())
+        ui.setCursorX(20 * cui.uiScale())
         ui.dwriteTextAligned(
                 name .. " " .. label,
-                24 * cui.scaleY(),
+                24 * cui.uiScale(),
                 ui.Alignment.Start,
                 ui.Alignment.Center,
-                vec2(ui.windowWidth() / 2, 50 * cui.scaleY())
+                vec2(ui.windowWidth() / 2, 50 * cui.uiScale())
         )
         ui.sameLine()
 
@@ -224,7 +224,7 @@ local function bindingBoxes(name, label, button, bind, yOffset)
                         bind,
                         boundDeviceID,
                         buttonID,
-                        vec2(bindingWidth, 50 * cui.scaleY()),
+                        vec2(bindingWidth, 50 * cui.uiScale()),
                         ui.ButtonFlags.None
                 )
         then
@@ -289,9 +289,9 @@ local function drawAppControlsTabBar(app)
         cui.pushWindow(
                 "bindings_list_subwindow",
                 0,
-                56 * cui.scaleY(),
+                56 * cui.uiScale(),
                 ui.windowWidth(),
-                ui.windowHeight() - 56 * cui.scaleY(),
+                ui.windowHeight() - 56 * cui.uiScale(),
                 true
         )
 
@@ -299,10 +299,10 @@ local function drawAppControlsTabBar(app)
         for i, tab in ipairs(app.tabs) do
                 ui.dwriteTextAligned(
                         tab.name,
-                        24 * cui.scaleY(),
+                        24 * cui.uiScale(),
                         ui.Alignment.Center,
                         ui.Alignment.Center,
-                        vec2(ui.windowWidth(), 50 * cui.scaleY())
+                        vec2(ui.windowWidth(), 50 * cui.uiScale())
                 )
 
                 for _, controlBinding in pairs(tab.content) do
@@ -335,7 +335,7 @@ local function deviceListWindow()
                 (ui.windowWidth() / 5),
                 0,
                 (ui.windowWidth() / 5) * 4,
-                56 * cui.scaleY(),
+                56 * cui.uiScale(),
                 false
         )
         -- ui.drawRectFilled(vec2(0, 0), vec2(ui.windowWidth(), ui.windowHeight()), rgbm(10, 0, 0, 1))
@@ -343,15 +343,15 @@ local function deviceListWindow()
         ui.setCursor(0)
         ui.pushStyleColor(ui.StyleColor.Button, rgbm.colors.transparent)
 
-        if cui.menuButton("Wheel Controller", 56 * 0.8 * cui.scaleY(), 0, 0, 0, false, false) then
+        if cui.menuButton("Wheel Controller", 56 * 0.8 * cui.uiScale(), 0, 0, 0, false, false) then
         end
         ui.sameLine()
 
-        if cui.menuButton("XInput Controller", 56 * 0.8 * cui.scaleY(), 0, 0, 0, false, false) then
+        if cui.menuButton("XInput Controller", 56 * 0.8 * cui.uiScale(), 0, 0, 0, false, false) then
         end
         ui.sameLine()
 
-        if cui.menuButton("Keyboard & Mouse", 56 * 0.8 * cui.scaleY(), 0, 0, 0, false, false) then
+        if cui.menuButton("Keyboard & Mouse", 56 * 0.8 * cui.uiScale(), 0, 0, 0, false, false) then
         end
         ui.sameLine()
 
@@ -368,9 +368,9 @@ function bindings:draw()
         cui.pushWindow(
                 "settings_button_binds_window",
                 0,
-                56 * cui.scaleY(),
+                56 * cui.uiScale(),
                 ui.windowWidth() / 2,
-                ui.windowHeight() - 56 * cui.scaleY(),
+                ui.windowHeight() - 56 * cui.uiScale(),
                 false
         )
 
@@ -379,9 +379,9 @@ function bindings:draw()
         cui.pushWindow(
                 "settings_button_binds_window2",
                 ui.windowWidth() / 2,
-                56 * cui.scaleY(),
+                56 * cui.uiScale(),
                 ui.windowWidth() / 2,
-                ui.windowHeight() - 56 * cui.scaleY(),
+                ui.windowHeight() - 56 * cui.uiScale(),
                 false
         )
         ui.drawRectFilled(vec2(0, 0), vec2(ui.windowWidth(), ui.windowHeight()), rgbm.colors.black)

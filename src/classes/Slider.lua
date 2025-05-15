@@ -196,10 +196,10 @@ function drawSpinner(
                 end
 
                 if hoveredTimer < os.clock() then
-                        ui.tooltip(vec2(10, 20) * cui.scaleY(), function()
-                                ui.pushTextWrapPosition(400 * cui.scaleX())
+                        ui.tooltip(vec2(10, 20) * cui.uiScale(), function()
+                                ui.pushTextWrapPosition(400 * cui.uiScale())
                                 helpText = helpText:gsub("\\n", "\n")
-                                ui.dwriteText(helpText, 20 * cui.scaleY())
+                                ui.dwriteText(helpText, 20 * cui.uiScale())
                                 ui.popTextWrapPosition()
                         end)
                 end

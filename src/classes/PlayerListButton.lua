@@ -7,7 +7,7 @@ local simutils = require("simutils")
 function playerListBanner(xPos, yPos, width, height)
         width = width - width / 50
 
-        local fontSize = math.floor(24 * cui.scaleY())
+        local fontSize = math.floor(24 * cui.uiScale())
         fontSize = (fontSize % 2 == 0) and fontSize + 1 or fontSize
 
         ui.beginGroup(width)

@@ -16,9 +16,9 @@ local function setupItemWindow()
         cui.pushWindow(
                 "car_setup_items_window",
                 ui.windowWidth() / 4,
-                56 * cui.scaleY(),
+                56 * cui.uiScale(),
                 ui.windowWidth() / 2,
-                ui.windowHeight() - 56 * cui.scaleY()
+                ui.windowHeight() - 56 * cui.uiScale()
         )
         ui.drawRectFilled(0, ui.windowSize(), rgbm(0, 0, 0, 0.25))
 
@@ -32,9 +32,9 @@ local function carStatusWindow()
         cui.pushWindow(
                 "car_status_window",
                 (ui.windowWidth() / 4) * 3,
-                56 * cui.scaleY(),
+                56 * cui.uiScale(),
                 ui.windowWidth() / 4,
-                ui.windowHeight() - 56 * cui.scaleY()
+                ui.windowHeight() - 56 * cui.uiScale()
         )
         ui.setCursor(0)
         ui.drawRectFilled(0, ui.windowSize(), rgbm(0, 0, 0, 0.5))
@@ -71,8 +71,8 @@ local function setupIoWindow()
         ui.setCursor(0)
         cui.contentWindow(
                 "setup_left_window",
-                vec2(0, 56 * cui.scaleY()),
-                vec2(ui.windowWidth() / 4, ui.windowHeight() - 56 * cui.scaleY()),
+                vec2(0, 56 * cui.uiScale()),
+                vec2(ui.windowWidth() / 4, ui.windowHeight() - 56 * cui.uiScale()),
                 ui.WindowFlags.None,
                 function()
                         ui.setCursor(0)
@@ -248,9 +248,9 @@ function page:draw()
         cui.pushWindow(
                 "car_setup_window",
                 0,
-                124 * cui.scaleY(),
+                124 * cui.uiScale(),
                 ui.windowWidth(),
-                ui.windowHeight() - 124 * cui.scaleY()
+                ui.windowHeight() - 124 * cui.uiScale()
         )
         ui.setCursor(0)
 

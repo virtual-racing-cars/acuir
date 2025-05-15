@@ -5,7 +5,7 @@ local sim = ac.getSim()
 local card = {}
 
 function card:draw(xPos, yPos, width, height)
-        local border = 15 * cui.scaleY()
+        local border = 15 * cui.uiScale()
 
         cui.pushWindow("card_widget_window", xPos, yPos, width, height, false)
         ui.drawRectFilled(vec2(0, 0), ui.windowSize(), settings.Appearance.uiColor1)
@@ -18,7 +18,7 @@ function card:draw(xPos, yPos, width, height)
                 ac.getCarID(spectatedCar.index),
                 ac.getCarSkinID(spectatedCar.index)
         )
-        local skinImageSize = vec2(110, 110) * cui.scaleY()
+        local skinImageSize = vec2(110, 110) * cui.uiScale()
 
         cui.pushWindow("player_card", 0, 0, ui.windowWidth() * 0.4, ui.windowHeight(), false)
 
@@ -33,10 +33,10 @@ function card:draw(xPos, yPos, width, height)
         cui.snapCursor()
         ui.dwriteTextAligned(
                 ac.getDriverName(spectatedCar.index),
-                24 * cui.scaleY(),
+                24 * cui.uiScale(),
                 ui.Alignment.Center,
                 ui.Alignment.Center,
-                vec2(ui.windowWidth(), 48 * cui.scaleY())
+                vec2(ui.windowWidth(), 48 * cui.uiScale())
         )
 
         ui.setCursorX(ui.windowWidth() * 0.05)
@@ -45,8 +45,8 @@ function card:draw(xPos, yPos, width, height)
                 cui.iconButton(
                         "##prevCar",
                         ui.Icons.Skip,
-                        36 * cui.scaleY(),
-                        36 * cui.scaleY(),
+                        36 * cui.uiScale(),
+                        36 * cui.uiScale(),
                         ui.ButtonFlags.None,
                         true,
                         1
@@ -56,14 +56,14 @@ function card:draw(xPos, yPos, width, height)
                 ac.focusCar(newSpectatedIndex)
         end
 
-        ui.setCursorX(ui.windowWidth() - ui.windowWidth() * 0.05 - 36 * cui.scaleY())
+        ui.setCursorX(ui.windowWidth() - ui.windowWidth() * 0.05 - 36 * cui.uiScale())
         ui.setCursorY(ui.windowHeight() / 2 + skinImageSize.y * 0.4)
         if
                 cui.iconButton(
                         "##nextCar",
                         ui.Icons.Skip,
-                        36 * cui.scaleY(),
-                        36 * cui.scaleY(),
+                        36 * cui.uiScale(),
+                        36 * cui.uiScale(),
                         ui.ButtonFlags.None,
                         false,
                         1
@@ -89,30 +89,30 @@ function card:draw(xPos, yPos, width, height)
         cui.snapCursor()
         ui.dwriteTextAligned(
                 "SPEED",
-                18 * cui.scaleY(),
+                18 * cui.uiScale(),
                 ui.Alignment.Start,
                 ui.Alignment.Center,
-                vec2(ui.windowWidth() / 3, 36 * cui.scaleY())
+                vec2(ui.windowWidth() / 3, 36 * cui.uiScale())
         )
         ui.sameLine()
 
         cui.snapCursor()
         ui.dwriteTextAligned(
                 "POSITION",
-                18 * cui.scaleY(),
+                18 * cui.uiScale(),
                 ui.Alignment.Start,
                 ui.Alignment.Center,
-                vec2(ui.windowWidth() / 3, 36 * cui.scaleY())
+                vec2(ui.windowWidth() / 3, 36 * cui.uiScale())
         )
         ui.sameLine()
 
         cui.snapCursor()
         ui.dwriteTextAligned(
                 "LAST LAP",
-                18 * cui.scaleY(),
+                18 * cui.uiScale(),
                 ui.Alignment.Start,
                 ui.Alignment.Center,
-                vec2(ui.windowWidth() / 3, 36 * cui.scaleY())
+                vec2(ui.windowWidth() / 3, 36 * cui.uiScale())
         )
 
         cui.setCursorX(15)
@@ -120,30 +120,30 @@ function card:draw(xPos, yPos, width, height)
         cui.snapCursor()
         ui.dwriteTextAligned(
                 math.round(spectatedCar.speedKmh),
-                36 * cui.scaleY(),
+                36 * cui.uiScale(),
                 ui.Alignment.Start,
                 ui.Alignment.Center,
-                vec2(ui.windowWidth() / 3, 36 * cui.scaleY())
+                vec2(ui.windowWidth() / 3, 36 * cui.uiScale())
         )
         ui.sameLine()
 
         cui.snapCursor()
         ui.dwriteTextAligned(
                 spectatedCar.lapCount,
-                36 * cui.scaleY(),
+                36 * cui.uiScale(),
                 ui.Alignment.Start,
                 ui.Alignment.Center,
-                vec2(ui.windowWidth() / 3, 36 * cui.scaleY())
+                vec2(ui.windowWidth() / 3, 36 * cui.uiScale())
         )
         ui.sameLine()
 
         cui.snapCursor()
         ui.dwriteTextAligned(
                 ac.lapTimeToString(spectatedCar.bestLapTimeMs),
-                36 * cui.scaleY(),
+                36 * cui.uiScale(),
                 ui.Alignment.Start,
                 ui.Alignment.Center,
-                vec2(ui.windowWidth() / 3, 36 * cui.scaleY())
+                vec2(ui.windowWidth() / 3, 36 * cui.uiScale())
         )
         ui.sameLine()
 
@@ -163,14 +163,14 @@ function card:draw(xPos, yPos, width, height)
         cui.setCursorY(-5)
         ui.dwriteTextAligned(
                 "Gear\n" .. ac.getCarGearLabel(spectatedCar.index),
-                40 * cui.scaleY(),
+                40 * cui.uiScale(),
                 ui.Alignment.Center,
                 ui.Alignment.Center,
-                vec2(80 * cui.scaleY(), ui.windowHeight())
+                vec2(80 * cui.uiScale(), ui.windowHeight())
         )
 
         local barPosition = ui.windowHeight() / 20 * 2
-        local barWdith = 100 * cui.scaleY()
+        local barWdith = 100 * cui.uiScale()
 
         local steer = spectatedCar.steer / spectatedCar.steerLock
 

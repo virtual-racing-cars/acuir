@@ -22,11 +22,11 @@ local maxSpeedWithGear = {
 local maxSpeed = nil
 
 function gearWindow(spinnerCount)
-        local xMin = ui.windowWidth() * 0.5 + 50 * cui.scaleY()
-        local xMax = ui.windowWidth() - 30 * cui.scaleY()
+        local xMin = ui.windowWidth() * 0.5 + 50 * cui.uiScale()
+        local xMax = ui.windowWidth() - 30 * cui.uiScale()
         local width = xMax - xMin
 
-        local yMin = 110 * cui.scaleY()
+        local yMin = 110 * cui.uiScale()
         local yMax = 110 + width
         local height = yMax - yMin
 
@@ -54,10 +54,10 @@ function gearWindow(spinnerCount)
                 cui.snapCursor()
                 ui.dwriteTextAligned(
                         math.round(i / 10 * maxSpeed),
-                        24 * cui.scaleY(),
+                        24 * cui.uiScale(),
                         ui.Alignment.Center,
                         ui.Alignment.Center,
-                        vec2(65, 20) * cui.scaleY()
+                        vec2(65, 20) * cui.uiScale()
                 )
                 ui.pathLineTo(vec2(xMin + width / 10 * i, yMax))
                 ui.pathLineTo(vec2(xMin + width / 10 * i, yMax - height / 50))
@@ -67,10 +67,10 @@ function gearWindow(spinnerCount)
                 cui.snapCursor()
                 ui.dwriteTextAligned(
                         math.round(car.rpmLimiter - (car.rpmLimiter / 10) * i),
-                        24 * cui.scaleY(),
+                        24 * cui.uiScale(),
                         ui.Alignment.End,
                         ui.Alignment.Center,
-                        vec2(65, 20) * cui.scaleY()
+                        vec2(65, 20) * cui.uiScale()
                 )
 
                 ui.pathLineTo(vec2(xMin, yMin + (yMax - yMin) / 10 * i))
@@ -93,10 +93,10 @@ function gearWindow(spinnerCount)
                 local p1 = vec2(x1, math.max(yMin + (yMax - yMin) * (1 - (prevGearSpeed / maxGearSpeed)), yMin))
                 local p2 = vec2(math.max(xMin + width * (maxGearSpeed / maxSpeed), x1), yMin)
 
-                local labelWidth = 125 * cui.scaleY()
-                local labelHeight = 24 * cui.scaleY()
-                local labelPadding = 4 * cui.scaleY()
-                local fontSize = math.floor(24 * cui.scaleY())
+                local labelWidth = 125 * cui.uiScale()
+                local labelHeight = 24 * cui.uiScale()
+                local labelPadding = 4 * cui.uiScale()
+                local fontSize = math.floor(24 * cui.uiScale())
                 fontSize = (fontSize % 2 == 0) and fontSize + 1 or fontSize
 
                 ui.pathLineTo(p1)

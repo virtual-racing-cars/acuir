@@ -28,10 +28,10 @@ function page.draw()
         cui.pushWindowFitted("settings_general_window")
         topSubBar("/Settings/General")
 
-        ui.drawLine(vec2(0, 240 * cui.scaleY()), vec2(ui.windowWidth(), 240 * cui.scaleY()), rgbm.colors.gray, 2)
+        ui.drawLine(vec2(0, 240 * cui.uiScale()), vec2(ui.windowWidth(), 240 * cui.uiScale()), rgbm.colors.gray, 2)
         ui.drawRectFilled(
-                vec2(0, 240 * cui.scaleY()),
-                vec2(ui.windowWidth(), ui.windowHeight() - 96 * cui.scaleY()),
+                vec2(0, 240 * cui.uiScale()),
+                vec2(ui.windowWidth(), ui.windowHeight() - 96 * cui.uiScale()),
                 rgbm(0, 0, 0, 0.2)
         )
 
@@ -43,10 +43,10 @@ function page.draw()
                         local newValue = drawSpinner(
                                 v.label,
                                 v.label,
-                                ui.windowWidth() / 2 - 600 * cui.scaleY() / 2,
+                                ui.windowWidth() / 2 - 600 * cui.uiScale() / 2,
                                 ui.getCursorY(),
-                                620 * cui.scaleY(),
-                                74 * cui.scaleY(),
+                                620 * cui.uiScale(),
+                                74 * cui.uiScale(),
                                 false,
                                 value,
                                 0,
@@ -66,10 +66,10 @@ function page.draw()
                         settings.General[v.key] = drawSpinner(
                                 v.label,
                                 v.label,
-                                ui.windowWidth() / 2 - 600 * cui.scaleY() / 2,
+                                ui.windowWidth() / 2 - 600 * cui.uiScale() / 2,
                                 ui.getCursorY(),
-                                620 * cui.scaleY(),
-                                74 * cui.scaleY(),
+                                620 * cui.uiScale(),
+                                74 * cui.uiScale(),
                                 false,
                                 settings.General[v.key],
                                 v.min,
@@ -87,8 +87,8 @@ function page.draw()
         end
 
         ui.drawLine(
-                vec2(0, ui.windowHeight() - 96 * cui.scaleY()),
-                vec2(ui.windowWidth(), ui.windowHeight() - 96 * cui.scaleY()),
+                vec2(0, ui.windowHeight() - 96 * cui.uiScale()),
+                vec2(ui.windowWidth(), ui.windowHeight() - 96 * cui.uiScale()),
                 rgbm.colors.gray,
                 2
         )
