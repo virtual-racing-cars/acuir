@@ -39,38 +39,42 @@ function card:draw(xPos, yPos, width, height)
                 vec2(ui.windowWidth(), 48 * cui.uiScale())
         )
 
-        ui.setCursorX(ui.windowWidth() * 0.05)
-        ui.setCursorY(ui.windowHeight() / 2 + skinImageSize.y * 0.4)
-        if
-                cui.iconButton(
-                        "##prevCar",
-                        ui.Icons.Skip,
-                        36 * cui.uiScale(),
-                        36 * cui.uiScale(),
-                        ui.ButtonFlags.None,
-                        true,
-                        1
-                )
-        then
-                local newSpectatedIndex = spectatedCar.index == 0 and sim.carsCount - 1 or spectatedCar.index - 1
-                ac.focusCar(newSpectatedIndex)
-        end
+        if sim.carsCount > 1 then
+                ui.setCursorX(0)
+                ui.setCursorY(ui.windowHeight() / 2 - skinImageSize.y * 0.8 * 0.5)
+                if
+                        cui.iconButton(
+                                "##prevCar",
+                                ui.Icons.Skip,
+                                50 * cui.uiScale(),
+                                75 * cui.uiScale(),
+                                ui.ButtonFlags.None,
+                                true,
+                                1
+                        )
+                then
+                        local newSpectatedIndex = spectatedCar.index == 0 and sim.carsCount - 1
+                                or spectatedCar.index - 1
+                        ac.focusCar(newSpectatedIndex)
+                end
 
-        ui.setCursorX(ui.windowWidth() - ui.windowWidth() * 0.05 - 36 * cui.uiScale())
-        ui.setCursorY(ui.windowHeight() / 2 + skinImageSize.y * 0.4)
-        if
-                cui.iconButton(
-                        "##nextCar",
-                        ui.Icons.Skip,
-                        36 * cui.uiScale(),
-                        36 * cui.uiScale(),
-                        ui.ButtonFlags.None,
-                        false,
-                        1
-                )
-        then
-                local newSpectatedIndex = spectatedCar.index == sim.carsCount - 1 and 0 or spectatedCar.index + 1
-                ac.focusCar(newSpectatedIndex)
+                ui.setCursorX(ui.windowWidth() - 65 * cui.uiScale())
+                ui.setCursorY(ui.windowHeight() / 2 - (skinImageSize.y * 0.8 * 0.5))
+                if
+                        cui.iconButton(
+                                "##nextCar",
+                                ui.Icons.Skip,
+                                75 * cui.uiScale(),
+                                75 * cui.uiScale(),
+                                ui.ButtonFlags.None,
+                                false,
+                                1
+                        )
+                then
+                        local newSpectatedIndex = spectatedCar.index == sim.carsCount - 1 and 0
+                                or spectatedCar.index + 1
+                        ac.focusCar(newSpectatedIndex)
+                end
         end
 
         cui.popWindow()

@@ -1,5 +1,5 @@
 package.add("src")
-require("ui.main_window")
+require("ui.main_menu_window")
 require("ui.pause_window")
 require("ui.pitstop_window")
 require("ui.results_window")
@@ -29,7 +29,7 @@ ui.onExclusiveHUD(function(mode)
 
         local dt = ac.getScriptDeltaT()
 
-        -- pages:goToSetup()
+        -- pages:goToSession()
 
         if mode == "menu" then
                 audio:driver(dt)

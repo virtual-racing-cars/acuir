@@ -175,22 +175,10 @@ function topBar(path)
                 vec2(ui.windowWidth(), 50 * cui.uiScale()),
                 ui.WindowFlags.None,
                 function()
-                        ui.drawRectFilledMultiColor(
+                        ui.drawRectFilled(
                                 vec2(0, 0),
-                                vec2(ui.windowWidth() * 0.5, ui.windowHeight()),
-                                rgbm(0.1, 0.1, 0.1, 0),
-                                rgbm(0.1, 0.1, 0.1, 0.95),
-                                rgbm(0.1, 0.1, 0.1, 0.95),
-                                rgbm(0.1, 0.1, 0.1, 0)
-                        )
-
-                        ui.drawRectFilledMultiColor(
-                                vec2(ui.windowWidth() * 0.5, 0),
                                 vec2(ui.windowWidth(), ui.windowHeight()),
-                                rgbm(0.1, 0.1, 0.1, 0.95),
-                                rgbm(0.1, 0.1, 0.1, 0),
-                                rgbm(0.1, 0.1, 0.1, 0),
-                                rgbm(0.1, 0.1, 0.1, 0.95)
+                                rgbm(0.1, 0.1, 0.1, 0.75)
                         )
 
                         ui.setCursorX(ui.windowWidth() * 0.5 - 320 * cui.uiScale())
@@ -225,36 +213,25 @@ function topBar(path)
 
         ui.setCursorY(topBarHeight / 2 - driveButtonHeight / 2)
         ui.setCursorX(ui.windowWidth() / 2 - driveButtonWidth / 2)
-        ui.offsetCursorX(-driveButtonHeight * 8.75)
+        ui.offsetCursorX(-driveButtonHeight * 7)
+
         if
                 cui.iconButton(
                         "Session",
                         ui.Icons.Info,
                         driveButtonHeight,
                         driveButtonHeight,
-                        ui.ButtonFlags.Disabled,
-                        false,
-                        nil,
-                        pages.manager.currentPageName == "MainMenu"
-                )
-        then
-                pages:goToMainMenu()
-        end
-        ui.offsetCursorX(driveButtonHeight * 0.75)
-
-        if
-                cui.iconButton(
-                        "Leaderboard",
-                        ui.Icons.Leaderboard,
-                        driveButtonHeight,
-                        driveButtonHeight,
                         ui.ButtonFlags.None,
                         false,
                         nil,
-                        pages.manager.currentPageName == "MainMenu"
+                        pages.manager.currentPageName == "SessionPage"
                 )
         then
-                pages:goToMainMenu()
+                if pages.manager.currentPageName == "SessionPage" then
+                        pages:goToMainMenu()
+                else
+                        pages:goToSession()
+                end
         end
         ui.offsetCursorX(driveButtonHeight * 0.75)
 
@@ -270,7 +247,11 @@ function topBar(path)
                         pages.manager.currentPageName == "SetupPage"
                 )
         then
-                pages:goToSetup()
+                if pages.manager.currentPageName == "SetupPage" then
+                        pages:goToMainMenu()
+                else
+                        pages:goToSetup()
+                end
         end
         ui.offsetCursorX(driveButtonHeight * 0.75)
 

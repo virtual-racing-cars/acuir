@@ -16,11 +16,11 @@ function pages:redo()
         if pages:isRedoAvailable() then pages.manager:redo() end
 end
 
-function pages:goToMainMenu() pages.manager:setPage("MainMenu") end
+function pages:goToMainMenu() pages.manager:setPage("EmptyPage") end
 
 function pages:setParentMainMenu()
         if not pages.manager.parentName then
-                pages.manager:setParentPageName("MainMenu")
+                pages.manager:setParentPageName("EmptyPage")
 
                 if settings.General.defaultSetupPage then
                         pages:goToSetup()
@@ -28,7 +28,7 @@ function pages:setParentMainMenu()
                         pages:goToMainMenu()
                 end
         else
-                pages.manager:setParentPageName("MainMenu")
+                pages.manager:setParentPageName("EmptyPage")
                 pages:goToMainMenu()
         end
 end
@@ -48,6 +48,8 @@ function pages:setParentResultsMenu()
 end
 
 function pages:goToParent() pages.manager:setPage(pages.manager.parentName) end
+
+function pages:goToSession() pages.manager:setPage("SessionPage") end
 
 function pages:goToSetup() pages.manager:setPage("SetupPage") end
 
