@@ -41,7 +41,7 @@ function TabBar:draw(tabs)
         end
 
         ui.setCursorX(self.position)
-        ui.pushStyleColor(ui.StyleColor.Button, settings.Appearance.uiColor1)
+        ui.pushStyleColor(ui.StyleColor.Button, settings.Appearance.uiThemeColor1)
         for i in ipairs(tabs) do
                 local buttonSize = self.scrollDisabled and vec2(ui.windowWidth() / #tabs, 56 * cui.uiScale()) or 56
                 if

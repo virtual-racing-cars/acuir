@@ -98,7 +98,7 @@ function page.draw(dt)
                 vec2(childWindowWith, childWindowHeight),
                 mainWindowFlags,
                 function()
-                        ui.drawRectFilled(vec2(0, 0), ui.availableSpace(), settings.Appearance.uiColor1 / 1.5)
+                        ui.drawRectFilled(vec2(0, 0), ui.availableSpace(), settings.Appearance.uiThemeColor1 / 1.5)
 
                         acLogoSize = ui.imageSize(acLogo) * 1.25 * cui.uiScale()
                         ui.setCursorX(ui.windowWidth() / 2 - acLogoSize.x / 2)
@@ -113,7 +113,7 @@ function page.draw(dt)
 
                         local menuButtonSize = vec2(ui.availableSpaceX(), ui.availableSpaceY() / 11)
 
-                        ui.pushStyleColor(ui.StyleColor.Button, settings.Appearance.uiColor1)
+                        ui.pushStyleColor(ui.StyleColor.Button, settings.Appearance.uiThemeColor1)
                         for i in ipairs(pauseButtons) do
                                 local menuButton = pauseButtons[i]
                                 local enabled = menuButton.enabled

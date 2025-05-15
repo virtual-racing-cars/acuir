@@ -98,7 +98,7 @@ function replayWidget:draw(xPos, yPos, width, height)
         if true then return end
 
         cui.pushWindow("replay_widget_window", xPos, yPos, width, height, false)
-        ui.drawRectFilled(vec2(0, 0), ui.windowSize(), settings.Appearance.uiColor1)
+        ui.drawRectFilled(vec2(0, 0), ui.windowSize(), settings.Appearance.uiThemeColor1)
 
         cui.setCursorX(0)
 
@@ -228,7 +228,7 @@ function replayWidget:draw(xPos, yPos, width, height)
         )
         ui.sameLine()
 
-        ui.drawRectFilled(vec2(0, 0), ui.windowSize(), settings.Appearance.uiColor1 * 0.75)
+        ui.drawRectFilled(vec2(0, 0), ui.windowSize(), settings.Appearance.uiThemeColor1 * 0.75)
 
         cui.popWindow()
 end

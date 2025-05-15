@@ -43,7 +43,11 @@ function ResultsMenuWindow(dt)
                         ui.WindowFlags.NoScrollbar + ui.WindowFlags.NoScrollWithMouse,
                         function()
                                 ui.setCursor(0)
-                                ui.drawRectFilled(vec2(0, 0), ui.availableSpace(), settings.Appearance.uiColor1 / 1.2)
+                                ui.drawRectFilled(
+                                        vec2(0, 0),
+                                        ui.availableSpace(),
+                                        settings.Appearance.uiThemeColor1 / 1.2
+                                )
                                 local childWindowWith = ui.windowWidth() / 5
                                 local childWindowHeight = ui.windowHeight() / 5
                                 cui.contentWindow(

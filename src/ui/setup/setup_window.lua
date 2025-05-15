@@ -28,7 +28,11 @@ end)
 local scrollDelayTimer = 0
 
 function setupTabBar(tabs)
-        ui.drawRectFilled(vec2(0, 0), vec2(ui.windowWidth(), 56 * cui.uiScale()), settings.Appearance.uiColor1 / 1.3)
+        ui.drawRectFilled(
+                vec2(0, 0),
+                vec2(ui.windowWidth(), 56 * cui.uiScale()),
+                settings.Appearance.uiThemeColor1 / 1.3
+        )
 
         if ui.windowHovered() and scrollDelayTimer < os.clock() then
                 if ui.mouseWheel() > 0 then
@@ -43,7 +47,7 @@ function setupTabBar(tabs)
         end
 
         ui.setCursorX(tabBarPosition)
-        ui.pushStyleColor(ui.StyleColor.Button, settings.Appearance.uiColor1)
+        ui.pushStyleColor(ui.StyleColor.Button, settings.Appearance.uiThemeColor1)
         for i in ipairs(tabs) do
                 ui.setCursorX(0)
                 tabItem(i - 1, tabs[i].name)

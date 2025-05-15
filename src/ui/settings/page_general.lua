@@ -23,7 +23,11 @@ local bottomBarButtons = {
 }
 
 function page.draw()
-        ui.drawRectFilled(vec2(0, 0), vec2(ui.windowWidth(), ui.windowHeight()), settings.Appearance.uiColor1 / 1.1)
+        ui.drawRectFilled(
+                vec2(0, 0),
+                vec2(ui.windowWidth(), ui.windowHeight()),
+                settings.Appearance.uiThemeColor1 / 1.1
+        )
 
         cui.pushWindowFitted("settings_general_window")
         topSubBar("/Settings/General")

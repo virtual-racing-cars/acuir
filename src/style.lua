@@ -4,7 +4,7 @@ local settings = require("settings")
 
 local styleMain = {
         colors = {
-                { ui.StyleColor.ScrollbarGrab, settings.Appearance.uiColor3 },
+                { ui.StyleColor.ScrollbarGrab, settings.Appearance.uiThemeColor3 },
                 { ui.StyleColor.ScrollbarBg, rgbm.colors.black },
         },
         var = {

@@ -79,7 +79,7 @@ function chat:draw(xPos, yPos, width, height)
         local chatInputHeight = 50 * cui.uiScale()
 
         cui.pushWindow("chat_widget_window", xPos, yPos, width, height, false)
-        ui.drawRectFilled(vec2(0, 0), vec2(ui.windowWidth(), ui.windowHeight()), settings.Appearance.uiColor1)
+        ui.drawRectFilled(vec2(0, 0), vec2(ui.windowWidth(), ui.windowHeight()), settings.Appearance.uiThemeColor1)
 
         logWindow(height - chatInputHeight)
         chatInput(chatInputHeight)

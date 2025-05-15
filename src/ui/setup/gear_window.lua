@@ -101,7 +101,7 @@ function gearWindow(spinnerCount)
 
                 ui.pathLineTo(p1)
                 ui.pathLineTo(p2)
-                ui.pathStroke(settings.Appearance.uiColor2, false, 4)
+                ui.pathStroke(settings.Appearance.uiThemeColor2, false, 4)
 
                 ui.pathLineTo(p2)
                 ui.pathLineTo(vec2(p2.x, yMax - (height / car.gearCount / 2) * i + labelHeight))

@@ -23,7 +23,7 @@ local function promptDeleteSetup()
                 ui.drawSimpleLine(
                         vec2(ui.windowWidth() / 2 - titleTextWidth / 2, ui.getCursorY()),
                         vec2(ui.windowWidth() / 2 + titleTextWidth / 2, ui.getCursorY()),
-                        settings.Appearance.uiColor2,
+                        settings.Appearance.uiThemeColor2,
                         3
                 )
 
@@ -84,7 +84,7 @@ local function promptOverwriteSetup()
                 ui.drawSimpleLine(
                         vec2(ui.windowWidth() / 2 - titleTextWidth / 2, ui.getCursorY()),
                         vec2(ui.windowWidth() / 2 + titleTextWidth / 2, ui.getCursorY()),
-                        settings.Appearance.uiColor2,
+                        settings.Appearance.uiThemeColor2,
                         3
                 )
 
@@ -166,7 +166,7 @@ local function saveSetupWindow(sm)
         ui.drawRectFilled(
                 ui.getCursor(),
                 ui.getCursor() + vec2Temp1:set(buttonWidth, iconButtonHeight),
-                settings.Appearance.uiColor1
+                settings.Appearance.uiThemeColor1
         )
 
         if
@@ -190,7 +190,7 @@ local function saveSetupWindow(sm)
         ui.drawRectFilled(
                 ui.getCursor(),
                 ui.getCursor() + vec2Temp1:set(buttonWidth / 2, iconButtonHeight),
-                settings.Appearance.uiColor1
+                settings.Appearance.uiThemeColor1
         )
         if
                 cui.menuButton(
@@ -209,7 +209,7 @@ local function saveSetupWindow(sm)
         ui.drawRectFilled(
                 ui.getCursor(),
                 ui.getCursor() + vec2Temp1:set(buttonWidth / 2, iconButtonHeight),
-                settings.Appearance.uiColor1
+                settings.Appearance.uiThemeColor1
         )
         if cui.menuButton("Save Setup", vec2Temp1:set(buttonWidth / 2, iconButtonHeight)) then
                 if setupFileExists then

@@ -20,7 +20,7 @@ function bottomBar(buttons)
         ui.drawRectFilled(
                 vec2(0, ui.windowHeight() - 56 * cui.uiScale()),
                 vec2(ui.windowWidth(), ui.windowHeight()),
-                settings.Appearance.uiColor1 / 3
+                settings.Appearance.uiThemeColor1 / 3
         )
 
         if settings.General.showVersions then
@@ -327,8 +327,6 @@ function topBar(path)
 end
 
 function settingsMenuCommon(path, bottomBarButtons)
-        ui.drawRectFilled(vec2(0, 0), vec2(ui.windowWidth(), ui.windowHeight()), settings.Appearance.uiColor1 / 1.1)
-
         topSubBar("/Settings" .. path)
         bottomBar(bottomBarButtons)
 end

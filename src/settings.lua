@@ -28,9 +28,14 @@ local settings = {
                 { key = "developerMode", label = "Developer Mode", default = false, widget = 1 },
         },
         Appearance = {
-                { key = "uiColor1", label = "Primay UI Color", default = rgbm.new("#3e3c46"), widget = 1 },
-                { key = "uiColor2", label = "Secondary UI Color", default = rgbm(0.92, 0.08, 0.12, 1), widget = 1 },
-                { key = "uiColor3", label = "Tertiary UI Color", default = rgbm(1, 1, 1, 1), widget = 1 },
+                { key = "uiThemeColor1", label = "Primay UI Color", default = rgbm.new("#3e3c46"), widget = 1 },
+                {
+                        key = "uiThemeColor2",
+                        label = "Secondary UI Color",
+                        default = rgbm(0.92, 0.08, 0.12, 1),
+                        widget = 1,
+                },
+                { key = "uiThemeColor3", label = "Tertiary UI Color", default = rgbm(1, 1, 1, 1), widget = 1 },
         },
 }
 
@@ -41,14 +46,8 @@ for category, settingsTable in pairs(settings) do
 
         setmetatable(settings[category], {
                 __index = function(_, key) return db:get(category, key) end,
-
                 __newindex = function(_, key, value) db:set(category, key, value) end,
         })
-
-        for _, v in pairs(settings.Appearance) do
-                db:get("Appearance", v.key)
-                db:set("Appearance", v.key, v.default)
-        end
 end
 
 return settings

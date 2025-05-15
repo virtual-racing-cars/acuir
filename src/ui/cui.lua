@@ -208,9 +208,9 @@ function CUI.settingsButton(label, sizeX, sizeY, flags, icon)
 
         local disabled = flags == ui.ButtonFlags.Disabled
 
-        ui.pushStyleColor(ui.StyleColor.Button, settings.Appearance.uiColor1)
-        ui.pushStyleColor(ui.StyleColor.ButtonHovered, settings.Appearance.uiColor2)
-        ui.pushStyleColor(ui.StyleColor.ButtonActive, settings.Appearance.uiColor2)
+        ui.pushStyleColor(ui.StyleColor.Button, settings.Appearance.uiThemeColor1)
+        ui.pushStyleColor(ui.StyleColor.ButtonHovered, settings.Appearance.uiThemeColor2)
+        ui.pushStyleColor(ui.StyleColor.ButtonActive, settings.Appearance.uiThemeColor2)
         local tempCursor = ui.getCursor()
         local clicked = ui.button("##" .. label, vec2Temp1:set(sizeX, sizeY), flags)
         local hovered = ui.itemHovered()
@@ -245,9 +245,9 @@ function CUI.modalButton(label, sizeX, sizeY, flags)
 
         local disabled = flags == ui.ButtonFlags.Disabled
 
-        ui.pushStyleColor(ui.StyleColor.Button, settings.Appearance.uiColor1)
-        ui.pushStyleColor(ui.StyleColor.ButtonHovered, settings.Appearance.uiColor2)
-        ui.pushStyleColor(ui.StyleColor.ButtonActive, settings.Appearance.uiColor2)
+        ui.pushStyleColor(ui.StyleColor.Button, settings.Appearance.uiThemeColor1)
+        ui.pushStyleColor(ui.StyleColor.ButtonHovered, settings.Appearance.uiThemeColor2)
+        ui.pushStyleColor(ui.StyleColor.ButtonActive, settings.Appearance.uiThemeColor2)
 
         local tempCursor = ui.getCursor()
         local clicked = ui.button("##" .. label, vec2Temp1:set(sizeX, sizeY), flags)
@@ -315,10 +315,10 @@ function CUI.menuButton(label, size, horizontalAligment, verticalAlignment, flag
 
         local fontColor = active and rgbm(0, 0, 0, 1) or nil
 
-        ui.pushStyleColor(ui.StyleColor.ButtonHovered, settings.Appearance.uiColor2)
-        ui.pushStyleColor(ui.StyleColor.ButtonActive, settings.Appearance.uiColor2)
+        ui.pushStyleColor(ui.StyleColor.ButtonHovered, settings.Appearance.uiThemeColor2)
+        ui.pushStyleColor(ui.StyleColor.ButtonActive, settings.Appearance.uiThemeColor2)
 
-        if active then ui.pushStyleColor(ui.StyleColor.Button, settings.Appearance.uiColor3) end
+        if active then ui.pushStyleColor(ui.StyleColor.Button, settings.Appearance.uiThemeColor3) end
 
         if flags == ui.ButtonFlags.Disabled then
                 fontColor = rgbm(0.6, 0.6, 0.6, 1)
@@ -365,8 +365,8 @@ function CUI.bindingButton(bind, device, button, size, flags)
         fontSize = (fontSize % 2 ~= 0) and fontSize + 1 or fontSize
         local fontColor = nil
 
-        ui.pushStyleColor(ui.StyleColor.ButtonHovered, settings.Appearance.uiColor2)
-        ui.pushStyleColor(ui.StyleColor.ButtonActive, settings.Appearance.uiColor2)
+        ui.pushStyleColor(ui.StyleColor.ButtonHovered, settings.Appearance.uiThemeColor2)
+        ui.pushStyleColor(ui.StyleColor.ButtonActive, settings.Appearance.uiThemeColor2)
 
         if flags == ui.ButtonFlags.Disabled then
                 fontColor = rgbm(0.6, 0.6, 0.6, 1)
@@ -500,14 +500,14 @@ function CUI.iconButton(label, icon, sizeX, sizeY, flags, flipped, iconScale, ac
         local clicked = ui.invisibleButton("##" .. label, vec2(sizeX, sizeY))
         local hovered = ui.itemHovered()
 
-        local iconColor = settings.Appearance.uiColor3
+        local iconColor = settings.Appearance.uiThemeColor3
 
         if disabled then
                 iconColor = rgbm(0.3, 0.3, 0.3, 0.8)
         elseif hovered then
-                iconColor = settings.Appearance.uiColor2 * 2
+                iconColor = settings.Appearance.uiThemeColor2 * 2
         elseif active then
-                iconColor = settings.Appearance.uiColor2
+                iconColor = settings.Appearance.uiThemeColor2
         end
 
         local iconSize = sizeY * 0.8
@@ -543,11 +543,11 @@ function CUI.treeNodeButton(label, size, active, bold, count, defaultOpen)
         fontSize = (fontSize % 2 ~= 0) and fontSize + 1 or fontSize
         local fontColor = active and rgbm(0, 0, 0, 1) or nil
 
-        ui.pushStyleColor(ui.StyleColor.Button, bold and settings.Appearance.uiColor1 or rgbm(0.1, 0.1, 0.1, 1))
-        ui.pushStyleColor(ui.StyleColor.ButtonHovered, settings.Appearance.uiColor2)
-        ui.pushStyleColor(ui.StyleColor.ButtonActive, settings.Appearance.uiColor2)
+        ui.pushStyleColor(ui.StyleColor.Button, bold and settings.Appearance.uiThemeColor1 or rgbm(0.1, 0.1, 0.1, 1))
+        ui.pushStyleColor(ui.StyleColor.ButtonHovered, settings.Appearance.uiThemeColor2)
+        ui.pushStyleColor(ui.StyleColor.ButtonActive, settings.Appearance.uiThemeColor2)
 
-        if active then ui.pushStyleColor(ui.StyleColor.Button, settings.Appearance.uiColor3) end
+        if active then ui.pushStyleColor(ui.StyleColor.Button, settings.Appearance.uiThemeColor3) end
 
         local tempCursor = ui.getCursor()
         local clicked = ui.button(
@@ -562,7 +562,7 @@ function CUI.treeNodeButton(label, size, active, bold, count, defaultOpen)
         if active then
                 ui.popStyleColor(1)
 
-                if hovered then ui.drawRect(tempCursor, tempCursor + size, settings.Appearance.uiColor3) end
+                if hovered then ui.drawRect(tempCursor, tempCursor + size, settings.Appearance.uiThemeColor3) end
         end
 
         ui.popStyleColor(3)
@@ -662,9 +662,9 @@ function CUI.inputTextBox(label, stringPrefix, stringInput, size)
 
         local tempCursor = ui.getCursor()
 
-        ui.pushStyleColor(ui.StyleColor.Button, settings.Appearance.uiColor1)
-        ui.pushStyleColor(ui.StyleColor.ButtonHovered, settings.Appearance.uiColor1)
-        ui.pushStyleColor(ui.StyleColor.ButtonActive, settings.Appearance.uiColor1)
+        ui.pushStyleColor(ui.StyleColor.Button, settings.Appearance.uiThemeColor1)
+        ui.pushStyleColor(ui.StyleColor.ButtonHovered, settings.Appearance.uiThemeColor1)
+        ui.pushStyleColor(ui.StyleColor.ButtonActive, settings.Appearance.uiThemeColor1)
         local clicked = ui.button("##" .. label, size, ui.ButtonFlags.None)
         ui.popStyleColor(3)
 
@@ -766,7 +766,7 @@ function CUI.inputTextBox(label, stringPrefix, stringInput, size)
                 )
         end
 
-        ui.drawRect(r1, r2, settings.Appearance.uiColor1 * 2, 0, ui.CornerFlags.None, 2)
+        ui.drawRect(r1, r2, settings.Appearance.uiThemeColor1 * 2, 0, ui.CornerFlags.None, 2)
 
         ui.popClipRect()
 

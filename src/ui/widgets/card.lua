@@ -8,7 +8,7 @@ function card:draw(xPos, yPos, width, height)
         local border = 15 * cui.uiScale()
 
         cui.pushWindow("card_widget_window", xPos, yPos, width, height, false)
-        ui.drawRectFilled(vec2(0, 0), ui.windowSize(), settings.Appearance.uiColor1)
+        ui.drawRectFilled(vec2(0, 0), ui.windowSize(), settings.Appearance.uiThemeColor1)
 
         local spectatedCar = ac.getCar(sim.focusedCar)
 
@@ -161,7 +161,11 @@ function card:draw(xPos, yPos, width, height)
                 ui.windowHeight() * 0.5,
                 true
         )
-        ui.drawRectFilled(vec2(0, 0), vec2(ui.windowWidth(), ui.windowHeight() - border), settings.Appearance.uiColor1)
+        ui.drawRectFilled(
+                vec2(0, 0),
+                vec2(ui.windowWidth(), ui.windowHeight() - border),
+                settings.Appearance.uiThemeColor1
+        )
 
         cui.setCursorX(0)
         cui.setCursorY(-5)

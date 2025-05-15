@@ -11,7 +11,7 @@ function playerListBanner(xPos, yPos, width, height)
         fontSize = (fontSize % 2 == 0) and fontSize + 1 or fontSize
 
         ui.beginGroup(width)
-        ui.drawRectFilled(vec2(0, yPos), vec2(width, yPos + height), settings.Appearance.uiColor1)
+        ui.drawRectFilled(vec2(0, yPos), vec2(width, yPos + height), settings.Appearance.uiThemeColor1)
 
         ui.setCursorX(0)
         ui.setCursorY(yPos)
@@ -120,14 +120,14 @@ function playerListButton(slot, index, xPos, yPos, width, height)
         ui.drawRectFilled(
                 vec2(xPos, yPos),
                 vec2(xPos + width, yPos + height),
-                evenCar and settings.Appearance.uiColor1 / 4 or settings.Appearance.uiColor1 / 2
+                evenCar and settings.Appearance.uiThemeColor1 / 4 or settings.Appearance.uiThemeColor1 / 2
         )
 
         ui.drawRectFilled(
                 vec2(xPos, yPos),
                 vec2(xPos + height, yPos + height),
-                sim.focusedCar == car.index and settings.Appearance.uiColor2
-                        or (car.index == 0 and settings.Appearance.uiColor3 or settings.Appearance.uiColor1)
+                sim.focusedCar == car.index and settings.Appearance.uiThemeColor2
+                        or (car.index == 0 and settings.Appearance.uiThemeColor3 or settings.Appearance.uiThemeColor1)
         )
 
         ui.setCursorX(xPos)
@@ -242,7 +242,7 @@ function playerListButton(slot, index, xPos, yPos, width, height)
                 ui.drawRectFilled(
                         vec2(ui.getCursorX(), yPos),
                         vec2(ui.getCursorX() + infoWidth, yPos + height),
-                        settings.Appearance.uiColor3
+                        settings.Appearance.uiThemeColor3
                 )
         end
 
