@@ -495,8 +495,6 @@ function CUI.iconButton(label, icon, sizeX, sizeY, flags, flipped, iconScale, ac
         if bit.band(flags, ui.ButtonFlags.Disabled) ~= 0 then disabled = true end
 
         local tempCursor = ui.getCursor()
-        ui.offsetCursorY(-sizeY * 0.2)
-
         local clicked = ui.invisibleButton("##" .. label, vec2(sizeX, sizeY))
         local hovered = ui.itemHovered()
 
@@ -766,8 +764,6 @@ function CUI.inputTextBox(label, stringPrefix, stringInput, size)
                 )
         end
 
-        ui.drawRect(r1, r2, settings.Appearance.uiThemeColor1 * 2, 0, ui.CornerFlags.None, 2)
-
         ui.popClipRect()
 
         return itemActive
@@ -948,8 +944,8 @@ function CUI.popWindow(scroll, flags)
 end
 
 function CUI.pushWindowFitted(id, flags, scroll)
-        local childWindowWith = (2560 - 120) * CUI.uiScale()
-        local childWindowHeight = (1440 - 80) * CUI.uiScale()
+        local childWindowWith = (2560 - 60) * CUI.uiScale()
+        local childWindowHeight = (1440 - 60) * CUI.uiScale()
 
         CUI.pushWindow(
                 id,

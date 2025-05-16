@@ -41,7 +41,7 @@ local pauseButtons = {
                 func = function() end,
         },
         {
-                label = "Go To Vehicle Setup",
+                label = "Go To Garage",
                 enabled = true,
                 condition = function() end,
                 func = function()

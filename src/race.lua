@@ -21,7 +21,6 @@ for i = 0, 1, trackLegnth do
         session.timingGates[timingGateCount] = i
 end
 
-ac.log(sim.carsCount)
 --
 function session:step()
         for i = 0, #ac.getSession(sim.currentSessionIndex).leaderboard - 1 do

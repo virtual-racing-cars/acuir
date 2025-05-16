@@ -214,7 +214,7 @@ function topBar(path)
         ui.setCursorY(topBarHeight / 2 - driveButtonHeight / 2)
         ui.setCursorX(ui.windowWidth() / 2 - driveButtonWidth / 2)
         ui.offsetCursorX(-driveButtonHeight * 7)
-
+        ui.offsetCursorY(-driveButtonHeight * 0.2)
         if
                 cui.iconButton(
                         "Session",
@@ -263,7 +263,9 @@ function topBar(path)
         if cui.iconButton("Settings", ui.Icons.Settings, driveButtonHeight, driveButtonHeight, ui.ButtonFlags.None) then
                 pages:goToSettings()
         end
+
         ui.offsetCursorX(driveButtonHeight * 0.75)
+        ui.offsetCursorY(driveButtonHeight * 0.2)
 
         local readyToDriveState = simutils.readyToDriveState
         local readyToDrive, driveButtonText, reason, driveButtonColor =
@@ -284,6 +286,7 @@ function topBar(path)
         end
         ui.sameLine()
         ui.offsetCursorX(driveButtonHeight * 0.75)
+        ui.offsetCursorY(-driveButtonHeight * 0.2)
 
         if
                 cui.iconButton(

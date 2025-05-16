@@ -1,3 +1,4 @@
+local car = ac.getCar(0)
 local sim = ac.getSim()
 
 local page = {}
@@ -13,6 +14,10 @@ local replayWidget = require("ui.widgets.replay")
 local settings = require("settings")
 local assistsINI = ac.INIConfig.load(ac.getFolder(ac.FolderID.Cfg) .. "\\assists.ini")
 local raceINI = ac.INIConfig.raceConfig()
+local personalBestINI = ac.INIConfig.load(ac.getFolder(ac.FolderID.ACDocuments) .. "\\personalbest.ini")
+local trackBestLapTime = ac.lapTimeToString(
+        personalBestINI:get(string.upper(string.format("%s@%s", ac.getCarID(0), ac.getTrackFullID("-"))), "TIME", 0)
+)
 
 local electronicsState = { [0] = "Off", [1] = "Factory", [2] = "On" }
 local assistState = { [0] = "Not Allowed", [1] = "Allowed" }
@@ -97,46 +102,116 @@ function page.draw()
                 function()
                         ui.drawRectFilled(0, ui.windowSize(), rgbm(0.1, 0.1, 0.1, 0.55))
 
+                        local fontSize = 26 * cui.uiScale()
+
                         ui.dwriteTextAligned(
-                                ac.getTrackName(),
-                                36 * cui.uiScale(),
+                                "CAR",
+                                fontSize,
+                                ui.Alignment.Center,
+                                ui.Alignment.Center,
+                                vec2(ui.windowWidth(), fontSize * 1.25)
+                        )
+                        ui.newLine()
+
+                        ui.dwriteTextAligned(
+                                ac.getCarName(0, true),
+                                fontSize,
                                 ui.Alignment.Start,
                                 ui.Alignment.Center,
-                                vec2(ui.windowWidth(), 40)
+                                vec2(ui.windowWidth(), fontSize * 1.25)
                         )
 
                         ui.dwriteTextAligned(
-                                "%s" % getTrackDescription(),
-                                26 * cui.uiScale(),
+                                "Track Fastest Lap: %s" % trackBestLapTime,
+                                fontSize,
                                 ui.Alignment.Start,
                                 ui.Alignment.Center,
-                                vec2(ui.windowWidth(), 40)
+                                vec2(ui.windowWidth(), fontSize * 1.25)
                         )
+
+                        ui.dwriteTextAligned(
+                                "Session Fastest Lap: %s" % ac.lapTimeToString(car.bestLapTimeMs),
+                                fontSize,
+                                ui.Alignment.Start,
+                                ui.Alignment.Center,
+                                vec2(ui.windowWidth(), fontSize * 1.25)
+                        )
+
+                        ui.dwriteTextAligned(
+                                "Driven Total: %.0f km" % car.distanceDrivenTotalKm,
+                                fontSize,
+                                ui.Alignment.Start,
+                                ui.Alignment.Center,
+                                vec2(ui.windowWidth(), fontSize * 1.25)
+                        )
+
+                        ui.dwriteTextAligned(
+                                "Driven Session: %.0f km" % car.distanceDrivenSessionKm,
+                                fontSize,
+                                ui.Alignment.Start,
+                                ui.Alignment.Center,
+                                vec2(ui.windowWidth(), fontSize * 1.25)
+                        )
+
+                        ui.newLine()
+                        ui.newLine()
+
+                        ui.dwriteTextAligned(
+                                "CIRCUIT",
+                                fontSize,
+                                ui.Alignment.Center,
+                                ui.Alignment.Center,
+                                vec2(ui.windowWidth(), fontSize * 1.25)
+                        )
+                        ui.newLine()
+
+                        local track = string.split(ac.getTrackName(), " - ")
+
+                        for _, trackLine in ipairs(track) do
+                                ui.dwriteTextAligned(
+                                        trackLine,
+                                        fontSize,
+                                        ui.Alignment.Start,
+                                        ui.Alignment.Center,
+                                        vec2(ui.windowWidth(), fontSize * 1.25)
+                                )
+                        end
 
                         ui.dwriteTextAligned(
                                 "%s" % getTrackLocation(),
-                                26 * cui.uiScale(),
+                                fontSize,
                                 ui.Alignment.Start,
                                 ui.Alignment.Center,
-                                vec2(ui.windowWidth(), 40)
+                                vec2(ui.windowWidth(), fontSize * 1.25)
                         )
 
                         ui.dwriteTextAligned(
                                 "Length: %s km" % math.round(sim.trackLengthM / 1000, 2),
-                                26 * cui.uiScale(),
+                                fontSize,
                                 ui.Alignment.Start,
                                 ui.Alignment.Center,
-                                vec2(ui.windowWidth(), 40)
+                                vec2(ui.windowWidth(), fontSize * 1.25)
                         )
 
                         ui.newLine()
+                        ui.newLine()
+
+                        ui.dwriteTextAligned(
+                                "SESSION MODIFIERS",
+                                fontSize,
+                                ui.Alignment.Center,
+                                ui.Alignment.Center,
+                                vec2(ui.windowWidth(), fontSize * 1.25)
+                        )
+                        ui.newLine()
+
                         for _, assist in ipairs(assists) do
                                 ui.dwriteTextAligned(
                                         string.format("%s: %s", assist.label, assist.value),
-                                        26 * cui.uiScale(),
+                                        fontSize,
                                         ui.Alignment.Start,
                                         ui.Alignment.Center,
-                                        vec2(ui.windowWidth(), 40)
+                                        vec2(ui.windowWidth(), fontSize * 1.25)
                                 )
                         end
                 end

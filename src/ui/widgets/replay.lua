@@ -95,8 +95,6 @@ local replayButtons = {
 }
 
 function replayWidget:draw(xPos, yPos, width, height)
-        if true then return end
-
         cui.pushWindow("replay_widget_window", xPos, yPos, width, height, false)
         ui.drawRectFilled(vec2(0, 0), ui.windowSize(), settings.Appearance.uiThemeColor1)
 
@@ -104,40 +102,40 @@ function replayWidget:draw(xPos, yPos, width, height)
 
         local replayButtonSize = ui.windowWidth() / 11
 
-        cui.setCursorY(25)
-        ui.dummy(replayButtonSize)
-        ui.sameLine()
-        for i, button in ipairs(replayButtons) do
-                local flipped = i > 1 and i < #replayButtons * 0.5
-                local flags = button.enabled and ui.ButtonFlags.None or ui.ButtonFlags.Disabled
-                local icon = button.label
+        -- cui.setCursorY(25)
+        -- ui.dummy(replayButtonSize)
+        -- ui.sameLine()
+        -- for i, button in ipairs(replayButtons) do
+        --         local flipped = i > 1 and i < #replayButtons * 0.5
+        --         local flags = button.enabled and ui.ButtonFlags.None or ui.ButtonFlags.Disabled
+        --         local icon = button.label
 
-                if button.condition then
-                        if not button.condition() then flags = ui.ButtonFlags.Disabled end
-                end
+        --         if button.condition then
+        --                 if not button.condition() then flags = ui.ButtonFlags.Disabled end
+        --         end
 
-                if i == 5 and replay.rate > 0 then icon = ui.Icons.Pause end
+        --         if i == 5 and replay.rate > 0 then icon = ui.Icons.Pause end
 
-                if
-                        cui.iconButton(
-                                "##Test" .. button.label .. (flipped and "-1" or ""),
-                                icon,
-                                replayButtonSize,
-                                replayButtonSize,
-                                flags,
-                                flipped,
-                                button.scale
-                        )
-                then
-                        button.func()
-                end
-                ui.sameLine()
-        end
-        ui.dummy(replayButtonSize)
-        ui.sameLine()
+        --         if
+        --                 cui.iconButton(
+        --                         "##Test" .. button.label .. (flipped and "-1" or ""),
+        --                         icon,
+        --                         replayButtonSize,
+        --                         replayButtonSize,
+        --                         flags,
+        --                         flipped,
+        --                         button.scale
+        --                 )
+        --         then
+        --                 button.func()
+        --         end
+        --         ui.sameLine()
+        -- end
+        -- ui.dummy(replayButtonSize)
+        -- ui.sameLine()
 
-        cui.iconButton("##Test", ui.Icons.Pause, replayButtonSize, replayButtonSize, ui.ButtonFlags.None)
-        ui.sameLine()
+        -- cui.iconButton("##Test", ui.Icons.Pause, replayButtonSize, replayButtonSize, ui.ButtonFlags.None)
+        -- ui.sameLine()
 
         cui.setCursorX(0)
         cui.setCursorY(115)
@@ -227,8 +225,6 @@ function replayWidget:draw(xPos, yPos, width, height)
                 vec2(ui.windowWidth() / 3, 36)
         )
         ui.sameLine()
-
-        ui.drawRectFilled(vec2(0, 0), ui.windowSize(), settings.Appearance.uiThemeColor1 * 0.75)
 
         cui.popWindow()
 end

@@ -18,7 +18,7 @@ local settings = {
                 },
                 { key = "showConfirmDialogs", label = "Show Confirmation Dialogs", default = true, widget = 1 },
                 { key = "showVersions", label = "Show App and CSP versions", default = true, widget = 1 },
-                { key = "defaultSetupPage", label = "Open Setup Page on Startup", default = false, widget = 1 },
+                { key = "defaultSetupPage", label = "Open Garage on Startup", default = false, widget = 1 },
                 {
                         key = "autoLoadLastSetup",
                         label = "Load Last Setup on Startup",
