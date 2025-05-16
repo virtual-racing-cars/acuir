@@ -22,14 +22,6 @@ pages.manager:registerPage("TelemetryPage", require("ui.telemetry.page_telemetry
 function MainMenuWindow(dt)
         local exclusiveHudMode = ""
 
-        if ac.isKeyPressed(ui.KeyIndex.XButton1) then
-                if pages:isUndoAvailable() then pages:undo() end
-        end
-
-        if ac.isKeyPressed(ui.KeyIndex.XButton2) then
-                if pages:isRedoAvailable() then pages:redo() end
-        end
-
         style:pushStyleMain()
         ui.pushAllowKeyboardFocus(false)
 

@@ -15,7 +15,7 @@ function playerListBanner(xPos, yPos, width, height)
 
         ui.setCursorX(0)
         ui.setCursorY(yPos)
-        ui.dwriteTextAligned("P", fontSize, ui.Alignment.Center, ui.Alignment.Center, vec2(height, height))
+        ui.dwriteTextAligned("", fontSize, ui.Alignment.Center, ui.Alignment.Center, vec2(height, height))
         ui.sameLine(height)
 
         cui.snapCursor()

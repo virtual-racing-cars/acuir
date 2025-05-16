@@ -1,4 +1,5 @@
 local cui = require("ui.cui")
+local race = require("race")
 local settings = require("settings")
 local sim = ac.getSim()
 
@@ -133,7 +134,7 @@ function card:draw(xPos, yPos, width, height)
 
         cui.snapCursor()
         ui.dwriteTextAligned(
-                spectatedCar.lapCount,
+                race.leaderboardPositions[spectatedCar.index],
                 36 * cui.uiScale(),
                 ui.Alignment.Start,
                 ui.Alignment.Center,

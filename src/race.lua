@@ -4,6 +4,7 @@ local session = {
         lapMarkers = {},
         lapTimes = {},
         leaderboard = table.new(sim.carsCount, 0),
+        leaderboardPositions = table.new(sim.carsCount, 0),
         leaderboardGaps = {},
         trackGaps = {},
         intervals = {},
@@ -26,6 +27,7 @@ function session:step()
         for i = 0, #ac.getSession(sim.currentSessionIndex).leaderboard - 1 do
                 local leaderboardSlot = ac.getSession(sim.currentSessionIndex).leaderboard[i]
                 session.leaderboard[i + 1] = leaderboardSlot
+                session.leaderboardPositions[leaderboardSlot.car.index] = i + 1
         end
 
         local carAheadIndex = -1
