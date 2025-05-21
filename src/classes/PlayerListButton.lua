@@ -296,11 +296,8 @@ function playerListButton(slot, index, xPos, yPos, width, height)
         if car.isRetired then
                 statusText = "DNF"
                 altStatus = true
-        elseif car.isInPit then
+        elseif car.isInPit or car.isInPitlane then
                 statusText = "PIT"
-                altStatus = true
-        elseif car.isInPitlane then
-                statusText = "PIT LANE"
                 altStatus = true
         end
 

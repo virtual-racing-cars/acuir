@@ -170,7 +170,7 @@ function page.draw()
         cui.contentWindow(
                 "info_map_window",
                 vec2(ui.windowWidth() * 0.5 + 7.5 * cui.uiScale(), 0),
-                vec2(730 * cui.uiScale(), ui.windowHeight() * 0.6),
+                vec2(730 * cui.uiScale(), 930 * cui.uiScale()),
                 ui.WindowFlags.None,
                 function()
                         ui.drawRectFilled(0, ui.windowSize(), rgbm(0.1, 0.1, 0.1, 0.55))

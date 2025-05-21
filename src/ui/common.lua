@@ -65,12 +65,44 @@ function bottomBar(buttons)
         ui.popStyleColor(1)
 end
 
+local weatherTypeString = {
+        [0] = "Light Thunderstorm",
+        "Thunderstorm",
+        "Heavy Thunderstorm",
+        "Light Drizzle",
+        "Drizzle",
+        "Heavy Drizzle",
+        "LightRain",
+        "Rain",
+        "Heavy Rain",
+        "LightSnow",
+        "Snow",
+        "Heavy Snow",
+        "Light Sleet",
+        "Sleet",
+        "Heavy Sleet",
+        "Clear",
+        "Few Clouds",
+        "Scattered Clouds",
+        "Broken Clouds",
+        "Overcast Clouds",
+        "Fog",
+        "Mist",
+        "Smoke",
+        "Haze",
+        "Sand",
+        "Dust",
+        "Squalls",
+        "Tornado",
+        "Hurricane",
+        "Cold",
+        "Hot",
+        "Windy",
+        "Hail",
+}
+
 local sessionInfoTable = {
-        {
-                label = function() return "Sim Time" end,
-                row1 = function() return simutils.simDateString end,
-                row2 = function() return simutils.simTimeString end,
-        },
+
         {
                 label = function() return "Track" end,
                 row1 = function() return string.format("%.1f° C", sim.roadTemperature) end,
@@ -88,7 +120,16 @@ local sessionInfoTable = {
                         return string.format("%s - %.1f°", simutils.windDirectionString, sim.windDirectionDeg + 180)
                 end,
         },
+        {
+                label = function() return "Weather" end,
+                row1 = function() return string.format("%s", weatherTypeString[sim.weatherType]) end,
+                row2 = function() return string.format("%s", "") end,
+        },
 }
+
+local cs = ac.ConditionsSet()
+
+ac.log(cs.upcomingType)
 
 local function sessionInfo()
         local startX = (ui.windowWidth() / 5) * 4 + 15 * cui.uiScale()
