@@ -196,6 +196,22 @@ function playerListButton(slot, index, xPos, yPos, width, height)
                         or (car.index == 0 and settings.Appearance.uiThemeColor3 or settings.Appearance.uiThemeColor1)
         )
 
+        local pingColor = rgbm.colors.green
+
+        if car.ping > 240 then
+                pingColor = rgbm.colors.red
+        elseif car.ping > 160 then
+                pingColor = rgbm.colors.orange
+        elseif car.ping > 80 then
+                pingColor = rgbm.colors.yellow
+        end
+
+        ui.drawRectFilled(
+                vec2(xPos + height + height * 0.1, yPos + height * math.min(car.ping / 300, 0.9)),
+                vec2(xPos + height, yPos + height),
+                pingColor
+        )
+
         ui.setCursorX(xPos)
         ui.setCursorY(yPos)
         cui.snapCursor()
@@ -253,22 +269,23 @@ function playerListButton(slot, index, xPos, yPos, width, height)
                 return
         end
 
+        local gapToLeaderText = race.intervals[car.index] and string.format("%+.3f", race.intervals[car.index] / 1000)
+                or "-.---"
+        local intervalText = race.leaderboardGaps[car.index]
+                        and string.format("%+.3f", race.leaderboardGaps[car.index] / 1000)
+                or "-.---"
+        if race:getLeaderboardPosition(car.index) == 1 then
+                gapToLeaderText = "Leader"
+                intervalText = "Interval"
+        end
+
         cui.snapCursor()
-        ui.dwriteTextAligned(
-                race.leaderboardGaps[car.index] and string.format("%+.3f", race.leaderboardGaps[car.index] / 1000)
-                        or "-.---",
-                fontSize,
-                ui.Alignment.Center,
-                ui.Alignment.Center,
-                vec2(infoWidth, height),
-                false,
-                rgbm.colors.white
-        )
+        ui.dwriteTextAligned(gapToLeaderText, fontSize, ui.Alignment.Center, ui.Alignment.Center, vec2(infoWidth, height), false, rgbm.colors.white)
         ui.sameLine()
 
         cui.snapCursor()
         ui.dwriteTextAligned(
-                race.intervals[car.index] and string.format("%+.3f", race.intervals[car.index] / 1000) or "-.---",
+                intervalText,
                 fontSize,
                 ui.Alignment.Center,
                 ui.Alignment.Center,
@@ -319,6 +336,7 @@ function playerListButton(slot, index, xPos, yPos, width, height)
                 false,
                 altStatus and rgbm.colors.black or rgbm.colors.white
         )
+        ui.sameLine()
 
         ui.endGroup()
 end

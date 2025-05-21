@@ -43,12 +43,16 @@ function session:step()
                                 return ac.getDriverName(a.car.index) < ac.getDriverName(b.car.index)
                         end
 
-                        if a.hasCompletedLastLap and b.hasCompletedLastLap then
+                        if
+                                (a.hasCompletedLastLap and b.hasCompletedLastLap)
+                                or (a.laps > 0 and a.car.splinePosition < 0.1)
+                                or (b.laps > 0 and b.car.splinePosition < 0.1)
+                        then
                                 return session.leaderboardPositions[a.car.index]
                                         < session.leaderboardPositions[b.car.index]
                         end
 
-                        if a.laps <= b.laps then
+                        if a.laps == 0 and b.laps == 0 then
                                 if a.car.isInPitlane then return false end
                                 if b.car.isInPitlane then return true end
                         end
@@ -105,9 +109,17 @@ function session:step()
                                 local leaderboardGap = time - lastLeaderboardTime
                                 local gap = time - lastTime
                                 local prevInterval = session.intervals[carAheadIndex] or 0
-                                session.leaderboardGaps[car.index] = leaderboardGap
-                                session.trackGaps[car.index] = gap
-                                session.intervals[car.index] = prevInterval + leaderboardGap
+
+                                if car.isInPitlane then
+                                        session.leaderboardGaps[car.index] = nil
+                                        session.trackGaps[car.index] = nil
+                                        session.intervals[car.index] = nil
+                                else
+                                        session.leaderboardGaps[car.index] = leaderboardGap
+                                        session.trackGaps[car.index] = gap
+                                        session.intervals[car.index] = prevInterval + leaderboardGap
+                                end
+
                                 session.timingGateTimes.trackPos[gate] = time
                                 session.timingGateTimes[car.index][gate] = time
                                 goto continue

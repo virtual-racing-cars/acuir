@@ -127,10 +127,6 @@ local sessionInfoTable = {
         },
 }
 
-local cs = ac.ConditionsSet()
-
-ac.log(cs.upcomingType)
-
 local function sessionInfo()
         local startX = (ui.windowWidth() / 5) * 4 + 15 * cui.uiScale()
         local startY = 12 * cui.uiScale()
@@ -245,7 +241,7 @@ function topBar(path)
                                 28 * cui.uiScale(),
                                 ui.Alignment.Start,
                                 ui.Alignment.Center,
-                                vec2(300 * cui.uiScale(), ui.windowHeight())
+                                vec2(600 * cui.uiScale(), ui.windowHeight())
                         )
 
                         if callback.info then callback.info() end

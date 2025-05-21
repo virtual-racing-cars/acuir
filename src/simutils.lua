@@ -85,23 +85,32 @@ function simutils.timeToString(timeMs, postfix)
 end
 
 function simutils.sessionTimeLeftString()
-        if simutils.session().durationMinutes == 0 then
-                if sim.raceSessionType == ac.SessionType.Race then
-                        return string.format(
-                                "%.0f laps left",
-                                simutils.session().laps - simutils.session().leaderCompletedLaps
-                        )
-                else
-                        return simutils.timeToString(sim.currentSessionTime, "Time -")
-                end
-        end
+        local leadCar = simutils.session().leaderboard[0]
 
-        if sim.sessionTimeLeft <= 0 then
-                return "Session Over"
-        elseif sim.timeToSessionStart > 0 then
-                return simutils.timeToString(sim.timeToSessionStart, "Starts in -")
+        ac.debug("1", simutils.session().leaderboard[14].laps)
+        ac.debug("2", simutils.session().leaderboard[14].car.sessionLapCount)
+        ac.debug("3", simutils.session().leaderboard[14].car.splinePosition)
+
+        if sim.timeToSessionStart > 0 then
+                return simutils.timeToString(math.max(sim.timeToSessionStart - 5, 0), "Join in -")
+        elseif simutils.session().durationMinutes > 0 then
+                if sim.sessionTimeLeft <= 0 then
+                        return "Session Over"
+                else
+                        return simutils.timeToString(sim.sessionTimeLeft, "Remaining -")
+                end
+        elseif sim.raceSessionType == ac.SessionType.Race then
+                local lapsRemaining = simutils.session().laps - leadCar.laps - leadCar.car.splinePosition
+
+                if leadCar.hasCompletedLastLap then
+                        return "Session Over - %s Won the Race!" % ac.getDriverName(leadCar.car.index)
+                elseif lapsRemaining == 1 then
+                        return "Final Lap"
+                else
+                        return string.format("%.1f laps left", lapsRemaining)
+                end
         else
-                return simutils.timeToString(sim.sessionTimeLeft, "Remaining -")
+                return simutils.timeToString(sim.currentSessionTime, "Time -")
         end
 end
 
@@ -130,7 +139,7 @@ function simutils.rideHeightValid() return car.rideHeight[0] >= car.minHeight an
 function simutils.sessionWaitTime()
         if sim.sessionTimeLeft > 0 or sim.sessionsCount == 1 then return 0 end
 
-        return round(sim.resultScreenTime + sim.sessionTimeLeft / 1000)
+        return round((sim.resultScreenTime + sim.raceOverTime) + sim.sessionTimeLeft / 1000)
 end
 
 function simutils.sessionOvertime() return simutils.sessionWaitTime() > 0 end

@@ -27,11 +27,11 @@ local mapCanvas = ui.ExtraCanvas(canvasSize):setName("map")
 local mapResolution = 2000
 local strokeMult = 5
 local strokeWidths = {
-        drsZone = 4 * strokeMult,
+        drsZone = 3.5 * strokeMult,
         drsDetection = 2 * strokeMult,
-        trackMain = 3 * strokeMult,
-        trackEdge = 2 * strokeMult,
-        trackPit = 1.5 * strokeMult,
+        trackMain = 2 * strokeMult,
+        trackEdge = 1.5 * strokeMult,
+        trackPit = 2 * strokeMult,
         splitLine = 1.5 * strokeMult,
         carDot = 2 * strokeMult,
 }

@@ -209,14 +209,6 @@ function page.draw()
                                 vec2(ui.windowWidth(), fontSize * 1.25)
                         )
 
-                        ui.dwriteTextAligned(
-                                "Length: %s km" % math.round(sim.trackLengthM / 1000, 2),
-                                fontSize,
-                                ui.Alignment.Start,
-                                ui.Alignment.Center,
-                                vec2(ui.windowWidth(), fontSize * 1.25)
-                        )
-
                         cui.contentWindow(
                                 "info_map_window2",
                                 vec2(0, 50 * cui.uiScale()),
