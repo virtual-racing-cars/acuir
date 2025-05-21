@@ -86,7 +86,7 @@ local function logWindow(height)
                                 18 * cui.uiScale(),
                                 ui.Alignment.Start,
                                 ui.Alignment.Center,
-                                vec2(ui.windowWidth() * 0.99, 18 * cui.uiScale()),
+                                vec2(ui.windowWidth() * 0.99, 24 * cui.uiScale()),
                                 false,
                                 line.color
                         )
@@ -98,7 +98,7 @@ local function logWindow(height)
                                 18 * cui.uiScale(),
                                 ui.Alignment.End,
                                 ui.Alignment.Center,
-                                vec2(ui.windowWidth() * 0.99, 18 * cui.uiScale()),
+                                vec2(ui.windowWidth() * 0.99, 24 * cui.uiScale()),
                                 false,
                                 rgbm.colors.gray
                         )
@@ -108,7 +108,7 @@ local function logWindow(height)
                                 18 * cui.uiScale(),
                                 ui.Alignment.Start,
                                 ui.Alignment.Center,
-                                vec2(ui.windowWidth() * 0.99, 18 * cui.uiScale()),
+                                vec2(ui.windowWidth() * 0.99, 24 * cui.uiScale()),
                                 false,
                                 line.color
                         )
@@ -120,7 +120,7 @@ local function logWindow(height)
                                 18 * cui.uiScale(),
                                 ui.Alignment.End,
                                 ui.Alignment.Center,
-                                vec2(ui.windowWidth() * 0.99, 18 * cui.uiScale()),
+                                vec2(ui.windowWidth() * 0.99, 24 * cui.uiScale()),
                                 false,
                                 rgbm.colors.gray
                         )

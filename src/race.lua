@@ -32,9 +32,28 @@ function session:step()
 
         if sim.raceSessionType == ac.SessionType.Race then
                 table.sort(session.leaderboard, function(a, b)
-                        if not a.car.isRetired and b.car.isRetired then return true end
+                        if b == nil then return false end
+                        if a == nil then return false end
+                        if a.car.isRetired then return false end
+                        if b.car.isRetired then return true end
+                        if not a.car.isConnected then return false end
+                        if not b.car.isConnected then return true end
 
-                        return a.car.lapCount + a.car.splinePosition > b.car.lapCount + b.car.splinePosition
+                        if not sim.isSessionStarted then
+                                return ac.getDriverName(a.car.index) < ac.getDriverName(b.car.index)
+                        end
+
+                        if a.hasCompletedLastLap and b.hasCompletedLastLap then
+                                return session.leaderboardPositions[a.car.index]
+                                        < session.leaderboardPositions[b.car.index]
+                        end
+
+                        if a.laps <= b.laps then
+                                if a.car.isInPitlane then return false end
+                                if b.car.isInPitlane then return true end
+                        end
+
+                        return a.laps + a.car.splinePosition > b.laps + b.car.splinePosition
                 end)
         end
 
@@ -42,6 +61,8 @@ function session:step()
 
         for pos, slot in ipairs(session.leaderboard) do
                 local car = slot.car
+
+                session.leaderboardPositions[car.index] = pos
 
                 if pos > 1 and sim.raceSessionType ~= ac.SessionType.Race then
                         if slot.bestLapTimeMs > 0 then

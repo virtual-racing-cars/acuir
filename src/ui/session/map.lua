@@ -45,7 +45,7 @@ local colors = {
 local drsIni = ac.INIConfig.trackData("drs_zones.ini")
 local drsZones = {}
 
-for index, section in drsIni:iterate("ZONE") do
+for _, section in drsIni:iterate("ZONE") do
         drsZones[#drsZones + 1] = {
                 detection = drsIni:get(section, "DETECTION", -1),
                 start = drsIni:get(section, "START", -1),
@@ -57,8 +57,10 @@ local worldCoords = {}
 local worldCoordsPit = {}
 local minX, maxX, minZ, maxZ = math.huge, -math.huge, math.huge, -math.huge
 
-for _, v in ipairs(spline.points) do
-        worldCoordsPit[#worldCoordsPit + 1] = v.pos
+if spline then
+        for _, v in ipairs(spline.points) do
+                worldCoordsPit[#worldCoordsPit + 1] = v.pos
+        end
 end
 
 for i = 0, mapResolution do
@@ -135,6 +137,8 @@ local function drawTrack()
 end
 
 local function drawPitlane()
+        if not spline then return end
+
         ui.pathClear()
         for t = 0, #spline.points - 1 do
                 local index = t
@@ -161,41 +165,6 @@ function drawMapCanvas()
         end)
 end
 
-local function hsvToRgbm(h, s, v)
-        local i = math.floor(h * 6)
-        local f = h * 6 - i
-        local p = v * (1 - s)
-        local q = v * (1 - f * s)
-        local t = v * (1 - (1 - f) * s)
-        local r, g, b
-        i = i % 6
-        if i == 0 then
-                r, g, b = v, t, p
-        elseif i == 1 then
-                r, g, b = q, v, p
-        elseif i == 2 then
-                r, g, b = p, v, t
-        elseif i == 3 then
-                r, g, b = p, q, v
-        elseif i == 4 then
-                r, g, b = t, p, v
-        elseif i == 5 then
-                r, g, b = v, p, q
-        end
-        return rgbm(r, g, b, 1)
-end
-
-local function generateCarColors(carCount)
-        local colors = {}
-        for i = 1, carCount do
-                local hue = (i - 1) / carCount
-                colors[i] = hsvToRgbm(hue, 1, 1)
-        end
-        return colors
-end
-
-local carColors = generateCarColors(sim.carsCount)
-
 local carPositionColors = {
         leader = rgbm.colors.red,
         focused = rgbm.colors.aqua,
@@ -205,37 +174,36 @@ local carPositionColors = {
 }
 
 local function drawCarDot(car, position)
-        local spectatedCar = ac.getCar(sim.closelyFocusedCar)
+        local spectatedCar = ac.getCar(sim.focusedCar)
+        if not spectatedCar then return end
+
         local localPos = getCanvasPos(car.position) * cui.uiScale()
         local screenPos = position + localPos
 
         local dotSize = strokeWidths.carDot
         local textSize = dotSize * 2
 
-        local carColor = carColors[car.index]
+        local carColor = carPositionColors.behind
         local backColor = rgbm.colors.black
 
         local leaderboardPosition = race:getLeaderboardPosition(car.index)
 
-        if spectatedCar and car.index == spectatedCar.index then
+        if car.index == spectatedCar.index then
                 carColor = carPositionColors.focused
         elseif leaderboardPosition == 1 then
                 carColor = carPositionColors.leader
         elseif leaderboardPosition < race:getLeaderboardPosition(spectatedCar.index) then
                 carColor = carPositionColors.ahead
         elseif
-                spectatedCar
-                and sim.raceSessionType == ac.SessionType.Race
+                sim.raceSessionType == ac.SessionType.Race
                 and (car.lapCount + car.splinePosition)
                                 - (spectatedCar.lapCount + spectatedCar.splinePosition)
                         < -0.9
         then
                 carColor = carPositionColors.blueFlag
-        else
-                carColor = carPositionColors.behind
         end
 
-        if not (spectatedCar and car.index == spectatedCar.index) and car.speedKmh < 5 then
+        if car.index ~= spectatedCar.index and car.speedKmh < 5 then
                 carColor = carColor:clone()
                 carColor.mult = 0.5
                 backColor = rgbm.colors.transparent
@@ -252,7 +220,7 @@ local function drawCarDot(car, position)
                 0,
                 vec2(textSize, textSize) * 2 * cui.uiScale(),
                 false,
-                (spectatedCar and spectatedCar.index == car.index) and rgbm.colors.black or rgbm.colors.white
+                spectatedCar.index == car.index and rgbm.colors.black or rgbm.colors.white
         )
 end
 

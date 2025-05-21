@@ -75,8 +75,6 @@ function SortableListTable:draw(table, width, height, itemHeight)
 end
 
 function playerListBanner(xPos, yPos, width, height)
-        width = width - width / 50
-
         local fontSize = math.floor(24 * cui.uiScale())
         fontSize = (fontSize % 2 == 0) and fontSize + 1 or fontSize
 
@@ -174,8 +172,6 @@ end
 function playerListButton(slot, index, xPos, yPos, width, height)
         local car = slot.car
 
-        width = width - width / 50
-
         ui.beginGroup(width)
 
         local fontSize = height * 0.5
@@ -204,7 +200,7 @@ function playerListButton(slot, index, xPos, yPos, width, height)
         ui.setCursorY(yPos)
         cui.snapCursor()
         ui.dwriteTextAligned(
-                index,
+                race:getLeaderboardPosition(car.index),
                 fontSize * 1.2,
                 ui.Alignment.End,
                 ui.Alignment.Center,

@@ -68,8 +68,6 @@ local function getTrackLocation()
         return trackLocation
 end
 
-local border = 15
-
 function page.update() end
 
 function page.draw()
@@ -138,58 +136,8 @@ function page.draw()
         )
 
         cui.contentWindow(
-                "info_right_window_2",
-                vec2(ui.windowWidth() - ui.windowWidth() / 5, 295 * cui.uiScale()),
-                vec2(ui.windowWidth() / 5, 220 * cui.uiScale()),
-                ui.WindowFlags.None,
-                function()
-                        ui.setCursor(0)
-
-                        ui.drawRectFilled(0, ui.windowSize(), rgbm(0.1, 0.1, 0.1, 0.55))
-                        ui.drawRectFilled(0, vec2(ui.windowWidth(), fontSize * 2), rgbm(0.1, 0.1, 0.1, 0.95))
-
-                        ui.dwriteTextAligned(
-                                "TRACK",
-                                fontSize * 1.25,
-                                ui.Alignment.Center,
-                                ui.Alignment.Center,
-                                vec2(ui.windowWidth(), fontSize * 2)
-                        )
-                        ui.newLine()
-
-                        local track = string.split(ac.getTrackName(), " - ")
-
-                        for _, trackLine in ipairs(track) do
-                                ui.dwriteTextAligned(
-                                        trackLine,
-                                        fontSize,
-                                        ui.Alignment.Start,
-                                        ui.Alignment.Center,
-                                        vec2(ui.windowWidth(), fontSize * 1.25)
-                                )
-                        end
-
-                        ui.dwriteTextAligned(
-                                "%s" % getTrackLocation(),
-                                fontSize,
-                                ui.Alignment.Start,
-                                ui.Alignment.Center,
-                                vec2(ui.windowWidth(), fontSize * 1.25)
-                        )
-
-                        ui.dwriteTextAligned(
-                                "Length: %s km" % math.round(sim.trackLengthM / 1000, 2),
-                                fontSize,
-                                ui.Alignment.Start,
-                                ui.Alignment.Center,
-                                vec2(ui.windowWidth(), fontSize * 1.25)
-                        )
-                end
-        )
-
-        cui.contentWindow(
                 "info_left_window_3",
-                vec2(ui.windowWidth() - ui.windowWidth() / 5, 530 * cui.uiScale()),
+                vec2(ui.windowWidth() - ui.windowWidth() / 5, 305 * cui.uiScale()),
                 vec2(ui.windowWidth() / 5, 405 * cui.uiScale()),
                 ui.WindowFlags.None,
                 function()
@@ -221,8 +169,8 @@ function page.draw()
 
         cui.contentWindow(
                 "info_map_window",
-                vec2(ui.windowWidth() * 0.5, 0),
-                vec2((ui.windowWidth() / 7) * 2, ui.windowHeight() * 0.6),
+                vec2(ui.windowWidth() * 0.5 + 7.5 * cui.uiScale(), 0),
+                vec2(730 * cui.uiScale(), ui.windowHeight() * 0.6),
                 ui.WindowFlags.None,
                 function()
                         ui.drawRectFilled(0, ui.windowSize(), rgbm(0.1, 0.1, 0.1, 0.55))
@@ -234,11 +182,39 @@ function page.draw()
 
                         ui.setCursor(0)
                         ui.dwriteTextAligned(
-                                "MAP",
+                                "TRACK",
                                 fontSize * 1.25,
                                 ui.Alignment.Center,
                                 ui.Alignment.Center,
                                 vec2(ui.windowWidth(), fontSize * 2)
+                        )
+
+                        local track = string.split(ac.getTrackName(), " - ")
+
+                        for _, trackLine in ipairs(track) do
+                                ui.dwriteTextAligned(
+                                        trackLine,
+                                        fontSize,
+                                        ui.Alignment.Start,
+                                        ui.Alignment.Center,
+                                        vec2(ui.windowWidth(), fontSize * 1.25)
+                                )
+                        end
+
+                        ui.dwriteTextAligned(
+                                "%s" % getTrackLocation(),
+                                fontSize,
+                                ui.Alignment.Start,
+                                ui.Alignment.Center,
+                                vec2(ui.windowWidth(), fontSize * 1.25)
+                        )
+
+                        ui.dwriteTextAligned(
+                                "Length: %s km" % math.round(sim.trackLengthM / 1000, 2),
+                                fontSize,
+                                ui.Alignment.Start,
+                                ui.Alignment.Center,
+                                vec2(ui.windowWidth(), fontSize * 1.25)
                         )
 
                         cui.contentWindow(
@@ -255,15 +231,33 @@ function page.draw()
                 "home_leaderboard_window",
                 0,
                 0,
-                ui.windowWidth() * 0.5,
+                ui.windowWidth() * 0.5 - 7.5 * cui.uiScale(),
                 ui.windowHeight() - 255 * cui.uiScale(),
-                true
+                false
+        )
+        local height = 50 * cui.uiScale()
+
+        ui.drawRectFilled(vec2(0, 0), vec2(ui.windowWidth(), height), rgbm(0.1, 0.1, 0.1, 1))
+
+        ui.setCursor(0)
+        ui.dwriteTextAligned(
+                "LEADERBOARD",
+                fontSize * 1.25,
+                ui.Alignment.Center,
+                ui.Alignment.Center,
+                vec2(ui.windowWidth(), fontSize * 2)
         )
 
-        local height = 44 * cui.uiScale()
-        playerListBanner(0, 0, ui.windowWidth(), height)
+        playerListBanner(0, height, ui.windowWidth(), height)
 
-        cui.pushWindow("home_leaderboard_entrant_window", 0, height, ui.windowWidth(), ui.windowHeight() - height, true)
+        cui.pushWindow(
+                "home_leaderboard_entrant_window",
+                0,
+                height * 2,
+                ui.windowWidth(),
+                ui.windowHeight() - height,
+                true
+        )
         local leaderboardIndex = 0
         for _, slot in ipairs(race.leaderboard) do
                 if slot.car.isConnected then
