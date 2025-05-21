@@ -1,6 +1,26 @@
+local AISpline = require("ai_spline")
 local cui = require("ui.cui")
 local race = require("race")
 local sim = ac.getSim()
+
+local aiFolder = ac.getFolder(ac.FolderID.CurrentTrackLayout) .. "/ai"
+local splineFilename ---@type string
+local spline ---@type AISpline?
+
+local availableSplines = {}
+local function rescanSplines()
+        availableSplines = io.scanDir(aiFolder, "*.ai")
+        if not splineFilename and #availableSplines > 0 then
+                splineFilename = "%s/%s"
+                        % {
+                                aiFolder,
+                                "pit_lane.ai",
+                        }
+                spline = AISpline(splineFilename)
+        end
+end
+
+rescanSplines()
 
 local canvasSize = 1024
 local mapCanvas = ui.ExtraCanvas(canvasSize):setName("map")
@@ -11,6 +31,7 @@ local strokeWidths = {
         drsDetection = 2 * strokeMult,
         trackMain = 3 * strokeMult,
         trackEdge = 2 * strokeMult,
+        trackPit = 1.5 * strokeMult,
         splitLine = 1.5 * strokeMult,
         carDot = 2 * strokeMult,
 }
@@ -33,7 +54,12 @@ for index, section in drsIni:iterate("ZONE") do
 end
 
 local worldCoords = {}
+local worldCoordsPit = {}
 local minX, maxX, minZ, maxZ = math.huge, -math.huge, math.huge, -math.huge
+
+for _, v in ipairs(spline.points) do
+        worldCoordsPit[#worldCoordsPit + 1] = v.pos
+end
 
 for i = 0, mapResolution do
         local t = i / mapResolution
@@ -57,7 +83,6 @@ local offset = vec2(
 
 local function getCanvasPos(worldPos) return vec2(worldPos.x / scale + offset.x, worldPos.z / scale + offset.y) end
 
--- === Draw Functions ===
 local function drawSegment(startT, endT, color, thickness)
         local tStep = 1 / mapResolution
         ui.pathClear()
@@ -86,8 +111,8 @@ local function drawMarker(progress, color, lengthMeters, widthMeters)
         local up = vec3(0, 1, 0)
         local side = vec3.cross(up, look):normalize()
 
-        local halfLength = look * strokeWidths.splitLine
-        local halfWidth = side * strokeWidths.splitLine * 4
+        local halfLength = look * strokeWidths.splitLine * scale * 0.5
+        local halfWidth = side * strokeWidths.splitLine * 4 * scale * 0.5
 
         local p1 = center + halfLength + halfWidth
         local p2 = center + halfLength - halfWidth
@@ -109,10 +134,20 @@ local function drawTrack()
         drawSegment(0, 1, colors.trackEdge, strokeWidths.trackEdge)
 end
 
--- === Map Render Entry ===
+local function drawPitlane()
+        ui.pathClear()
+        for t = 0, #spline.points - 1 do
+                local index = t
+                local wp = worldCoordsPit[index + 1]
+                if wp then ui.pathLineTo(getCanvasPos(wp)) end
+        end
+        ui.pathStroke(rgbm.colors.gray, false, strokeWidths.trackPit)
+end
+
 function drawMapCanvas()
         mapCanvas:clear(rgbm.colors.transparent):update(function()
                 drawDrsZones()
+                drawPitlane()
                 drawTrack()
 
                 for i = 0, #sim.lapSplits - 1 do
@@ -178,17 +213,19 @@ local function drawCarDot(car, position)
         local textSize = dotSize * 2
 
         local carColor = carColors[car.index]
+        local backColor = rgbm.colors.black
 
         local leaderboardPosition = race:getLeaderboardPosition(car.index)
 
-        if car.index == spectatedCar.index then
+        if spectatedCar and car.index == spectatedCar.index then
                 carColor = carPositionColors.focused
         elseif leaderboardPosition == 1 then
                 carColor = carPositionColors.leader
         elseif leaderboardPosition < race:getLeaderboardPosition(spectatedCar.index) then
                 carColor = carPositionColors.ahead
         elseif
-                sim.raceSessionType == ac.SessionType.Race
+                spectatedCar
+                and sim.raceSessionType == ac.SessionType.Race
                 and (car.lapCount + car.splinePosition)
                                 - (spectatedCar.lapCount + spectatedCar.splinePosition)
                         < -0.9
@@ -198,17 +235,13 @@ local function drawCarDot(car, position)
                 carColor = carPositionColors.behind
         end
 
-        if car.speedKmh < 5 then
+        if not (spectatedCar and car.index == spectatedCar.index) and car.speedKmh < 5 then
                 carColor = carColor:clone()
                 carColor.mult = 0.5
+                backColor = rgbm.colors.transparent
         end
 
-        ui.drawCircleFilled(
-                screenPos,
-                dotSize * 1.2 * cui.uiScale(),
-                car.speedKmh < 5 and rgbm.colors.transparent or rgbm.colors.black,
-                20 * cui.uiScale()
-        )
+        ui.drawCircleFilled(screenPos, dotSize * 1.2 * cui.uiScale(), backColor, 20 * cui.uiScale())
         ui.drawCircleFilled(screenPos, dotSize * cui.uiScale(), carColor, 20 * cui.uiScale())
 
         ui.setCursor(screenPos - vec2(textSize, textSize) * cui.uiScale())
@@ -219,15 +252,14 @@ local function drawCarDot(car, position)
                 0,
                 vec2(textSize, textSize) * 2 * cui.uiScale(),
                 false,
-                spectatedCar.index == car.index and rgbm.colors.black or rgbm.colors.white
+                (spectatedCar and spectatedCar.index == car.index) and rgbm.colors.black or rgbm.colors.white
         )
 end
 
 function drawMap()
         local spectatedCar = ac.getCar(sim.focusedCar)
-        local winSize = vec2(ui.windowWidth(), ui.windowHeight())
         local canvasSizeScaled = vec2(canvasSize, canvasSize) * cui.uiScale()
-        local canvasPos = (winSize - canvasSizeScaled) / 2
+        local canvasPos = (ui.windowSize() - canvasSizeScaled) / 2
 
         ui.setCursor(canvasPos)
         ui.image(mapCanvas, canvasSizeScaled, sim.raceFlagType == ac.FlagType.Caution and rgbm.colors.yellow or nil)
