@@ -23,24 +23,15 @@ local bottomBarButtons = {
 }
 
 function page.draw()
+        ui.drawLine(vec2(0, 160 * cui.uiScale()), vec2(ui.windowWidth(), 160 * cui.uiScale()), rgbm.colors.gray, 2)
         ui.drawRectFilled(
-                vec2(0, 0),
-                vec2(ui.windowWidth(), ui.windowHeight()),
-                settings.Appearance.uiThemeColor1 / 1.1
-        )
-
-        cui.pushWindowFitted("settings_general_window")
-        topSubBar("/Settings/General")
-
-        ui.drawLine(vec2(0, 240 * cui.uiScale()), vec2(ui.windowWidth(), 240 * cui.uiScale()), rgbm.colors.gray, 2)
-        ui.drawRectFilled(
-                vec2(0, 240 * cui.uiScale()),
+                vec2(0, 160 * cui.uiScale()),
                 vec2(ui.windowWidth(), ui.windowHeight() - 96 * cui.uiScale()),
                 rgbm(0, 0, 0, 0.2)
         )
 
         for i, v in ipairs(settings.General) do
-                cui.setCursorY(150 + 125 * i)
+                cui.setCursorY(100 + 125 * i)
 
                 if v.widget == 1 then
                         local value = settings.General[v.key] and 1 or 0
@@ -98,7 +89,7 @@ function page.draw()
         )
 
         bottomBar(bottomBarButtons)
-        cui.popWindow()
+
         return ""
 end
 

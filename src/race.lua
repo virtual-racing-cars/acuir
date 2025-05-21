@@ -2,7 +2,7 @@ local sim = ac.getSim()
 
 local session = {
         lapMarkers = {},
-        lapTimes = {},
+        laps = {},
         leaderboard = table.new(sim.carsCount, 0),
         leaderboardPositions = table.new(sim.carsCount, 0),
         leaderboardGaps = {},
@@ -21,12 +21,21 @@ for i = 0, 1, trackLegnth do
         session.timingGates[timingGateCount] = i
 end
 
---
+function session:getLeaderboardPosition(index) return session.leaderboardPositions[index] end
+
 function session:step()
         for i = 0, #ac.getSession(sim.currentSessionIndex).leaderboard - 1 do
                 local leaderboardSlot = ac.getSession(sim.currentSessionIndex).leaderboard[i]
                 session.leaderboard[i + 1] = leaderboardSlot
                 session.leaderboardPositions[leaderboardSlot.car.index] = i + 1
+        end
+
+        if sim.raceSessionType == ac.SessionType.Race then
+                table.sort(session.leaderboard, function(a, b)
+                        if not a.car.isRetired and b.car.isRetired then return true end
+
+                        return a.car.lapCount + a.car.splinePosition > b.car.lapCount + b.car.splinePosition
+                end)
         end
 
         local carAheadIndex = -1
@@ -45,14 +54,23 @@ function session:step()
                 end
 
                 if not session.lapMarkers[car.index] then session.lapMarkers[car.index] = {} end
-                if not session.lapTimes[car.index] then session.lapTimes[car.index] = {} end
+                if not session.laps[car.index] then session.laps[car.index] = {} end
                 if not session.timingGateIndexes[car.index] then session.timingGateIndexes[car.index] = 1 end
                 if not session.timingGateTimes["trackPos"] then session.timingGateTimes["trackPos"] = {} end
                 if not session.timingGateTimes[car.index] then session.timingGateTimes[car.index] = {} end
                 if not session.timingGateTimes[carAheadIndex] then session.timingGateTimes[carAheadIndex] = {} end
 
-                if not session.lapTimes[car.index][car.lapCount] then
-                        session.lapTimes[car.index][car.lapCount] = car.previousLapTimeMs
+                if not session.laps[car.index][car.lapCount] and car.lapCount > 0 then
+                        session.laps[car.index][car.lapCount] = {
+                                car.lapCount,
+                                car.isLastLapValid,
+                                ac.getTyresName(car.index, car.compoundIndex),
+                                car.previousLapTimeMs or -1,
+                                car.lastSplits[0] or -1,
+                                car.lastSplits[1] or -1,
+                                car.lastSplits[2] or -1,
+                                car.previousLapTimeMs - car.bestLapTimeMs,
+                        }
                         session.lapMarkers[car.index][car.lapCount] = sim.replayCurrentFrame
                         session.timingGateIndexes[car.index] = 1
                 end

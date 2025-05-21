@@ -10,6 +10,7 @@ local sim = ac.getSim()
 pages.manager:registerPage("EmptyPage", require("ui.empty.page_empty"))
 pages.manager:registerPage("SessionPage", require("ui.session.page_session"))
 pages.manager:registerPage("SetupPage", require("ui.setup.page_setup"))
+pages.manager:registerPage("LapTimesPage", require("ui.lap_times.page_lap_times"))
 pages.manager:registerPage("SettingsPage", require("ui.settings.page_settings"))
 pages.manager:registerPage("SetupAppsPage", require("ui.setup.page_apps"))
 pages.manager:registerPage("SettingsGeneralPage", require("ui.settings.page_general"))
@@ -33,9 +34,15 @@ function MainMenuWindow(dt)
                         + ui.WindowFlags.NoFocusOnAppearing
         end
 
-        cui.pushWindowFull("main_window", mainWindowFlags)
         updateCommon()
+
+        cui.pushWindowFitted()
+        topBar()
+
+        cui.pushWindow("main_menu_window_sub", 0, 195, ui.windowWidth(), ui.windowHeight() - 195)
         exclusiveHudMode = pages.manager:draw()
+        cui.popWindow(false)
+
         cui.popWindow(false)
 
         if cui.modalDialogCallback then

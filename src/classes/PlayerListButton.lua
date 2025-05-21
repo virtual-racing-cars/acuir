@@ -4,6 +4,76 @@ local sim = ac.getSim()
 local race = require("race")
 local simutils = require("simutils")
 
+SortableListTable = class("SortableLIstTable")
+
+function SortableListTable:initialize(headers)
+        self.columnCount = #headers
+        self.headers = headers
+end
+
+function SortableListTable:draw(table, width, height, itemHeight)
+        local fontSize = math.floor(24 * cui.uiScale())
+        fontSize = (fontSize % 2 == 0) and fontSize + 1 or fontSize
+
+        ui.setCursor(0)
+        ui.drawRectFilled(vec2(0, 0), vec2(width, itemHeight), rgbm.colors.black)
+        for i = 1, self.columnCount do
+                ui.dwriteTextAligned(
+                        self.headers[i].label,
+                        fontSize,
+                        ui.Alignment.Center,
+                        ui.Alignment.Center,
+                        vec2(ui.windowWidth() * self.headers[i].proportion, 50)
+                )
+                ui.sameLine()
+        end
+
+        cui.pushWindow("sortable_list_table", 0, itemHeight, width, height - itemHeight, true)
+        ui.setCursor(0)
+
+        local entryTable = table[1]
+
+        if #entryTable == 0 then
+                ui.drawRectFilled(
+                        vec2(0, ui.getCursorY()),
+                        vec2(width, ui.getCursorY() + itemHeight),
+                        rgbm.colors.black / 4
+                )
+
+                ui.dwriteTextAligned("No entries", fontSize, ui.Alignment.Start, ui.Alignment.Center, vec2(width, 50))
+
+                ui.setCursor(vec2(0, ui.getCursorY() + itemHeight))
+        end
+
+        for i = 1, #entryTable do
+                local entry = entryTable[i]
+
+                ui.drawRectFilled(
+                        vec2(0, ui.getCursorY()),
+                        vec2(width, ui.getCursorY() + itemHeight),
+                        i % 2 == 0 and rgbm.colors.black / 2 or rgbm.colors.black / 4
+                )
+
+                for j = 1, self.columnCount do
+                        local text = entry[j]
+
+                        if j ~= 1 and type(text) == "number" then text = ac.lapTimeToString(text) end
+
+                        ui.dwriteTextAligned(
+                                text,
+                                fontSize,
+                                ui.Alignment.Center,
+                                ui.Alignment.Center,
+                                vec2(width * self.headers[j].proportion, 50)
+                        )
+                        ui.sameLine()
+                end
+                ui.setCursor(vec2(0, ui.getCursorY() + itemHeight))
+        end
+
+        cui.popWindow()
+end
+
 function playerListBanner(xPos, yPos, width, height)
         width = width - width / 50
 

@@ -13,13 +13,7 @@ sm = SetupManager()
 
 local function setupItemWindow()
         ui.setCursor(0)
-        cui.pushWindow(
-                "car_setup_items_window",
-                ui.windowWidth() / 4,
-                56 * cui.uiScale(),
-                ui.windowWidth() / 2,
-                ui.windowHeight() - 56 * cui.uiScale()
-        )
+        cui.pushWindow("car_setup_items_window", ui.windowWidth() / 4, 0, ui.windowWidth() / 2, ui.windowHeight())
         ui.drawRectFilled(0, ui.windowSize(), rgbm(0, 0, 0, 0.25))
 
         ui.setCursor(0)
@@ -29,13 +23,7 @@ end
 
 local function carStatusWindow()
         ui.setCursor(0)
-        cui.pushWindow(
-                "car_status_window",
-                (ui.windowWidth() / 4) * 3,
-                56 * cui.uiScale(),
-                ui.windowWidth() / 4,
-                ui.windowHeight() - 56 * cui.uiScale()
-        )
+        cui.pushWindow("car_status_window", (ui.windowWidth() / 4) * 3, 0, ui.windowWidth() / 4, ui.windowHeight())
         ui.setCursor(0)
         ui.drawRectFilled(0, ui.windowSize(), rgbm(0, 0, 0, 0.5))
         ui.drawRectFilled(0, vec2(ui.windowWidth(), ui.windowHeight() / 20), rgbm(0, 0, 0, 1))
@@ -71,8 +59,8 @@ local function setupIoWindow()
         ui.setCursor(0)
         cui.contentWindow(
                 "setup_left_window",
-                vec2(0, 56 * cui.uiScale()),
-                vec2(ui.windowWidth() / 4, ui.windowHeight() - 56 * cui.uiScale()),
+                vec2(0, 0),
+                vec2(ui.windowWidth() / 4, ui.windowHeight()),
                 ui.WindowFlags.None,
                 function()
                         ui.setCursor(0)
@@ -241,26 +229,12 @@ local function setupIoWindow()
 end
 
 function page:draw()
-        cui.pushWindowFitted("setup_page_window")
-
-        topBar("/ Vehicle Setup")
-
-        cui.pushWindow(
-                "car_setup_window",
-                0,
-                124 * cui.uiScale(),
-                ui.windowWidth(),
-                ui.windowHeight() - 124 * cui.uiScale()
-        )
+        cui.pushWindow("car_setup_window", 0, 0, ui.windowWidth(), ui.windowHeight())
         ui.setCursor(0)
 
         setupItemWindow()
         carStatusWindow()
         setupIoWindow()
-
-        cui.popWindow()
-
-        -- bottomBar(bottomBarButtons)
 
         cui.popWindow()
 

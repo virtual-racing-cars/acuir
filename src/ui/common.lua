@@ -1,8 +1,11 @@
 local app = require("app")
 local callback = require("callback")
+local cardWidget = require("ui.widgets.card")
+local chatWidget = require("ui.widgets.chat")
 local csp = require("csp")
 local cui = require("ui.cui")
 local pages = require("ui.pages")
+local replayWidget = require("ui.widgets.replay")
 local settings = require("settings")
 local simutils = require("simutils")
 local style = require("style")
@@ -255,8 +258,23 @@ function topBar(path)
         end
         ui.offsetCursorX(driveButtonHeight * 0.75)
 
-        if cui.iconButton("Laps", ui.Icons.List, driveButtonHeight, driveButtonHeight, ui.ButtonFlags.Disabled) then
-                ac.tryToRestartSession()
+        if
+                cui.iconButton(
+                        "Laps",
+                        ui.Icons.List,
+                        driveButtonHeight,
+                        driveButtonHeight,
+                        ui.ButtonFlags.Disabled,
+                        false,
+                        nil,
+                        pages.manager.currentPageName == "LapTimesPage"
+                )
+        then
+                if pages.manager.currentPageName == "LapTimesPage" then
+                        pages:goToMainMenu()
+                else
+                        pages:goToLapTimes()
+                end
         end
         ui.offsetCursorX(driveButtonHeight * 0.75)
 
@@ -327,6 +345,35 @@ function topBar(path)
         end
 
         sessionInfo()
+end
+
+function bottomWidgetBar()
+        cui.pushWindow(
+                "bottom_widget_bar_window",
+                0,
+                ui.windowHeight() - 240 * cui.uiScale(),
+                ui.windowWidth(),
+                240 * cui.uiScale(),
+                true
+        )
+        ui.drawRectFilled(vec2(0, 0), vec2(ui.windowWidth(), ui.windowHeight()), rgbm(0.1, 0.1, 0.1, 0.95))
+
+        local border = 15 * cui.uiScale()
+
+        local widgetYPos = ui.windowHeight() - 240 * cui.uiScale() + border
+        local widgetWidth = ui.windowWidth() / 3 - border
+        local widgetHeight = 240 * cui.uiScale() - border * 2
+
+        cardWidget:draw(border, widgetYPos, widgetWidth, widgetHeight)
+        replayWidget:draw(ui.windowWidth() * 0.5 - widgetWidth * 0.5, widgetYPos, widgetWidth, widgetHeight)
+        chatWidget:draw(
+                ui.windowWidth() * 0.5 + widgetWidth * 0.5 + border * 0.5,
+                widgetYPos,
+                widgetWidth,
+                widgetHeight
+        )
+
+        cui.popWindow()
 end
 
 function settingsMenuCommon(path, bottomBarButtons)

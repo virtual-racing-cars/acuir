@@ -53,6 +53,8 @@ function pages:goToSession() pages.manager:setPage("SessionPage") end
 
 function pages:goToSetup() pages.manager:setPage("SetupPage") end
 
+function pages:goToLapTimes() pages.manager:setPage("LapTimesPage") end
+
 function pages:goToSettings() pages.manager:setPage("SettingsPage") end
 
 function pages:goToSetupApps() pages.manager:setPage("SetupAppsPage") end

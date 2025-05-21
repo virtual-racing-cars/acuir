@@ -139,17 +139,20 @@ local function logWindow(height)
         cui.popWindow()
 end
 
+local chatActive = false
+
 local function chatInput(height)
         if not sim.isOnlineRace then return end
 
-        if chat.inputMessage ~= "" and ui.keyPressed(ui.Key.Enter) then
+        if not isempty(chat.inputMessage) and ui.keyPressed(ui.Key.Enter) and chatActive then
                 ac.sendChatMessage(chat.inputMessage)
                 chat.inputMessage = ""
         end
 
         cui.setCursorX(0)
         ui.setCursorY(ui.windowHeight() - height)
-        chat.inputMessage =
+
+        chat.inputMessage, chatActive =
                 cui.inputText("##chatInput", "", chat.inputMessage, "", vec2(ui.windowWidth() * 0.75, height))
         ui.drawRect(
                 vec2(0, ui.windowHeight() - height),
@@ -169,7 +172,7 @@ local function chatInput(height)
                         ui.Icons.Cancel,
                         height,
                         height,
-                        chat.inputMessage ~= "" and ui.ButtonFlags.None or ui.ButtonFlags.Disabled,
+                        isempty(chat.inputMessage) and ui.ButtonFlags.Disabled or ui.ButtonFlags.None,
                         false,
                         1
                 )
@@ -190,7 +193,7 @@ local function chatInput(height)
                         ui.Icons.Send,
                         height,
                         height,
-                        chat.inputMessage ~= "" and ui.ButtonFlags.None or ui.ButtonFlags.Disabled,
+                        isempty(chat.inputMessage) and ui.ButtonFlags.Disabled or ui.ButtonFlags.None,
                         false,
                         1
                 )

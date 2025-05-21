@@ -804,7 +804,9 @@ function CUI.inputText(label, stringPrefix, stringInput, filter, size)
                 inputTextBoxCursorIndex = #stringInput
         end
 
-        if ui.keyPressed(ui.Key.Backspace) or ui.keyPressed(ui.Key.Delete) then captured = "" end
+        if ac.isKeyDown(ui.KeyIndex.Back) or ac.isKeyDown(ui.KeyIndex.Delete) or ac.isKeyDown(ui.KeyIndex.Return) then
+                captured = ""
+        end
 
         if
                 (ui.keyPressed(ui.Key.Backspace) or ui.keyPressed(ui.Key.Delete) or #captured > 0)
@@ -944,8 +946,8 @@ function CUI.popWindow(scroll, flags)
 end
 
 function CUI.pushWindowFitted(id, flags, scroll)
-        local childWindowWith = (2560 - 60) * CUI.uiScale()
-        local childWindowHeight = (1440 - 60) * CUI.uiScale()
+        local childWindowWith = (2560 - 60) * uiScale
+        local childWindowHeight = (1440 - 60) * uiScale
 
         CUI.pushWindow(
                 id,

@@ -6,7 +6,7 @@ local sim = ac.getSim()
 local card = {}
 
 function card:draw(xPos, yPos, width, height)
-        local border = 15 * cui.uiScale()
+        local border = 20 * cui.uiScale()
 
         cui.pushWindow("card_widget_window", xPos, yPos, width, height, false)
         ui.drawRectFilled(vec2(0, 0), ui.windowSize(), settings.Appearance.uiThemeColor1)
@@ -162,11 +162,6 @@ function card:draw(xPos, yPos, width, height)
                 ui.windowHeight() * 0.5,
                 true
         )
-        ui.drawRectFilled(
-                vec2(0, 0),
-                vec2(ui.windowWidth(), ui.windowHeight() - border),
-                settings.Appearance.uiThemeColor1
-        )
 
         cui.setCursorX(0)
         cui.setCursorY(-5)
@@ -178,7 +173,7 @@ function card:draw(xPos, yPos, width, height)
                 vec2(80 * cui.uiScale(), ui.windowHeight())
         )
 
-        local barPosition = ui.windowHeight() / 20 * 2
+        local barPosition = ui.windowHeight() / 20 * 4
         local barWdith = 100 * cui.uiScale()
 
         local steer = spectatedCar.steer / spectatedCar.steerLock
@@ -199,7 +194,7 @@ function card:draw(xPos, yPos, width, height)
                 border
         )
 
-        barPosition = (ui.windowHeight() / 20) * 7
+        barPosition = (ui.windowHeight() / 20) * 10
 
         ui.drawSimpleLine(
                 vec2(barWdith, barPosition),
@@ -215,7 +210,7 @@ function card:draw(xPos, yPos, width, height)
                 border
         )
 
-        barPosition = (ui.windowHeight() / 20) * 12
+        barPosition = (ui.windowHeight() / 20) * 16
 
         ui.drawSimpleLine(
                 vec2(barWdith, barPosition),
@@ -227,21 +222,6 @@ function card:draw(xPos, yPos, width, height)
                 vec2(barWdith, barPosition),
                 vec2(barWdith + (ui.windowWidth() - barWdith) * spectatedCar.brake, barPosition),
                 rgbm(1, 0.3, 0.3, 1),
-                border
-        )
-
-        barPosition = (ui.windowHeight() / 20) * 17
-
-        ui.drawSimpleLine(
-                vec2(barWdith, barPosition),
-                vec2(barWdith + ui.windowWidth(), barPosition),
-                rgbm(0.3, 0.3, 0.3, 1),
-                border
-        )
-        ui.drawSimpleLine(
-                vec2(barWdith, barPosition),
-                vec2(barWdith + (ui.windowWidth() - barWdith) * spectatedCar.clutch, barPosition),
-                rgbm(0.1, 0.4, 1, 1),
                 border
         )
 

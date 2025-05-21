@@ -3,6 +3,7 @@ require("ui.main_menu_window")
 require("ui.pause_window")
 require("ui.pitstop_window")
 require("ui.results_window")
+require("ui.settings_window")
 require("audio")
 local app = require("app")
 local audio = require("audio")
@@ -29,7 +30,16 @@ ui.onExclusiveHUD(function(mode)
 
         local dt = ac.getScriptDeltaT()
 
+        pages:goToSession()
+        -- pages:goToSetup()
+        -- pages:goToSettings()
+        -- pages:goToSettingsGeneral()
         -- pages:goToSession()
+
+        if pages.manager.currentPageName and string.find(pages.manager.currentPageName, "Setting") then
+                SettingsWindow(dt)
+                return ""
+        end
 
         if mode == "menu" then
                 audio:driver(dt)

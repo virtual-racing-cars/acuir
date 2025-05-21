@@ -5,13 +5,9 @@ local page = {}
 
 require("src.classes.PlayerListButton")
 require("src.ui.session.map")
-local cardWidget = require("ui.widgets.card")
-local chatWidget = require("ui.widgets.chat")
 local cui = require("ui.cui")
 local race = require("race")
-local replay = require("replay")
-local replayWidget = require("ui.widgets.replay")
-local settings = require("settings")
+local trackMap = require("src.ui.session.map")
 local assistsINI = ac.INIConfig.load(ac.getFolder(ac.FolderID.Cfg) .. "\\assists.ini")
 local raceINI = ac.INIConfig.raceConfig()
 local personalBestINI = ac.INIConfig.load(ac.getFolder(ac.FolderID.ACDocuments) .. "\\personalbest.ini")
@@ -56,19 +52,6 @@ local assists = {
         },
 }
 
-local trackDescription
-local function getTrackDescription()
-        if not trackDescription then
-                if ac.getTrackID() == "" then return nil end
-                local path = ac.getFolder(ac.FolderID.ContentTracks) .. "/" .. ac.getTrackID() .. "/ui/"
-                if ac.getTrackLayout() ~= "" then path = path .. ac.getTrackLayout() .. "/" end
-                print(path .. "ui_track.json")
-                local description = JSON.parse(io.load(path .. "ui_track.json")).description
-                trackDescription = string.reggsub(description, [[\t|</?br\s*/?\s*>]], "")
-        end
-        return trackDescription
-end
-
 local trackLocation
 local function getTrackLocation()
         if not trackLocation then
@@ -90,26 +73,25 @@ local border = 15
 function page.update() end
 
 function page.draw()
-        cui.pushWindowFitted("session_page_window")
-
-        topBar("/ Leaderboard")
+        local fontSize = 26 * cui.uiScale()
 
         cui.contentWindow(
-                "info_left_window",
-                vec2(ui.windowWidth() - ui.windowWidth() / 5, 180 * cui.uiScale()),
-                vec2(ui.windowWidth() / 5, ui.windowHeight() - 420 * cui.uiScale()),
+                "info_right_window_1",
+                vec2(ui.windowWidth() - ui.windowWidth() / 5, 0),
+                vec2(ui.windowWidth() / 5, 280 * cui.uiScale()),
                 ui.WindowFlags.None,
                 function()
-                        ui.drawRectFilled(0, ui.windowSize(), rgbm(0.1, 0.1, 0.1, 0.55))
+                        ui.setCursor(0)
 
-                        local fontSize = 26 * cui.uiScale()
+                        ui.drawRectFilled(0, ui.windowSize(), rgbm(0.1, 0.1, 0.1, 0.55))
+                        ui.drawRectFilled(0, vec2(ui.windowWidth(), fontSize * 2), rgbm(0.1, 0.1, 0.1, 0.95))
 
                         ui.dwriteTextAligned(
                                 "CAR",
-                                fontSize,
+                                fontSize * 1.25,
                                 ui.Alignment.Center,
                                 ui.Alignment.Center,
-                                vec2(ui.windowWidth(), fontSize * 1.25)
+                                vec2(ui.windowWidth(), fontSize * 2)
                         )
                         ui.newLine()
 
@@ -152,16 +134,26 @@ function page.draw()
                                 ui.Alignment.Center,
                                 vec2(ui.windowWidth(), fontSize * 1.25)
                         )
+                end
+        )
 
-                        ui.newLine()
-                        ui.newLine()
+        cui.contentWindow(
+                "info_right_window_2",
+                vec2(ui.windowWidth() - ui.windowWidth() / 5, 295 * cui.uiScale()),
+                vec2(ui.windowWidth() / 5, 220 * cui.uiScale()),
+                ui.WindowFlags.None,
+                function()
+                        ui.setCursor(0)
+
+                        ui.drawRectFilled(0, ui.windowSize(), rgbm(0.1, 0.1, 0.1, 0.55))
+                        ui.drawRectFilled(0, vec2(ui.windowWidth(), fontSize * 2), rgbm(0.1, 0.1, 0.1, 0.95))
 
                         ui.dwriteTextAligned(
-                                "CIRCUIT",
-                                fontSize,
+                                "TRACK",
+                                fontSize * 1.25,
                                 ui.Alignment.Center,
                                 ui.Alignment.Center,
-                                vec2(ui.windowWidth(), fontSize * 1.25)
+                                vec2(ui.windowWidth(), fontSize * 2)
                         )
                         ui.newLine()
 
@@ -192,16 +184,26 @@ function page.draw()
                                 ui.Alignment.Center,
                                 vec2(ui.windowWidth(), fontSize * 1.25)
                         )
+                end
+        )
 
-                        ui.newLine()
-                        ui.newLine()
+        cui.contentWindow(
+                "info_left_window_3",
+                vec2(ui.windowWidth() - ui.windowWidth() / 5, 530 * cui.uiScale()),
+                vec2(ui.windowWidth() / 5, 405 * cui.uiScale()),
+                ui.WindowFlags.None,
+                function()
+                        ui.setCursor(0)
+
+                        ui.drawRectFilled(0, ui.windowSize(), rgbm(0.1, 0.1, 0.1, 0.55))
+                        ui.drawRectFilled(0, vec2(ui.windowWidth(), fontSize * 2), rgbm(0.1, 0.1, 0.1, 0.95))
 
                         ui.dwriteTextAligned(
-                                "SESSION MODIFIERS",
-                                fontSize,
+                                "MODIFIERS",
+                                fontSize * 1.25,
                                 ui.Alignment.Center,
                                 ui.Alignment.Center,
-                                vec2(ui.windowWidth(), fontSize * 1.25)
+                                vec2(ui.windowWidth(), fontSize * 2)
                         )
                         ui.newLine()
 
@@ -217,12 +219,44 @@ function page.draw()
                 end
         )
 
+        cui.contentWindow(
+                "info_map_window",
+                vec2(ui.windowWidth() * 0.5, 0),
+                vec2((ui.windowWidth() / 7) * 2, ui.windowHeight() * 0.6),
+                ui.WindowFlags.None,
+                function()
+                        ui.drawRectFilled(0, ui.windowSize(), rgbm(0.1, 0.1, 0.1, 0.55))
+                        ui.drawRectFilled(
+                                vec2(0, 0),
+                                vec2(ui.windowWidth(), 50 * cui.uiScale()),
+                                rgbm(0.1, 0.1, 0.1, 1)
+                        )
+
+                        ui.setCursor(0)
+                        ui.dwriteTextAligned(
+                                "MAP",
+                                fontSize * 1.25,
+                                ui.Alignment.Center,
+                                ui.Alignment.Center,
+                                vec2(ui.windowWidth(), fontSize * 2)
+                        )
+
+                        cui.contentWindow(
+                                "info_map_window2",
+                                vec2(0, 50 * cui.uiScale()),
+                                vec2(ui.windowWidth(), ui.windowHeight() - 50 * cui.uiScale()),
+                                ui.WindowFlags.None,
+                                function() drawMap() end
+                        )
+                end
+        )
+
         cui.pushWindow(
                 "home_leaderboard_window",
                 0,
-                180 * cui.uiScale(),
+                0,
                 ui.windowWidth() * 0.5,
-                ui.windowHeight() - 420 * cui.uiScale(),
+                ui.windowHeight() - 255 * cui.uiScale(),
                 true
         )
 
@@ -247,33 +281,7 @@ function page.draw()
         cui.popWindow(true)
         cui.popWindow()
 
-        cui.pushWindow(
-                "home_bottom_bar",
-                0,
-                ui.windowHeight() - 240 * cui.uiScale(),
-                ui.windowWidth(),
-                240 * cui.uiScale(),
-                true
-        )
-        ui.drawRectFilled(vec2(0, 0), vec2(ui.windowWidth(), ui.windowHeight()), rgbm(0.1, 0.1, 0.1, 0.95))
-
-        border = 15 * cui.uiScale()
-
-        local widgetYPos = ui.windowHeight() - 240 * cui.uiScale() + border
-        local widgetWidth = ui.windowWidth() / 3 - border
-        local widgetHeight = 240 * cui.uiScale() - border * 2
-
-        cardWidget:draw(border, widgetYPos, widgetWidth, widgetHeight)
-        replayWidget:draw(ui.windowWidth() * 0.5 - widgetWidth * 0.5, widgetYPos, widgetWidth, widgetHeight)
-        chatWidget:draw(
-                ui.windowWidth() * 0.5 + widgetWidth * 0.5 + border * 0.5,
-                widgetYPos,
-                widgetWidth,
-                widgetHeight
-        )
-
-        cui.popWindow()
-        cui.popWindow()
+        bottomWidgetBar()
 
         return ""
 end
