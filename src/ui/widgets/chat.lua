@@ -4,7 +4,7 @@ local sim = ac.getSim()
 
 local chat = {
         log = {
-                -- { sender = -1, msg = "THIS SERVER IS FOR CUCKOLDS ONLY!!!!" },
+
                 -- { sender = -1, msg = "NON CUCKS NEED TO LEAVE RIGHT NOW!" },
                 -- { sender = -1, msg = "NON CUCKS NEED TO LEAVE RIGHT NOW!" },
                 -- { sender = -1, msg = "NON CUCKS NEED TO LEAVE RIGHT NOW!" },
@@ -21,18 +21,16 @@ local chat = {
         autoScroll = true,
 }
 
-ac.onOnlineWelcome(function(message, config)
-        local msgBlocks = string.split(message, "\n")
-
-        for _, msg in ipairs(msgBlocks) do
+ac.onOnlineWelcome(
+        function(message, config)
                 table.insert(chat.log, {
                         sender = -1,
-                        msg = msg,
+                        msg = message,
                         color = rgbm.colors.orange,
-                        timestamp = os.date("%H:%M", os.time()),
+                        timestamp = "",
                 })
         end
-end)
+)
 
 ac.onChatMessage(function(message, senderCarIndex, senderSessionID)
         local chatColor = rgbm.colors.white
@@ -46,10 +44,16 @@ ac.onChatMessage(function(message, senderCarIndex, senderSessionID)
                 if tags.friend then chatColor = rgbm.colors.green end
         end
 
-        table.insert(
-                chat.log,
-                { sender = senderCarIndex, msg = message, color = chatColor, timestamp = os.date("%H:%M", os.time()) }
-        )
+        local msgBlocks = string.split(message, "\n")
+
+        for i, msg in ipairs(msgBlocks) do
+                table.insert(chat.log, {
+                        sender = senderCarIndex,
+                        msg = msg,
+                        color = chatColor,
+                        timestamp = i == 1 and os.date("%H:%M", os.time()) or "",
+                })
+        end
 end)
 
 ac.onClientConnected(
@@ -76,20 +80,13 @@ ac.onClientDisconnected(
 
 local function logWindow(height)
         cui.pushWindow("chat_log_window", 0, 0, ui.windowWidth(), height, true)
+        ui.pushTextWrapPosition(ui.windowWidth() * 0.93)
 
         for i, line in ipairs(chat.log) do
                 ui.setCursorX(ui.windowWidth() * 0.01)
 
                 if line.sender == -1 then
-                        ui.dwriteTextAligned(
-                                line.msg,
-                                18 * cui.uiScale(),
-                                ui.Alignment.Start,
-                                ui.Alignment.Center,
-                                vec2(ui.windowWidth() * 0.99, 24 * cui.uiScale()),
-                                false,
-                                line.color
-                        )
+                        ui.dwriteTextWrapped(line.msg, 18 * cui.uiScale(), line.color)
 
                         ui.sameLine()
                         ui.setCursorX(0)
@@ -136,6 +133,7 @@ local function logWindow(height)
 
         if chat.autoScroll then ui.setScrollY(ui.getScrollMaxY()) end
 
+        ui.popTextWrapPosition()
         cui.popWindow()
 end
 
@@ -199,6 +197,18 @@ local function chatInput(height)
                 ac.sendChatMessage(chat.inputMessage)
                 chat.inputMessage = ""
         end
+
+        ui.setCursorX(ui.windowWidth() * 0.01)
+        ui.setCursorY(ui.windowHeight() - height)
+        ui.dwriteTextAligned(
+                isempty(chat.inputMessage) and "Type message..." or "",
+                math.floor(height * 0.55),
+                ui.Alignment.Start,
+                ui.Alignment.Center,
+                vec2(ui.windowWidth() * 0.75, height),
+                false,
+                rgbm.colors.gray
+        )
 end
 
 function chat:draw(xPos, yPos, width, height)
