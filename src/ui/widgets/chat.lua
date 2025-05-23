@@ -82,12 +82,12 @@ local function logWindow(height)
         cui.pushWindow("chat_log_window", 0, 0, ui.windowWidth(), height, true)
         ui.pushTextWrapPosition(ui.windowWidth() * 0.93)
 
+        ui.setCursorY(0)
         for i, line in ipairs(chat.log) do
                 ui.setCursorX(ui.windowWidth() * 0.01)
 
                 if line.sender == -1 then
                         ui.dwriteTextWrapped(line.msg, 18 * cui.uiScale(), line.color)
-
                         ui.sameLine()
                         ui.setCursorX(0)
                         ui.dwriteTextAligned(
@@ -95,7 +95,7 @@ local function logWindow(height)
                                 18 * cui.uiScale(),
                                 ui.Alignment.End,
                                 ui.Alignment.Center,
-                                vec2(ui.windowWidth() * 0.99, 24 * cui.uiScale()),
+                                vec2(ui.windowWidth() * 0.98, 24 * cui.uiScale()),
                                 false,
                                 rgbm.colors.gray
                         )
@@ -105,11 +105,10 @@ local function logWindow(height)
                                 18 * cui.uiScale(),
                                 ui.Alignment.Start,
                                 ui.Alignment.Center,
-                                vec2(ui.windowWidth() * 0.99, 24 * cui.uiScale()),
+                                vec2(ui.windowWidth() * 0.98, 24 * cui.uiScale()),
                                 false,
                                 line.color
                         )
-
                         ui.sameLine()
                         ui.setCursorX(0)
                         ui.dwriteTextAligned(
@@ -117,7 +116,7 @@ local function logWindow(height)
                                 18 * cui.uiScale(),
                                 ui.Alignment.End,
                                 ui.Alignment.Center,
-                                vec2(ui.windowWidth() * 0.99, 24 * cui.uiScale()),
+                                vec2(ui.windowWidth() * 0.98, 24 * cui.uiScale()),
                                 false,
                                 rgbm.colors.gray
                         )

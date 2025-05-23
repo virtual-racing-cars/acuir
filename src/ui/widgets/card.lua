@@ -176,7 +176,7 @@ function card:draw(xPos, yPos, width, height)
         local barPosition = ui.windowHeight() / 20 * 4
         local barWdith = 100 * cui.uiScale()
 
-        local steer = spectatedCar.steer / spectatedCar.steerLock
+        local steer = math.clamp(spectatedCar.steer / spectatedCar.steerLock, -1, 1)
 
         ui.drawSimpleLine(
                 vec2(barWdith, barPosition),
