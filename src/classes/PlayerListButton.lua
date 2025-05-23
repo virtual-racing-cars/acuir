@@ -194,7 +194,7 @@ function playerListButton(slot, index, xPos, yPos, width, height)
         ui.drawRectFilled(
                 vec2(xPos, yPos),
                 vec2(xPos + width, yPos + height),
-                evenCar and settings.Appearance.uiThemeColor1 * 0.25 or settings.Appearance.uiThemeColor1 * 0.5
+                evenCar and settings.Appearance.uiThemeColor1 * 0.15 or settings.Appearance.uiThemeColor1 * 0.5
         )
 
         ui.drawRectFilled(
@@ -206,11 +206,11 @@ function playerListButton(slot, index, xPos, yPos, width, height)
 
         local pingColor = rgbm.colors.green
 
-        if car.ping > 240 then
+        if car.ping > 300 then
                 pingColor = rgbm.colors.red
-        elseif car.ping > 160 then
+        elseif car.ping > 250 then
                 pingColor = rgbm.colors.orange
-        elseif car.ping > 80 then
+        elseif car.ping > 100 then
                 pingColor = rgbm.colors.yellow
         end
 
@@ -218,7 +218,7 @@ function playerListButton(slot, index, xPos, yPos, width, height)
                 ui.drawRectFilled(vec2(height * 0.1, yPos), vec2(0, yPos + height), rgbm.colors.black)
 
                 ui.drawRectFilled(
-                        vec2(height * 0.1, yPos + height * math.min(car.ping / 300, 0.9)),
+                        vec2(height * 0.1, yPos + height * math.min(car.ping / 400, 0.9)),
                         vec2(0, yPos + height),
                         pingColor
                 )
@@ -317,7 +317,7 @@ function playerListButton(slot, index, xPos, yPos, width, height)
 
         cui.snapCursor()
         ui.dwriteTextAligned(
-                string.format("%02d", car.lapCount + 1),
+                string.format("%02d", car.sessionLapCount + 1),
                 fontSize,
                 ui.Alignment.Center,
                 ui.Alignment.Center,

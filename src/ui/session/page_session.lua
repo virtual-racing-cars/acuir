@@ -7,6 +7,7 @@ require("src.classes.PlayerListButton")
 require("src.ui.session.map")
 local cui = require("ui.cui")
 local race = require("race")
+local settings = require("settings")
 local simutils = require("simutils")
 local trackMap = require("src.ui.session.map")
 local assistsINI = ac.INIConfig.load(ac.getFolder(ac.FolderID.Cfg) .. "\\assists.ini")
@@ -92,6 +93,63 @@ local weatherTypeString = {
         "Windy",
         "Hail",
 }
+
+local weatherTypeIcon = {
+        [0] = ui.Icons.WeatherStormLight,
+        ui.Icons.WeatherStorm,
+        ui.Icons.WeatherStorm,
+        ui.Icons.WeatherDrizzle,
+        ui.Icons.WeatherDrizzle,
+        ui.Icons.WeatherDrizzle,
+        ui.Icons.WeatherRainLight,
+        ui.Icons.WeatherRain,
+        ui.Icons.WeatherRain,
+        ui.Icons.WeatherSnowLight,
+        ui.Icons.WeatherSnow,
+        ui.Icons.WeatherSnow,
+        ui.Icons.WeatherHail,
+        ui.Icons.WeatherHail,
+        ui.Icons.WeatherHail,
+        ui.Icons.WeatherClear,
+        ui.Icons.WeatherFewClouds,
+        ui.Icons.WeatherFewClouds,
+        ui.Icons.WeatherOvercast,
+        ui.Icons.WeatherOvercast,
+        ui.Icons.WeatherFog,
+        ui.Icons.WeatherFog,
+        ui.Icons.WeatherFog,
+        ui.Icons.WeatherFog,
+        ui.Icons.WeatherFog,
+        ui.Icons.WeatherFog,
+        ui.Icons.WeatherWindy,
+        ui.Icons.WeatherTornado,
+        ui.Icons.WeatherTornado,
+        ui.Icons.WeatherCold,
+        ui.Icons.WeatherHot,
+        ui.Icons.WeatherWindy,
+        ui.Icons.WeatherHail,
+}
+
+---| `ui.Icons.WeatherClear` @![Icon](https://acstuff.ru/images/icons_24/weather_clear.png)
+---| `ui.Icons.WeatherCold` @![Icon](https://acstuff.ru/images/icons_24/weather_cold.png)
+---| `ui.Icons.WeatherDrizzle` @![Icon](https://acstuff.ru/images/icons_24/weather_drizzle.png)
+---| `ui.Icons.WeatherFewClouds` @![Icon](https://acstuff.ru/images/icons_24/weather_few_clouds.png)
+---| `ui.Icons.WeatherFog` @![Icon](https://acstuff.ru/images/icons_24/weather_fog.png)
+---| `ui.Icons.WeatherHail` @![Icon](https://acstuff.ru/images/icons_24/weather_hail.png)
+---| `ui.Icons.WeatherHot` @![Icon](https://acstuff.ru/images/icons_24/weather_hot.png)
+---| `ui.Icons.WeatherHurricane` @![Icon](https://acstuff.ru/images/icons_24/weather_hurricane.png)
+---| `ui.Icons.WeatherOvercast` @![Icon](https://acstuff.ru/images/icons_24/weather_overcast.png)
+---| `ui.Icons.WeatherRainLight` @![Icon](https://acstuff.ru/images/icons_24/weather_rain_light.png)
+---| `ui.Icons.WeatherRain` @![Icon](https://acstuff.ru/images/icons_24/weather_rain.png)
+---| `ui.Icons.WeatherSleet` @![Icon](https://acstuff.ru/images/icons_24/weather_sleet.png)
+---| `ui.Icons.WeatherSnowLight` @![Icon](https://acstuff.ru/images/icons_24/weather_snow_light.png)
+---| `ui.Icons.WeatherSnow` @![Icon](https://acstuff.ru/images/icons_24/weather_snow.png)
+---| `ui.Icons.WeatherStormLight` @![Icon](https://acstuff.ru/images/icons_24/weather_storm_light.png)
+---| `ui.Icons.WeatherStorm` @![Icon](https://acstuff.ru/images/icons_24/weather_storm.png)
+---| `ui.Icons.WeatherTornado` @![Icon](https://acstuff.ru/images/icons_24/weather_tornado.png)
+---| `ui.Icons.WeatherWarm` @![Icon](https://acstuff.ru/images/icons_24/weather_warm.png)
+---| `ui.Icons.WeatherWindySun` @![Icon](https://acstuff.ru/images/icons_24/weather_windy_sun.png)
+---| `ui.Icons.WeatherWindy` @![Icon](https://acstuff.ru/images/icons_24/weather_windy.png)
 
 local sessionInfoTable = {
         {
@@ -370,13 +428,19 @@ function page.draw()
                         end
 
                         ui.drawIcon(
-                                ui.Icons.UpAlt,
-                                vec2(ui.windowWidth() - 100, ui.windowHeight() - 150),
-                                vec2(ui.windowWidth() - 50, ui.windowHeight() - 100)
+                                weatherTypeIcon[sim.weatherType],
+                                vec2(25, ui.windowHeight() - 75),
+                                vec2(75, ui.windowHeight() - 25)
                         )
-                        cui.setCursorX(ui.windowWidth() - 98)
-                        cui.setCursorY(ui.windowHeight() - 105)
-                        ui.dwriteText("N", 80)
+
+                        ui.drawIcon(
+                                ui.Icons.Compass,
+                                vec2(ui.windowWidth() - 75, ui.windowHeight() - 75),
+                                vec2(ui.windowWidth() - 25, ui.windowHeight() - 25)
+                        )
+                        cui.setCursorX(ui.windowWidth() - 62)
+                        cui.setCursorY(ui.windowHeight() - 125)
+                        ui.dwriteText("N", 40)
                 end
         )
 
@@ -389,6 +453,7 @@ function page.draw()
                 false
         )
         local height = 50 * cui.uiScale()
+        ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiThemeColor1 * 0.25)
 
         ui.drawRectFilled(vec2(0, 0), vec2(ui.windowWidth(), height), rgbm(0.1, 0.1, 0.1, 1))
 
@@ -433,6 +498,7 @@ function page.draw()
                 ui.windowHeight() - height,
                 true
         )
+
         local leaderboardIndex = 0
         for _, slot in ipairs(race.leaderboard) do
                 if slot.car.isConnected then
@@ -447,6 +513,8 @@ function page.draw()
                         )
                 end
         end
+        cui.dummy(height, height)
+
         cui.popWindow(true)
         cui.popWindow()
 

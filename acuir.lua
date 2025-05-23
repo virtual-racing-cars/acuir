@@ -38,8 +38,8 @@ ui.onExclusiveHUD(function(mode)
                 -- pages:goToSetup()
                 -- pages:goToSettings()
                 -- pages:goToSettingsGeneral()
-                -- pages:goToSession()
-                -- pages:goToSession()
+                pages:goToSession()
+
                 audio:driver(dt)
 
                 if modeLast ~= mode then pages:setParentMainMenu() end
