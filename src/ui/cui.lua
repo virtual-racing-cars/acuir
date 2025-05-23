@@ -534,6 +534,23 @@ function CUI.iconButton(label, icon, sizeX, sizeY, flags, flipped, iconScale, ac
         return clicked and not disabled
 end
 
+function CUI.emojiButton(label, emoji, sizeX, sizeY, flags, active)
+        local disabled = false
+        if bit.band(flags, ui.ButtonFlags.Disabled) ~= 0 then disabled = true end
+
+        local clicked = ui.invisibleButton("##" .. label, vec2(sizeX, sizeY))
+        local hovered = ui.itemHovered()
+        local r1, r2 = ui.itemRect()
+
+        if hovered then ui.drawRectFilled(r1, r2, rgbm(0.2, 0.2, 0.2, 1)) end
+        if clicked then ui.drawRectFilled(r1, r2, rgbm(1, 0.2, 0.2, 1)) end
+
+        ui.setCursor(r1)
+        ui.dwriteTextAligned(emoji, sizeY * 0.6, ui.Alignment.Center, ui.Alignment.Center, r2 - r1)
+
+        return clicked and not disabled
+end
+
 local treeNodeParent = ""
 function CUI.treeNodeButton(label, size, active, bold, count, defaultOpen)
         if not count then count = 0 end
@@ -654,6 +671,17 @@ end
 
 local inputTextBoxDragIndex = 0
 local inputTextBoxCursorIndex = 2
+local scrollOffsetX = 0
+
+local function measureUTF8PrefixWidth(charTable, upToIndex, fontSize)
+        local width = 0
+        for i = 1, upToIndex do
+                local char = charTable[i]
+                local displayChar = (char == " ") and "." or char
+                width = width + ui.measureDWriteText(displayChar, fontSize).x
+        end
+        return width
+end
 
 function CUI.inputTextBox(label, stringPrefix, stringInput, size)
         local fontSize = math.floor(size.y * 0.55)
@@ -688,8 +716,23 @@ function CUI.inputTextBox(label, stringPrefix, stringInput, size)
         end
 
         local charSizes = {}
-        for i = 1, #stringInput do
-                charSizes[i] = ui.measureDWriteText(stringInput:gsub(" ", "."):sub(i, i), fontSize).x
+        local charPositions = {}
+        local utf8Chars = {}
+        do
+                local i = 1
+                local xOffset = 0
+                while i <= #stringInput do
+                        local cp, len = stringInput:codePointAt(i)
+                        if not cp then break end
+                        local char = stringInput:sub(i, i + len - 1)
+                        utf8Chars[#utf8Chars + 1] = char
+                        local displayChar = (char == " ") and "." or char
+                        local w = ui.measureDWriteText(displayChar, fontSize).x
+                        charSizes[#charSizes + 1] = w
+                        charPositions[#charPositions + 1] = xOffset
+                        xOffset = xOffset + w
+                        i = i + len
+                end
         end
 
         CUI.snapCursor()
@@ -703,12 +746,36 @@ function CUI.inputTextBox(label, stringPrefix, stringInput, size)
                 rgbm.colors.white
         )
         ui.sameLine()
+
+        tempCursor = ui.getCursor()
+
+        local cursorOffset = measureUTF8PrefixWidth(utf8Chars, inputTextBoxCursorIndex, fontSize)
+
+        local boxPadding = 6
+        local chunkSize = size.x * 0.5
+        local boxLeft = tempCursor.x
+        local boxRight = tempCursor.x + size.x
+        local cursorX = boxLeft + cursorOffset
+
+        if cursorX - scrollOffsetX > boxRight - boxPadding then
+                scrollOffsetX = scrollOffsetX + chunkSize
+        elseif cursorX - scrollOffsetX < boxLeft + boxPadding then
+                scrollOffsetX = math.max(scrollOffsetX - chunkSize, 0)
+        end
+
+        local totalTextWidth = charPositions[#charPositions] and (charPositions[#charPositions] + charSizes[#charSizes])
+                or 0
+        if totalTextWidth <= size.x - textOffset * 2 then scrollOffsetX = 0 end
+
+        ui.sameLine()
         tempCursor = ui.getCursor()
 
         CUI.snapCursor()
-        for i in ipairs(charSizes) do
+        for i, char in ipairs(utf8Chars) do
+                local posX = tempCursor.x + charPositions[i] - scrollOffsetX
+                ui.setCursorX(posX)
                 ui.dwriteTextAligned(
-                        stringInput:sub(i, i),
+                        char,
                         fontSize,
                         ui.Alignment.Start,
                         ui.Alignment.Center,
@@ -720,43 +787,46 @@ function CUI.inputTextBox(label, stringPrefix, stringInput, size)
         end
 
         if hovered and ui.mouseClicked(ui.MouseButton.Left) then
-                local charSizeAccum = tempCursor.x
+                local mouseX = ui.mouseLocalPos().x
                 inputTextBoxCursorIndex = 0
-                for i = 1, #stringInput do
-                        if ui.mouseLocalPos().x > charSizeAccum then inputTextBoxCursorIndex = i end
-                        charSizeAccum = charSizeAccum + charSizes[i]
+                for i = 1, #utf8Chars do
+                        if mouseX > tempCursor.x + charPositions[i] - scrollOffsetX then inputTextBoxCursorIndex = i end
                 end
                 inputTextBoxDragIndex = inputTextBoxCursorIndex
         end
 
         if itemActive and math.abs(ui.mouseDragDelta(ui.MouseButton.Left).x) > 0 then
-                local charSizeAccum = tempCursor.x
+                local mouseX = ui.mouseLocalPos().x
                 inputTextBoxDragIndex = 0
-                for i = 1, #stringInput do
-                        if ui.mouseLocalPos().x > charSizeAccum then inputTextBoxDragIndex = i end
-                        charSizeAccum = charSizeAccum + charSizes[i]
+                for i = 1, #utf8Chars do
+                        if mouseX > tempCursor.x + charPositions[i] - scrollOffsetX then inputTextBoxDragIndex = i end
                 end
         end
 
         if itemActive then
                 local left = tempCursor.x
-                        + ui.measureDWriteText(stringInput:gsub(" ", "."):sub(1, inputTextBoxDragIndex), fontSize).x
+                        + measureUTF8PrefixWidth(utf8Chars, inputTextBoxDragIndex, fontSize)
+                        - scrollOffsetX
                 local right = tempCursor.x
-                        + ui.measureDWriteText(stringInput:gsub(" ", "."):sub(1, inputTextBoxCursorIndex), fontSize).x
-
-                ui.drawRectFilled(
-                        vec2(right, ui.getCursorY()),
-                        vec2(right + (left - right), ui.getCursorY() + size.y - 2),
-                        rgbm.colors.red / 2
-                )
+                        + measureUTF8PrefixWidth(utf8Chars, inputTextBoxCursorIndex, fontSize)
+                        - scrollOffsetX
+                if left ~= right then
+                        ui.drawRectFilled(
+                                vec2(right, ui.getCursorY()),
+                                vec2(left, ui.getCursorY() + size.y - 2),
+                                rgbm.colors.red / 2
+                        )
+                end
         end
 
-        if
-                not ui.mouseDown(ui.MouseButton.Left) and itemActive and math.floor(os.clock() * 2) % 2 == 0
-                or (hovered and ui.mouseClicked(ui.MouseButton.Left))
-        then
-                local pos = tempCursor.x
-                        + ui.measureDWriteText(stringInput:gsub(" ", "."):sub(1, inputTextBoxCursorIndex), fontSize).x
+        local drawCursor = (
+                not ui.mouseDown(ui.MouseButton.Left)
+                and itemActive
+                and math.floor(os.clock() * 2) % 2 == 0
+        ) or (hovered and ui.mouseClicked(ui.MouseButton.Left))
+
+        if drawCursor then
+                local pos = tempCursor.x + cursorOffset - scrollOffsetX
                 ui.drawSimpleLine(
                         vec2(pos, r1.y + 10 * CUI.uiScale()),
                         vec2(pos, r1.y - 10 * CUI.uiScale()) + vec2(0, size.y),
@@ -777,32 +847,42 @@ function CUI.inputText(label, stringPrefix, stringInput, filter, size)
         local charToAdd = nil
         local skip = false
 
+        local utf8Chars = {}
+        do
+                local i = 1
+                while i <= #stringInput do
+                        local cp, len = stringInput:codePointAt(i)
+                        if not cp then break end
+                        utf8Chars[#utf8Chars + 1] = stringInput:sub(i, i + len - 1)
+                        i = i + len
+                end
+        end
+
+        local numChars = #utf8Chars
+
         if ui.mouseDoubleClicked(ui.MouseButton.Left) then
                 inputTextBoxDragIndex = 0
-                inputTextBoxCursorIndex = #stringInput
+                inputTextBoxCursorIndex = numChars
         end
 
         if ui.keyPressed(ui.Key.D) and ui.keyboardButtonDown(ui.KeyIndex.Control) then
-                inputTextBoxDragIndex = #stringInput
-                inputTextBoxCursorIndex = inputTextBoxCursorIndex
-                return stringInput, true
+                inputTextBoxDragIndex = numChars
+                return table.concat(utf8Chars), true
         end
 
         if ui.keyPressed(ui.Key.Left) then
                 inputTextBoxCursorIndex = math.max(inputTextBoxCursorIndex - 1, 0)
-
                 if not ui.keyboardButtonDown(ui.KeyIndex.Shift) then inputTextBoxDragIndex = inputTextBoxCursorIndex end
         end
 
         if ui.keyPressed(ui.Key.Right) then
-                inputTextBoxCursorIndex = math.min(inputTextBoxCursorIndex + 1, #stringInput)
-
+                inputTextBoxCursorIndex = math.min(inputTextBoxCursorIndex + 1, numChars)
                 if not ui.keyboardButtonDown(ui.KeyIndex.Shift) then inputTextBoxDragIndex = inputTextBoxCursorIndex end
         end
 
         if ui.keyPressed(ui.Key.A) and ui.keyboardButtonDown(ui.KeyIndex.Control) then
                 inputTextBoxDragIndex = 0
-                inputTextBoxCursorIndex = #stringInput
+                inputTextBoxCursorIndex = numChars
         end
 
         if ac.isKeyDown(ui.KeyIndex.Back) or ac.isKeyDown(ui.KeyIndex.Delete) or ac.isKeyDown(ui.KeyIndex.Return) then
@@ -811,52 +891,46 @@ function CUI.inputText(label, stringPrefix, stringInput, filter, size)
 
         if
                 (ui.keyPressed(ui.Key.Backspace) or ui.keyPressed(ui.Key.Delete) or #captured > 0)
-                and #stringInput > 0
+                and numChars > 0
                 and inputTextBoxDragIndex ~= inputTextBoxCursorIndex
         then
-                if inputTextBoxCursorIndex >= inputTextBoxDragIndex then
-                        stringInput = stringInput:sub(1, inputTextBoxDragIndex)
-                                .. stringInput:sub(inputTextBoxCursorIndex + 1)
-                        inputTextBoxCursorIndex = inputTextBoxDragIndex
+                local startIndex = math.min(inputTextBoxCursorIndex, inputTextBoxDragIndex)
+                local endIndex = math.max(inputTextBoxCursorIndex, inputTextBoxDragIndex)
+                for i = endIndex, startIndex + 1, -1 do
+                        table.remove(utf8Chars, i)
                 end
-
-                if inputTextBoxDragIndex > inputTextBoxCursorIndex then
-                        stringInput = stringInput:sub(1, inputTextBoxCursorIndex)
-                                .. stringInput:sub(inputTextBoxDragIndex + 1)
-                        inputTextBoxDragIndex = inputTextBoxCursorIndex
-                end
+                inputTextBoxCursorIndex = startIndex
+                inputTextBoxDragIndex = startIndex
                 audio:trigger()
-        elseif ui.keyPressed(ui.Key.Backspace) and #stringInput > 0 then
-                ac.debug("inputTextBoxCursorIndex", inputTextBoxCursorIndex)
-                ac.debug("inputTextBoxDragIndex", inputTextBoxDragIndex)
-                skip = true
-                stringInput = stringInput:sub(1, inputTextBoxCursorIndex - 1)
+
+        -- Backspace
+        elseif ui.keyPressed(ui.Key.Backspace) and numChars > 0 and inputTextBoxCursorIndex > 0 then
+                table.remove(utf8Chars, inputTextBoxCursorIndex)
                 inputTextBoxCursorIndex = inputTextBoxCursorIndex - 1
                 inputTextBoxDragIndex = inputTextBoxCursorIndex
-        elseif ui.keyPressed(ui.Key.Delete) and #stringInput > 0 then
-                stringInput = stringInput:sub(1, inputTextBoxCursorIndex)
-                        .. stringInput:sub(inputTextBoxCursorIndex + 2)
+                skip = true
+                audio:trigger()
+
+        -- Delete
+        elseif ui.keyPressed(ui.Key.Delete) and numChars > 0 and inputTextBoxCursorIndex < numChars then
+                table.remove(utf8Chars, inputTextBoxCursorIndex + 1)
                 inputTextBoxCursorIndex = inputTextBoxCursorIndex
                 inputTextBoxDragIndex = inputTextBoxCursorIndex
+                audio:trigger()
         end
 
+        -- Add character
         if #captured > 0 and not skip then
                 charToAdd = captured:queue()
-                if #charToAdd == 1 and charToAdd:match(filter) then
+                if #charToAdd > 0 and charToAdd:match(filter) then
+                        table.insert(utf8Chars, inputTextBoxCursorIndex + 1, charToAdd)
                         inputTextBoxCursorIndex = inputTextBoxCursorIndex + 1
                         inputTextBoxDragIndex = inputTextBoxCursorIndex
-
-                        stringInput = stringInput:sub(1, inputTextBoxCursorIndex - 1)
-                                .. charToAdd
-                                .. stringInput:sub(inputTextBoxCursorIndex)
-
                         audio:trigger()
                 end
         end
 
-        stringInput = stringInput:gsub("\n", "")
-
-        return stringInput, true
+        return table.concat(utf8Chars):gsub("\n", ""), true
 end
 
 function CUI:promptShutdownAC()
