@@ -87,12 +87,8 @@ end
 function simutils.sessionTimeLeftString()
         local leadCar = simutils.session().leaderboard[0]
 
-        ac.debug("1", simutils.session().leaderboard[14].laps)
-        ac.debug("2", simutils.session().leaderboard[14].car.sessionLapCount)
-        ac.debug("3", simutils.session().leaderboard[14].car.splinePosition)
-
         if sim.timeToSessionStart > 0 then
-                return simutils.timeToString(math.max(sim.timeToSessionStart - 5, 0), "Join in -")
+                return simutils.timeToString(math.max(sim.timeToSessionStart - 5, 0), "Countdown -")
         elseif simutils.session().durationMinutes > 0 then
                 if sim.sessionTimeLeft <= 0 then
                         return "Session Over"

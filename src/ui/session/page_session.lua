@@ -19,6 +19,10 @@ local electronicsState = { [0] = "Off", [1] = "Factory", [2] = "On" }
 local assistState = { [0] = "Not Allowed", [1] = "Allowed" }
 local jumpStartState = { [0] = "No Penalty", [1] = "Pits", [2] = "Drive-Through" }
 
+local vec2Temp1 = vec2()
+
+local leaderboardActive = true
+
 local assists = {
         { label = "Traction Control", value = electronicsState[assistsINI:get("ASSISTS", "TRACTION_CONTROL", 0)] },
         { label = "ABS", value = electronicsState[assistsINI:get("ASSISTS", "ABS", 0)] },
@@ -232,13 +236,35 @@ function page.draw()
         ui.drawRectFilled(vec2(0, 0), vec2(ui.windowWidth(), height), rgbm(0.1, 0.1, 0.1, 1))
 
         ui.setCursor(0)
-        ui.dwriteTextAligned(
-                "LEADERBOARD",
-                fontSize * 1.25,
-                ui.Alignment.Center,
-                ui.Alignment.Center,
-                vec2(ui.windowWidth(), fontSize * 2)
-        )
+
+        if
+                cui.menuButton(
+                        "LEADERBOARD",
+                        vec2Temp1:set(ui.windowWidth() / 2, height),
+                        0,
+                        0,
+                        0,
+                        leaderboardActive,
+                        false
+                )
+        then
+                leaderboardActive = true
+        end
+        ui.sameLine()
+
+        if
+                cui.menuButton(
+                        "TIME TABLE",
+                        vec2Temp1:set(ui.windowWidth() / 2, height),
+                        0,
+                        0,
+                        ui.ButtonFlags.Disabled,
+                        not leaderboardActive,
+                        false
+                )
+        then
+                leaderboardActive = false
+        end
 
         playerListBanner(0, height, ui.windowWidth(), height)
 

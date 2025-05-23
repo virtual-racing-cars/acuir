@@ -30,7 +30,6 @@ ui.onExclusiveHUD(function(mode)
 
         local dt = ac.getScriptDeltaT()
 
-        -- pages:goToSession()
         -- pages:goToSetup()
         -- pages:goToSettings()
         -- pages:goToSettingsGeneral()

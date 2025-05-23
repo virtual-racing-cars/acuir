@@ -183,17 +183,27 @@ function playerListButton(slot, index, xPos, yPos, width, height)
         end
 
         local evenCar = index % 2 == 0
-        ui.drawRectFilled(
-                vec2(xPos, yPos),
-                vec2(xPos + width, yPos + height),
-                evenCar and settings.Appearance.uiThemeColor1 / 4 or settings.Appearance.uiThemeColor1 / 2
-        )
 
         ui.drawRectFilled(
                 vec2(xPos, yPos),
                 vec2(xPos + height, yPos + height),
                 sim.focusedCar == car.index and settings.Appearance.uiThemeColor2
                         or (car.index == 0 and settings.Appearance.uiThemeColor3 or settings.Appearance.uiThemeColor1)
+        )
+
+        if index % 2 == 0 then
+                ui.drawRectFilled(
+                        vec2(xPos, yPos),
+                        vec2(xPos + width, yPos + height),
+                        evenCar and settings.Appearance.uiThemeColor1 * 0.25
+                )
+        end
+
+        ui.drawRectFilled(
+                vec2(xPos, yPos),
+                vec2(xPos + height, yPos + height),
+                sim.focusedCar == car.index and settings.Appearance.uiThemeColor2
+                        or (car.index == 0 and settings.Appearance.uiThemeColor3 or rgbm.colors.transparent)
         )
 
         local pingColor = rgbm.colors.green
@@ -206,9 +216,11 @@ function playerListButton(slot, index, xPos, yPos, width, height)
                 pingColor = rgbm.colors.yellow
         end
 
+        ui.drawRectFilled(vec2(height * 0.1, yPos), vec2(0, yPos + height), rgbm.colors.black)
+
         ui.drawRectFilled(
-                vec2(xPos + height + height * 0.1, yPos + height * math.min(car.ping / 300, 0.9)),
-                vec2(xPos + height, yPos + height),
+                vec2(height * 0.1, yPos + height * math.min(car.ping / 300, 0.9)),
+                vec2(0, yPos + height),
                 pingColor
         )
 
@@ -280,7 +292,15 @@ function playerListButton(slot, index, xPos, yPos, width, height)
         end
 
         cui.snapCursor()
-        ui.dwriteTextAligned(gapToLeaderText, fontSize, ui.Alignment.Center, ui.Alignment.Center, vec2(infoWidth, height), false, rgbm.colors.white)
+        ui.dwriteTextAligned(
+                gapToLeaderText,
+                fontSize,
+                ui.Alignment.Center,
+                ui.Alignment.Center,
+                vec2(infoWidth, height),
+                false,
+                rgbm.colors.white
+        )
         ui.sameLine()
 
         cui.snapCursor()

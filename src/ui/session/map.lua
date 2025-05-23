@@ -1,6 +1,7 @@
 local AISpline = require("ai_spline")
 local cui = require("ui.cui")
 local race = require("race")
+local car = ac.getCar(0)
 local sim = ac.getSim()
 
 local aiFolder = ac.getFolder(ac.FolderID.CurrentTrackLayout) .. "/ai"
@@ -150,7 +151,8 @@ end
 
 function drawMapCanvas()
         mapCanvas:clear(rgbm.colors.transparent):update(function()
-                drawDrsZones()
+                if car.drsPresent then drawDrsZones() end
+
                 drawPitlane()
                 drawTrack()
 
@@ -159,8 +161,10 @@ function drawMapCanvas()
                         drawMarker(split, i == 0 and rgbm.colors.red or rgbm.colors.yellow, 30, 2)
                 end
 
-                for _, zone in ipairs(drsZones) do
-                        drawMarker(zone.detection, colors.drs, 30, 2)
+                if car.drsPresent then
+                        for _, zone in ipairs(drsZones) do
+                                drawMarker(zone.detection, colors.drs, 30, 2)
+                        end
                 end
         end)
 end
@@ -211,6 +215,16 @@ local function drawCarDot(car, position)
 
         ui.drawCircleFilled(screenPos, dotSize * 1.2 * cui.uiScale(), backColor, 20 * cui.uiScale())
         ui.drawCircleFilled(screenPos, dotSize * cui.uiScale(), carColor, 20 * cui.uiScale())
+        ui.setCursor(screenPos - vec2(dotSize * cui.uiScale(), dotSize * cui.uiScale()))
+        if
+                ui.invisibleButton(
+                        "##focuscarmarker" .. car.index,
+                        vec2(dotSize * 2 * cui.uiScale(), dotSize * 2 * cui.uiScale()),
+                        ui.ButtonFlags.None
+                )
+        then
+                if car.isConnected then ac.focusCar(car.index) end
+        end
 
         ui.setCursor(screenPos - vec2(textSize, textSize) * cui.uiScale())
         ui.dwriteTextAligned(
