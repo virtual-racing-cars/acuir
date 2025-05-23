@@ -221,7 +221,7 @@ function card:draw(xPos, yPos, width, height)
         ui.drawSimpleLine(
                 vec2(barWdith, barPosition),
                 vec2(barWdith + (ui.windowWidth() - barWdith) * spectatedCar.brake, barPosition),
-                rgbm(1, 0.3, 0.3, 1),
+                rgbm.colors.red,
                 border
         )
 

@@ -395,13 +395,13 @@ function page.draw()
                                 function() drawMap() end
                         )
 
-                        local xStart = 80
-                        local yStart = 100
-                        local size = 50
+                        local xStart = 80 * cui.uiScale()
+                        local yStart = 100 * cui.uiScale()
+                        local size = 50 * cui.uiScale()
                         local row = 0
                         local column = 0
-                        local xGap = 100
-                        local yGap = 120
+                        local xGap = 100 * cui.uiScale()
+                        local yGap = 120 * cui.uiScale()
                         local columnMax = 5
 
                         for i = 0, 24 do
@@ -429,18 +429,18 @@ function page.draw()
 
                         ui.drawIcon(
                                 weatherTypeIcon[sim.weatherType],
-                                vec2(25, ui.windowHeight() - 75),
-                                vec2(75, ui.windowHeight() - 25)
+                                vec2(25 * cui.uiScale(), ui.windowHeight() - 75 * cui.uiScale()),
+                                vec2(75 * cui.uiScale(), ui.windowHeight() - 25 * cui.uiScale())
                         )
 
                         ui.drawIcon(
                                 ui.Icons.Compass,
-                                vec2(ui.windowWidth() - 75, ui.windowHeight() - 75),
-                                vec2(ui.windowWidth() - 25, ui.windowHeight() - 25)
+                                vec2(ui.windowWidth() - 75 * cui.uiScale(), ui.windowHeight() - 75 * cui.uiScale()),
+                                vec2(ui.windowWidth() - 25 * cui.uiScale(), ui.windowHeight() - 25 * cui.uiScale())
                         )
-                        cui.setCursorX(ui.windowWidth() - 62)
-                        cui.setCursorY(ui.windowHeight() - 125)
-                        ui.dwriteText("N", 40)
+                        ui.setCursorX(ui.windowWidth() - 62 * cui.uiScale())
+                        ui.setCursorY(ui.windowHeight() - 125 * cui.uiScale())
+                        ui.dwriteText("N", 40 * cui.uiScale())
                 end
         )
 

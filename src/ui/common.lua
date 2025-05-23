@@ -9,6 +9,7 @@ local replayWidget = require("ui.widgets.replay")
 local settings = require("settings")
 local simutils = require("simutils")
 local style = require("style")
+local tracesWidget = require("ui.widgets.traces")
 local sim = ac.getSim()
 
 local acLogo = ac.getFolder(ac.FolderID.Root) .. "\\launcher\\themes\\default\\graphics\\btn_AC_logo.png"
@@ -287,7 +288,7 @@ function bottomWidgetBar()
         local widgetHeight = 240 * cui.uiScale() - border * 2
 
         cardWidget:draw(border, widgetYPos, widgetWidth, widgetHeight)
-        replayWidget:draw(ui.windowWidth() * 0.5 - widgetWidth * 0.5, widgetYPos, widgetWidth, widgetHeight)
+        tracesWidget:draw(ui.windowWidth() * 0.5 - widgetWidth * 0.5, widgetYPos, widgetWidth, widgetHeight)
         chatWidget:draw(
                 ui.windowWidth() * 0.5 + widgetWidth * 0.5 + border * 0.5,
                 widgetYPos,

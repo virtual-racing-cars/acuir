@@ -142,8 +142,6 @@ end
 local chatActive = false
 
 local function chatInput(height)
-        if not sim.isOnlineRace then return end
-
         if not isempty(chat.inputMessage) and ui.keyPressed(ui.Key.Enter) and chatActive then
                 ac.sendChatMessage(chat.inputMessage)
                 chat.inputMessage = ""
@@ -204,6 +202,8 @@ local function chatInput(height)
 end
 
 function chat:draw(xPos, yPos, width, height)
+        if not sim.isOnlineRace then return end
+
         local chatInputHeight = 40 * cui.uiScale()
 
         cui.pushWindow("chat_widget_window", xPos, yPos, width, height, false)

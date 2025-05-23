@@ -25,8 +25,6 @@ local modeLast = ""
 ui.onExclusiveHUD(function(mode)
         if not app.state.appOpen or ac.getLastError() then return end
 
-        if mode == "menu" and app.state.setupTab ~= 1 then ui.forceSimplifiedComposition() end
-
         local dt = ac.getScriptDeltaT()
 
         if pages.manager.currentPageName and string.find(pages.manager.currentPageName, "Setting") then
@@ -35,10 +33,12 @@ ui.onExclusiveHUD(function(mode)
         end
 
         if mode == "menu" then
+                ui.forceSimplifiedComposition()
+
                 -- pages:goToSetup()
                 -- pages:goToSettings()
                 -- pages:goToSettingsGeneral()
-                pages:goToSession()
+                -- pages:goToSession()
 
                 audio:driver(dt)
 
