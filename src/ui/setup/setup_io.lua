@@ -301,8 +301,6 @@ function setupIoDraw(sm)
                                         then
                                                 carSetup.input.track = track
                                         end
-
-                                        if carSetup.loaded[track][i] then ui.tooltip(function() end) end
                                 end
                         end
                 end,

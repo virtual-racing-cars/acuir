@@ -16,6 +16,7 @@ local personalBestINI = ac.INIConfig.load(ac.getFolder(ac.FolderID.ACDocuments) 
 local trackBestLapTime = ac.lapTimeToString(
         personalBestINI:get(string.upper(string.format("%s@%s", ac.getCarID(0), ac.getTrackFullID("-"))), "TIME", 0)
 )
+local leaderboardWidget = require("ui.widgets.leaderboard")
 
 local electronicsState = { [0] = "Off", [1] = "Factory", [2] = "On" }
 local assistState = { [0] = "Not Allowed", [1] = "Allowed" }
@@ -462,6 +463,8 @@ function page.draw()
                 end
         )
 
+        local height = 50 * cui.uiScale()
+
         cui.pushWindow(
                 "home_leaderboard_window",
                 0,
@@ -470,13 +473,8 @@ function page.draw()
                 ui.windowHeight() - 255 * cui.uiScale(),
                 false
         )
-        local height = 50 * cui.uiScale()
-        ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiThemeColor1 * 0.25)
-
-        ui.drawRectFilled(vec2(0, 0), vec2(ui.windowWidth(), height), rgbm(0.1, 0.1, 0.1, 1))
 
         ui.setCursor(0)
-
         if
                 cui.menuButton(
                         "LEADERBOARD",
@@ -506,34 +504,8 @@ function page.draw()
                 leaderboardActive = false
         end
 
-        playerListBanner(0, height, ui.windowWidth(), height)
+        leaderboardWidget:draw(0, height, ui.windowWidth(), ui.windowHeight() - height)
 
-        cui.pushWindow(
-                "home_leaderboard_entrant_window",
-                0,
-                height * 2,
-                ui.windowWidth(),
-                ui.windowHeight() - height,
-                true
-        )
-
-        local leaderboardIndex = 0
-        for _, slot in ipairs(race.leaderboard) do
-                if slot.car.isConnected then
-                        leaderboardIndex = leaderboardIndex + 1
-                        playerListButton(
-                                slot,
-                                leaderboardIndex,
-                                0,
-                                (leaderboardIndex - 1) * height,
-                                ui.windowWidth(),
-                                height
-                        )
-                end
-        end
-        cui.dummy(height, height)
-
-        cui.popWindow(true)
         cui.popWindow()
 
         bottomWidgetBar()

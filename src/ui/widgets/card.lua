@@ -165,6 +165,7 @@ function card:draw(xPos, yPos, width, height)
 
         cui.setCursorX(0)
         cui.setCursorY(-5)
+        cui.snapCursor()
         ui.dwriteTextAligned(
                 "Gear\n" .. ac.getCarGearLabel(spectatedCar.index),
                 40 * cui.uiScale(),
