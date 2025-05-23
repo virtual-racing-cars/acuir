@@ -39,7 +39,13 @@ function MainMenuWindow(dt)
         cui.pushWindowFitted()
         topBar()
 
-        cui.pushWindow("main_menu_window_sub", 0, 195, ui.windowWidth(), ui.windowHeight() - 195)
+        cui.pushWindow(
+                "main_menu_window_sub",
+                0,
+                195 * cui.uiScale(),
+                ui.windowWidth(),
+                ui.windowHeight() - 195 * cui.uiScale()
+        )
         exclusiveHudMode = pages.manager:draw()
         cui.popWindow(false)
 

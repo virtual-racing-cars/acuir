@@ -172,7 +172,7 @@ function CarStatusWindow()
 
         for i = 1, #centerStatusInfo do
                 local infoBlock = centerStatusInfo[i]
-                local xPos = 130
+                local xPos = 100
                 local yPos = 325
                 local row = i
 

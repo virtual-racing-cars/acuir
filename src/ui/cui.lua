@@ -141,6 +141,7 @@ function CUI.dwriteTextWrapped(text, font) ui.dwriteTextWrapped(text, font * CUI
 function CUI.dwriteText(params)
         if params.xPos then ui.setCursorX(params.xPos * CUI.uiScale()) end
         if params.yPos then ui.setCursorY(params.yPos * CUI.uiScale()) end
+        CUI.snapCursor()
 
         local fontSize = params.fontSize * CUI.uiScale()
         fontSize = (fontSize % 2 ~= 0) and fontSize + 1 or fontSize

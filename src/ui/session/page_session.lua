@@ -184,6 +184,25 @@ local sessionInfoTable = {
         },
 }
 
+local carInfoTable = {
+        {
+                label = "Fastest Lap",
+                value = function() return string.format("%s", trackBestLapTime) end,
+        },
+        {
+                label = "Session Fastest Lap",
+                value = function() return string.format("%s", ac.lapTimeToString(car.bestLapTimeMs)) end,
+        },
+        {
+                label = "Driven Total",
+                value = function() return string.format("%.1f km", car.distanceDrivenTotalKm) end,
+        },
+        {
+                label = "Driven Session",
+                value = function() return string.format("%.1f km", car.distanceDrivenSessionKm) end,
+        },
+}
+
 local trackLocation
 local function getTrackLocation()
         if not trackLocation then
@@ -216,6 +235,7 @@ function page.draw()
                         ui.drawRectFilled(0, ui.windowSize(), rgbm(0.1, 0.1, 0.1, 0.55))
                         ui.drawRectFilled(0, vec2(ui.windowWidth(), fontSize * 2), rgbm(0.1, 0.1, 0.1, 0.95))
 
+                        cui.snapCursor()
                         ui.dwriteTextAligned(
                                 "CONDITIONS",
                                 fontSize * 1.25,
@@ -223,10 +243,12 @@ function page.draw()
                                 ui.Alignment.Center,
                                 vec2(ui.windowWidth(), fontSize * 2)
                         )
-                        ui.newLine()
+
+                        cui.setCursorY(65)
 
                         for _, weather in ipairs(sessionInfoTable) do
                                 ui.setCursorX(ui.windowWidth() * 0.05)
+                                cui.snapCursor()
                                 ui.dwriteTextAligned(
                                         weather.label,
                                         fontSize,
@@ -237,6 +259,7 @@ function page.draw()
                                 ui.sameLine()
                                 ui.setCursorX(ui.windowWidth() * 0.5)
 
+                                cui.snapCursor()
                                 ui.dwriteTextAligned(
                                         weather.value(),
                                         fontSize,
@@ -259,6 +282,7 @@ function page.draw()
                         ui.drawRectFilled(0, ui.windowSize(), rgbm(0.1, 0.1, 0.1, 0.55))
                         ui.drawRectFilled(0, vec2(ui.windowWidth(), fontSize * 2), rgbm(0.1, 0.1, 0.1, 0.95))
 
+                        cui.snapCursor()
                         ui.dwriteTextAligned(
                                 "MODIFIERS",
                                 fontSize * 1.25,
@@ -266,10 +290,12 @@ function page.draw()
                                 ui.Alignment.Center,
                                 vec2(ui.windowWidth(), fontSize * 2)
                         )
-                        ui.newLine()
+
+                        cui.setCursorY(65)
 
                         for _, assist in ipairs(assists) do
                                 ui.setCursorX(ui.windowWidth() * 0.05)
+                                cui.snapCursor()
                                 ui.dwriteTextAligned(
                                         assist.label,
                                         fontSize,
@@ -279,7 +305,7 @@ function page.draw()
                                 )
                                 ui.sameLine()
                                 ui.setCursorX(ui.windowWidth() * 0.5)
-
+                                cui.snapCursor()
                                 ui.dwriteTextAligned(
                                         assist.value,
                                         fontSize,
@@ -302,6 +328,7 @@ function page.draw()
                         ui.drawRectFilled(0, ui.windowSize(), rgbm(0.1, 0.1, 0.1, 0.55))
                         ui.drawRectFilled(0, vec2(ui.windowWidth(), fontSize * 2), rgbm(0.1, 0.1, 0.1, 0.95))
 
+                        cui.snapCursor()
                         ui.dwriteTextAligned(
                                 ac.getCarName(0, false),
                                 fontSize * 1.25,
@@ -309,39 +336,30 @@ function page.draw()
                                 ui.Alignment.Center,
                                 vec2(ui.windowWidth(), fontSize * 2)
                         )
-                        ui.newLine()
 
-                        ui.dwriteTextAligned(
-                                "Track Fastest Lap: %s" % trackBestLapTime,
-                                fontSize,
-                                ui.Alignment.Start,
-                                ui.Alignment.Center,
-                                vec2(ui.windowWidth(), fontSize * 1.25)
-                        )
+                        cui.setCursorY(65)
 
-                        ui.dwriteTextAligned(
-                                "Session Fastest Lap: %s" % ac.lapTimeToString(car.bestLapTimeMs),
-                                fontSize,
-                                ui.Alignment.Start,
-                                ui.Alignment.Center,
-                                vec2(ui.windowWidth(), fontSize * 1.25)
-                        )
-
-                        ui.dwriteTextAligned(
-                                "Driven Total: %.0f km" % car.distanceDrivenTotalKm,
-                                fontSize,
-                                ui.Alignment.Start,
-                                ui.Alignment.Center,
-                                vec2(ui.windowWidth(), fontSize * 1.25)
-                        )
-
-                        ui.dwriteTextAligned(
-                                "Driven Session: %.0f km" % car.distanceDrivenSessionKm,
-                                fontSize,
-                                ui.Alignment.Start,
-                                ui.Alignment.Center,
-                                vec2(ui.windowWidth(), fontSize * 1.25)
-                        )
+                        for _, carInfo in ipairs(carInfoTable) do
+                                ui.setCursorX(ui.windowWidth() * 0.05)
+                                cui.snapCursor()
+                                ui.dwriteTextAligned(
+                                        carInfo.label,
+                                        fontSize,
+                                        ui.Alignment.Start,
+                                        ui.Alignment.Center,
+                                        vec2(ui.windowWidth(), fontSize * 1.25)
+                                )
+                                ui.sameLine()
+                                ui.setCursorX(ui.windowWidth() * 0.5)
+                                cui.snapCursor()
+                                ui.dwriteTextAligned(
+                                        carInfo.value(),
+                                        fontSize,
+                                        ui.Alignment.Start,
+                                        ui.Alignment.Center,
+                                        vec2(ui.windowWidth(), fontSize * 1.25)
+                                )
+                        end
                 end
         )
 
