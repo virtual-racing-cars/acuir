@@ -21,18 +21,20 @@ local chat = {
         autoScroll = true,
 }
 
-ac.onOnlineWelcome(
-        function(message, config)
-                table.insert(chat.log, {
-                        sender = -1,
-                        msg = message,
-                        color = rgbm.colors.orange,
-                        timestamp = "",
-                })
-        end
-)
+ac.onOnlineWelcome(function(message, config)
+        if isempty(message) then return end
+
+        table.insert(chat.log, {
+                sender = -1,
+                msg = message,
+                color = rgbm.colors.orange,
+                timestamp = "",
+        })
+end)
 
 ac.onChatMessage(function(message, senderCarIndex, senderSessionID)
+        if isempty(message) then return end
+
         local chatColor = rgbm.colors.white
 
         if senderCarIndex == 0 then
