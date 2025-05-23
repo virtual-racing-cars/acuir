@@ -191,13 +191,11 @@ function playerListButton(slot, index, xPos, yPos, width, height)
                         or (car.index == 0 and settings.Appearance.uiThemeColor3 or settings.Appearance.uiThemeColor1)
         )
 
-        if index % 2 == 0 then
-                ui.drawRectFilled(
-                        vec2(xPos, yPos),
-                        vec2(xPos + width, yPos + height),
-                        evenCar and settings.Appearance.uiThemeColor1 * 0.25
-                )
-        end
+        ui.drawRectFilled(
+                vec2(xPos, yPos),
+                vec2(xPos + width, yPos + height),
+                evenCar and settings.Appearance.uiThemeColor1 * 0.25 or settings.Appearance.uiThemeColor1 * 0.5
+        )
 
         ui.drawRectFilled(
                 vec2(xPos, yPos),
@@ -216,13 +214,15 @@ function playerListButton(slot, index, xPos, yPos, width, height)
                 pingColor = rgbm.colors.yellow
         end
 
-        ui.drawRectFilled(vec2(height * 0.1, yPos), vec2(0, yPos + height), rgbm.colors.black)
+        if sim.isOnlineRace then
+                ui.drawRectFilled(vec2(height * 0.1, yPos), vec2(0, yPos + height), rgbm.colors.black)
 
-        ui.drawRectFilled(
-                vec2(height * 0.1, yPos + height * math.min(car.ping / 300, 0.9)),
-                vec2(0, yPos + height),
-                pingColor
-        )
+                ui.drawRectFilled(
+                        vec2(height * 0.1, yPos + height * math.min(car.ping / 300, 0.9)),
+                        vec2(0, yPos + height),
+                        pingColor
+                )
+        end
 
         ui.setCursorX(xPos)
         ui.setCursorY(yPos)

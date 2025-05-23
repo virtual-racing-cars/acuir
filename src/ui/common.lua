@@ -65,119 +65,6 @@ function bottomBar(buttons)
         ui.popStyleColor(1)
 end
 
-local weatherTypeString = {
-        [0] = "Light Thunderstorm",
-        "Thunderstorm",
-        "Heavy Thunderstorm",
-        "Light Drizzle",
-        "Drizzle",
-        "Heavy Drizzle",
-        "LightRain",
-        "Rain",
-        "Heavy Rain",
-        "LightSnow",
-        "Snow",
-        "Heavy Snow",
-        "Light Sleet",
-        "Sleet",
-        "Heavy Sleet",
-        "Clear",
-        "Few Clouds",
-        "Scattered Clouds",
-        "Broken Clouds",
-        "Overcast Clouds",
-        "Fog",
-        "Mist",
-        "Smoke",
-        "Haze",
-        "Sand",
-        "Dust",
-        "Squalls",
-        "Tornado",
-        "Hurricane",
-        "Cold",
-        "Hot",
-        "Windy",
-        "Hail",
-}
-
-local sessionInfoTable = {
-
-        {
-                label = function() return "Track" end,
-                row1 = function() return string.format("%.1f° C", sim.roadTemperature) end,
-                row2 = function() return string.format("%s - %.1f %%", simutils.trackGripString, sim.roadGrip * 100) end,
-        },
-        {
-                label = function() return "Air" end,
-                row1 = function() return string.format("%.1f° C", sim.ambientTemperature) end,
-                row2 = function() return string.format("Humidity - %.0f %%", ac.getAirHumidity(vec3(0, 0, 0)) * 100) end,
-        },
-        {
-                label = function() return "Wind" end,
-                row1 = function() return string.format("%.1f kmh", sim.windSpeedKmh) end,
-                row2 = function()
-                        return string.format("%s - %.1f°", simutils.windDirectionString, sim.windDirectionDeg + 180)
-                end,
-        },
-        {
-                label = function() return "Weather" end,
-                row1 = function() return string.format("%s", weatherTypeString[sim.weatherType]) end,
-                row2 = function() return string.format("%s", "") end,
-        },
-}
-
-local function sessionInfo()
-        local startX = (ui.windowWidth() / 5) * 4 + 15 * cui.uiScale()
-        local startY = 12 * cui.uiScale()
-        local sizeX = 160 * cui.uiScale()
-        local sizeY = 28 * cui.uiScale()
-
-        local fontSize = math.floor(sizeY * 0.7)
-        fontSize = (fontSize % 2 ~= 0) and fontSize + 1 or fontSize
-
-        ui.setCursor(vec2(startX, startY))
-        for i in ipairs(sessionInfoTable) do
-                ui.beginGroup()
-
-                style:pushFontBold()
-                cui.snapCursor()
-                ui.dwriteTextAligned(
-                        string.upper(sessionInfoTable[i].label()) .. ":",
-                        fontSize,
-                        ui.Alignment.Start,
-                        ui.Alignment.Center,
-                        vec2(sizeX, sizeY)
-                )
-                ui.popDWriteFont()
-                ui.sameLine()
-
-                ui.offsetCursorX(-50 * cui.uiScale())
-
-                cui.snapCursor()
-                ui.dwriteTextAligned(
-                        sessionInfoTable[i].row1(),
-                        fontSize,
-                        ui.Alignment.Start,
-                        ui.Alignment.Center,
-                        vec2(sizeX, sizeY)
-                )
-                ui.sameLine()
-
-                cui.snapCursor()
-                ui.dwriteTextAligned(
-                        sessionInfoTable[i].row2(),
-                        fontSize,
-                        ui.Alignment.Start,
-                        ui.Alignment.Center,
-                        vec2(sizeX, sizeY)
-                )
-
-                ui.endGroup()
-                ui.setCursorX(startX)
-        end
-end
-
 function topSubBar(path)
         ui.setCursorX(ui.windowWidth() / 65)
         ui.setCursorY(topBarHeight / 2 - acLogoSize.y / 2)
@@ -253,7 +140,7 @@ function topBar(path)
 
         ui.setCursorY(topBarHeight / 2 - driveButtonHeight / 2)
         ui.setCursorX(ui.windowWidth() / 2 - driveButtonWidth / 2)
-        ui.offsetCursorX(-driveButtonHeight * 7)
+        ui.offsetCursorX(-driveButtonHeight * 5.25)
         ui.offsetCursorY(-driveButtonHeight * 0.2)
         if
                 cui.iconButton(
@@ -312,11 +199,6 @@ function topBar(path)
                 else
                         pages:goToLapTimes()
                 end
-        end
-        ui.offsetCursorX(driveButtonHeight * 0.75)
-
-        if cui.iconButton("Settings", ui.Icons.Settings, driveButtonHeight, driveButtonHeight, ui.ButtonFlags.None) then
-                pages:goToSettings()
         end
 
         ui.offsetCursorX(driveButtonHeight * 0.75)
@@ -381,7 +263,10 @@ function topBar(path)
                 cui:promptShutdownAC()
         end
 
-        sessionInfo()
+        ui.setCursorX(ui.windowWidth() - (ui.windowWidth() / 65) - driveButtonHeight)
+        if cui.iconButton("Settings", ui.Icons.Settings, driveButtonHeight, driveButtonHeight, ui.ButtonFlags.None) then
+                pages:goToSettings()
+        end
 end
 
 function bottomWidgetBar()

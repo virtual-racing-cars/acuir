@@ -6,13 +6,6 @@ local car = ac.getCar(0)
 local round = math.ceil
 
 local windDirectionStrings = {
-        "N",
-        "NNE",
-        "NE",
-        "ENE",
-        "E",
-        "SE",
-        "SSE",
         "S",
         "SSW",
         "SW",
@@ -21,8 +14,15 @@ local windDirectionStrings = {
         "WNW",
         "NW",
         "NNW",
+        "N",
+        "NNE",
+        "NE",
+        "ENE",
+        "E",
+        "ESE",
+        "SE",
+        "SSE",
 }
-
 local trackGripStrings = {
         { 86, "DUSTY" },
         { 89, "OLD" },
@@ -57,7 +57,7 @@ local function findClosestIndex(input, numbers)
         return trackGripString
 end
 
-function simutils.windDirectionString() return windDirectionStrings[math.round((sim.windDirectionDeg + 180) / 24) + 1] end
+function simutils.windDirectionString() return windDirectionStrings[math.ceil((sim.windDirectionDeg + 180) / 22.5)] end
 
 function simutils.trackGripString() return findClosestIndex(sim.roadGrip * 100, trackGripStrings) end
 

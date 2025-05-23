@@ -10,7 +10,6 @@ local audio = require("audio")
 local callback = require("callback")
 local csp = require("csp")
 local cui = require("ui.cui")
-local mod = require("install")
 local pages = require("ui.pages")
 local pitstop = require("pitstop")
 local race = require("race")
@@ -30,17 +29,17 @@ ui.onExclusiveHUD(function(mode)
 
         local dt = ac.getScriptDeltaT()
 
-        -- pages:goToSetup()
-        -- pages:goToSettings()
-        -- pages:goToSettingsGeneral()
-        -- pages:goToSession()
-
         if pages.manager.currentPageName and string.find(pages.manager.currentPageName, "Setting") then
                 SettingsWindow(dt)
                 return ""
         end
 
         if mode == "menu" then
+                -- pages:goToSetup()
+                -- pages:goToSettings()
+                -- pages:goToSettingsGeneral()
+                -- pages:goToSession()
+                -- pages:goToSession()
                 audio:driver(dt)
 
                 if modeLast ~= mode then pages:setParentMainMenu() end

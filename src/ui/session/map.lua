@@ -30,8 +30,9 @@ local strokeMult = 5
 local strokeWidths = {
         drsZone = 3.5 * strokeMult,
         drsDetection = 2 * strokeMult,
-        trackMain = 2 * strokeMult,
-        trackEdge = 1.5 * strokeMult,
+        trackMain = 4 * strokeMult,
+        trackEdge = 3 * strokeMult,
+        trackPitEdge = 3 * strokeMult,
         trackPit = 2 * strokeMult,
         splitLine = 1.5 * strokeMult,
         carDot = 2 * strokeMult,
@@ -75,7 +76,7 @@ for i = 0, mapResolution do
         maxZ = math.max(maxZ, pt.z)
 end
 
-local zoom = 1 - (0.01 * -40)
+local zoom = 1 - (0.01 * -25)
 local trackWidth = maxX - minX
 local trackHeight = maxZ - minZ
 local scale = math.max(trackWidth, trackHeight) * zoom / (canvasSize - 256)
@@ -139,6 +140,14 @@ end
 
 local function drawPitlane()
         if not spline then return end
+
+        ui.pathClear()
+        for t = 0, #spline.points - 1 do
+                local index = t
+                local wp = worldCoordsPit[index + 1]
+                if wp then ui.pathLineTo(getCanvasPos(wp)) end
+        end
+        ui.pathStroke(rgbm.colors.black, false, strokeWidths.trackPitEdge)
 
         ui.pathClear()
         for t = 0, #spline.points - 1 do
