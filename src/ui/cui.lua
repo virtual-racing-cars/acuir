@@ -543,7 +543,7 @@ function CUI.emojiButton(label, emoji, sizeX, sizeY, flags, active)
         local r1, r2 = ui.itemRect()
 
         if hovered then ui.drawRectFilled(r1, r2, rgbm(0.2, 0.2, 0.2, 1)) end
-        if clicked then ui.drawRectFilled(r1, r2, rgbm(1, 0.2, 0.2, 1)) end
+        if hovered and ui.mouseDown(ui.MouseButton.Left) then ui.drawRectFilled(r1, r2, rgbm(1, 0.2, 0.2, 1)) end
 
         ui.setCursor(r1)
         ui.dwriteTextAligned(emoji, sizeY * 0.6, ui.Alignment.Center, ui.Alignment.Center, r2 - r1)
@@ -847,6 +847,7 @@ function CUI.inputText(label, stringPrefix, stringInput, filter, size)
         local charToAdd = nil
         local skip = false
 
+        -- Parse UTF-8 characters
         local utf8Chars = {}
         do
                 local i = 1
@@ -860,16 +861,59 @@ function CUI.inputText(label, stringPrefix, stringInput, filter, size)
 
         local numChars = #utf8Chars
 
+        -- Selection shortcuts
         if ui.mouseDoubleClicked(ui.MouseButton.Left) then
                 inputTextBoxDragIndex = 0
                 inputTextBoxCursorIndex = numChars
         end
 
-        if ui.keyPressed(ui.Key.D) and ui.keyboardButtonDown(ui.KeyIndex.Control) then
-                inputTextBoxDragIndex = numChars
-                return table.concat(utf8Chars), true
+        if ui.keyPressed(ui.Key.A) and ui.keyboardButtonDown(ui.KeyIndex.Control) then
+                inputTextBoxDragIndex = 0
+                inputTextBoxCursorIndex = numChars
         end
 
+        -- Copy
+        if ui.keyPressed(ui.Key.C) and ui.keyboardButtonDown(ui.KeyIndex.Control) then
+                if inputTextBoxCursorIndex ~= inputTextBoxDragIndex then
+                        local i1 = math.min(inputTextBoxCursorIndex, inputTextBoxDragIndex) + 1
+                        local i2 = math.max(inputTextBoxCursorIndex, inputTextBoxDragIndex)
+                        local selectedText = table.concat(utf8Chars, "", i1, i2)
+                        ac.setClipboardText(selectedText)
+                end
+        end
+
+        -- Paste
+        if ui.keyPressed(ui.Key.V) and ui.keyboardButtonDown(ui.KeyIndex.Control) then
+                local clip = ui.getClipboardText()
+                if clip and #clip > 0 then
+                        -- remove selection first
+                        if inputTextBoxCursorIndex ~= inputTextBoxDragIndex then
+                                local startIndex = math.min(inputTextBoxCursorIndex, inputTextBoxDragIndex)
+                                local endIndex = math.max(inputTextBoxCursorIndex, inputTextBoxDragIndex)
+                                for i = endIndex, startIndex + 1, -1 do
+                                        table.remove(utf8Chars, i)
+                                end
+                                inputTextBoxCursorIndex = startIndex
+                                inputTextBoxDragIndex = startIndex
+                        end
+
+                        -- insert clipboard chars
+                        local i = 1
+                        while i <= #clip do
+                                local cp, len = clip:codePointAt(i)
+                                if not cp then break end
+                                local ch = clip:sub(i, i + len - 1)
+                                if ch:match(filter) then
+                                        table.insert(utf8Chars, inputTextBoxCursorIndex + 1, ch)
+                                        inputTextBoxCursorIndex = inputTextBoxCursorIndex + 1
+                                        inputTextBoxDragIndex = inputTextBoxCursorIndex
+                                end
+                                i = i + len
+                        end
+                end
+        end
+
+        -- Move cursor
         if ui.keyPressed(ui.Key.Left) then
                 inputTextBoxCursorIndex = math.max(inputTextBoxCursorIndex - 1, 0)
                 if not ui.keyboardButtonDown(ui.KeyIndex.Shift) then inputTextBoxDragIndex = inputTextBoxCursorIndex end
@@ -880,19 +924,12 @@ function CUI.inputText(label, stringPrefix, stringInput, filter, size)
                 if not ui.keyboardButtonDown(ui.KeyIndex.Shift) then inputTextBoxDragIndex = inputTextBoxCursorIndex end
         end
 
-        if ui.keyPressed(ui.Key.A) and ui.keyboardButtonDown(ui.KeyIndex.Control) then
-                inputTextBoxDragIndex = 0
-                inputTextBoxCursorIndex = numChars
-        end
+        if ac.isKeyDown(ui.KeyIndex.Back) or ac.isKeyDown(ui.KeyIndex.Delete) then skip = true end
 
-        if ac.isKeyDown(ui.KeyIndex.Back) or ac.isKeyDown(ui.KeyIndex.Delete) or ac.isKeyDown(ui.KeyIndex.Return) then
-                captured = ""
-        end
-
+        -- Delete selected text
         if
-                (ui.keyPressed(ui.Key.Backspace) or ui.keyPressed(ui.Key.Delete) or #captured > 0)
-                and numChars > 0
-                and inputTextBoxDragIndex ~= inputTextBoxCursorIndex
+                (ac.isKeyDown(ui.KeyIndex.Back) or ui.keyPressed(ui.Key.Delete))
+                and inputTextBoxCursorIndex ~= inputTextBoxDragIndex
         then
                 local startIndex = math.min(inputTextBoxCursorIndex, inputTextBoxDragIndex)
                 local endIndex = math.max(inputTextBoxCursorIndex, inputTextBoxDragIndex)
@@ -901,10 +938,10 @@ function CUI.inputText(label, stringPrefix, stringInput, filter, size)
                 end
                 inputTextBoxCursorIndex = startIndex
                 inputTextBoxDragIndex = startIndex
+                skip = true
                 audio:trigger()
-
         -- Backspace
-        elseif ui.keyPressed(ui.Key.Backspace) and numChars > 0 and inputTextBoxCursorIndex > 0 then
+        elseif ui.keyPressed(ui.Key.Backspace) and inputTextBoxCursorIndex > 0 then
                 table.remove(utf8Chars, inputTextBoxCursorIndex)
                 inputTextBoxCursorIndex = inputTextBoxCursorIndex - 1
                 inputTextBoxDragIndex = inputTextBoxCursorIndex
@@ -912,14 +949,14 @@ function CUI.inputText(label, stringPrefix, stringInput, filter, size)
                 audio:trigger()
 
         -- Delete
-        elseif ui.keyPressed(ui.Key.Delete) and numChars > 0 and inputTextBoxCursorIndex < numChars then
+        elseif ui.keyPressed(ui.Key.Delete) and inputTextBoxCursorIndex < numChars then
                 table.remove(utf8Chars, inputTextBoxCursorIndex + 1)
-                inputTextBoxCursorIndex = inputTextBoxCursorIndex
                 inputTextBoxDragIndex = inputTextBoxCursorIndex
+                skip = true
                 audio:trigger()
         end
 
-        -- Add character
+        -- Insert typed character
         if #captured > 0 and not skip then
                 charToAdd = captured:queue()
                 if #charToAdd > 0 and charToAdd:match(filter) then

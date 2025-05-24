@@ -18,7 +18,7 @@ local chat = {
         },
         inputMessage = "",
         autoScroll = true,
-        emojisOpen = true,
+        emojisOpen = false,
 }
 
 local emojiList = {
@@ -184,7 +184,7 @@ local function logWindow(height)
                         ui.sameLine()
                         ui.offsetCursorX(5 * cui.uiScale())
 
-                        local maxMessageLength = 70
+                        local maxMessageLength = 80
                         local messageRepeat = math.ceil(#line.msg / maxMessageLength) - 1
                         local tempX = ui.getCursorX()
                         ui.dwriteText(string.sub(line.msg, 1, maxMessageLength), fontSize, line.color)
@@ -267,51 +267,54 @@ local function chatInput(height)
 
                 ui.setCursorX(ui.windowWidth() * 0.5)
                 ui.setCursorY(0)
-                ui.childWindow(
-                        "emojiWindow",
-                        vec2(ui.windowWidth() * 0.5, ui.windowHeight() - 40 * cui.uiScale()),
-                        function()
-                                ui.drawRectFilled(
-                                        vec2(0, 0),
-                                        vec2(ui.windowWidth(), 2000 * cui.uiScale()),
-                                        rgbm.colors.black
-                                )
-                                ui.setCursorX(ui.windowWidth() * 0.02)
-                                ui.setCursorY(10 * cui.uiScale())
-                                ui.dwriteTextAligned(
-                                        "Emojis",
-                                        22 * cui.uiScale(),
-                                        ui.Alignment.Start,
-                                        ui.Alignment.Center,
-                                        vec2(ui.windowWidth() * 0.98, 24 * cui.uiScale())
-                                )
-
-                                ui.setCursorY(38 * cui.uiScale())
-                                ui.setCursorX(ui.windowWidth() * 0.02)
-
-                                for i, emoji in ipairs(emojiList) do
-                                        if i > 1 and (i - 1) % 10 == 0 then
-                                                ui.newLine()
-                                                ui.setCursorX(ui.windowWidth() * 0.02)
-                                        end
-
-                                        if
-                                                cui.emojiButton(
-                                                        "emoji" .. emoji.label,
-                                                        emoji.icon,
-                                                        38 * cui.uiScale(),
-                                                        38 * cui.uiScale(),
-                                                        ui.ButtonFlags.None,
-                                                        false
-                                                )
-                                        then
-                                                chat.inputMessage = chat.inputMessage .. emoji.icon
-                                        end
-                                        ui.sameLine()
-                                end
-                        end
+                cui.pushWindow(
+                        "emoji_window",
+                        ui.windowWidth() * 0.5,
+                        0,
+                        ui.windowWidth() * 0.5,
+                        ui.windowHeight() - 40 * cui.uiScale(),
+                        true
                 )
 
+                ui.drawRectFilled(vec2(0, 0), vec2(ui.windowWidth(), 2000 * cui.uiScale()), rgbm.colors.black)
+                ui.setCursorX(ui.windowWidth() * 0.02)
+                ui.setCursorY(10 * cui.uiScale())
+                ui.dwriteTextAligned(
+                        "Emojis",
+                        22 * cui.uiScale(),
+                        ui.Alignment.Start,
+                        ui.Alignment.Center,
+                        vec2(ui.windowWidth() * 0.98, 24 * cui.uiScale())
+                )
+
+                ui.setCursorY(38 * cui.uiScale())
+                ui.setCursorX(ui.windowWidth() * 0.02)
+
+                for i, emoji in ipairs(emojiList) do
+                        if i > 1 and (i - 1) % 10 == 0 then
+                                ui.newLine()
+                                ui.setCursorX(ui.windowWidth() * 0.02)
+                        end
+
+                        if
+                                cui.emojiButton(
+                                        "emoji" .. emoji.label,
+                                        emoji.icon,
+                                        38 * cui.uiScale(),
+                                        38 * cui.uiScale(),
+                                        ui.ButtonFlags.None,
+                                        false
+                                )
+                        then
+                                chat.inputMessage = chat.inputMessage .. emoji.icon
+                        end
+                        ui.sameLine()
+                end
+
+                ui.newLine()
+                cui.dummy(19, 19)
+
+                cui.popWindow(true)
                 ui.setCursor(tempCursor)
         end
 

@@ -5,6 +5,24 @@ local sim = ac.getSim()
 
 local card = {}
 
+local function setPreviousSpectatedCar(focusedCar)
+        local newSpectatedIndex = focusedCar == 0 and sim.carsCount - 1 or focusedCar - 1
+        if ac.getCar(newSpectatedIndex) and ac.getCar(newSpectatedIndex).isConnected then
+                ac.focusCar(newSpectatedIndex)
+        else
+                setPreviousSpectatedCar(newSpectatedIndex)
+        end
+end
+
+local function setNextSpectatedCar(focusedCar)
+        local newSpectatedIndex = focusedCar == sim.carsCount - 1 and 0 or focusedCar + 1
+        if ac.getCar(newSpectatedIndex) and ac.getCar(newSpectatedIndex).isConnected then
+                ac.focusCar(newSpectatedIndex)
+        else
+                setNextSpectatedCar(newSpectatedIndex)
+        end
+end
+
 function card:draw(xPos, yPos, width, height)
         local border = 20 * cui.uiScale()
 
@@ -33,7 +51,7 @@ function card:draw(xPos, yPos, width, height)
 
         cui.snapCursor()
         ui.dwriteTextAligned(
-                ac.getDriverName(spectatedCar.index),
+                string.format("%s (%s)", ac.getDriverName(spectatedCar.index), spectatedCar.index),
                 24 * cui.uiScale(),
                 ui.Alignment.Center,
                 ui.Alignment.Center,
@@ -54,9 +72,7 @@ function card:draw(xPos, yPos, width, height)
                                 1
                         )
                 then
-                        local newSpectatedIndex = spectatedCar.index == 0 and sim.carsCount - 1
-                                or spectatedCar.index - 1
-                        ac.focusCar(newSpectatedIndex)
+                        setPreviousSpectatedCar(sim.focusedCar)
                 end
 
                 ui.setCursorX(ui.windowWidth() - 65 * cui.uiScale())
@@ -72,9 +88,7 @@ function card:draw(xPos, yPos, width, height)
                                 1
                         )
                 then
-                        local newSpectatedIndex = spectatedCar.index == sim.carsCount - 1 and 0
-                                or spectatedCar.index + 1
-                        ac.focusCar(newSpectatedIndex)
+                        setNextSpectatedCar(sim.focusedCar)
                 end
         end
 
