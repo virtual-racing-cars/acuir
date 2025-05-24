@@ -1,10 +1,10 @@
+local mapWidget = require("ui.widgets.map")
 local car = ac.getCar(0)
 local sim = ac.getSim()
 
 local page = {}
 
 require("src.classes.PlayerListButton")
-require("src.ui.pages.session.map")
 local cui = require("ui.cui")
 local race = require("race")
 local settings = require("settings")
@@ -410,7 +410,7 @@ function page.draw()
                                 vec2(0, 50 * cui.uiScale()),
                                 vec2(ui.windowWidth(), ui.windowHeight() - 50 * cui.uiScale()),
                                 ui.WindowFlags.None,
-                                function() drawMap() end
+                                function() mapWidget:draw() end
                         )
 
                         local xStart = 80 * cui.uiScale()

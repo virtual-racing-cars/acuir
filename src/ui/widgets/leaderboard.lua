@@ -11,7 +11,6 @@ function leaderboard:draw(xPos, yPos, width, height)
         ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiThemeColor1 * 0.25)
 
         ui.setCursor(0)
-
         playerListBanner(0, 0, ui.windowWidth(), height)
 
         cui.pushWindow("home_leaderboard_entrant_window", 0, height, ui.windowWidth(), ui.windowHeight() - height, true)
@@ -33,7 +32,6 @@ function leaderboard:draw(xPos, yPos, width, height)
         cui.dummy(height, height)
 
         cui.popWindow(true)
-
         cui.popWindow()
 end
 

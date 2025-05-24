@@ -1,8 +1,11 @@
 local AISpline = require("ai_spline")
 local cui = require("ui.cui")
 local race = require("race")
+local settings = require("settings")
 local car = ac.getCar(0)
 local sim = ac.getSim()
+
+local map = {}
 
 local aiFolder = ac.getFolder(ac.FolderID.CurrentTrackLayout) .. "/ai"
 local splineFilename ---@type string
@@ -23,6 +26,7 @@ end
 
 rescanSplines()
 
+local uiScale = 1
 local canvasSize = 1024
 local mapCanvas = ui.ExtraCanvas(canvasSize):setName("map")
 local mapResolution = 2000
@@ -158,7 +162,7 @@ local function drawPitlane()
         ui.pathStroke(rgbm.colors.gray, false, strokeWidths.trackPit)
 end
 
-function drawMapCanvas()
+local function drawMapCanvas()
         mapCanvas:clear(rgbm.colors.transparent):update(function()
                 if car.drsPresent then drawDrsZones() end
 
@@ -190,7 +194,7 @@ local function drawCarDot(car, position)
         local spectatedCar = ac.getCar(sim.focusedCar)
         if not spectatedCar then return end
 
-        local localPos = getCanvasPos(car.position) * cui.uiScale()
+        local localPos = getCanvasPos(car.position) * uiScale
         local screenPos = position + localPos
 
         local dotSize = strokeWidths.carDot
@@ -222,36 +226,55 @@ local function drawCarDot(car, position)
                 backColor = rgbm.colors.transparent
         end
 
-        ui.drawCircleFilled(screenPos, dotSize * 1.2 * cui.uiScale(), backColor, 20 * cui.uiScale())
-        ui.drawCircleFilled(screenPos, dotSize * cui.uiScale(), carColor, 20 * cui.uiScale())
-        ui.setCursor(screenPos - vec2(dotSize * cui.uiScale(), dotSize * cui.uiScale()))
+        ui.drawCircleFilled(screenPos, dotSize * 1.2 * uiScale, backColor, 20 * uiScale)
+        ui.drawCircleFilled(screenPos, dotSize * uiScale, carColor, 20 * uiScale)
+        ui.setCursor(screenPos - vec2(dotSize * uiScale, dotSize * uiScale))
         if
                 ui.invisibleButton(
                         "##focuscarmarker" .. car.index,
-                        vec2(dotSize * 2 * cui.uiScale(), dotSize * 2 * cui.uiScale()),
+                        vec2(dotSize * 2 * uiScale, dotSize * 2 * uiScale),
                         ui.ButtonFlags.None
                 )
         then
                 if car.isConnected then ac.focusCar(car.index) end
         end
 
-        ui.setCursor(screenPos - vec2(textSize, textSize) * cui.uiScale())
+        ui.setCursor(screenPos - vec2(textSize, textSize) * uiScale)
         ui.dwriteTextAligned(
                 leaderboardPosition,
-                textSize * cui.uiScale(),
+                textSize * uiScale,
                 0,
                 0,
-                vec2(textSize, textSize) * 2 * cui.uiScale(),
+                vec2(textSize, textSize) * 2 * uiScale,
                 false,
                 spectatedCar.index == car.index and rgbm.colors.black or rgbm.colors.white
         )
 end
 
-function drawMap()
+drawMapCanvas()
+
+local widgetSize = vec2(500, 500)
+
+function map:draw(isWidget)
         local spectatedCar = ac.getCar(sim.focusedCar)
-        local canvasSizeScaled = vec2(canvasSize, canvasSize) * cui.uiScale()
+        local canvasSizeScaled = vec2(canvasSize, canvasSize) * uiScale
+
+        if isWidget then
+                ui.beginToolWindow("mapWindow", ui.cursorScreenPos(), widgetSize, true, true)
+
+                if ui.mouseLocalPos() > vec2(0, 0) and ui.mouseLocalPos() < ui.windowSize() then
+                        ui.setCursor(0)
+                        ui.iconButton(ui.Icons.Minus, vec2(20, 20))
+                end
+
+                uiScale = 1
+        else
+                uiScale = cui.uiScale()
+        end
+
         local canvasPos = (ui.windowSize() - canvasSizeScaled) / 2
 
+        ui.beginScale()
         ui.setCursor(canvasPos)
         ui.image(mapCanvas, canvasSizeScaled, sim.raceFlagType == ac.FlagType.Caution and rgbm.colors.yellow or nil)
 
@@ -261,6 +284,12 @@ function drawMap()
         end
 
         drawCarDot(spectatedCar, canvasPos)
+        ui.endScale(0.7)
+
+        if isWidget then
+                ui.endToolWindow()
+                ui.setCursor(vec2(500, 500))
+        end
 end
 
-drawMapCanvas()
+return map

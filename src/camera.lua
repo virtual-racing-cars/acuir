@@ -22,4 +22,22 @@ function camera:step()
         end
 end
 
+function camera:setPreviousSpectatedCar(focusedCar)
+        local newSpectatedIndex = focusedCar == 0 and sim.carsCount - 1 or focusedCar - 1
+        if ac.getCar(newSpectatedIndex) and ac.getCar(newSpectatedIndex).isConnected then
+                ac.focusCar(newSpectatedIndex)
+        else
+                camera:setPreviousSpectatedCar(newSpectatedIndex)
+        end
+end
+
+function camera:setNextSpectatedCar(focusedCar)
+        local newSpectatedIndex = focusedCar == sim.carsCount - 1 and 0 or focusedCar + 1
+        if ac.getCar(newSpectatedIndex) and ac.getCar(newSpectatedIndex).isConnected then
+                ac.focusCar(newSpectatedIndex)
+        else
+                camera:setNextSpectatedCar(newSpectatedIndex)
+        end
+end
+
 return camera

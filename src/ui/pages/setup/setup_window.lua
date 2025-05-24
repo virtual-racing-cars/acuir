@@ -7,7 +7,6 @@ local settings = require("settings")
 
 local currentApp = app.state.setupTab - 1
 local tabBarPosition = 0
-local tabItemPositions = { [0] = 0 }
 
 local function tabItem(index, title)
         if currentApp == index then ui.setScrollFromPosY((index - 1) * 56) end
@@ -16,14 +15,6 @@ local function tabItem(index, title)
                 currentApp = index
         end
 end
-
-ac.onResolutionChange(function(newSize, makingScreenshot)
-        for i in ipairs(tabItemPositions) do
-                tabItemPositions[i] = nil
-        end
-        currentApp = 0
-        tabBarPosition = 0
-end)
 
 local scrollDelayTimer = 0
 
@@ -85,7 +76,7 @@ end
 local spinnerWidth = 600 * cui.uiScale()
 local spinnerHeight = 90 * cui.uiScale()
 
-local function drawSetupSpinner(sm, si)
+local function drawSetupSpinner(si)
         if si.child or si.repair then return end
 
         si:run(true)
@@ -159,10 +150,10 @@ function car_setup(sm)
         if tab.name == "PITSTOP STRATEGY" then
                 for _, spinner in ipairs(sm._pitSpinners) do
                         if spinner.preset == -1 then
-                                drawSetupSpinner(sm, spinner)
+                                drawSetupSpinner(spinner)
                                 currentQuickPitPreset = spinner.value - 1
                         elseif spinner.preset == currentQuickPitPreset then
-                                drawSetupSpinner(sm, spinner)
+                                drawSetupSpinner(spinner)
                         end
                 end
         end
@@ -174,7 +165,7 @@ function car_setup(sm)
                                 v.yPos = 6
                         end
 
-                        if drawSetupSpinner(sm, v) then changed = true end
+                        if drawSetupSpinner(v) then changed = true end
                 end
         end
 

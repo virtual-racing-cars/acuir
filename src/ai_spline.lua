@@ -1,3 +1,6 @@
+-- Author: x4fab
+-- Original Script: AISplineEditor
+
 local binaryUtils = require("shared/utils/binary")
 
 local splinePoint = ac.StructItem.combine({

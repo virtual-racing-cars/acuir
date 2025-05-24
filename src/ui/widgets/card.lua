@@ -1,27 +1,10 @@
+local camera = require("camera")
 local cui = require("ui.cui")
 local race = require("race")
 local settings = require("settings")
 local sim = ac.getSim()
 
 local card = {}
-
-local function setPreviousSpectatedCar(focusedCar)
-        local newSpectatedIndex = focusedCar == 0 and sim.carsCount - 1 or focusedCar - 1
-        if ac.getCar(newSpectatedIndex) and ac.getCar(newSpectatedIndex).isConnected then
-                ac.focusCar(newSpectatedIndex)
-        else
-                setPreviousSpectatedCar(newSpectatedIndex)
-        end
-end
-
-local function setNextSpectatedCar(focusedCar)
-        local newSpectatedIndex = focusedCar == sim.carsCount - 1 and 0 or focusedCar + 1
-        if ac.getCar(newSpectatedIndex) and ac.getCar(newSpectatedIndex).isConnected then
-                ac.focusCar(newSpectatedIndex)
-        else
-                setNextSpectatedCar(newSpectatedIndex)
-        end
-end
 
 function card:draw(xPos, yPos, width, height)
         local border = 20 * cui.uiScale()
@@ -72,7 +55,7 @@ function card:draw(xPos, yPos, width, height)
                                 1
                         )
                 then
-                        setPreviousSpectatedCar(sim.focusedCar)
+                        camera:setPreviousSpectatedCar(sim.focusedCar)
                 end
 
                 ui.setCursorX(ui.windowWidth() - 65 * cui.uiScale())
@@ -88,7 +71,7 @@ function card:draw(xPos, yPos, width, height)
                                 1
                         )
                 then
-                        setNextSpectatedCar(sim.focusedCar)
+                        camera:setNextSpectatedCar(sim.focusedCar)
                 end
         end
 

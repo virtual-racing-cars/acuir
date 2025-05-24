@@ -73,16 +73,6 @@ function topSubBar(path)
 
         cui.setCursorX(180)
         ui.setCursorY(topBarHeight / 2 - (100 * cui.uiScale()) / 2)
-
-        -- ui.dwriteTextAligned(
-        --         path,
-        --         50 * cui.uiScale(),
-        --         ui.Alignment.Start,
-        --         ui.Alignment.Center,
-        --         vec2(600 * cui.uiScale(), 100 * cui.uiScale()),
-        --         false,
-        --         rgbm(1, 1, 1, 1)
-        -- )
 end
 
 function topBar(path)
