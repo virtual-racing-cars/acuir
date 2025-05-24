@@ -1,7 +1,12 @@
+require("ui.windows.main_menu_window")
+require("ui.windows.pause_window")
+require("ui.windows.pitstop_window")
+require("ui.windows.results_window")
+require("ui.windows.settings_window")
 local app = require("app")
 local audio = require("audio")
 local cui = require("ui.cui")
-local pages = require("ui.pages")
+local pages = require("ui.pages.pages")
 
 local modeLast = ""
 

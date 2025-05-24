@@ -1,8 +1,8 @@
 local page = {}
 
-local bindindWindow = require("ui.settings.binding_window")
+local bindindWindow = require("ui.pages.settings.binding_window")
 local cui = require("ui.cui")
-local pages = require("ui.pages")
+local pages = require("ui.pages.pages")
 local settings = require("settings")
 
 local bottomBarButtons = {

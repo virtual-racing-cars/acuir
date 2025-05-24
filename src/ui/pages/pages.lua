@@ -57,8 +57,6 @@ function pages:goToLapTimes() pages.manager:setPage("LapTimesPage") end
 
 function pages:goToSettings() pages.manager:setPage("SettingsPage") end
 
-function pages:goToSetupApps() pages.manager:setPage("SetupAppsPage") end
-
 function pages:goToSettingsGeneral() pages.manager:setPage("SettingsGeneralPage") end
 
 function pages:goToSettingsControls() pages.manager:setPage("SettingsControlsPage") end

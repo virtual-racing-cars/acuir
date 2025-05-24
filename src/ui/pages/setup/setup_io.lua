@@ -1,6 +1,5 @@
 local cui = require("ui.cui")
 
-local callback = require("callback")
 local carSetup = require("src.car_setup")
 local settings = require("settings")
 
@@ -125,7 +124,7 @@ local function promptOverwriteSetup()
         end, false)
 end
 
-local function saveSetupWindow(sm)
+local function drawSetupControls(sm)
         local iconButtonHeight = ui.windowHeight() * 0.1
         local buttonWidth = (ui.windowWidth() / 24) * 22
         local groupBegin = (ui.windowWidth() / 24)
@@ -221,9 +220,56 @@ local function saveSetupWindow(sm)
         end
 end
 
+local function drawSetupNode(setup, track)
+        local setupActive = carSetup.selected.path == setup.path
+        local name = string.replace(setup.name, ".ini", "")
+
+        if cui.treeNodeButton(name, vec2(ui.windowWidth(), 48 * cui.uiScale()), setupActive, false) then
+                carSetup.selected = {
+                        name = name,
+                        track = track,
+                        path = setup.path,
+                        lastWriteTime = setup.lastWriteTime,
+                }
+
+                carSetup.input = {
+                        name = name,
+                        track = track,
+                        path = setup.path,
+                        lastWriteTime = setup.lastWriteTime,
+                }
+
+                if ac.getUI().isMouseLeftKeyDoubleClicked then
+                        sm:LoadStuff(carSetup.selected.path)
+                        carSetup.current = carSetup.selected.track .. "/" .. carSetup.selected.name
+                end
+        end
+end
+
+local function drawSetupList()
+        if refreshingSetups then
+                ui.icon(ui.Icons.LoadingSpinner, ui.availableSpace())
+                return
+        end
+
+        for i, track in ipairs(carSetup.trackList) do
+                ui.setCursorX(0)
+                if
+                        cui.treeNode(track, #carSetup.loaded[track], function()
+                                for i in ipairs(carSetup.loaded[track]) do
+                                        ui.setCursorX(0)
+                                        drawSetupNode(carSetup.loaded[track][i], track)
+                                end
+                        end, i == 1)
+                then
+                        carSetup.input.track = track
+                end
+        end
+end
+
 local lastHide = settings.General.hideOtherTrackSetups
 
-function setupIoDraw(sm)
+function drawSetupIO(sm)
         if lastHide ~= settings.General.hideOtherTrackSetups then carSetup:load() end
 
         if ui.keyPressed(ui.Key.Delete) then
@@ -231,82 +277,14 @@ function setupIoDraw(sm)
                 cui.menuBanner("Deleted Setup", nil, rgbm.colors.red)
         end
 
-        cui.contentWindow(
-                "setup_io_saved_setups",
-                vec2(0, (ui.windowHeight() / 4) * 3),
-                vec2(ui.windowWidth(), ui.windowHeight() / 2),
-                ui.WindowFlags.None,
-                function()
-                        ui.setCursor(0)
+        cui.pushWindow("load_setups", 0, 0, ui.windowWidth(), (ui.windowHeight() / 4) * 3, true, ui.ButtonFlags.None)
+        drawSetupList()
+        cui.popWindow(true)
 
-                        saveSetupWindow(sm)
-                end
-        )
+        cui.pushWindow("setup_io_saved_setups", 0, (ui.windowHeight() / 4) * 3, ui.windowWidth(), ui.windowHeight() / 2)
+        drawSetupControls(sm)
 
-        cui.contentWindow(
-                "load_setups",
-                vec2(0, 0),
-                vec2(ui.windowWidth(), (ui.windowHeight() / 4) * 3),
-                ui.WindowFlags.None,
-                function()
-                        ui.setCursor(0)
-
-                        if refreshingSetups then
-                                ui.icon(ui.Icons.LoadingSpinner, ui.availableSpace())
-                        else
-                                for i, track in ipairs(carSetup.trackList) do
-                                        ui.setCursorX(0)
-                                        if
-                                                cui.treeNode(track, #carSetup.loaded[track], function()
-                                                        for i in ipairs(carSetup.loaded[track]) do
-                                                                local setup = carSetup.loaded[track][i]
-                                                                local setupActive = carSetup.selected.path == setup.path
-                                                                local name = string.replace(setup.name, ".ini", "")
-                                                                ui.setCursorX(0)
-
-                                                                if
-                                                                        cui.treeNodeButton(
-                                                                                name,
-                                                                                vec2(
-                                                                                        ui.windowWidth(),
-                                                                                        48 * cui.uiScale()
-                                                                                ),
-                                                                                setupActive,
-                                                                                false
-                                                                        )
-                                                                then
-                                                                        carSetup.selected = {
-                                                                                name = name,
-                                                                                track = track,
-                                                                                path = setup.path,
-                                                                                lastWriteTime = setup.lastWriteTime,
-                                                                        }
-
-                                                                        carSetup.input = {
-                                                                                name = name,
-                                                                                track = track,
-                                                                                path = setup.path,
-                                                                                lastWriteTime = setup.lastWriteTime,
-                                                                        }
-
-                                                                        if ac.getUI().isMouseLeftKeyDoubleClicked then
-                                                                                sm:LoadStuff(carSetup.selected.path)
-                                                                                carSetup.current = carSetup.selected.track
-                                                                                        .. "/"
-                                                                                        .. carSetup.selected.name
-                                                                        end
-                                                                end
-                                                        end
-                                                end, i == 1)
-                                        then
-                                                carSetup.input.track = track
-                                        end
-                                end
-                        end
-                end,
-                true,
-                true
-        )
+        cui.popWindow()
 
         return ""
 end

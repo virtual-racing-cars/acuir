@@ -4,12 +4,11 @@ local sim = ac.getSim()
 local page = {}
 
 require("src.classes.PlayerListButton")
-require("src.ui.session.map")
+require("src.ui.pages.session.map")
 local cui = require("ui.cui")
 local race = require("race")
 local settings = require("settings")
 local simutils = require("simutils")
-local trackMap = require("src.ui.session.map")
 local assistsINI = ac.INIConfig.load(ac.getFolder(ac.FolderID.Cfg) .. "\\assists.ini")
 local raceINI = ac.INIConfig.raceConfig()
 local personalBestINI = ac.INIConfig.load(ac.getFolder(ac.FolderID.ACDocuments) .. "\\personalbest.ini")

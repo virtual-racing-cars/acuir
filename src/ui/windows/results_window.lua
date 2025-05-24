@@ -2,12 +2,12 @@ require("ui.common")
 require("classes.PageManager")
 local app = require("app")
 local cui = require("ui.cui")
-local pages = require("ui.pages")
+local pages = require("ui.pages.pages")
 local settings = require("settings")
 local style = require("style")
-pages.manager:registerPage("PauseMenu", require("ui.pause.page_pause_home"))
+pages.manager:registerPage("ResultsMenu", require("ui.pages.results.page_results_home"))
 
-function PauseMenuWindow(dt)
+function ResultsMenuWindow(dt)
         local exclusiveHudMode = ""
 
         ui.pushAllowKeyboardFocus(false)
@@ -28,7 +28,7 @@ function PauseMenuWindow(dt)
         end
 
         cui.contentWindow(
-                "pause_window",
+                "results_window",
                 vec2((ui.windowWidth() - childWindowWith) / 2, (ui.windowHeight() - childWindowHeight) / 2),
                 vec2(childWindowWith, childWindowHeight),
                 mainWindowFlags,

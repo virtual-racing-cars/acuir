@@ -3,19 +3,7 @@ local settings = require("settings")
 local sim = ac.getSim()
 
 local chat = {
-        log = {
-
-                -- {
-                --         sender = 0,
-                --         msg = "Test Test",
-                --         timestamp = "11:11",
-                -- },
-                -- {
-                --         sender = 0,
-                --         msg = "Test Test",
-                --         timestamp = "11:11",
-                -- },
-        },
+        log = {},
         inputMessage = "",
         autoScroll = true,
         emojisOpen = false,

@@ -1,4 +1,4 @@
-require("src.ui.setup.gear_window")
+require("src.ui.pages.setup.gear_window")
 require("src.classes.Slider")
 local app = require("app")
 local audio = require("audio")

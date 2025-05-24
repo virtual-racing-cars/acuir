@@ -1,8 +1,8 @@
 local page = {}
 
-require("ui.setup.setup_window")
-require("ui.setup.car_status_window")
-require("src.ui.setup.setup_io")
+require("ui.pages.setup.setup_window")
+require("ui.pages.setup.car_status_window")
+require("ui.pages.setup.setup_io")
 require("classes.SetupManager")
 local app = require("app")
 local cui = require("ui.cui")
@@ -218,7 +218,7 @@ local function setupIoWindow()
                                                                 )
                                                                 sm._apps["Setup Exchange"].script[sm._apps["Setup Exchange"].setupWindow]()
                                                         else
-                                                                setupIoDraw(sm)
+                                                                drawSetupIO(sm)
                                                         end
                                                 end
                                         )
