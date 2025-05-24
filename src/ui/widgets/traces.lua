@@ -2,12 +2,16 @@ local cui = require("ui.cui")
 local settings = require("settings")
 local sim = ac.getSim()
 
-local seconds_of_telemetry = 5
-local telemetry_framerate = 60
-local updateTime = 0
+local tracesGraph = {}
+
+local spectatedCarIndexLast = 0
+local border = 7.5
+
+local traceLifetime = 5
+local traceFramerate = 60
+local updateTimer = 0
 
 local traces = {
-
         {
                 data = {},
                 update = function(car) return car.gas end,
@@ -20,27 +24,41 @@ local traces = {
         },
 }
 
-for i = 1, seconds_of_telemetry * telemetry_framerate do
+local function getMaxDataCount() return traceLifetime * traceFramerate end
+
+for i = 1, getMaxDataCount() do
         for _, trace in pairs(traces) do
                 trace.data[i] = 0
         end
 end
 
-local tracesGraph = {}
+local function resetUpdateTimer() updateTimer = updateTimer + (1 / traceFramerate) end
 
-local spectatedCarIndexLast = 0
+local function clearTraceData()
+        for i = 1, getMaxDataCount() do
+                for _, trace in pairs(traces) do
+                        trace.data[i] = 0
+                end
+        end
 
-local border = 7.5
+        resetUpdateTimer()
+end
 
-function tracesGraph:draw(xPos, yPos, width, height)
-        cui.pushWindow("traces_widget_window", xPos, yPos, width, height, false)
-        ui.drawRectFilled(vec2(0, 0), vec2(ui.windowWidth(), ui.windowHeight()), settings.Appearance.uiThemeColor1)
+local function updateTraceData(car)
+        for _, trace in ipairs(traces) do
+                if #trace.data > getMaxDataCount() then table.remove(trace.data, 1) end
 
-        border = 7.5 * cui.uiScale()
+                if car then
+                        table.insert(trace.data, trace.update(car))
+                else
+                        table.insert(trace.data, 0)
+                end
+        end
 
-        cui.pushWindow("traces_widget_window2", border, border, width - border * 2, height - border * 2, false)
-        ui.drawRectFilled(0, vec2(ui.windowWidth(), ui.windowHeight()), rgbm(0.1, 0.1, 0.1, 1))
+        resetUpdateTimer()
+end
 
+local function drawGridLines()
         local quarterHeight = ui.windowHeight() / 4
 
         for i = 1, 3 do
@@ -51,35 +69,9 @@ function tracesGraph:draw(xPos, yPos, width, height)
                         2 * cui.uiScale()
                 )
         end
+end
 
-        local spectatedCar = ac.getCar(sim.focusedCar)
-
-        if sim.focusedCar ~= spectatedCarIndexLast then
-                spectatedCarIndexLast = sim.focusedCar
-
-                for i = 1, seconds_of_telemetry * telemetry_framerate do
-                        for _, trace in pairs(traces) do
-                                trace.data[i] = 0
-                        end
-                end
-        end
-
-        if updateTime <= 0 then
-                updateTime = updateTime + 1 / telemetry_framerate -- next update
-
-                for _, trace in ipairs(traces) do
-                        if #trace.data > seconds_of_telemetry * telemetry_framerate then table.remove(trace.data, 1) end
-
-                        if spectatedCar then
-                                table.insert(trace.data, trace.update(spectatedCar))
-                        else
-                                table.insert(trace.data, 0)
-                        end
-                end
-        end
-
-        updateTime = updateTime - ac.getScriptDeltaT()
-
+local function drawTraces()
         local lowerBound = ui.windowHeight() - ui.windowHeight() * 0.1
         local upperBound = ui.windowHeight() - ui.windowHeight() * 0.2
 
@@ -92,6 +84,30 @@ function tracesGraph:draw(xPos, yPos, width, height)
                 end
                 ui.pathSmoothStroke(trace.color, false, 4 * cui.uiScale())
         end
+end
+
+function tracesGraph:draw(xPos, yPos, width, height)
+        cui.pushWindow("traces_widget_window", xPos, yPos, width, height, false)
+        ui.drawRectFilled(vec2(0, 0), vec2(ui.windowWidth(), ui.windowHeight()), settings.Appearance.uiThemeColor1)
+
+        border = 7.5 * cui.uiScale()
+
+        cui.pushWindow("traces_widget_window2", border, border, width - border * 2, height - border * 2, false)
+        ui.drawRectFilled(0, vec2(ui.windowWidth(), ui.windowHeight()), rgbm(0.1, 0.1, 0.1, 1))
+        drawGridLines()
+
+        local spectatedCar = ac.getCar(sim.focusedCar)
+
+        if sim.focusedCar ~= spectatedCarIndexLast then
+                clearTraceData()
+                spectatedCarIndexLast = sim.focusedCar
+        end
+
+        if updateTimer <= 0 then updateTraceData(spectatedCar) end
+
+        drawTraces()
+
+        updateTimer = updateTimer - ac.getScriptDeltaT()
 
         cui.popWindow()
         cui.popWindow()

@@ -847,7 +847,6 @@ function CUI.inputText(label, stringPrefix, stringInput, filter, size)
         local charToAdd = nil
         local skip = false
 
-        -- Parse UTF-8 characters
         local utf8Chars = {}
         do
                 local i = 1
@@ -861,7 +860,6 @@ function CUI.inputText(label, stringPrefix, stringInput, filter, size)
 
         local numChars = #utf8Chars
 
-        -- Selection shortcuts
         if ui.mouseDoubleClicked(ui.MouseButton.Left) then
                 inputTextBoxDragIndex = 0
                 inputTextBoxCursorIndex = numChars
@@ -872,7 +870,6 @@ function CUI.inputText(label, stringPrefix, stringInput, filter, size)
                 inputTextBoxCursorIndex = numChars
         end
 
-        -- Copy
         if ui.keyPressed(ui.Key.C) and ui.keyboardButtonDown(ui.KeyIndex.Control) then
                 if inputTextBoxCursorIndex ~= inputTextBoxDragIndex then
                         local i1 = math.min(inputTextBoxCursorIndex, inputTextBoxDragIndex) + 1
@@ -882,11 +879,9 @@ function CUI.inputText(label, stringPrefix, stringInput, filter, size)
                 end
         end
 
-        -- Paste
         if ui.keyPressed(ui.Key.V) and ui.keyboardButtonDown(ui.KeyIndex.Control) then
                 local clip = ui.getClipboardText()
                 if clip and #clip > 0 then
-                        -- remove selection first
                         if inputTextBoxCursorIndex ~= inputTextBoxDragIndex then
                                 local startIndex = math.min(inputTextBoxCursorIndex, inputTextBoxDragIndex)
                                 local endIndex = math.max(inputTextBoxCursorIndex, inputTextBoxDragIndex)
@@ -897,7 +892,6 @@ function CUI.inputText(label, stringPrefix, stringInput, filter, size)
                                 inputTextBoxDragIndex = startIndex
                         end
 
-                        -- insert clipboard chars
                         local i = 1
                         while i <= #clip do
                                 local cp, len = clip:codePointAt(i)
@@ -913,7 +907,6 @@ function CUI.inputText(label, stringPrefix, stringInput, filter, size)
                 end
         end
 
-        -- Move cursor
         if ui.keyPressed(ui.Key.Left) then
                 inputTextBoxCursorIndex = math.max(inputTextBoxCursorIndex - 1, 0)
                 if not ui.keyboardButtonDown(ui.KeyIndex.Shift) then inputTextBoxDragIndex = inputTextBoxCursorIndex end
@@ -924,9 +917,10 @@ function CUI.inputText(label, stringPrefix, stringInput, filter, size)
                 if not ui.keyboardButtonDown(ui.KeyIndex.Shift) then inputTextBoxDragIndex = inputTextBoxCursorIndex end
         end
 
-        if ac.isKeyDown(ui.KeyIndex.Back) or ac.isKeyDown(ui.KeyIndex.Delete) then skip = true end
+        if ac.isKeyDown(ui.KeyIndex.Back) or ac.isKeyDown(ui.KeyIndex.Delete) or ac.isKeyDown(ui.KeyIndex.Return) then
+                skip = true
+        end
 
-        -- Delete selected text
         if
                 (ac.isKeyDown(ui.KeyIndex.Back) or ui.keyPressed(ui.Key.Delete))
                 and inputTextBoxCursorIndex ~= inputTextBoxDragIndex
@@ -940,15 +934,12 @@ function CUI.inputText(label, stringPrefix, stringInput, filter, size)
                 inputTextBoxDragIndex = startIndex
                 skip = true
                 audio:trigger()
-        -- Backspace
         elseif ui.keyPressed(ui.Key.Backspace) and inputTextBoxCursorIndex > 0 then
                 table.remove(utf8Chars, inputTextBoxCursorIndex)
                 inputTextBoxCursorIndex = inputTextBoxCursorIndex - 1
                 inputTextBoxDragIndex = inputTextBoxCursorIndex
                 skip = true
                 audio:trigger()
-
-        -- Delete
         elseif ui.keyPressed(ui.Key.Delete) and inputTextBoxCursorIndex < numChars then
                 table.remove(utf8Chars, inputTextBoxCursorIndex + 1)
                 inputTextBoxDragIndex = inputTextBoxCursorIndex
@@ -956,7 +947,6 @@ function CUI.inputText(label, stringPrefix, stringInput, filter, size)
                 audio:trigger()
         end
 
-        -- Insert typed character
         if #captured > 0 and not skip then
                 charToAdd = captured:queue()
                 if #charToAdd > 0 and charToAdd:match(filter) then

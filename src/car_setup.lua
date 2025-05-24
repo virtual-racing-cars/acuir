@@ -1,5 +1,6 @@
 local app = require("app")
 local settings = require("src.settings")
+local sim = ac.getSim()
 
 local setup = {
         current = "generic/default",
@@ -114,6 +115,16 @@ function setup:delete()
         setup.selected = { name = "", track = "", path = "", lastWriteTime = "" }
 
         setup:load()
+end
+
+local isInMainMenuLast = sim.isInMainMenu
+
+function setup:step()
+        if isInMainMenuLast ~= sim.isInMainMenu then
+                if isInMainMenuLast then sm:saveSetup(string.format("_%s_last.ini", ac.getTrackID())) end
+
+                isInMainMenuLast = sim.isInMainMenu
+        end
 end
 
 return setup

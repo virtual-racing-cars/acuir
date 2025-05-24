@@ -1,3 +1,4 @@
+local app = require("app")
 local cui = require("ui.cui")
 local pitstop = require("pitstop")
 local settings = require("settings")
@@ -26,6 +27,8 @@ local navControlUpButton = ac.ControlButton(
 local delayTimer = 0
 
 navControlLeftButton:onPressed(function()
+        if not app.state.appOpen then return end
+
         if sim.isInMainMenu or sim.isPaused or not sim.isLive then return end
         pitstop:setWindowOpen(true)
 end)
@@ -35,6 +38,8 @@ navControlLeftButton:onReleased(function()
 end)
 
 navControlRightButton:onPressed(function()
+        if not app.state.appOpen then return end
+
         if sim.isInMainMenu or sim.isPaused or not sim.isLive then return end
         pitstop:setWindowOpen(true)
 end)
@@ -44,6 +49,8 @@ navControlRightButton:onReleased(function()
 end)
 
 navControlDownButton:onPressed(function()
+        if not app.state.appOpen then return end
+
         if sim.isInMainMenu or sim.isPaused or not sim.isLive then return end
 
         pitstop:setWindowOpen(true)
@@ -65,6 +72,8 @@ navControlDownButton:onReleased(function()
 end)
 
 navControlUpButton:onPressed(function()
+        if not app.state.appOpen then return end
+
         if sim.isInMainMenu or sim.isPaused or not sim.isLive then return end
 
         pitstop:setWindowOpen(true)
@@ -164,6 +173,12 @@ local function mfdWidgetSpinner(name, height, index, value, format, min, max, it
 end
 
 function script.pitstopWindow(dt)
+        if not app.state.appOpen or ac.getLastError() then
+                pitstop:setWindowOpen(false)
+                ac.disableQuickMenuPitstop(false)
+                return
+        end
+
         local itemCount = #ac.getPitstopSpinners() <= 9 and #ac.getPitstopSpinners() + 6 or #ac.getPitstopSpinners() + 7
         local itemHeight = 32 * cui.uiScale()
         local windowHeight = itemHeight * itemCount
