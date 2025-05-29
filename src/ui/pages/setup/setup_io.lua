@@ -125,7 +125,7 @@ local function promptOverwriteSetup()
 end
 
 local function drawSetupControls(sm)
-        local iconButtonHeight = ui.windowHeight() * 0.1
+        local iconButtonHeight = ui.windowHeight() * 0.15
         local buttonWidth = (ui.windowWidth() / 24) * 22
         local groupBegin = (ui.windowWidth() / 24)
 
@@ -217,6 +217,22 @@ local function drawSetupControls(sm)
                         carSetup:save(sm)
                         cui.menuBanner("Saved Setup", nil, rgbm.colors.green)
                 end
+        end
+
+        buttonWidth = buttonWidth + 10 * cui.uiScale()
+
+        cui.offsetCursorY(10)
+
+        ui.offsetCursorX(10 * cui.uiScale())
+        ui.drawRectFilled(
+                ui.getCursor(),
+                ui.getCursor() + vec2Temp1:set(buttonWidth, iconButtonHeight),
+                settings.Appearance.uiThemeColor1
+        )
+
+        if cui.menuButton("Reset Setup To Default", vec2Temp1:set(buttonWidth, iconButtonHeight), nil, nil) then
+                ac.resetSetupToDefault()
+                cui.menuBanner("Setup reset to default", nil, rgbm.colors.green)
         end
 end
 
@@ -325,11 +341,13 @@ function drawSetupIO(sm)
                 cui.menuBanner("Deleted Setup", nil, rgbm.colors.red)
         end
 
-        cui.pushWindow("load_setups", 0, 0, ui.windowWidth(), (ui.windowHeight() / 4) * 3, true, ui.ButtonFlags.None)
+        cui.pushWindow("load_setups", 0, 0, ui.windowWidth(), ui.windowHeight() * 0.5, true, ui.ButtonFlags.None)
+        ui.drawRectFilled(0, ui.windowSize(), rgbm.colors.black)
+
         drawSetupList()
         cui.popWindow(true)
 
-        cui.pushWindow("setup_io_saved_setups", 0, (ui.windowHeight() / 4) * 3, ui.windowWidth(), ui.windowHeight() / 2)
+        cui.pushWindow("setup_io_saved_setups", 0, ui.windowHeight() * 0.5, ui.windowWidth(), ui.windowHeight() / 2)
         drawSetupControls(sm)
 
         cui.popWindow()

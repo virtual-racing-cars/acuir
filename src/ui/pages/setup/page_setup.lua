@@ -2,10 +2,13 @@ local page = {}
 
 require("ui.pages.setup.setup_window")
 require("ui.pages.setup.car_status_window")
+require("ui.pages.setup.last_outing_window")
 require("ui.pages.setup.setup_io")
 require("classes.SetupManager")
 local app = require("app")
 local cui = require("ui.cui")
+
+local carStatusActive = false
 
 local vec2Temp1 = vec2()
 
@@ -28,18 +31,34 @@ local function carStatusWindow()
         ui.drawRectFilled(0, ui.windowSize(), rgbm(0, 0, 0, 0.5))
         ui.drawRectFilled(0, vec2(ui.windowWidth(), ui.windowHeight() / 20), rgbm(0, 0, 0, 1))
 
-        cui.menuButton("Car Status", vec2Temp1:set(ui.windowWidth() / 2, ui.windowHeight() / 20), 0, 0, 0, false, false)
+        if
+                cui.menuButton(
+                        "Car Status",
+                        vec2Temp1:set(ui.windowWidth() / 2, ui.windowHeight() / 20),
+                        0,
+                        0,
+                        0,
+                        carStatusActive,
+                        false
+                )
+        then
+                carStatusActive = true
+        end
         ui.sameLine()
 
-        cui.menuButton(
-                "Last Outing",
-                vec2Temp1:set(ui.windowWidth() / 2, ui.windowHeight() / 20),
-                0,
-                0,
-                ui.ButtonFlags.Disabled,
-                false,
-                false
-        )
+        if
+                cui.menuButton(
+                        "Last Outing",
+                        vec2Temp1:set(ui.windowWidth() / 2, ui.windowHeight() / 20),
+                        0,
+                        0,
+                        0,
+                        not carStatusActive,
+                        false
+                )
+        then
+                carStatusActive = false
+        end
 
         ui.setCursor(0)
         cui.contentWindow(
@@ -47,181 +66,108 @@ local function carStatusWindow()
                 vec2(0, ui.windowHeight() / 20),
                 vec2(ui.windowWidth() + 20, ui.windowHeight() - ui.windowHeight() / 20),
                 ui.WindowFlags.None,
-                function() CarStatusWindow() end
+                function()
+                        if carStatusActive then
+                                CarStatusWindow()
+                        else
+                                LastOutingWindow()
+                        end
+                end
         )
         cui.popWindow()
 end
 
 local setupExchangeActive = false
-local setupGarageActive = true
 
 local function setupIoWindow()
+        local genericButtonHeight = ui.windowHeight() / 20
+        local fontSize = 26 * cui.uiScale()
+
         ui.setCursor(0)
         cui.contentWindow(
                 "setup_left_window",
                 vec2(0, 0),
-                vec2(ui.windowWidth() / 4, ui.windowHeight()),
+                vec2(ui.windowWidth() / 4, ui.windowHeight() * 0.5 - 7.5 * cui.uiScale()),
+                ui.WindowFlags.None,
+                function()
+                        ui.drawRectFilled(0, vec2(ui.windowWidth(), fontSize * 2), rgbm(0.1, 0.1, 0.1, 0.95))
+                        ui.setCursor(0)
+                        cui.snapCursor()
+                        ui.dwriteTextAligned(
+                                "CAR SETUP",
+                                fontSize * 1.25,
+                                ui.Alignment.Center,
+                                ui.Alignment.Center,
+                                vec2(ui.windowWidth(), fontSize * 2)
+                        )
+
+                        cui.contentWindow(
+                                "setup_garage_window",
+                                vec2(0, fontSize * 2),
+                                vec2(ui.windowWidth(), ui.windowHeight() - fontSize * 2),
+                                ui.WindowFlags.NoScrollWithMouse,
+                                function()
+                                        ui.setCursorY(0)
+
+                                        app.state.setupTab = setupTabBar(sm.setupTabs)
+                                end,
+                                false,
+                                true
+                        )
+                end
+        )
+
+        cui.contentWindow(
+                "setup_left_window2",
+                vec2(0, ui.windowHeight() * 0.5 + 7.5 * cui.uiScale()),
+                vec2(ui.windowWidth() / 4, ui.windowHeight() * 0.5 - 7.5 * cui.uiScale()),
                 ui.WindowFlags.None,
                 function()
                         ui.setCursor(0)
                         ui.drawRectFilled(0, ui.windowSize(), rgbm(0.1, 0.1, 0.1, 1))
                         ui.drawRectFilled(0, vec2(ui.windowWidth(), ui.windowHeight() / 20), rgbm(0, 0, 0, 1))
-                        local genericButtonHeight = ui.windowHeight() / 20
 
                         if
                                 cui.menuButton(
-                                        "I/O",
+                                        "Local Setups",
                                         vec2Temp1:set(ui.windowWidth() / 2, genericButtonHeight),
                                         0,
                                         0,
                                         0,
-                                        not setupGarageActive,
+                                        not setupExchangeActive,
                                         false
                                 )
                         then
-                                setupGarageActive = false
+                                setupExchangeActive = false
                         end
                         ui.sameLine()
 
                         if
                                 cui.menuButton(
-                                        "Edit Setup",
+                                        "Setup Exchange",
                                         vec2Temp1:set(ui.windowWidth() / 2, genericButtonHeight),
                                         0,
                                         0,
-                                        0,
-                                        setupGarageActive,
+                                        sm._apps["Setup Exchange"] and ui.ButtonFlags.None or ui.ButtonFlags.Disabled,
+                                        setupExchangeActive,
                                         false
                                 )
                         then
-                                setupGarageActive = true
+                                setupExchangeActive = true
                         end
 
-                        ui.setCursor(0)
                         cui.contentWindow(
-                                "setup_io_track_subwindow",
+                                "setup_io_window_6",
                                 vec2(0, genericButtonHeight),
                                 vec2(ui.windowWidth(), ui.windowHeight() - genericButtonHeight),
                                 ui.WindowFlags.None,
                                 function()
-                                        if setupGarageActive then
-                                                cui.contentWindow(
-                                                        "setup_garage_window",
-                                                        vec2(0, 0),
-                                                        vec2(ui.windowWidth(), ui.windowHeight() - genericButtonHeight),
-                                                        ui.WindowFlags.NoScrollWithMouse,
-                                                        function()
-                                                                ui.setCursorY(0)
-
-                                                                app.state.setupTab = setupTabBar(sm.setupTabs)
-                                                        end,
-                                                        false,
-                                                        true
-                                                )
-
-                                                ui.setCursorX(0)
-                                                if
-                                                        cui.menuButton(
-                                                                "Reset Setup To Default",
-                                                                vec2Temp1:set(ui.windowWidth(), genericButtonHeight),
-                                                                0,
-                                                                0,
-                                                                0,
-                                                                false,
-                                                                false
-                                                        )
-                                                then
-                                                        ac.resetSetupToDefault()
-                                                        cui.menuBanner("Setup reset to default", nil, rgbm.colors.green)
-                                                end
-                                                ui.sameLine()
-
-                                                -- if
-                                                --         cui.menuButton(
-                                                --                 "Undo",
-                                                --                 vec2Temp1:set(ui.windowWidth() / 3, genericButtonHeight),
-                                                --                 0,
-                                                --                 0,
-                                                --                 ui.ButtonFlags.Disabled,
-                                                --                 -- sm:isUndoAvailable() and 0 or ui.ButtonFlags.Disabled,
-                                                --                 false,
-                                                --                 false
-                                                --         )
-                                                -- then
-                                                --         sm:undo()
-                                                --         cui.menuBanner("Undo", nil, rgbm.colors.green)
-                                                -- end
-                                                -- ui.sameLine()
-
-                                                -- if
-                                                --         cui.menuButton(
-                                                --                 "Redo",
-                                                --                 vec2Temp1:set(ui.windowWidth() / 3, genericButtonHeight),
-                                                --                 0,
-                                                --                 0,
-                                                --                 ui.ButtonFlags.Disabled,
-                                                --                 -- sm:isRedoAvailable() and 0 or ui.ButtonFlags.Disabled,
-                                                --                 false,
-                                                --                 false
-                                                --         )
-                                                -- then
-                                                --         sm:redo()
-                                                --         cui.menuBanner("Redo", nil, rgbm.colors.green)
-                                                -- end
-
-                                                return
+                                        if setupExchangeActive then
+                                                ui.drawRectFilled(vec2(0, 0), ui.windowSize(), rgbm(0.1, 0.1, 0.1, 1))
+                                                sm._apps["Setup Exchange"].script[sm._apps["Setup Exchange"].setupWindow]()
+                                        else
+                                                drawSetupIO(sm)
                                         end
-
-                                        ui.setCursor(0)
-
-                                        if
-                                                cui.menuButton(
-                                                        "Local Setups",
-                                                        vec2Temp1:set(ui.windowWidth() / 2, genericButtonHeight),
-                                                        0,
-                                                        0,
-                                                        0,
-                                                        not setupExchangeActive,
-                                                        false
-                                                )
-                                        then
-                                                setupExchangeActive = false
-                                        end
-                                        ui.sameLine()
-
-                                        if
-                                                cui.menuButton(
-                                                        "Setup Exchange",
-                                                        vec2Temp1:set(ui.windowWidth() / 2, genericButtonHeight),
-                                                        0,
-                                                        0,
-                                                        sm._apps["Setup Exchange"] and ui.ButtonFlags.None
-                                                                or ui.ButtonFlags.Disabled,
-                                                        setupExchangeActive,
-                                                        false
-                                                )
-                                        then
-                                                setupExchangeActive = true
-                                        end
-
-                                        cui.contentWindow(
-                                                "setup_io_window_6",
-                                                vec2(0, genericButtonHeight),
-                                                vec2(ui.windowWidth(), ui.windowHeight() - genericButtonHeight),
-                                                ui.WindowFlags.None,
-                                                function()
-                                                        if setupExchangeActive then
-                                                                ui.drawRectFilled(
-                                                                        vec2(0, 0),
-                                                                        ui.windowSize(),
-                                                                        rgbm(0.1, 0.1, 0.1, 1)
-                                                                )
-                                                                sm._apps["Setup Exchange"].script[sm._apps["Setup Exchange"].setupWindow]()
-                                                        else
-                                                                drawSetupIO(sm)
-                                                        end
-                                                end
-                                        )
                                 end
                         )
                 end

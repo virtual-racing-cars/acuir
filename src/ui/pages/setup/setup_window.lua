@@ -9,14 +9,18 @@ local currentApp = app.state.setupTab - 1
 local tabBarPosition = 0
 
 local function tabItem(index, title)
-        if currentApp == index then ui.setScrollFromPosY((index - 1) * 56) end
-
-        if cui.treeNodeButton(title, vec2(ui.windowWidth(), 56 * cui.uiScale()), currentApp == index, true) then
+        if cui.treeNodeButton(title, vec2(ui.windowWidth(), 48 * cui.uiScale()), currentApp == index, true) then
                 currentApp = index
         end
+
+        if currentApp == index then ui.setScrollY((index - 5) * 48 * cui.uiScale()) end
 end
 
 local scrollDelayTimer = 0
+
+function toCapitalCase(str)
+        return (str:gsub("(%a)([%w_']*)", function(first, rest) return first:upper() .. rest:lower() end))
+end
 
 function setupTabBar(tabs)
         ui.drawRectFilled(
@@ -41,7 +45,8 @@ function setupTabBar(tabs)
         ui.pushStyleColor(ui.StyleColor.Button, settings.Appearance.uiThemeColor1)
         for i in ipairs(tabs) do
                 ui.setCursorX(0)
-                tabItem(i - 1, tabs[i].name)
+
+                tabItem(i - 1, toCapitalCase(tabs[i].name))
         end
 
         ui.popStyleColor(1)

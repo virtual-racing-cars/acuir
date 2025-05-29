@@ -53,7 +53,7 @@ ui.onExclusiveHUD(function(mode)
         if not app.state.appOpen or ac.getLastError() then return end
 
         -- pages:goToSession()
-        -- pages:goToSetup()
+        pages:goToSetup()
 
         for hud, hudMode in pairs(hudModes) do
                 if mode == hud then
