@@ -9,31 +9,11 @@ local audio = require("audio")
 local cui = require("ui.cui")
 local pages = require("ui.pages.pages")
 
-local modeLast = ""
-
-ui.onExclusiveHUD(function(mode)
-        if not app.state.appOpen or ac.getLastError() then return end
-
-        local dt = ac.getScriptDeltaT()
-
-        if pages.manager.currentPageName and string.find(pages.manager.currentPageName, "Setting") then
-                SettingsWindow(dt)
-                return ""
-        end
-
-        if mode == "menu" then
+local hudModes = {
+        game = function(dt) pages:setParentMainMenu() end,
+        menu = function(dt)
                 ui.forceSimplifiedComposition()
-
-                -- pages:goToSetup()
-                -- pages:goToSettings()
-                -- pages:goToSettingsGeneral()
-                -- pages:goToSession()
-
-                audio:driver(dt)
-
-                if modeLast ~= mode then pages:setParentMainMenu() end
-
-                modeLast = mode
+                pages:setParentMainMenu()
 
                 local voteDetails = ac.getCurrentVoteDetails()
                 if voteDetails then
@@ -58,39 +38,34 @@ ui.onExclusiveHUD(function(mode)
                 end
 
                 return MainMenuWindow(dt)
-        end
-
-        -- if mode == "replay" then
-        --         audio:driver(dt)
-
-        --         if modeLast ~= mode then pages:setParentMainMenu() end
-
-        --         modeLast = mode
-
-        --         return MainMenuWindow(dt)
-        -- end
-
-        if mode == "results" then
-                audio:driver(dt)
-
-                if modeLast ~= mode then pages:setParentResultsMenu() end
-                modeLast = mode
-
-                return ResultsMenuWindow()
-        end
-
-        if mode == "pause" then
-                audio:driver(dt)
-
-                if modeLast ~= mode then pages:setParentPauseMenu() end
-                modeLast = mode
-
+        end,
+        pause = function(dt)
+                pages:setParentPauseMenu()
                 return PauseMenuWindow()
-        end
+        end,
+        results = function(dt)
+                pages:setParentResultsMenu()
+                return ResultsMenuWindow()
+        end,
+}
 
-        if mode == "game" then
-                if modeLast ~= mode then pages:setParentMainMenu() end
-        end
+ui.onExclusiveHUD(function(mode)
+        if not app.state.appOpen or ac.getLastError() then return end
 
-        modeLast = mode
+        -- pages:goToSession()
+
+        for hud, hudMode in pairs(hudModes) do
+                if mode == hud then
+                        local dt = ac.getScriptDeltaT()
+
+                        audio:driver(dt)
+
+                        if pages.manager.currentPageName and string.find(pages.manager.currentPageName, "Setting") then
+                                SettingsWindow(dt)
+                                return ""
+                        end
+
+                        return hudMode(dt)
+                end
+        end
 end)

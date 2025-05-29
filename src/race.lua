@@ -11,6 +11,8 @@ local session = {
         timingGates = {},
         timingGateTimes = {},
         timingGateIndexes = {},
+        fastestLap = math.huge,
+        fastestSplits = {},
 }
 
 local trackLegnth = 1 / sim.trackLengthM * 50
@@ -21,7 +23,18 @@ for i = 0, 1, trackLegnth do
         session.timingGates[timingGateCount] = i
 end
 
+for i = 0, #sim.lapSplits - 1 do
+        session.fastestSplits[i] = math.huge
+end
+
 function session:getLeaderboardPosition(index) return session.leaderboardPositions[index] end
+
+ac.onSessionStart(function(sessionIndex, restarted)
+        session.fastestLap = math.huge
+        for i = 0, #sim.lapSplits do
+                session.fastestSplits[i] = math.huge
+        end
+end)
 
 function session:step()
         for i = 0, #ac.getSession(sim.currentSessionIndex).leaderboard - 1 do
@@ -67,6 +80,22 @@ function session:step()
                 local car = slot.car
 
                 session.leaderboardPositions[car.index] = pos
+
+                if car.bestLapTimeMs > 0 and car.bestLapTimeMs < session.fastestLap then
+                        session.fastestLap = car.bestLapTimeMs
+                end
+
+                for i = 0, #sim.lapSplits - 1 do
+                        local bestSplit = car.bestSplits[i]
+                        if bestSplit and bestSplit > 0 and bestSplit < session.fastestSplits[i] then
+                                session.fastestSplits[i] = bestSplit
+                        end
+
+                        local currSplit = car.currentSplits[i]
+                        if currSplit and currSplit > 0 and currSplit < session.fastestSplits[i] then
+                                session.fastestSplits[i] = currSplit
+                        end
+                end
 
                 if pos > 1 and sim.raceSessionType ~= ac.SessionType.Race then
                         if slot.bestLapTimeMs > 0 then

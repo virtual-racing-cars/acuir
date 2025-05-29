@@ -4,7 +4,6 @@ local sim = ac.getSim()
 
 local page = {}
 
-require("src.classes.PlayerListButton")
 local cui = require("ui.cui")
 local race = require("race")
 local settings = require("settings")
@@ -16,6 +15,7 @@ local trackBestLapTime = ac.lapTimeToString(
         personalBestINI:get(string.upper(string.format("%s@%s", ac.getCarID(0), ac.getTrackFullID("-"))), "TIME", 0)
 )
 local leaderboardWidget = require("ui.widgets.leaderboard")
+local timetableWidget = require("ui.widgets.time_table")
 
 local electronicsState = { [0] = "Off", [1] = "Factory", [2] = "On" }
 local assistState = { [0] = "Not Allowed", [1] = "Allowed" }
@@ -393,7 +393,7 @@ function page.draw()
                                         fontSize,
                                         ui.Alignment.Start,
                                         ui.Alignment.Center,
-                                        vec2(ui.windowWidth(), fontSize * 1.25)
+                                        vec2(ui.windowWidth(), fontSize * 2)
                                 )
                         end
 
@@ -472,6 +472,7 @@ function page.draw()
                 ui.windowHeight() - 255 * cui.uiScale(),
                 false
         )
+        ui.drawRectFilled(0, vec2(ui.windowWidth(), 50 * cui.uiScale()), rgbm(0, 0, 0, 1))
 
         ui.setCursor(0)
         if
@@ -495,7 +496,7 @@ function page.draw()
                         vec2Temp1:set(ui.windowWidth() / 2, height),
                         0,
                         0,
-                        ui.ButtonFlags.Disabled,
+                        ui.ButtonFlags.None,
                         not leaderboardActive,
                         false
                 )
@@ -503,7 +504,11 @@ function page.draw()
                 leaderboardActive = false
         end
 
-        leaderboardWidget:draw(0, height, ui.windowWidth(), ui.windowHeight() - height)
+        if leaderboardActive then
+                leaderboardWidget:draw(0, height, ui.windowWidth(), ui.windowHeight() - height)
+        else
+                timetableWidget:draw(0, height, ui.windowWidth(), ui.windowHeight() - height)
+        end
 
         cui.popWindow()
 

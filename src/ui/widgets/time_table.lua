@@ -3,6 +3,18 @@ local settings = require("settings")
 local sim = ac.getSim()
 local race = require("race")
 
+local timetable = {}
+
+local function drawTimeIndicator(width, height, color)
+        if not color then color = rgbm(0, 0.75, 0, 1) end
+
+        ui.drawRectFilled(
+                vec2(ui.getCursorX() + width * 0.01, ui.getCursorY() + height * 0.85),
+                vec2(ui.getCursorX() + width * 0.99, ui.getCursorY() + height),
+                color
+        )
+end
+
 local entryLayout = {
         {
                 label = "",
@@ -17,17 +29,7 @@ local entryLayout = {
         {
                 label = "Driver",
                 value = function(slot, car, width, height) return ac.getDriverName(car.index) end,
-                xShare = 0.3,
-                align = ui.Alignment.Start,
-        },
-        {
-                label = "Car",
-                value = function(slot, car, width, height)
-                        return ac.INIConfig
-                                .carData(slot.car.index, "car.ini")
-                                :get("INFO", "SHORT_NAME", ac.getCarName(car.index))
-                end,
-                xShare = 0.25,
+                xShare = 0.31,
                 align = ui.Alignment.Start,
         },
         {
@@ -40,8 +42,92 @@ local entryLayout = {
                 align = ui.Alignment.End,
         },
         {
+                label = "Last",
+                value = function(slot, car, width, height)
+                        if car.previousLapTimeMs == 0 then return ac.lapTimeToString("") end
+
+                        if
+                                car.isLastLapValid
+                                and car.previousLapTimeMs > 0
+                                and car.previousLapTimeMs <= race.fastestLap
+                        then
+                                drawTimeIndicator(width, height, rgbm(0.5, 0.2, 1, 1))
+                        elseif car.isLastLapValid and car.previousLapTimeMs <= car.bestLapTimeMs then
+                                drawTimeIndicator(width, height)
+                        end
+
+                        return ac.lapTimeToString(car.previousLapTimeMs),
+                                car.isLastLapValid and rgbm.colors.white or rgbm(0.75, 0.0, 0, 1)
+                end,
+                xShare = 0.09,
+                align = ui.Alignment.Center,
+        },
+        {
+                label = "S1",
+                value = function(slot, car, width, height)
+                        local currentSplit = car.currentSplits[0]
+                        if not car.currentSplits[0] then currentSplit = car.lastSplits[0] end
+
+                        if not currentSplit then return ac.lapTimeToString("") end
+
+                        if currentSplit > 0 and currentSplit <= race.fastestSplits[0] then
+                                drawTimeIndicator(width, height, rgbm(0.5, 0.2, 1, 1))
+                        elseif currentSplit > 0 and currentSplit <= car.bestSplits[0] then
+                                drawTimeIndicator(width, height)
+                        end
+
+                        return ac.lapTimeToString(currentSplit):trim("0:", -1)
+                end,
+                xShare = 0.09,
+                align = ui.Alignment.Center,
+        },
+        {
+                label = "S2",
+                value = function(slot, car, width, height)
+                        local currentSplit = car.currentSplits[1]
+                        if not car.currentSplits[0] then currentSplit = car.lastSplits[1] end
+
+                        if not currentSplit then return ac.lapTimeToString("") end
+
+                        if currentSplit > 0 and currentSplit <= race.fastestSplits[1] then
+                                drawTimeIndicator(width, height, rgbm(0.5, 0.2, 1, 1))
+                        elseif currentSplit > 0 and currentSplit <= car.bestSplits[1] then
+                                drawTimeIndicator(width, height)
+                        end
+
+                        return ac.lapTimeToString(currentSplit):trim("0:", -1)
+                end,
+                xShare = 0.09,
+                align = ui.Alignment.Center,
+        },
+        {
+                label = "S3",
+                value = function(slot, car, width, height)
+                        local currentSplit = car.currentSplits[2]
+                        if not car.currentSplits[0] then currentSplit = car.lastSplits[2] end
+
+                        if not currentSplit then return ac.lapTimeToString("") end
+
+                        if currentSplit > 0 and currentSplit <= race.fastestSplits[2] then
+                                drawTimeIndicator(width, height, rgbm(0.5, 0.2, 1, 1))
+                        elseif currentSplit > 0 and currentSplit <= car.bestSplits[2] then
+                                drawTimeIndicator(width, height)
+                        end
+
+                        return ac.lapTimeToString(currentSplit):trim("0:", -1)
+                end,
+                xShare = 0.09,
+                align = ui.Alignment.Center,
+        },
+        {
                 label = "Best",
-                value = function(slot, car, width, height) return ac.lapTimeToString(car.bestLapTimeMs) end,
+                value = function(slot, car, width, height)
+                        if car.bestLapTimeMs > 0 and car.bestLapTimeMs <= race.fastestLap then
+                                drawTimeIndicator(width, height, rgbm(0.5, 0.2, 1, 1))
+                        end
+
+                        return ac.lapTimeToString(car.bestLapTimeMs)
+                end,
                 xShare = 0.09,
                 align = ui.Alignment.Center,
         },
@@ -71,46 +157,9 @@ local entryLayout = {
                 xShare = 0.09,
                 align = ui.Alignment.Center,
         },
-        {
-                label = "Lap",
-                value = function(slot, car, width, height) return string.format("%02d", car.sessionLapCount + 1) end,
-                xShare = 0.065,
-                align = ui.Alignment.Center,
-        },
-        {
-                label = "Tyre",
-                value = function(slot, car, width, height)
-                        local statusText = ac.getTyresName(car.index, car.compoundIndex)
-                        local altStatus = false
-
-                        if car.isRetired then
-                                statusText = "DNF"
-                                altStatus = true
-                        elseif car.isInPit or car.isInPitlane then
-                                statusText = "PIT"
-                                altStatus = true
-                        else
-                                statusText = ac.getTyresName(car.index, car.compoundIndex)
-                        end
-
-                        if altStatus then
-                                ui.drawRectFilled(
-                                        vec2(ui.getCursorX(), ui.getCursorY()),
-                                        vec2(ui.getCursorX() + width, ui.getCursorY() + height),
-                                        settings.Appearance.uiThemeColor3
-                                )
-                        end
-
-                        return statusText, altStatus and rgbm.colors.black or rgbm.colors.white
-                end,
-                xShare = 0.06,
-                align = ui.Alignment.Center,
-        },
 }
 
-local leaderboard = {}
-
-local function leaderboardBanner(yPos, height)
+local function timetableBanner(yPos, height)
         local width = ui.windowWidth()
         local fontSize = height * 0.5
 
@@ -128,7 +177,7 @@ local function leaderboardBanner(yPos, height)
         end
 end
 
-function leaderboardEntryButton(slot, index, yPos, height)
+function timetableEntryButton(slot, index, yPos, height)
         local xPos = 0
         local width = ui.windowWidth()
 
@@ -136,7 +185,7 @@ function leaderboardEntryButton(slot, index, yPos, height)
 
         ui.setCursorX(xPos)
         ui.setCursorY(yPos)
-        if ui.invisibleButton("##leaderboardEntryButton" .. car.index, vec2(width, height)) then
+        if ui.invisibleButton("##timetableEntryButton" .. car.index, vec2(width, height)) then
                 if car.isConnected then ac.focusCar(car.index) end
         end
 
@@ -189,7 +238,7 @@ function leaderboardEntryButton(slot, index, yPos, height)
                 local tempWidth = width - height - height * 0.2
                 cui.snapCursor()
                 local x, y = entry.xShare == -1 and height or tempWidth * entry.xShare, height
-                local value, color = entry.value(slot, car, tempWidth, height)
+                local value, color = entry.value(slot, car, x, height)
                 ui.dwriteTextAligned(value, height * 0.5, entry.align, ui.Alignment.Center, vec2(x, y), false, color)
                 ui.sameLine()
         end
@@ -199,20 +248,20 @@ function leaderboardEntryButton(slot, index, yPos, height)
         end
 end
 
-function leaderboard:draw(xPos, yPos, width, height)
-        cui.pushWindow("leaderboard_widget_window", xPos, yPos, width, height, false)
+function timetable:draw(xPos, yPos, width, height)
+        cui.pushWindow("timetable_widget_window", xPos, yPos, width, height, false)
         ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiThemeColor1 * 0.25)
         ui.setCursor(0)
 
         local height = 50 * cui.uiScale()
-        leaderboardBanner(0, height)
+        timetableBanner(0, height)
 
-        cui.pushWindow("home_leaderboard_entrant_window", 0, height, ui.windowWidth(), ui.windowHeight() - height, true)
+        cui.pushWindow("home_timetable_entrant_window", 0, height, ui.windowWidth(), ui.windowHeight() - height, true)
         local leaderboardIndex = 0
         for _, slot in ipairs(race.leaderboard) do
-                if slot.car.isConnected or slot.hasCompletedLastLap then
+                if slot.car.isConnected then
                         leaderboardIndex = leaderboardIndex + 1
-                        leaderboardEntryButton(slot, leaderboardIndex, (leaderboardIndex - 1) * height, height)
+                        timetableEntryButton(slot, leaderboardIndex, (leaderboardIndex - 1) * height, height)
                 end
         end
         cui.dummy(height, height)
@@ -221,4 +270,4 @@ function leaderboard:draw(xPos, yPos, width, height)
         cui.popWindow()
 end
 
-return leaderboard
+return timetable

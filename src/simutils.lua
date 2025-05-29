@@ -57,7 +57,9 @@ local function findClosestIndex(input, numbers)
         return trackGripString
 end
 
-function simutils.windDirectionString() return windDirectionStrings[math.ceil((sim.windDirectionDeg + 180) / 22.5)] end
+function simutils.windDirectionString()
+        return windDirectionStrings[math.ceil((sim.windDirectionDeg + 180) / 22.5)]
+end
 
 function simutils.trackGripString() return findClosestIndex(sim.roadGrip * 100, trackGripStrings) end
 

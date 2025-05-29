@@ -3,23 +3,21 @@ local sim = ac.getSim()
 
 local page = {}
 
-require("src.classes.PlayerListButton")
-
 local cui = require("ui.cui")
 local race = require("race")
 
 function page.update() end
 
-local listtable = SortableListTable({
-        { label = "Lap", proportion = 0.05 },
-        { label = "Valid", proportion = 0.05 },
-        { label = "Tyre", proportion = 0.15 },
-        { label = "Time", proportion = 0.15 },
-        { label = "S1", proportion = 0.15 },
-        { label = "S2", proportion = 0.15 },
-        { label = "S3", proportion = 0.15 },
-        { label = "Diff-Best", proportion = 0.15 },
-})
+-- local listtable = SortableListTable({
+--         { label = "Lap", proportion = 0.05 },
+--         { label = "Valid", proportion = 0.05 },
+--         { label = "Tyre", proportion = 0.15 },
+--         { label = "Time", proportion = 0.15 },
+--         { label = "S1", proportion = 0.15 },
+--         { label = "S2", proportion = 0.15 },
+--         { label = "S3", proportion = 0.15 },
+--         { label = "Diff-Best", proportion = 0.15 },
+-- })
 
 function page.draw()
         cui.pushWindow(

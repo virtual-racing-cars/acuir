@@ -19,7 +19,7 @@ end
 function pages:goToMainMenu() pages.manager:setPage("EmptyPage") end
 
 function pages:setParentMainMenu()
-        if not pages.manager.parentName then
+        if pages.manager.parentName ~= "EmptyPage" then
                 pages.manager:setParentPageName("EmptyPage")
 
                 if settings.General.defaultSetupPage then
@@ -27,9 +27,6 @@ function pages:setParentMainMenu()
                 else
                         pages:goToMainMenu()
                 end
-        else
-                pages.manager:setParentPageName("EmptyPage")
-                pages:goToMainMenu()
         end
 end
 
