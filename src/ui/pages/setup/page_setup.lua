@@ -8,7 +8,7 @@ require("classes.SetupManager")
 local app = require("app")
 local cui = require("ui.cui")
 
-local carStatusActive = false
+local carStatusActive = true
 
 local vec2Temp1 = vec2()
 
@@ -25,16 +25,19 @@ local function setupItemWindow()
 end
 
 local function carStatusWindow()
+        local genericButtonHeight = 50 * cui.uiScale()
+        local fontSize = genericButtonHeight * 0.5
+
         ui.setCursor(0)
         cui.pushWindow("car_status_window", (ui.windowWidth() / 4) * 3, 0, ui.windowWidth() / 4, ui.windowHeight())
         ui.setCursor(0)
         ui.drawRectFilled(0, ui.windowSize(), rgbm(0, 0, 0, 0.5))
-        ui.drawRectFilled(0, vec2(ui.windowWidth(), ui.windowHeight() / 20), rgbm(0, 0, 0, 1))
+        ui.drawRectFilled(0, vec2(ui.windowWidth(), genericButtonHeight), rgbm(0, 0, 0, 1))
 
         if
                 cui.menuButton(
                         "Car Status",
-                        vec2Temp1:set(ui.windowWidth() / 2, ui.windowHeight() / 20),
+                        vec2Temp1:set(ui.windowWidth() / 2, genericButtonHeight),
                         0,
                         0,
                         0,
@@ -49,10 +52,10 @@ local function carStatusWindow()
         if
                 cui.menuButton(
                         "Last Outing",
-                        vec2Temp1:set(ui.windowWidth() / 2, ui.windowHeight() / 20),
+                        vec2Temp1:set(ui.windowWidth() / 2, genericButtonHeight),
                         0,
                         0,
-                        0,
+                        ui.ButtonFlags.Disabled,
                         not carStatusActive,
                         false
                 )
@@ -63,8 +66,8 @@ local function carStatusWindow()
         ui.setCursor(0)
         cui.contentWindow(
                 "car_status_subwindow",
-                vec2(0, ui.windowHeight() / 20),
-                vec2(ui.windowWidth() + 20, ui.windowHeight() - ui.windowHeight() / 20),
+                vec2(0, genericButtonHeight),
+                vec2(ui.windowWidth() + 20, ui.windowHeight() - genericButtonHeight),
                 ui.WindowFlags.None,
                 function()
                         if carStatusActive then
@@ -80,8 +83,8 @@ end
 local setupExchangeActive = false
 
 local function setupIoWindow()
-        local genericButtonHeight = ui.windowHeight() / 20
-        local fontSize = 26 * cui.uiScale()
+        local genericButtonHeight = 50 * cui.uiScale()
+        local fontSize = genericButtonHeight * 0.5
 
         ui.setCursor(0)
         cui.contentWindow(
@@ -90,8 +93,10 @@ local function setupIoWindow()
                 vec2(ui.windowWidth() / 4, ui.windowHeight() * 0.5 - 7.5 * cui.uiScale()),
                 ui.WindowFlags.None,
                 function()
-                        ui.drawRectFilled(0, vec2(ui.windowWidth(), fontSize * 2), rgbm(0.1, 0.1, 0.1, 0.95))
                         ui.setCursor(0)
+                        ui.drawRectFilled(0, ui.windowSize(), rgbm(0.1, 0.1, 0.1, 1))
+                        ui.drawRectFilled(0, vec2(ui.windowWidth(), genericButtonHeight), rgbm(0, 0, 0, 1))
+
                         cui.snapCursor()
                         ui.dwriteTextAligned(
                                 "CAR SETUP",
@@ -125,7 +130,7 @@ local function setupIoWindow()
                 function()
                         ui.setCursor(0)
                         ui.drawRectFilled(0, ui.windowSize(), rgbm(0.1, 0.1, 0.1, 1))
-                        ui.drawRectFilled(0, vec2(ui.windowWidth(), ui.windowHeight() / 20), rgbm(0, 0, 0, 1))
+                        ui.drawRectFilled(0, vec2(ui.windowWidth(), genericButtonHeight), rgbm(0, 0, 0, 1))
 
                         if
                                 cui.menuButton(
