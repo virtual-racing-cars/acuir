@@ -574,6 +574,7 @@ function CUI.treeNodeButton(label, size, active, bold, count, defaultOpen)
         local hovered = ui.itemHovered() and not CUI.modalDialogCallback
         local id = ui.getLastID()
         local open = CUI.loadStoredBool(id, defaultOpen)
+        if hovered and ui.mouseClicked(ui.MouseButton.Right) then clicked = true end
 
         if active then
                 ui.popStyleColor(1)
