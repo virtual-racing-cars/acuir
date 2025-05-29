@@ -2,6 +2,7 @@ local camera = require("camera")
 local cui = require("ui.cui")
 local race = require("race")
 local settings = require("settings")
+local units = require("units")
 local sim = ac.getSim()
 
 local card = {}
@@ -121,7 +122,7 @@ function card:draw(xPos, yPos, width, height)
         cui.setCursorY(15)
         cui.snapCursor()
         ui.dwriteTextAligned(
-                math.round(spectatedCar.speedKmh),
+                math.round(units:speed(spectatedCar.speedKmh)),
                 36 * cui.uiScale(),
                 ui.Alignment.Start,
                 ui.Alignment.Center,

@@ -53,7 +53,7 @@ local function carStatusWindow()
 end
 
 local setupExchangeActive = false
-local setupGarageActive = false
+local setupGarageActive = true
 
 local function setupIoWindow()
         ui.setCursor(0)

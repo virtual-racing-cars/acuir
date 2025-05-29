@@ -1,6 +1,8 @@
 local mapWidget = require("ui.widgets.map")
+local units = require("units")
 local car = ac.getCar(0)
 local sim = ac.getSim()
+local uis = ac.getUI()
 
 local page = {}
 
@@ -154,7 +156,13 @@ local weatherTypeIcon = {
 local sessionInfoTable = {
         {
                 label = "Track Temp",
-                value = function() return string.format("%.1f° C", sim.roadTemperature) end,
+                value = function()
+                        return string.format(
+                                "%.1f %s",
+                                units:temperature(sim.roadTemperature),
+                                uis.useImperialUnits and "°F" or "°C"
+                        )
+                end,
         },
         {
                 label = "Grip",
@@ -162,7 +170,13 @@ local sessionInfoTable = {
         },
         {
                 label = "Air Temp",
-                value = function() return string.format("%.1f° C", sim.ambientTemperature) end,
+                value = function()
+                        return string.format(
+                                "%.1f %s",
+                                units:temperature(sim.ambientTemperature),
+                                uis.useImperialUnits and "°F" or "°C"
+                        )
+                end,
         },
         {
                 label = "Humidity",
@@ -170,7 +184,13 @@ local sessionInfoTable = {
         },
         {
                 label = "Wind Speed",
-                value = function() return string.format("%.1f kmh", sim.windSpeedKmh) end,
+                value = function()
+                        return string.format(
+                                "%.1f %s",
+                                units:speed(sim.windSpeedKmh),
+                                uis.useImperialUnits and "mph" or "kmh"
+                        )
+                end,
         },
         {
                 label = "Wind Direction",
@@ -195,11 +215,23 @@ local carInfoTable = {
         },
         {
                 label = "Driven Total",
-                value = function() return string.format("%.1f km", car.distanceDrivenTotalKm) end,
+                value = function()
+                        return string.format(
+                                "%.1f %s",
+                                units:speed(car.distanceDrivenTotalKm),
+                                uis.useImperialUnits and "mi" or "km"
+                        )
+                end,
         },
         {
                 label = "Driven Session",
-                value = function() return string.format("%.1f km", car.distanceDrivenSessionKm) end,
+                value = function()
+                        return string.format(
+                                "%.1f %s",
+                                units:speed(car.distanceDrivenSessionKm),
+                                uis.useImperialUnits and "mi" or "km"
+                        )
+                end,
         },
 }
 

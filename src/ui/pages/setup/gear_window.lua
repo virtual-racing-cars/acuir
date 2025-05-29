@@ -1,18 +1,11 @@
 local cui = require("ui.cui")
 local settings = require("settings")
+local units = require("units")
 local car = ac.getCar(0)
-local cphys = ac.getCarPhysics(0)
+local uis = ac.getUI()
 
-local function getGearMaxSpeedKmh(gear)
-        if ac.getCarMaxSpeedWithGear then return math.round(math.max(ac.getCarMaxSpeedWithGear(0, gear), 0)) end
-
-        if not cphys.gearRatio then return 0 end
-
-        return math.round(
-                (math.pi * car.wheels[2].tyreRadius * 2 * (car.rpmLimiter - 0))
-                        / (60 * cphys.gearRatios[gear + 1] * cphys.finalRatio)
-                        * 3.6
-        )
+local function getGearMaxSpeed(gear)
+        return math.round(units:speed(ac.getCarMaxSpeedWithGear(0, gear)))
 end
 
 local maxSpeedWithGear = {
@@ -40,7 +33,7 @@ function gearWindow(spinnerCount)
 
         ui.drawRectFilled(vec2(xMin, yMin), vec2(xMax, yMax), rgbm(0, 0, 0, 0.75))
 
-        if not maxSpeed or maxSpeed == 0 then maxSpeed = getGearMaxSpeedKmh(car.gearCount) * 1.25 end
+        if not maxSpeed or maxSpeed == 0 then maxSpeed = getGearMaxSpeed(car.gearCount) * 1.25 end
 
         ui.pathLineTo(vec2(xMin, yMax))
         ui.pathLineTo(vec2(xMin + width, yMax))
@@ -79,7 +72,7 @@ function gearWindow(spinnerCount)
         end
 
         for i = 1, car.gearCount do
-                local maxGearSpeed = getGearMaxSpeedKmh(i)
+                local maxGearSpeed = getGearMaxSpeed(i)
 
                 if maxGearSpeed > 0 and maxGearSpeed <= maxSpeed then
                         maxSpeedWithGear[i] = maxGearSpeed
@@ -116,7 +109,7 @@ function gearWindow(spinnerCount)
                 )
                 ui.offsetCursorX(-labelPadding)
                 ui.dwriteTextAligned(
-                        string.format("%s - %s kmh", i, maxGearSpeed),
+                        string.format("%s - %s %s", i, maxGearSpeed, uis.useImperialUnits and "mph" or "kmh"),
                         fontSize,
                         0,
                         0,

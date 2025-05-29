@@ -1,4 +1,6 @@
 local cui = require("ui.cui")
+local units = require("units")
+local uis = ac.getUI()
 
 local round = math.round
 
@@ -95,21 +97,21 @@ local centerStatusInfo = {
         },
         {
                 label = "Total Mass",
-                value = function(i) return car.mass + (car.fuel * kgPerL) + car.ballast end,
+                value = function(i) return units:mass(car.mass + (car.fuel * kgPerL) + car.ballast) end,
                 round = 2,
-                unit = "kg",
+                unit = uis.useImperialUnits and "lb" or "kg",
         },
         {
                 label = "Fuel Mass",
-                value = function(i) return car.fuel * kgPerL end,
+                value = function(i) return units:mass(car.fuel * kgPerL) end,
                 round = 2,
-                unit = "kg",
+                unit = uis.useImperialUnits and "lb" or "kg",
         },
         {
                 label = "Ballast Mass",
-                value = function(i) return car.ballast end,
+                value = function(i) return units:mass(car.ballast) end,
                 round = 2,
-                unit = "kg",
+                unit = uis.useImperialUnits and "lb" or "kg",
         },
         {
                 label = "Plank Wear",

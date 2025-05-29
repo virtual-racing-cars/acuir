@@ -255,7 +255,7 @@ local function drawSetupNode(setup, track)
         ui.setCursorX(0)
         ui.dwriteTextAligned(
                 os.date("%Y-%m-%d %H:%M", tonumber(setup.lastWriteTime)),
-                17,
+                16 * cui.uiScale(),
                 ui.Alignment.End,
                 0,
                 vec2(ui.windowWidth() * 0.98, buttonSize.y),
