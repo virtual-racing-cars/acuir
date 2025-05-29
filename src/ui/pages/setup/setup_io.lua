@@ -125,21 +125,19 @@ local function promptOverwriteSetup()
 end
 
 local function drawSetupControls(sm)
-        local iconButtonHeight = ui.windowHeight() * 0.15
+        local iconButtonHeight = 42 * cui.uiScale()
         local buttonWidth = (ui.windowWidth() / 24) * 22
         local groupBegin = (ui.windowWidth() / 24)
-
-        local fontSize = math.floor(24 * cui.uiScale())
-        fontSize = (fontSize % 2 == 0) and fontSize + 1 or fontSize
+        local fontSize = 22 * cui.uiScale()
 
         ui.setCursor(0)
-
+        cui.snapCursor()
         ui.dwriteTextAligned(
                 "Current Setup - " .. carSetup.current,
                 fontSize,
                 ui.Alignment.Center,
                 ui.Alignment.Center,
-                vec2(ui.availableSpaceX(), iconButtonHeight)
+                vec2(ui.availableSpaceX(), fontSize * 2)
         )
 
         ui.setCursorX(groupBegin)
@@ -181,7 +179,8 @@ local function drawSetupControls(sm)
                 sm:LoadStuff(carSetup.selected.path)
                 carSetup.current = carSetup.selected.track .. "/" .. carSetup.selected.name
         end
-        ui.newLine()
+
+        cui.offsetCursorY(10)
 
         buttonWidth = buttonWidth - 10 * cui.uiScale()
 
@@ -223,7 +222,7 @@ local function drawSetupControls(sm)
 
         cui.offsetCursorY(10)
 
-        ui.offsetCursorX(10 * cui.uiScale())
+        ui.setCursorX(groupBegin)
         ui.drawRectFilled(
                 ui.getCursor(),
                 ui.getCursor() + vec2Temp1:set(buttonWidth, iconButtonHeight),
@@ -296,8 +295,7 @@ local function drawSetupNode(setup, track)
                 ui.sameLine()
 
                 if cui.menuButton("Delete", vec2(ui.windowWidth() * 0.5, buttonSize.y), 0, 0) then
-                        carSetup:delete()
-                        cui.menuBanner("Deleted Setup", nil, rgbm.colors.red)
+                        promptDeleteSetup()
                         popupClicked = true
                 end
 
