@@ -254,7 +254,9 @@ end
 function page.update() end
 
 function page.draw()
-        local fontSize = 26 * cui.uiScale()
+        local genericButtonHeight = 50 * cui.uiScale()
+        local fontSize = genericButtonHeight * 0.50
+        local titleFontSize = genericButtonHeight * 0.55
 
         cui.contentWindow(
                 "info_left_window_3",
@@ -265,15 +267,15 @@ function page.draw()
                         ui.setCursor(0)
 
                         ui.drawRectFilled(0, ui.windowSize(), rgbm(0.1, 0.1, 0.1, 0.55))
-                        ui.drawRectFilled(0, vec2(ui.windowWidth(), fontSize * 2), rgbm(0.1, 0.1, 0.1, 0.95))
+                        ui.drawRectFilled(0, vec2(ui.windowWidth(), genericButtonHeight), rgbm(0.1, 0.1, 0.1, 0.95))
 
                         cui.snapCursor()
                         ui.dwriteTextAligned(
                                 "CONDITIONS",
-                                fontSize * 1.25,
+                                titleFontSize,
                                 ui.Alignment.Center,
                                 ui.Alignment.Center,
-                                vec2(ui.windowWidth(), fontSize * 2)
+                                vec2(ui.windowWidth(), genericButtonHeight)
                         )
 
                         cui.setCursorY(65)
@@ -312,15 +314,15 @@ function page.draw()
                         ui.setCursor(0)
 
                         ui.drawRectFilled(0, ui.windowSize(), rgbm(0.1, 0.1, 0.1, 0.55))
-                        ui.drawRectFilled(0, vec2(ui.windowWidth(), fontSize * 2), rgbm(0.1, 0.1, 0.1, 0.95))
+                        ui.drawRectFilled(0, vec2(ui.windowWidth(), genericButtonHeight), rgbm(0.1, 0.1, 0.1, 0.95))
 
                         cui.snapCursor()
                         ui.dwriteTextAligned(
                                 "MODIFIERS",
-                                fontSize * 1.25,
+                                titleFontSize,
                                 ui.Alignment.Center,
                                 ui.Alignment.Center,
-                                vec2(ui.windowWidth(), fontSize * 2)
+                                vec2(ui.windowWidth(), genericButtonHeight)
                         )
 
                         cui.setCursorY(65)
@@ -358,15 +360,15 @@ function page.draw()
                         ui.setCursor(0)
 
                         ui.drawRectFilled(0, ui.windowSize(), rgbm(0.1, 0.1, 0.1, 0.55))
-                        ui.drawRectFilled(0, vec2(ui.windowWidth(), fontSize * 2), rgbm(0.1, 0.1, 0.1, 0.95))
+                        ui.drawRectFilled(0, vec2(ui.windowWidth(), genericButtonHeight), rgbm(0.1, 0.1, 0.1, 0.95))
 
                         cui.snapCursor()
                         ui.dwriteTextAligned(
                                 ac.getCarName(0, false),
-                                fontSize * 1.25,
+                                titleFontSize,
                                 ui.Alignment.Center,
                                 ui.Alignment.Center,
-                                vec2(ui.windowWidth(), fontSize * 2)
+                                vec2(ui.windowWidth(), genericButtonHeight)
                         )
 
                         cui.setCursorY(65)
@@ -414,7 +416,7 @@ function page.draw()
                                 fontSize * 1.25,
                                 ui.Alignment.Center,
                                 ui.Alignment.Center,
-                                vec2(ui.windowWidth(), fontSize * 2)
+                                vec2(ui.windowWidth(), genericButtonHeight)
                         )
 
                         local track = string.split(ac.getTrackName(), " - ")
@@ -425,7 +427,7 @@ function page.draw()
                                         fontSize,
                                         ui.Alignment.Start,
                                         ui.Alignment.Center,
-                                        vec2(ui.windowWidth(), fontSize * 2)
+                                        vec2(ui.windowWidth(), genericButtonHeight)
                                 )
                         end
 
