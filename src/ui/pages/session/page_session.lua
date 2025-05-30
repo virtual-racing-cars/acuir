@@ -411,6 +411,7 @@ function page.draw()
                         )
 
                         ui.setCursor(0)
+                        cui.snapCursor()
                         ui.dwriteTextAligned(
                                 "TRACK MAP",
                                 titleFontSize,
