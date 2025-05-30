@@ -411,10 +411,9 @@ function page.draw()
                         )
 
                         ui.setCursor(0)
-                        cui.offsetCursorY(15)
                         ui.dwriteTextAligned(
                                 "TRACK MAP",
-                                fontSize * 1.25,
+                                titleFontSize,
                                 ui.Alignment.Center,
                                 ui.Alignment.Center,
                                 vec2(ui.windowWidth(), genericButtonHeight)

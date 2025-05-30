@@ -26,7 +26,6 @@ end
 
 local function carStatusWindow()
         local genericButtonHeight = 50 * cui.uiScale()
-        local fontSize = genericButtonHeight * 0.5
 
         ui.setCursor(0)
         cui.pushWindow("car_status_window", (ui.windowWidth() / 4) * 3, 0, ui.windowWidth() / 4, ui.windowHeight())
@@ -84,7 +83,7 @@ local setupExchangeActive = false
 
 local function setupIoWindow()
         local genericButtonHeight = 50 * cui.uiScale()
-        local fontSize = genericButtonHeight * 0.5
+        local fontSize = math.floor(genericButtonHeight * 0.55)
 
         ui.setCursor(0)
         cui.contentWindow(
@@ -100,16 +99,16 @@ local function setupIoWindow()
                         cui.snapCursor()
                         ui.dwriteTextAligned(
                                 "CAR SETUP",
-                                fontSize * 1.25,
+                                fontSize,
                                 ui.Alignment.Center,
                                 ui.Alignment.Center,
-                                vec2(ui.windowWidth(), fontSize * 2)
+                                vec2(ui.windowWidth(), genericButtonHeight)
                         )
 
                         cui.contentWindow(
                                 "setup_garage_window",
                                 vec2(0, fontSize * 2),
-                                vec2(ui.windowWidth(), ui.windowHeight() - fontSize * 2),
+                                vec2(ui.windowWidth(), ui.windowHeight() - genericButtonHeight * 2),
                                 ui.WindowFlags.NoScrollWithMouse,
                                 function()
                                         ui.setCursorY(0)

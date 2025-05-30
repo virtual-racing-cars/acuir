@@ -301,7 +301,6 @@ function CUI.menuButton(label, size, horizontalAligment, verticalAlignment, flag
                 size = size * uiScale
                 sizeY = size
                 fontSize = math.floor(sizeY * 0.55)
-                fontSize = (fontSize % 2 ~= 0) and fontSize + 1 or fontSize
                 buttonSize = vec2Temp1:set(
                         math.round(ui.measureDWriteText(string.upper(label), fontSize).x + 100 * CUI.uiScale()),
                         size
@@ -310,7 +309,6 @@ function CUI.menuButton(label, size, horizontalAligment, verticalAlignment, flag
                 sizeX = size.x
                 sizeY = size.y
                 fontSize = math.floor(sizeY * 0.55)
-                fontSize = (fontSize % 2 ~= 0) and fontSize + 1 or fontSize
                 buttonSize = vec2Temp1(sizeX, sizeY)
         end
 
@@ -326,6 +324,7 @@ function CUI.menuButton(label, size, horizontalAligment, verticalAlignment, flag
                 ui.pushStyleColor(ui.StyleColor.Button, rgbm(0.05, 0.05, 0.05, 1))
         end
 
+        CUI:snapCursor()
         local tempCursor = ui.getCursor()
         local clicked = ui.button("##" .. label, buttonSize, flags)
         local hovered = ui.itemHovered()
