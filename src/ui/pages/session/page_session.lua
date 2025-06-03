@@ -25,7 +25,7 @@ local jumpStartState = { [0] = "No Penalty", [1] = "Pits", [2] = "Drive-Through"
 
 local vec2Temp1 = vec2()
 
-local leaderboardActive = true
+local leaderboardActive = false
 
 local assists = {
         { label = "Traction Control", value = electronicsState[assistsINI:get("ASSISTS", "TRACTION_CONTROL", 0)] },

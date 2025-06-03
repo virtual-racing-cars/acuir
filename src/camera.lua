@@ -1,7 +1,7 @@
 local cui = require("ui.cui")
 local sim = ac.getSim()
 
-local camera = { FOV = sim.cameraFOV }
+local camera = { FOV = sim.cameraFOV, windowHovered = false }
 
 function camera:step()
         if sim.isInMainMenu then

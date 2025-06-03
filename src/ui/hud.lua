@@ -6,6 +6,7 @@ require("ui.windows.settings_window")
 require("ui.windows.map_window")
 local app = require("app")
 local audio = require("audio")
+local camera = require("camera")
 local cui = require("ui.cui")
 local pages = require("ui.pages.pages")
 
@@ -54,6 +55,8 @@ ui.onExclusiveHUD(function(mode)
 
         -- pages:goToSession()
         -- pages:goToSetup()
+
+        camera.windowHovered = ui.getHoveredID() ~= 0
 
         for hud, hudMode in pairs(hudModes) do
                 if mode == hud then

@@ -6,8 +6,8 @@ local race = require("race")
 local entryLayout = {
         {
                 label = "",
-                value = function(slot, car, width, height)
-                        return race:getLeaderboardPosition(car.index),
+                value = function(car, width, height)
+                        return car.leaderboardPosition,
                                 (car.index == sim.focusedCar or car.index == 0) and rgbm.colors.black
                                         or rgbm.colors.white
                 end,
@@ -16,15 +16,15 @@ local entryLayout = {
         },
         {
                 label = "Driver",
-                value = function(slot, car, width, height) return ac.getDriverName(car.index) end,
+                value = function(car, width, height) return ac.getDriverName(car.index) end,
                 xShare = 0.3,
                 align = ui.Alignment.Start,
         },
         {
                 label = "Car",
-                value = function(slot, car, width, height)
+                value = function(car, width, height)
                         return ac.INIConfig
-                                .carData(slot.car.index, "car.ini")
+                                .carData(car.index, "car.ini")
                                 :get("INFO", "SHORT_NAME", ac.getCarName(car.index))
                 end,
                 xShare = 0.25,
@@ -32,24 +32,23 @@ local entryLayout = {
         },
         {
                 label = "",
-                value = function(slot, car, width, height)
-                        return (not car.isInPitlane and car.drsActive) and "[DRS]" or "",
-                                car.drsActive and rgbm(0, 0.75, 0, 1) or rgbm.colors.white
+                value = function(car, width, height)
+                        return (not car.status.isInPitlane and car.status.drsActive) and "[DRS]" or "",
+                                car.status.drsActive and rgbm(0, 0.75, 0, 1) or rgbm.colors.white
                 end,
                 xShare = 0.05,
                 align = ui.Alignment.End,
         },
         {
                 label = "Best",
-                value = function(slot, car, width, height) return ac.lapTimeToString(car.bestLapTimeMs) end,
+                value = function(car, width, height) return ac.lapTimeToString(car.status.bestLapTimeMs) end,
                 xShare = 0.09,
                 align = ui.Alignment.Center,
         },
         {
                 label = "Gap",
-                value = function(slot, car, width, height)
-                        local gapToLeaderText = race.intervals[car.index]
-                                        and string.format("%+.3f", race.intervals[car.index] / 1000)
+                value = function(car, width, height)
+                        local gapToLeaderText = car.gapToLeader and string.format("%+.3f", car.gapToLeader / 1000)
                                 or "-.---"
                         if race:getLeaderboardPosition(car.index) == 1 then gapToLeaderText = "Leader" end
 
@@ -60,9 +59,9 @@ local entryLayout = {
         },
         {
                 label = "Int.",
-                value = function(slot, car, width, height)
-                        local intervalText = race.leaderboardGaps[car.index]
-                                        and string.format("%+.3f", race.leaderboardGaps[car.index] / 1000)
+                value = function(car, width, height)
+                        local intervalText = car.gapToCarAheadLeaderboard
+                                        and string.format("%+.3f", car.gapToCarAheadLeaderboard / 1000)
                                 or "-.---"
                         if race:getLeaderboardPosition(car.index) == 1 then intervalText = "Interval" end
 
@@ -73,13 +72,13 @@ local entryLayout = {
         },
         {
                 label = "Lap",
-                value = function(slot, car, width, height) return string.format("%02d", car.sessionLapCount + 1) end,
+                value = function(car, width, height) return string.format("%02d", car.status.sessionLapCount + 1) end,
                 xShare = 0.065,
                 align = ui.Alignment.Center,
         },
         {
                 label = "Tyre",
-                value = function(slot, car, width, height)
+                value = function(car, width, height)
                         local statusText = ac.getTyresName(car.index, car.compoundIndex)
                         local altStatus = false
 
@@ -128,19 +127,19 @@ local function leaderboardBanner(yPos, height)
         end
 end
 
-function leaderboardEntryButton(slot, index, yPos, height)
+function leaderboardEntryButton(leaderboardIndex, carIndex, yPos, height)
         local xPos = 0
         local width = ui.windowWidth()
 
-        local car = slot.car
+        local car = race.cars[carIndex]
 
         ui.setCursorX(xPos)
         ui.setCursorY(yPos)
         if ui.invisibleButton("##leaderboardEntryButton" .. car.index, vec2(width, height)) then
-                if car.isConnected then ac.focusCar(car.index) end
+                if car.status.isConnected then ac.focusCar(car.index) end
         end
 
-        local evenCar = index % 2 == 0
+        local evenCar = leaderboardIndex % 2 == 0
 
         ui.drawRectFilled(
                 vec2(xPos, yPos),
@@ -165,18 +164,18 @@ function leaderboardEntryButton(slot, index, yPos, height)
         if sim.isOnlineRace then
                 local pingColor = rgbm.colors.green
 
-                if car.ping > 300 then
+                if car.status.ping > 300 then
                         pingColor = rgbm.colors.red
-                elseif car.ping > 250 then
+                elseif car.status.ping > 250 then
                         pingColor = rgbm.colors.orange
-                elseif car.ping > 100 then
+                elseif car.status.ping > 100 then
                         pingColor = rgbm.colors.yellow
                 end
 
                 ui.drawRectFilled(vec2(height * 0.1, yPos), vec2(0, yPos + height), rgbm.colors.black)
 
                 ui.drawRectFilled(
-                        vec2(height * 0.1, yPos + height * math.min(car.ping / 400, 0.9)),
+                        vec2(height * 0.1, yPos + height * math.min(car.status.ping / 400, 0.9)),
                         vec2(0, yPos + height),
                         pingColor
                 )
@@ -189,12 +188,12 @@ function leaderboardEntryButton(slot, index, yPos, height)
                 local tempWidth = width - height - height * 0.2
                 cui.snapCursor()
                 local x, y = entry.xShare == -1 and height or tempWidth * entry.xShare, height
-                local value, color = entry.value(slot, car, tempWidth, height)
+                local value, color = entry.value(car, tempWidth, height)
                 ui.dwriteTextAligned(value, height * 0.5, entry.align, ui.Alignment.Center, vec2(x, y), false, color)
                 ui.sameLine()
         end
 
-        if not car.isConnected then
+        if not car.status.isConnected then
                 ui.drawRectFilled(vec2(xPos, yPos), vec2(xPos + width, yPos + height), rgbm(0.1, 0.1, 0.1, 0.6))
         end
 end
@@ -212,7 +211,12 @@ function leaderboard:draw(xPos, yPos, width, height)
         for _, slot in ipairs(race.leaderboard) do
                 if slot.car.isConnected or slot.hasCompletedLastLap then
                         leaderboardIndex = leaderboardIndex + 1
-                        leaderboardEntryButton(slot, leaderboardIndex, (leaderboardIndex - 1) * height, height)
+                        leaderboardEntryButton(
+                                leaderboardIndex,
+                                slot.car.index,
+                                (leaderboardIndex - 1) * height,
+                                height
+                        )
                 end
         end
         cui.dummy(height, height)

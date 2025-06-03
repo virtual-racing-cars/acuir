@@ -132,7 +132,7 @@ function card:draw(xPos, yPos, width, height)
 
         cui.snapCursor()
         ui.dwriteTextAligned(
-                race.leaderboardPositions[spectatedCar.index],
+                race:getLeaderboardPosition(spectatedCar.index),
                 36 * cui.uiScale(),
                 ui.Alignment.Start,
                 ui.Alignment.Center,

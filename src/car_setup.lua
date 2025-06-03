@@ -98,7 +98,7 @@ function setup:save(sm)
         sm:saveSetup(setup.input.path)
 
         setup.current = setup.input.track .. "/" .. setup.input.name
-        setup.selected = table.clone(setup.input, true)
+        setup.selected = table.clone(setup.input)
 
         setup:load()
 end

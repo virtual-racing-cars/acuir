@@ -1,3 +1,5 @@
+-- if true then return end
+
 package.add("src")
 require("audio")
 require("ui.hud")

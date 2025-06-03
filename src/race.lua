@@ -1,40 +1,100 @@
 local sim = ac.getSim()
+local Car = require("src.classes.Car")
 
 local session = {
-        lapMarkers = {},
-        laps = {},
         leaderboard = table.new(sim.carsCount, 0),
         leaderboardPositions = table.new(sim.carsCount, 0),
-        leaderboardGaps = {},
-        trackGaps = {},
-        intervals = {},
+        currentLeader = 0,
         timingGates = {},
-        timingGateTimes = {},
-        timingGateIndexes = {},
-        fastestLap = math.huge,
+        fastestLapTimeMs = math.huge,
         fastestSplits = {},
+        cars = {},
 }
 
-local trackLegnth = 1 / sim.trackLengthM * 50
-
-local timingGateCount = 0
-for i = 0, 1, trackLegnth do
-        timingGateCount = timingGateCount + 1
-        session.timingGates[timingGateCount] = i
-end
+local trackLength = 1 / sim.trackLengthM * 50
 
 for i = 0, #sim.lapSplits - 1 do
         session.fastestSplits[i] = math.huge
 end
 
-function session:getLeaderboardPosition(index) return session.leaderboardPositions[index] end
+for i = 0, sim.carsCount - 1 do
+        session.cars[i] = Car(i)
+end
+
+local gateCount = 0
+for trackPos = 0, 1, trackLength do
+        gateCount = gateCount + 1
+        session.timingGates[gateCount] = {}
+        session.timingGates[gateCount].pos = trackPos
+        session.timingGates[gateCount].lastCrossedTime = 0
+end
+
+local function gateCrossed(gateIndex, car, time)
+        local gapToLeader = 0
+        local gapToCarAheadLeaderboard = 0
+        local gapToCarAheadTrack = 0
+
+        if sim.raceSessionType ~= ac.SessionType.Race then
+                local bestLapTime = session.leaderboard[car.leaderboardPosition].bestLapTimeMs
+
+                gapToLeader = bestLapTime - (session.leaderboard[1].bestLapTimeMs or bestLapTime)
+                gapToCarAheadLeaderboard = bestLapTime
+                        - (session.leaderboard[math.max(car.leaderboardPosition - 1, 1)].bestLapTimeMs or bestLapTime)
+        else
+                gapToLeader = time - (session.timingGates[gateIndex][session.currentLeader] or time)
+                gapToCarAheadLeaderboard = time - (session.timingGates[gateIndex][car.carAheadIndex] or time)
+        end
+
+        gapToCarAheadTrack = time - (session.timingGates[gateIndex].lastCrossedTime or time)
+
+        car.gapToLeader = gapToLeader
+        car.gapToCarAheadLeaderboard = gapToCarAheadLeaderboard
+        car.gapToCarAheadTrack = gapToCarAheadTrack
+
+        session.timingGates[gateIndex][car.index] = time
+        session.timingGates[gateIndex].last = time
+end
 
 ac.onSessionStart(function(sessionIndex, restarted)
-        session.fastestLap = math.huge
+        session.fastestLapTimeMs = math.huge
         for i = 0, #sim.lapSplits do
                 session.fastestSplits[i] = math.huge
         end
 end)
+
+local function sortLeaderboard(a, b)
+        if b == nil then return false end
+        if a == nil then return false end
+        if a.car.isRetired then return false end
+        if b.car.isRetired then return true end
+        if not a.car.isConnected then return false end
+        if not b.car.isConnected then return true end
+
+        if not sim.isSessionStarted then return ac.getDriverName(a.car.index) < ac.getDriverName(b.car.index) end
+
+        if
+                (a.hasCompletedLastLap and b.hasCompletedLastLap)
+                or (a.laps > 0 and a.car.splinePosition < 0.1)
+                or (b.laps > 0 and b.car.splinePosition < 0.1)
+        then
+                return session.leaderboardPositions[a.car.index] < session.leaderboardPositions[b.car.index]
+        end
+
+        if a.laps == 0 and b.laps == 0 then
+                if a.car.isInPitlane then return false end
+                if b.car.isInPitlane then return true end
+        end
+
+        return a.laps + a.car.splinePosition > b.laps + b.car.splinePosition
+end
+
+local function updateBestTime(time1, time2)
+        if time2 and time2 > 0 and time2 < time1 then return time2 end
+
+        return time1
+end
+
+function session:getLeaderboardPosition(index) return session.leaderboardPositions[index] end
 
 function session:step()
         for i = 0, #ac.getSession(sim.currentSessionIndex).leaderboard - 1 do
@@ -43,124 +103,37 @@ function session:step()
                 session.leaderboardPositions[leaderboardSlot.car.index] = i + 1
         end
 
-        if sim.raceSessionType == ac.SessionType.Race then
-                table.sort(session.leaderboard, function(a, b)
-                        if b == nil then return false end
-                        if a == nil then return false end
-                        if a.car.isRetired then return false end
-                        if b.car.isRetired then return true end
-                        if not a.car.isConnected then return false end
-                        if not b.car.isConnected then return true end
-
-                        if not sim.isSessionStarted then
-                                return ac.getDriverName(a.car.index) < ac.getDriverName(b.car.index)
-                        end
-
-                        if
-                                (a.hasCompletedLastLap and b.hasCompletedLastLap)
-                                or (a.laps > 0 and a.car.splinePosition < 0.1)
-                                or (b.laps > 0 and b.car.splinePosition < 0.1)
-                        then
-                                return session.leaderboardPositions[a.car.index]
-                                        < session.leaderboardPositions[b.car.index]
-                        end
-
-                        if a.laps == 0 and b.laps == 0 then
-                                if a.car.isInPitlane then return false end
-                                if b.car.isInPitlane then return true end
-                        end
-
-                        return a.laps + a.car.splinePosition > b.laps + b.car.splinePosition
-                end)
-        end
+        if sim.raceSessionType == ac.SessionType.Race then table.sort(session.leaderboard, sortLeaderboard) end
 
         local carAheadIndex = -1
-
         for pos, slot in ipairs(session.leaderboard) do
-                local car = slot.car
-
+                local car = session.cars[slot.car.index]
+                car.carAheadIndex = carAheadIndex
+                car.leaderboardPosition = pos
                 session.leaderboardPositions[car.index] = pos
 
-                if car.bestLapTimeMs > 0 and car.bestLapTimeMs < session.fastestLap then
-                        session.fastestLap = car.bestLapTimeMs
-                end
+                if pos == 1 then session.currentLeader = car.index end
+
+                ac.debug(ac.getDriverName(slot.car.index), ac.lapTimeToString(slot.car.bestLapTimeMs))
+
+                session.fastestLapTimeMs = updateBestTime(session.fastestLapTimeMs, car.status.bestLapTimeMs)
 
                 for i = 0, #sim.lapSplits - 1 do
-                        local bestSplit = car.bestSplits[i]
-                        if bestSplit and bestSplit > 0 and bestSplit < session.fastestSplits[i] then
-                                session.fastestSplits[i] = bestSplit
-                        end
-
-                        local currSplit = car.currentSplits[i]
-                        if currSplit and currSplit > 0 and currSplit < session.fastestSplits[i] then
-                                session.fastestSplits[i] = currSplit
-                        end
+                        session.fastestSplits[i] = updateBestTime(session.fastestSplits[i], car.status.lastSplits[i])
+                        session.fastestSplits[i] = updateBestTime(session.fastestSplits[i], car.status.bestSplits[i])
+                        session.fastestSplits[i] = updateBestTime(session.fastestSplits[i], car.status.currentSplits[i])
                 end
 
-                if pos > 1 and sim.raceSessionType ~= ac.SessionType.Race then
-                        if slot.bestLapTimeMs > 0 then
-                                session.intervals[car.index] = slot.bestLapTimeMs - session.leaderboard[1].bestLapTimeMs
-                                session.leaderboardGaps[car.index] = slot.bestLapTimeMs
-                                        - session.leaderboard[pos - 1].bestLapTimeMs
-                        end
+                local time = sim.currentSessionTime
 
-                        goto continue
+                local gateIndex = math.floor(car.status.splinePosition / trackLength) + 1
+                local gate = session.timingGates[gateIndex]
+
+                if car.status.splinePosition >= gate.pos and car.splinePositionLast < gate.pos then
+                        gateCrossed(gateIndex, car, time)
                 end
 
-                if not session.lapMarkers[car.index] then session.lapMarkers[car.index] = {} end
-                if not session.laps[car.index] then session.laps[car.index] = {} end
-                if not session.timingGateIndexes[car.index] then session.timingGateIndexes[car.index] = 1 end
-                if not session.timingGateTimes["trackPos"] then session.timingGateTimes["trackPos"] = {} end
-                if not session.timingGateTimes[car.index] then session.timingGateTimes[car.index] = {} end
-                if not session.timingGateTimes[carAheadIndex] then session.timingGateTimes[carAheadIndex] = {} end
-
-                if not session.laps[car.index][car.lapCount] and car.lapCount > 0 then
-                        session.laps[car.index][car.lapCount] = {
-                                car.lapCount,
-                                car.isLastLapValid,
-                                ac.getTyresName(car.index, car.compoundIndex),
-                                car.previousLapTimeMs or -1,
-                                car.lastSplits[0] or -1,
-                                car.lastSplits[1] or -1,
-                                car.lastSplits[2] or -1,
-                                car.previousLapTimeMs - car.bestLapTimeMs,
-                        }
-                        session.lapMarkers[car.index][car.lapCount] = sim.replayCurrentFrame
-                        session.timingGateIndexes[car.index] = 1
-                end
-
-                for gate = session.timingGateIndexes[car.index], timingGateCount do
-                        if car.splinePosition >= session.timingGates[gate] then
-                                session.timingGateIndexes[car.index] = gate < timingGateCount and gate + 1 or 1
-                                local time = sim.currentSessionTime
-                                local lastLeaderboardTime = session.timingGateTimes[carAheadIndex][gate] or time
-                                local lastTime = session.timingGateTimes.trackPos[gate] or time
-                                local leaderboardGap = time - lastLeaderboardTime
-                                local gap = time - lastTime
-                                local prevInterval = session.intervals[carAheadIndex] or 0
-
-                                if car.isInPitlane then
-                                        session.leaderboardGaps[car.index] = nil
-                                        session.trackGaps[car.index] = nil
-                                        session.intervals[car.index] = nil
-                                else
-                                        session.leaderboardGaps[car.index] = leaderboardGap
-                                        session.trackGaps[car.index] = gap
-                                        session.intervals[car.index] = prevInterval + leaderboardGap
-                                end
-
-                                session.timingGateTimes.trackPos[gate] = time
-                                session.timingGateTimes[car.index][gate] = time
-                                goto continue
-                        end
-                end
-
-                ::continue::
-
-                if pos == 1 then
-                        session.intervals[car.index] = 0
-                        session.leaderboardGaps[car.index] = 0
-                end
+                car.splinePositionLast = car.status.splinePosition
 
                 carAheadIndex = car.index
         end

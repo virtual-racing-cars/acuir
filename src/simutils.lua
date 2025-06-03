@@ -87,7 +87,9 @@ end
 function simutils.sessionTimeLeftString()
         local leadCar = simutils.session().leaderboard[0]
 
-        if sim.timeToSessionStart > 0 then
+        if sim.timeToSessionStart >= 1e100 then
+                return "Click Drive To Start"
+        elseif sim.timeToSessionStart > 0 then
                 return simutils.timeToString(math.max(sim.timeToSessionStart - 5, 0), "Countdown -")
         elseif simutils.session().durationMinutes > 0 then
                 if sim.sessionTimeLeft <= 0 then
