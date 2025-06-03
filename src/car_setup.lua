@@ -55,7 +55,6 @@ function setup:load()
                 table.sort(setupList, function(a, b) return a.lastWriteTime > b.lastWriteTime end)
         end
 
-        -- Create a sorted list of track names
         for track in pairs(setup.loaded) do
                 table.insert(setup.trackList, track)
         end
@@ -101,6 +100,7 @@ function setup:save(sm)
         setup.selected = table.clone(setup.input)
 
         setup:load()
+        sm:resetUndo()
 end
 
 function setup:delete()

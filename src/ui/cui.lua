@@ -972,6 +972,19 @@ function CUI:promptShutdownAC()
                 ui.dwriteTextAligned("Quit Session", textBoxHeight / 2, nil, nil, vec2(ui.windowWidth(), textBoxHeight))
                 local titleTextWidth = ui.measureDWriteText(" Quit Session ", textBoxHeight / 2).x
 
+                if sm:isUndoAvailable() then
+                        ui.setCursorX(0)
+                        ui.dwriteTextAligned(
+                                "You have unsaved changes to the current setup!",
+                                textBoxHeight / 4,
+                                nil,
+                                nil,
+                                vec2(ui.windowWidth(), textBoxHeight / 4),
+                                false,
+                                rgbm.colors.orange
+                        )
+                end
+
                 ui.setCursorX(0)
                 ui.dwriteTextAligned(
                         "Abandon the current session and return to Content Manager?",
@@ -990,10 +1003,10 @@ function CUI:promptShutdownAC()
                 end
                 ui.sameLine()
 
-                if not mouseMoved then
-                        ac.setMousePosition(ui.cursorScreenPos() + vec2(ui.availableSpaceX() / 2, 20))
-                        mouseMoved = true
-                end
+                -- if not mouseMoved then
+                --         ac.setMousePosition(ui.cursorScreenPos() + vec2(ui.availableSpaceX() / 2, 20))
+                --         mouseMoved = true
+                -- end
 
                 ui.setCursorX(ui.windowWidth() / 2 + 5 * CUI.uiScale())
                 if CUI.modalButton("Confirm", ui.windowWidth() / 3, 50 * CUI.uiScale(), ui.ButtonFlags.None) then
