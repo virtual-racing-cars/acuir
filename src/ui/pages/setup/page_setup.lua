@@ -107,8 +107,8 @@ local function setupIoWindow()
 
                         cui.contentWindow(
                                 "setup_garage_window",
-                                vec2(0, fontSize * 2),
-                                vec2(ui.windowWidth(), ui.windowHeight() - genericButtonHeight * 2),
+                                vec2(0, genericButtonHeight),
+                                vec2(ui.windowWidth(), ui.windowHeight() - genericButtonHeight),
                                 ui.WindowFlags.NoScrollWithMouse,
                                 function()
                                         ui.setCursorY(0)

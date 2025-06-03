@@ -9,7 +9,7 @@ local currentApp = app.state.setupTab - 1
 local tabBarPosition = 0
 
 local function tabItem(index, title)
-        if cui.treeNodeButton(title, vec2(ui.windowWidth(), 48 * cui.uiScale()), currentApp == index, true) then
+        if cui.treeNodeButton(title, vec2(ui.windowWidth(), ui.windowHeight() / 11), currentApp == index, true) then
                 currentApp = index
         end
 
@@ -23,12 +23,6 @@ function toCapitalCase(str)
 end
 
 function setupTabBar(tabs)
-        ui.drawRectFilled(
-                vec2(0, 0),
-                vec2(ui.windowWidth(), 56 * cui.uiScale()),
-                settings.Appearance.uiThemeColor1 / 1.3
-        )
-
         if ui.windowHovered() and scrollDelayTimer < os.clock() then
                 if ui.mouseWheel() > 0 then
                         currentApp = currentApp == 0 and #tabs - 1 or currentApp - 1
