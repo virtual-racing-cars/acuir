@@ -53,7 +53,7 @@ local hudModes = {
 ui.onExclusiveHUD(function(mode)
         if not app.state.appOpen or ac.getLastError() then return end
 
-        -- pages:goToSession()
+        pages:goToSession()
         -- pages:goToSetup()
 
         camera.windowHovered = ui.getHoveredID() ~= 0

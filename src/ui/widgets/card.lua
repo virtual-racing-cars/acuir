@@ -7,13 +7,86 @@ local sim = ac.getSim()
 
 local card = {}
 
+local spectatedCarInfo = {
+        {
+                label = "Driver",
+                value = function(car)
+                        local driverName = ac.getDriverName(car.index)
+                        driverName = isempty(driverName) and "Driver %s" % car.index or driverName
+                        return driverName
+                end,
+        },
+        {
+                label = "Car",
+                value = function(car) return ac.getCarName(car.index) end,
+        },
+        {
+                label = "Pos",
+                value = function(car) return car.racePosition end,
+        },
+        {
+                label = "Laps",
+                value = function(car) return car.lapCount end,
+        },
+        {
+                label = "Best Lap",
+                value = function(car) return ac.lapTimeToString(car.bestLapTimeMs) end,
+        },
+        {
+                label = "Last Lap",
+                value = function(car) return ac.lapTimeToString(car.previousLapTimeMs) end,
+        },
+        {
+                label = "Ping",
+                value = function(car) return string.format("%s ms", car.ping) end,
+        },
+}
+
+local cameraModeString = {
+        [ac.CameraMode.Cockpit] = function() return "Cockpit" end,
+        [ac.CameraMode.Drivable] = function()
+                for k, v in pairs(ac.DrivableCamera) do
+                        if v == sim.driveableCameraMode then return "Car " .. k end
+                end
+        end,
+        [ac.CameraMode.Car] = function() return "Car %s" % sim.carCameraIndex end,
+        [ac.CameraMode.Track] = function() return "Track %s" % sim.trackCamerasSet end,
+        [ac.CameraMode.Free] = function() return "Free" end,
+        [ac.CameraMode.Helicopter] = function() return "Heli" end,
+        [ac.CameraMode.OnBoardFree] = function() return "Orbit" end,
+        [ac.CameraMode.Start] = function() return "Start" end,
+}
+
 function card:draw(xPos, yPos, width, height)
-        local border = 20 * cui.uiScale()
+        local border = 10 * cui.uiScale()
 
         cui.pushWindow("card_widget_window", xPos, yPos, width, height, false)
-        ui.drawRectFilled(vec2(0, 0), ui.windowSize(), settings.Appearance.uiThemeColor1)
+        ui.drawRectFilled(vec2(0, 0), vec2(ui.windowWidth() * 0.5, ui.windowHeight()), settings.Appearance.uiColor1)
 
         local spectatedCar = ac.getCar(sim.focusedCar)
+
+        cui.pushWindow(
+                "player_card",
+                border,
+                border,
+                (ui.windowWidth() - border * 2) * 0.5,
+                ui.windowHeight() - border * 2,
+                false
+        )
+
+        local fontSize = 20 * cui.uiScale()
+
+        ui.setCursor(0)
+        for _, info in ipairs(spectatedCarInfo) do
+                cui.snapCursor()
+                ui.dwriteText(string.format("%s: %s", info.label, info.value(spectatedCar)), fontSize)
+                if info.sameLine then
+                        ui.sameLine()
+                        ui.setCursorX(ui.windowWidth() * 0.5)
+                else
+                        ui.setCursorX(0)
+                end
+        end
 
         local skin = string.format(
                 "%s\\%s\\skins\\%s\\livery.png",
@@ -21,207 +94,22 @@ function card:draw(xPos, yPos, width, height)
                 ac.getCarID(spectatedCar.index),
                 ac.getCarSkinID(spectatedCar.index)
         )
-        local skinImageSize = vec2(110, 110) * cui.uiScale()
+        local skinImageSize = 100 * cui.uiScale()
 
-        cui.pushWindow("player_card", 0, 0, ui.windowWidth() * 0.4, ui.windowHeight(), false)
+        ui.setCursorX(ui.windowWidth() - skinImageSize - border)
+        ui.setCursorY(ui.windowHeight() - skinImageSize)
+        ui.image(skin, vec2(skinImageSize, skinImageSize))
 
-        ui.setCursorX(ui.windowWidth() / 2 - (skinImageSize.x / 2))
-        ui.setCursorY(ui.windowHeight() / 2 - skinImageSize.y * 0.8)
+        cui:setCenterCursorAround(200, fontSize, ui.windowWidth() - skinImageSize * 0.5 - border, fontSize * 0.5)
+        ui.dwriteTextAligned("Camera", fontSize, ui.Alignment.Center, ui.Alignment.Center, vec2(200, fontSize))
 
-        ui.image(skin, skinImageSize)
-
-        ui.setCursorX(0)
-        ui.setCursorY(ui.windowHeight() / 2 + skinImageSize.y * 0.35)
-
-        cui.snapCursor()
+        cui:setCenterCursorAround(200, fontSize, ui.windowWidth() - skinImageSize * 0.5 - border, fontSize * 2)
         ui.dwriteTextAligned(
-                string.format("%s (%s)", ac.getDriverName(spectatedCar.index), spectatedCar.index),
-                24 * cui.uiScale(),
+                cameraModeString[sim.cameraMode](),
+                fontSize,
                 ui.Alignment.Center,
                 ui.Alignment.Center,
-                vec2(ui.windowWidth(), 48 * cui.uiScale())
-        )
-
-        if sim.carsCount > 1 then
-                ui.setCursorX(0)
-                ui.setCursorY(ui.windowHeight() / 2 - skinImageSize.y * 0.8 * 0.5)
-                if
-                        cui.iconButton(
-                                "##prevCar",
-                                ui.Icons.Skip,
-                                50 * cui.uiScale(),
-                                75 * cui.uiScale(),
-                                ui.ButtonFlags.None,
-                                true,
-                                1
-                        )
-                then
-                        camera:setPreviousSpectatedCar(sim.focusedCar)
-                end
-
-                ui.setCursorX(ui.windowWidth() - 65 * cui.uiScale())
-                ui.setCursorY(ui.windowHeight() / 2 - (skinImageSize.y * 0.8 * 0.5))
-                if
-                        cui.iconButton(
-                                "##nextCar",
-                                ui.Icons.Skip,
-                                75 * cui.uiScale(),
-                                75 * cui.uiScale(),
-                                ui.ButtonFlags.None,
-                                false,
-                                1
-                        )
-                then
-                        camera:setNextSpectatedCar(sim.focusedCar)
-                end
-        end
-
-        cui.popWindow()
-
-        cui.pushWindow(
-                "telem_card2",
-                ui.windowWidth() * 0.42,
-                0,
-                ui.windowWidth() * 0.55,
-                ui.windowHeight() * 0.5,
-                false
-        )
-
-        cui.setCursorX(15)
-        cui.setCursorY(50)
-        cui.snapCursor()
-        ui.dwriteTextAligned(
-                "SPEED",
-                18 * cui.uiScale(),
-                ui.Alignment.Start,
-                ui.Alignment.Center,
-                vec2(ui.windowWidth() / 3, 36 * cui.uiScale())
-        )
-        ui.sameLine()
-
-        cui.snapCursor()
-        ui.dwriteTextAligned(
-                "POSITION",
-                18 * cui.uiScale(),
-                ui.Alignment.Start,
-                ui.Alignment.Center,
-                vec2(ui.windowWidth() / 3, 36 * cui.uiScale())
-        )
-        ui.sameLine()
-
-        cui.snapCursor()
-        ui.dwriteTextAligned(
-                "LAST LAP",
-                18 * cui.uiScale(),
-                ui.Alignment.Start,
-                ui.Alignment.Center,
-                vec2(ui.windowWidth() / 3, 36 * cui.uiScale())
-        )
-
-        cui.setCursorX(15)
-        cui.setCursorY(15)
-        cui.snapCursor()
-        ui.dwriteTextAligned(
-                math.round(units:speed(spectatedCar.speedKmh)),
-                36 * cui.uiScale(),
-                ui.Alignment.Start,
-                ui.Alignment.Center,
-                vec2(ui.windowWidth() / 3, 36 * cui.uiScale())
-        )
-        ui.sameLine()
-
-        cui.snapCursor()
-        ui.dwriteTextAligned(
-                race:getLeaderboardPosition(spectatedCar.index),
-                36 * cui.uiScale(),
-                ui.Alignment.Start,
-                ui.Alignment.Center,
-                vec2(ui.windowWidth() / 3, 36 * cui.uiScale())
-        )
-        ui.sameLine()
-
-        cui.snapCursor()
-        ui.dwriteTextAligned(
-                ac.lapTimeToString(spectatedCar.bestLapTimeMs),
-                36 * cui.uiScale(),
-                ui.Alignment.Start,
-                ui.Alignment.Center,
-                vec2(ui.windowWidth() / 3, 36 * cui.uiScale())
-        )
-        ui.sameLine()
-
-        cui.popWindow()
-
-        cui.pushWindow(
-                "telem_card",
-                ui.windowWidth() * 0.42,
-                ui.windowHeight() * 0.45,
-                ui.windowWidth() * 0.55,
-                ui.windowHeight() * 0.5,
-                true
-        )
-
-        cui.setCursorX(0)
-        cui.setCursorY(-5)
-        cui.snapCursor()
-        ui.dwriteTextAligned(
-                "Gear\n" .. ac.getCarGearLabel(spectatedCar.index),
-                40 * cui.uiScale(),
-                ui.Alignment.Center,
-                ui.Alignment.Center,
-                vec2(80 * cui.uiScale(), ui.windowHeight())
-        )
-
-        local barPosition = ui.windowHeight() / 20 * 4
-        local barWdith = 100 * cui.uiScale()
-
-        local steer = math.clamp(spectatedCar.steer / spectatedCar.steerLock, -1, 1)
-
-        ui.drawSimpleLine(
-                vec2(barWdith, barPosition),
-                vec2(barWdith + ui.windowWidth(), barPosition),
-                rgbm(0.3, 0.3, 0.3, 1),
-                border
-        )
-        ui.drawSimpleLine(
-                vec2(barWdith + (ui.windowWidth() - barWdith) * 0.5, barPosition),
-                vec2(
-                        barWdith + (ui.windowWidth() - barWdith) * 0.5 + (ui.windowWidth() - barWdith) * 0.5 * steer,
-                        barPosition
-                ),
-                rgbm(1, 0.5, 0, 1),
-                border
-        )
-
-        barPosition = (ui.windowHeight() / 20) * 10
-
-        ui.drawSimpleLine(
-                vec2(barWdith, barPosition),
-                vec2(barWdith + (ui.windowWidth() - barWdith), barPosition),
-                rgbm(0.3, 0.3, 0.3, 1),
-                border
-        )
-
-        ui.drawSimpleLine(
-                vec2(barWdith, barPosition),
-                vec2(barWdith + (ui.windowWidth() - barWdith) * spectatedCar.gas, barPosition),
-                rgbm(0, 0.8, 0, 1),
-                border
-        )
-
-        barPosition = (ui.windowHeight() / 20) * 16
-
-        ui.drawSimpleLine(
-                vec2(barWdith, barPosition),
-                vec2(barWdith + (ui.windowWidth() - barWdith), barPosition),
-                rgbm(0.3, 0.3, 0.3, 1),
-                border
-        )
-        ui.drawSimpleLine(
-                vec2(barWdith, barPosition),
-                vec2(barWdith + (ui.windowWidth() - barWdith) * spectatedCar.brake, barPosition),
-                rgbm.colors.red,
-                border
+                vec2(200, fontSize)
         )
 
         cui.popWindow()

@@ -8,28 +8,38 @@ local session = {
         timingGates = {},
         fastestLapTimeMs = math.huge,
         fastestSplits = {},
+        averageLapTimeMs = 0,
         cars = {},
 }
 
-local trackLength = 1 / sim.trackLengthM * 50
-
-for i = 0, #sim.lapSplits - 1 do
-        session.fastestSplits[i] = math.huge
-end
+local timingGateGapLengthM = 1 / sim.trackLengthM * 50
 
 for i = 0, sim.carsCount - 1 do
         session.cars[i] = Car(i)
 end
 
-local gateCount = 0
-for trackPos = 0, 1, trackLength do
-        gateCount = gateCount + 1
-        session.timingGates[gateCount] = {}
-        session.timingGates[gateCount].pos = trackPos
-        session.timingGates[gateCount].lastCrossedTime = 0
+local function resetFastestTimes()
+        session.fastestLapTimeMs = math.huge
+        session.averageLapTimeMs = 0
+
+        for i = 0, #sim.lapSplits - 1 do
+                session.fastestSplits[i] = math.huge
+        end
 end
 
-local function gateCrossed(gateIndex, car, time)
+local function resetTimingGates()
+        local gateCount = 0
+        for trackPos = 0, 1, timingGateGapLengthM do
+                gateCount = gateCount + 1
+                session.timingGates[gateCount] = {}
+                session.timingGates[gateCount].pos = trackPos
+                session.timingGates[gateCount].lastCrossedTime = 0
+        end
+end
+
+local function gateCrossed(gateIndex, car)
+        local time = sim.currentSessionTime
+
         local gapToLeader = 0
         local gapToCarAheadLeaderboard = 0
         local gapToCarAheadTrack = 0
@@ -51,25 +61,37 @@ local function gateCrossed(gateIndex, car, time)
         car.gapToCarAheadLeaderboard = gapToCarAheadLeaderboard
         car.gapToCarAheadTrack = gapToCarAheadTrack
 
+        car.previousLapDelta = car.status.estimatedLapTimeMs - car.status.previousLapTimeMs
+        car.bestLapDelta = car.status.estimatedLapTimeMs - car.status.bestLapTimeMs
+
         session.timingGates[gateIndex][car.index] = time
         session.timingGates[gateIndex].last = time
 end
 
 ac.onSessionStart(function(sessionIndex, restarted)
-        session.fastestLapTimeMs = math.huge
-        for i = 0, #sim.lapSplits do
-                session.fastestSplits[i] = math.huge
-        end
+        resetFastestTimes()
+        resetTimingGates()
 end)
 
-local function sortLeaderboard(a, b)
+ac.onClientDisconnected(function(connectedCarIndex, connectedSessionID)
+        setTimeout(
+                function() session.cars[connectedCarIndex].isDisconnected = true end,
+                30,
+                "acuir_disconnect_car_%s" % connectedCarIndex
+        )
+end)
+
+ac.onClientConnected(
+        function(connectedCarIndex, connectedSessionID) clearTimeout("acuir_disconnect_car_%s" % connectedCarIndex) end
+)
+
+local function sortRaceLeaderboard(a, b)
         if b == nil then return false end
         if a == nil then return false end
         if a.car.isRetired then return false end
         if b.car.isRetired then return true end
         if not a.car.isConnected then return false end
         if not b.car.isConnected then return true end
-
         if not sim.isSessionStarted then return ac.getDriverName(a.car.index) < ac.getDriverName(b.car.index) end
 
         if
@@ -96,6 +118,9 @@ end
 
 function session:getLeaderboardPosition(index) return session.leaderboardPositions[index] end
 
+resetFastestTimes()
+resetTimingGates()
+
 function session:step()
         for i = 0, #ac.getSession(sim.currentSessionIndex).leaderboard - 1 do
                 local leaderboardSlot = ac.getSession(sim.currentSessionIndex).leaderboard[i]
@@ -103,7 +128,7 @@ function session:step()
                 session.leaderboardPositions[leaderboardSlot.car.index] = i + 1
         end
 
-        if sim.raceSessionType == ac.SessionType.Race then table.sort(session.leaderboard, sortLeaderboard) end
+        if sim.raceSessionType == ac.SessionType.Race then table.sort(session.leaderboard, sortRaceLeaderboard) end
 
         local carAheadIndex = -1
         for pos, slot in ipairs(session.leaderboard) do
@@ -111,12 +136,38 @@ function session:step()
                 car.carAheadIndex = carAheadIndex
                 car.leaderboardPosition = pos
                 session.leaderboardPositions[car.index] = pos
+                session.averageLapTimeMs = (session.averageLapTimeMs + car.status.previousLapTimeMs) * 0.5
 
-                if pos == 1 then session.currentLeader = car.index end
+                if car.status.isConnected then car.isDisconnected = false end
 
-                ac.debug(ac.getDriverName(slot.car.index), ac.lapTimeToString(slot.car.bestLapTimeMs))
+                if pos == 1 then
+                        session.currentLeader = car.index
+                elseif session.leaderboard[1].laps > 1 then
+                        if slot.totalTimeMs + session.averageLapTimeMs * 1.1 < session.leaderboard[1].totalTimeMs then
+                                car.lapsToLeader = math.max(session.leaderboard[1].laps - slot.laps, 0)
+                        end
 
-                session.fastestLapTimeMs = updateBestTime(session.fastestLapTimeMs, car.status.bestLapTimeMs)
+                        if
+                                slot.totalTimeMs + session.averageLapTimeMs * 1.1
+                                < session.leaderboard[pos - 1].totalTimeMs
+                        then
+                                car.lapsToCarAheadLeaderboard =
+                                        math.max(session.leaderboard[pos - 1].laps - slot.laps, 0)
+                        end
+                end
+
+                local bestLapTimeMsBySplits = 0
+                for i = 0, #sim.lapSplits - 1 do
+                        if car.status.bestLapSplits[i] then
+                                bestLapTimeMsBySplits = bestLapTimeMsBySplits + car.status.bestLapSplits[i]
+                        else
+                                bestLapTimeMsBySplits = 0
+                        end
+                end
+
+                car.bestLapTimeMs = bestLapTimeMsBySplits
+
+                session.fastestLapTimeMs = updateBestTime(session.fastestLapTimeMs, car.bestLapTimeMs)
 
                 for i = 0, #sim.lapSplits - 1 do
                         session.fastestSplits[i] = updateBestTime(session.fastestSplits[i], car.status.lastSplits[i])
@@ -124,13 +175,11 @@ function session:step()
                         session.fastestSplits[i] = updateBestTime(session.fastestSplits[i], car.status.currentSplits[i])
                 end
 
-                local time = sim.currentSessionTime
-
-                local gateIndex = math.floor(car.status.splinePosition / trackLength) + 1
+                local gateIndex = math.floor(car.status.splinePosition / timingGateGapLengthM) + 1
                 local gate = session.timingGates[gateIndex]
 
                 if car.status.splinePosition >= gate.pos and car.splinePositionLast < gate.pos then
-                        gateCrossed(gateIndex, car, time)
+                        gateCrossed(gateIndex, car)
                 end
 
                 car.splinePositionLast = car.status.splinePosition

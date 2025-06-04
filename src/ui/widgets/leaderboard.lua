@@ -82,14 +82,14 @@ local entryLayout = {
                         local statusText = ac.getTyresName(car.index, car.compoundIndex)
                         local altStatus = false
 
-                        if car.isRetired then
+                        if car.status.isRetired then
                                 statusText = "DNF"
                                 altStatus = true
-                        elseif car.isInPit or car.isInPitlane then
+                        elseif car.status.isInPit or car.status.isInPitlane then
                                 statusText = "PIT"
                                 altStatus = true
                         else
-                                statusText = ac.getTyresName(car.index, car.compoundIndex)
+                                statusText = ac.getTyresName(car.index, car.status.compoundIndex)
                         end
 
                         if altStatus then
@@ -203,7 +203,7 @@ function leaderboard:draw(xPos, yPos, width, height)
         ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiThemeColor1 * 0.25)
         ui.setCursor(0)
 
-        local height = 50 * cui.uiScale()
+        local height = ui.windowHeight() / 21
         leaderboardBanner(0, height)
 
         cui.pushWindow("home_leaderboard_entrant_window", 0, height, ui.windowWidth(), ui.windowHeight() - height, true)

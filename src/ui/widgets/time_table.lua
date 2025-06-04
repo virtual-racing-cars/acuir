@@ -9,8 +9,18 @@ local function drawTimeIndicator(width, height, color)
         if not color then color = rgbm(0, 0.75, 0, 1) end
 
         ui.drawRectFilled(
+                vec2(ui.getCursorX() + width * 0.01, ui.getCursorY() + height * 0.05),
+                vec2(ui.getCursorX() + width * 0.99, ui.getCursorY() + height * 0.95),
+                color
+        )
+end
+
+local function drawSplitIndicator(width, height, color)
+        if not color then color = rgbm(0, 0.75, 0, 1) end
+
+        ui.drawRectFilled(
                 vec2(ui.getCursorX() + width * 0.01, ui.getCursorY() + height * 0.85),
-                vec2(ui.getCursorX() + width * 0.99, ui.getCursorY() + height),
+                vec2(ui.getCursorX() + width * 0.99, ui.getCursorY() + height * 0.95),
                 color
         )
 end
@@ -45,6 +55,7 @@ local entryLayout = {
                 label = "Last",
                 value = function(car, width, height)
                         if car.status.previousLapTimeMs == 0 then return ac.lapTimeToString("") end
+                        local textColor = rgbm.colors.white
 
                         if
                                 car.status.isLastLapValid
@@ -52,17 +63,41 @@ local entryLayout = {
                                 and car.status.previousLapTimeMs <= race.fastestLapTimeMs
                         then
                                 drawTimeIndicator(width, height, rgbm(0.5, 0.2, 1, 1))
+                        elseif not car.status.isLastLapValid then
+                                textColor = rgbm(0.75, 0, 0, 1)
                         elseif
                                 car.status.isLastLapValid
                                 and car.status.previousLapTimeMs <= car.status.bestLapTimeMs
                         then
                                 drawTimeIndicator(width, height)
+                                textColor = rgbm.colors.black
                         end
 
-                        return ac.lapTimeToString(car.status.previousLapTimeMs),
-                                car.status.isLastLapValid and rgbm.colors.white or rgbm(0.75, 0.0, 0, 1)
+                        return ac.lapTimeToString(car.status.previousLapTimeMs), textColor
                 end,
-                xShare = 0.09,
+                xShare = 0.07,
+                align = ui.Alignment.Center,
+        },
+        {
+                label = "Delta",
+                value = function(car, width, height)
+                        local delta = car.previousLapDelta
+                        local deltaPrefix = ""
+
+                        if math.abs(delta) < 10 or car.status.isInPitlane then return "+0.00" end
+
+                        if delta > 0 then
+                                deltaPrefix = "+"
+                                drawTimeIndicator(width, height, rgbm.colors.yellow)
+                        elseif delta <= 0 then
+                                drawTimeIndicator(width, height)
+                        end
+
+                        if delta < 0 then deltaPrefix = "-" end
+
+                        return string.format("%s %.2f", deltaPrefix, math.abs(delta) / 1000), rgbm.colors.black
+                end,
+                xShare = 0.07,
                 align = ui.Alignment.Center,
         },
         {
@@ -74,14 +109,19 @@ local entryLayout = {
                         if not currentSplit then return ac.lapTimeToString("") end
 
                         if currentSplit > 0 and currentSplit <= race.fastestSplits[0] then
-                                drawTimeIndicator(width, height, rgbm(0.5, 0.2, 1, 1))
-                        elseif currentSplit > 0 and currentSplit <= car.status.bestSplits[0] then
-                                drawTimeIndicator(width, height)
+                                drawSplitIndicator(width, height, rgbm(0.5, 0.2, 1, 1))
+                        elseif
+                                currentSplit > 0 and currentSplit <= car.status.bestSplits[0]
+                                or car.status.bestSplits[0] == 0
+                        then
+                                drawSplitIndicator(width, height)
+                        else
+                                drawSplitIndicator(width, height, rgbm.colors.yellow)
                         end
 
                         return ac.lapTimeToString(currentSplit):trim("0:", -1)
                 end,
-                xShare = 0.09,
+                xShare = 0.07,
                 align = ui.Alignment.Center,
         },
         {
@@ -93,14 +133,19 @@ local entryLayout = {
                         if not currentSplit then return ac.lapTimeToString("") end
 
                         if currentSplit > 0 and currentSplit <= race.fastestSplits[1] then
-                                drawTimeIndicator(width, height, rgbm(0.5, 0.2, 1, 1))
-                        elseif currentSplit > 0 and currentSplit <= car.status.bestSplits[1] then
-                                drawTimeIndicator(width, height)
+                                drawSplitIndicator(width, height, rgbm(0.5, 0.2, 1, 1))
+                        elseif
+                                currentSplit > 0 and currentSplit <= car.status.bestSplits[1]
+                                or car.status.bestSplits[1] == 0
+                        then
+                                drawSplitIndicator(width, height)
+                        else
+                                drawSplitIndicator(width, height, rgbm.colors.yellow)
                         end
 
                         return ac.lapTimeToString(currentSplit):trim("0:", -1)
                 end,
-                xShare = 0.09,
+                xShare = 0.07,
                 align = ui.Alignment.Center,
         },
         {
@@ -112,51 +157,83 @@ local entryLayout = {
                         if not currentSplit then return ac.lapTimeToString("") end
 
                         if currentSplit > 0 and currentSplit <= race.fastestSplits[2] then
-                                drawTimeIndicator(width, height, rgbm(0.5, 0.2, 1, 1))
-                        elseif currentSplit > 0 and currentSplit <= car.status.bestSplits[2] then
-                                drawTimeIndicator(width, height)
+                                drawSplitIndicator(width, height, rgbm(0.5, 0.2, 1, 1))
+                        elseif
+                                currentSplit > 0 and currentSplit <= car.status.bestSplits[2]
+                                or car.status.bestSplits[2] == 0
+                        then
+                                drawSplitIndicator(width, height)
+                        else
+                                drawSplitIndicator(width, height, rgbm.colors.yellow)
                         end
 
                         return ac.lapTimeToString(currentSplit):trim("0:", -1)
                 end,
-                xShare = 0.09,
+                xShare = 0.07,
                 align = ui.Alignment.Center,
         },
         {
                 label = "Best",
                 value = function(car, width, height)
-                        if car.status.bestLapTimeMs > 0 and car.status.bestLapTimeMs <= race.fastestLapTimeMs then
+                        if car.bestLapTimeMs > 0 and car.bestLapTimeMs <= race.fastestLapTimeMs then
                                 drawTimeIndicator(width, height, rgbm(0.5, 0.2, 1, 1))
                         end
 
-                        return ac.lapTimeToString(car.status.bestLapTimeMs)
+                        return ac.lapTimeToString(car.bestLapTimeMs)
                 end,
-                xShare = 0.09,
+                xShare = 0.07,
+                align = ui.Alignment.Center,
+        },
+        {
+                label = "Delta",
+                value = function(car, width, height)
+                        local delta = car.bestLapDelta
+                        local deltaPrefix = ""
+
+                        if math.abs(delta) < 10 or car.status.isInPitlane then return "+0.00" end
+
+                        if delta > 0 then
+                                deltaPrefix = "+"
+                                drawTimeIndicator(width, height, rgbm.colors.yellow)
+                        elseif delta <= 0 then
+                                drawTimeIndicator(width, height)
+                        end
+
+                        if delta < 0 then deltaPrefix = "-" end
+
+                        return string.format("%s %.2f", deltaPrefix, math.abs(delta) / 1000), rgbm.colors.black
+                end,
+                xShare = 0.07,
                 align = ui.Alignment.Center,
         },
         {
                 label = "Gap",
                 value = function(car, width, height)
-                        local gapToLeaderText = car.gapToLeader and string.format("%+.3f", car.gapToLeader / 1000)
-                                or "-.---"
+                        if sim.raceSessionType == ac.SessionType.Race and car.lapsToLeader > 0 then
+                                return "+%s L" % car.lapsToLeader
+                        end
+
+                        local gapToLeaderText = string.format("%+.2f", car.gapToLeader / 1000)
                         if race:getLeaderboardPosition(car.index) == 1 then gapToLeaderText = "Leader" end
 
                         return gapToLeaderText
                 end,
-                xShare = 0.09,
+                xShare = 0.07,
                 align = ui.Alignment.Center,
         },
         {
                 label = "Int.",
                 value = function(car, width, height)
-                        local intervalText = car.gapToCarAheadLeaderboard
-                                        and string.format("%+.3f", car.gapToCarAheadLeaderboard / 1000)
-                                or "-.---"
+                        if sim.raceSessionType == ac.SessionType.Race and car.lapsToCarAheadLeaderboard > 0 then
+                                return "+%s L" % car.lapsToCarAheadLeaderboard
+                        end
+
+                        local intervalText = string.format("%+.2f", car.gapToCarAheadLeaderboard / 1000)
                         if race:getLeaderboardPosition(car.index) == 1 then intervalText = "Interval" end
 
                         return intervalText
                 end,
-                xShare = 0.09,
+                xShare = 0.07,
                 align = ui.Alignment.Center,
         },
 }
@@ -193,24 +270,35 @@ function timetableEntryButton(leaderboardIndex, carIndex, yPos, height)
 
         local evenCar = leaderboardIndex % 2 == 0
 
-        ui.drawRectFilled(
-                vec2(xPos, yPos),
-                vec2(xPos + height, yPos + height),
-                sim.focusedCar == car.index and settings.Appearance.uiThemeColor2
-                        or (car.index == 0 and settings.Appearance.uiThemeColor3 or settings.Appearance.uiThemeColor1)
-        )
-
+        local numberBoxColor = rgbm.colors.transparent
+        if sim.focusedCar == car.index then
+                numberBoxColor = settings.Appearance.uiThemeColor2
+        elseif car.index == 0 then
+                numberBoxColor = settings.Appearance.uiThemeColor3
+        end
+        ui.drawRectFilled(vec2(xPos, yPos), vec2(xPos + height, yPos + height), settings.Appearance.uiThemeColor1)
         ui.drawRectFilled(
                 vec2(xPos, yPos),
                 vec2(xPos + width, yPos + height),
                 evenCar and settings.Appearance.uiThemeColor1 * 0.15 or settings.Appearance.uiThemeColor1 * 0.5
         )
+        ui.drawRectFilled(vec2(xPos, yPos), vec2(xPos + height, yPos + height), numberBoxColor)
 
-        ui.drawRectFilled(
-                vec2(xPos, yPos),
-                vec2(xPos + height, yPos + height),
-                sim.focusedCar == car.index and settings.Appearance.uiThemeColor2
-                        or (car.index == 0 and settings.Appearance.uiThemeColor3 or rgbm.colors.transparent)
+        local positionColor = rgbm.colors.transparent
+        if leaderboardIndex == 1 then
+                positionColor = rgbm(1, 0.78, 0.2, 1)
+        elseif leaderboardIndex == 2 then
+                positionColor = rgbm(0.6, 0.6, 0.7, 1)
+        elseif leaderboardIndex == 3 then
+                positionColor = rgbm(0.9, 0.4, 0, 1)
+        end
+        ui.drawRectFilledMultiColor(
+                vec2(xPos + height, yPos),
+                vec2(xPos + height + height * 0.5, yPos + height),
+                positionColor,
+                rgbm.colors.transparent,
+                rgbm.colors.transparent,
+                positionColor
         )
 
         if sim.isOnlineRace then
@@ -255,16 +343,12 @@ function timetable:draw(xPos, yPos, width, height)
         ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiThemeColor1 * 0.25)
         ui.setCursor(0)
 
-        local height = 50 * cui.uiScale()
+        local height = ui.windowHeight() / 21
         timetableBanner(0, height)
 
         cui.pushWindow("home_timetable_entrant_window", 0, height, ui.windowWidth(), ui.windowHeight() - height, true)
-        local leaderboardIndex = 0
-        for _, slot in ipairs(race.leaderboard) do
-                if slot.car.isConnected then
-                        leaderboardIndex = leaderboardIndex + 1
-                        timetableEntryButton(leaderboardIndex, slot.car.index, (leaderboardIndex - 1) * height, height)
-                end
+        for leaderboardIndex, slot in ipairs(race.leaderboard) do
+                timetableEntryButton(leaderboardIndex, slot.car.index, (leaderboardIndex - 1) * height, height)
         end
         cui.dummy(height, height)
         cui.popWindow(true)

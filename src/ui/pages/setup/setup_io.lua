@@ -350,7 +350,5 @@ function drawSetupIO(sm)
 
         cui.popWindow()
 
-        ac.log(sm:isUndoAvailable())
-
         return ""
 end

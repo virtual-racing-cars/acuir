@@ -22,31 +22,22 @@ function Car:initialize(carIndex)
         self.timingGateTimes = {}
 
         self.leaderboardPosition = 0
-        self.gapToCarAhead = 0
         self.gapToLeader = 0
+        self.gapToCarAheadLeaderboard = 0
+        self.gapToCarAheadTrack = 0
+
+        self.lapsToLeader = 0
+        self.lapsToCarAheadLeaderboard = 0
+
         self.carAheadIndex = 0
         self.splinePositionLast = self.status.splinePosition
 
-        -- if not session.laps[car.index][car.lapCount] and car.lapCount > 0 then
-        --         session.laps[car.index][car.lapCount] = {
-        --                 car.lapCount,
-        --                 car.isLastLapValid,
-        --                 ac.getTyresName(car.index, car.compoundIndex),
-        --                 car.previousLapTimeMs or -1,
-        --                 car.lastSplits[0] or -1,
-        --                 car.lastSplits[1] or -1,
-        --                 car.lastSplits[2] or -1,
-        --                 car.previousLapTimeMs - car.bestLapTimeMs,
-        --         }
-        --         session.lapMarkers[car.index][car.lapCount] = sim.replayCurrentFrame
-        --         session.timingGateIndexes[car.index] = 1
-        -- end
+        self.previousLapDelta = 0
+        self.bestLapDelta = 0
 
-        -- ac.onLapCompleted(self.index, function(carIndex, lapTime, valid, cuts, lapCount)
-        --         self.laps[1][lapCount] =
-        --                 lap(lapTime, valid, cuts, ac.getTyresName(self.index, self.status.compoundIndex))
-        --         self.replayLapMarkers[1][lapCount] = sim.replayCurrentFrame
-        -- end)
+        self.bestLapTimeMs = 0
+
+        self.isDisconnected = true
 
         return true
 end

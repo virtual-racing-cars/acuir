@@ -60,6 +60,11 @@ function CUI.offsetCursorX(v) ui.offsetCursorX(v * uiScale) end
 
 function CUI.offsetCursorY(v) ui.offsetCursorY(v * uiScale) end
 
+function CUI:setCenterCursorAround(width, height, x, y)
+        if x then ui.setCursorX(x - width * 0.5) end
+        if y then ui.setCursorY(y - height * 0.5) end
+end
+
 function CUI.snapCursor()
         local x, y = ui.getCursorX(), ui.getCursorY()
         x, y = math.floor(x), math.floor(y)
