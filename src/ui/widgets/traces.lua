@@ -72,15 +72,17 @@ local function drawGridLines()
 end
 
 local function drawTraces()
-        local lowerBound = ui.windowHeight() - ui.windowHeight() * 0.1
-        local upperBound = ui.windowHeight() - ui.windowHeight() * 0.2
-
         for _, trace in pairs(traces) do
                 ui.pathClear()
                 local xSegment = (ui.windowWidth() / (#trace.data + 1))
 
                 for x, v in ipairs(trace.data) do
-                        ui.pathLineTo(vec2(xSegment + (x - 1) * xSegment, lowerBound - v * upperBound))
+                        ui.pathLineTo(
+                                vec2(
+                                        xSegment + (x - 1) * xSegment,
+                                        ui.windowHeight() * 0.1 + ((1 - v) * ui.windowHeight() * 0.8)
+                                )
+                        )
                 end
                 ui.pathSmoothStroke(trace.color, false, 4 * cui.uiScale())
         end

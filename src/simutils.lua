@@ -1,45 +1,45 @@
-local simutils = {}
-
 local sim = ac.getSim()
 local car = ac.getCar(0)
+local acc = require("ac_control")
 
 local round = math.ceil
 
-local windDirectionStrings = {
-        "S",
-        "SSW",
-        "SW",
-        "WSW",
-        "W",
-        "WNW",
-        "NW",
-        "NNW",
-        "N",
-        "NNE",
-        "NE",
-        "ENE",
-        "E",
-        "ESE",
-        "SE",
-        "SSE",
-}
-local trackGripStrings = {
-        { 86, "DUSTY" },
-        { 89, "OLD" },
-        { 95, "GREEN" },
-        { 98, "RUBBERED" },
-        { 100, "OPTIMUM" },
-}
-
-local raceSessiontTypeString = {
-        "Undefined",
-        "Practice",
-        "Qualify",
-        "Race",
-        "Hotlap",
-        "Time Attack",
-        "Drift",
-        "Drag",
+local simutils = {
+        sessionTypeStrings = {
+                [0] = "Undefined",
+                "Practice",
+                "Qualify",
+                "Race",
+                "Hotlap",
+                "Time Attack",
+                "Drift",
+                "Drag",
+        },
+        trackGripStrings = {
+                { 86, "DUSTY" },
+                { 89, "OLD" },
+                { 95, "GREEN" },
+                { 98, "RUBBERED" },
+                { 100, "OPTIMUM" },
+        },
+        windDirectionStrings = {
+                "S",
+                "SSW",
+                "SW",
+                "WSW",
+                "W",
+                "WNW",
+                "NW",
+                "NNW",
+                "N",
+                "NNE",
+                "NE",
+                "ENE",
+                "E",
+                "ESE",
+                "SE",
+                "SSE",
+        },
 }
 
 local function findClosestIndex(input, numbers)
@@ -57,11 +57,13 @@ local function findClosestIndex(input, numbers)
         return trackGripString
 end
 
-function simutils.windDirectionString() return windDirectionStrings[math.ceil((sim.windDirectionDeg + 180) / 22.5)] end
+function simutils.windDirectionString()
+        return simutils.windDirectionStrings[math.ceil((sim.windDirectionDeg + 180) / 22.5)]
+end
 
-function simutils.trackGripString() return findClosestIndex(sim.roadGrip * 100, trackGripStrings) end
+function simutils.trackGripString() return findClosestIndex(sim.roadGrip * 100, simutils.trackGripStrings) end
 
-function simutils.raceSessionTypeString() return raceSessiontTypeString[sim.raceSessionType + 1] end
+function simutils.raceSessionTypeString() return simutils.sessionTypeStrings[sim.raceSessionType] end
 
 function simutils.ambientTemperatureC() return sim.ambientTemperature end
 
@@ -87,22 +89,24 @@ end
 function simutils.sessionTimeLeftString()
         local leadCar = simutils.session().leaderboard[0]
 
-        if sim.timeToSessionStart >= 1e100 then
+        if sim.timeToSessionStart >= 1e100 then -- Offline race
                 return "Click Drive To Start"
+        elseif sim.timeToSessionStart > 5000 then
+                return simutils.timeToString(math.max(sim.timeToSessionStart - 5000, 0), "Countdown -")
         elseif sim.timeToSessionStart > 0 then
-                return simutils.timeToString(math.max(sim.timeToSessionStart - 5, 0), "Countdown -")
+                return simutils.timeToString(math.max(sim.timeToSessionStart, 0), "Starting in -")
+        elseif acc.sessionWaitTime > 0 then
+                return "Waiting"
         elseif simutils.session().durationMinutes > 0 then
                 if sim.sessionTimeLeft <= 0 then
-                        return "Session Over"
+                        return "Overtime"
                 else
                         return simutils.timeToString(sim.sessionTimeLeft, "Remaining -")
                 end
         elseif sim.raceSessionType == ac.SessionType.Race then
                 local lapsRemaining = simutils.session().laps - leadCar.laps - leadCar.car.splinePosition
 
-                if leadCar.hasCompletedLastLap then
-                        return "Session Over - %s Won the Race!" % ac.getDriverName(leadCar.car.index)
-                elseif lapsRemaining == 1 then
+                if lapsRemaining <= 1 then
                         return "Final Lap"
                 else
                         return string.format("%.1f laps left", lapsRemaining)
@@ -124,9 +128,15 @@ function simutils.sessionTotalTimeString()
         return string.format("- %.0f min", simutils.session().durationMinutes)
 end
 
-function simutils.sessionSkippable() return sim.sessionsCount > 1 and sim.currentSessionIndex < sim.sessionsCount - 1 end
+function simutils.sessionSkippable()
+        if not sim.isOnlineRace then
+                return sim.sessionsCount > 1 and sim.currentSessionIndex < sim.sessionsCount - 1
+        end
 
-function simutils.sessionRestartable() return car.sessionID == -1 end
+        return ac.canCastVote() and sim.sessionsCount > 1 and sim.currentSessionIndex < sim.sessionsCount - 1
+end
+
+function simutils.sessionRestartable() return not sim.isOnlineRace or ac.canCastVote() end
 
 function simutils.controlsLocked() return car.currentPenaltyType == ac.PenaltyType.TeleportToPits end
 
@@ -137,7 +147,7 @@ function simutils.rideHeightValid() return car.rideHeight[0] >= car.minHeight an
 function simutils.sessionWaitTime()
         if sim.sessionTimeLeft > 0 or sim.sessionsCount == 1 then return 0 end
 
-        return round((sim.resultScreenTime + sim.raceOverTime) + sim.sessionTimeLeft / 1000)
+        return round((acc.sessionWaitTime - sim.currentSessionTime) / 1000)
 end
 
 function simutils.sessionOvertime() return simutils.sessionWaitTime() > 0 end

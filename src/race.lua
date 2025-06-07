@@ -57,9 +57,9 @@ local function gateCrossed(gateIndex, car)
 
         gapToCarAheadTrack = time - (session.timingGates[gateIndex].lastCrossedTime or time)
 
-        car.gapToLeader = gapToLeader
-        car.gapToCarAheadLeaderboard = gapToCarAheadLeaderboard
-        car.gapToCarAheadTrack = gapToCarAheadTrack
+        car.gapToLeader = math.max(gapToLeader, 0)
+        car.gapToCarAheadLeaderboard = math.max(gapToCarAheadLeaderboard, 0)
+        car.gapToCarAheadTrack = math.max(gapToCarAheadTrack, 0)
 
         car.previousLapDelta = car.status.estimatedLapTimeMs - car.status.previousLapTimeMs
         car.bestLapDelta = car.status.estimatedLapTimeMs - car.status.bestLapTimeMs
@@ -133,6 +133,7 @@ function session:step()
         local carAheadIndex = -1
         for pos, slot in ipairs(session.leaderboard) do
                 local car = session.cars[slot.car.index]
+                car.slot = slot
                 car.carAheadIndex = carAheadIndex
                 car.leaderboardPosition = pos
                 session.leaderboardPositions[car.index] = pos
@@ -143,8 +144,13 @@ function session:step()
                 if pos == 1 then
                         session.currentLeader = car.index
                 elseif session.leaderboard[1].laps > 1 then
-                        if slot.totalTimeMs + session.averageLapTimeMs * 1.1 < session.leaderboard[1].totalTimeMs then
+                        if
+                                session.leaderboard[1].laps + session.leaderboard[1].car.splinePosition
+                                > slot.laps + slot.car.splinePosition + 1
+                        then
                                 car.lapsToLeader = math.max(session.leaderboard[1].laps - slot.laps, 0)
+                        else
+                                car.lapsToLeader = 0
                         end
 
                         if
@@ -156,17 +162,8 @@ function session:step()
                         end
                 end
 
-                local bestLapTimeMsBySplits = 0
-                for i = 0, #sim.lapSplits - 1 do
-                        if car.status.bestLapSplits[i] then
-                                bestLapTimeMsBySplits = bestLapTimeMsBySplits + car.status.bestLapSplits[i]
-                        else
-                                bestLapTimeMsBySplits = 0
-                        end
-                end
-
-                car.bestLapTimeMs = bestLapTimeMsBySplits
-
+                car.bestLapTimeMs = sim.raceSessionType == ac.SessionType.Qualify and slot.bestLapTimeMs
+                        or car.status.bestLapTimeMs
                 session.fastestLapTimeMs = updateBestTime(session.fastestLapTimeMs, car.bestLapTimeMs)
 
                 for i = 0, #sim.lapSplits - 1 do

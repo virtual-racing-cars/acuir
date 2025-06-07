@@ -25,7 +25,7 @@ local jumpStartState = { [0] = "No Penalty", [1] = "Pits", [2] = "Drive-Through"
 
 local vec2Temp1 = vec2()
 
-local leaderboardActive = false
+local leaderboardActive = true
 
 local assists = {
         { label = "Traction Control", value = electronicsState[assistsINI:get("ASSISTS", "TRACTION_CONTROL", 0)] },
@@ -259,8 +259,80 @@ function page.draw()
         local titleFontSize = genericButtonHeight * 0.55
 
         cui.contentWindow(
-                "info_left_window_3",
+                "info_right_window_1",
                 vec2(ui.windowWidth() - ui.windowWidth() / 5, 0),
+                vec2(ui.windowWidth() / 5, 210 * cui.uiScale()),
+                ui.WindowFlags.None,
+                function()
+                        ui.setCursor(0)
+
+                        ui.drawRectFilled(0, ui.windowSize(), rgbm(0.1, 0.1, 0.1, 0.55))
+                        ui.drawRectFilled(0, vec2(ui.windowWidth(), genericButtonHeight), rgbm(0.1, 0.1, 0.1, 0.95))
+
+                        cui.snapCursor()
+                        ui.dwriteTextAligned(
+                                "Session Control",
+                                titleFontSize,
+                                ui.Alignment.Center,
+                                ui.Alignment.Center,
+                                vec2(ui.windowWidth(), genericButtonHeight)
+                        )
+
+                        local driveButtonHeight = 80
+
+                        ui.setCursorX(driveButtonHeight)
+                        cui.setCursorY(70)
+                        if
+                                cui.iconButton(
+                                        sim.isOnlineRace and "Vote Restart" or "Restart",
+                                        ui.Icons.Reset,
+                                        driveButtonHeight,
+                                        driveButtonHeight,
+                                        simutils.sessionRestartable and ui.ButtonFlags.None or ui.ButtonFlags.Disabled
+                                )
+                        then
+                                if sim.isOnlineRace then
+                                        ac.castVote("restart", true)
+                                else
+                                        ac.tryToRestartSession()
+                                end
+                        end
+
+                        ui.setCursorX(ui.windowWidth() - driveButtonHeight * 2)
+
+                        if
+                                cui.iconButton(
+                                        sim.isOnlineRace and "Vote Skip Session" or "Skip",
+                                        ui.Icons.Skip,
+                                        driveButtonHeight,
+                                        driveButtonHeight,
+                                        simutils.sessionSkippable and ui.ButtonFlags.None or ui.ButtonFlags.Disabled
+                                )
+                        then
+                                if sim.isOnlineRace then
+                                        ac.castVote("skip", true)
+                                else
+                                        ac.tryToSkipSession()
+                                end
+                        end
+
+                        if not ac.canCastVote() then
+                                ui.setCursorX(0)
+                                ui.setCursorY(ui.windowHeight() - 36 * cui.uiScale())
+                                ui.dwriteTextAligned(
+                                        "Voting Cooldown %.1f s" % ac.timeToNextVote(),
+                                        18 * cui.uiScale(),
+                                        ui.Alignment.Center,
+                                        ui.Alignment.Center,
+                                        vec2(ui.windowWidth(), 36 * cui.uiScale())
+                                )
+                        end
+                end
+        )
+
+        cui.contentWindow(
+                "info_left_window_3",
+                vec2(ui.windowWidth() - ui.windowWidth() / 5, ui.getCursorY() + 15 * cui.uiScale()),
                 vec2(ui.windowWidth() / 5, 310 * cui.uiScale()),
                 ui.WindowFlags.None,
                 function()
@@ -342,52 +414,6 @@ function page.draw()
                                 cui.snapCursor()
                                 ui.dwriteTextAligned(
                                         assist.value,
-                                        fontSize,
-                                        ui.Alignment.Start,
-                                        ui.Alignment.Center,
-                                        vec2(ui.windowWidth(), fontSize * 1.25)
-                                )
-                        end
-                end
-        )
-
-        cui.contentWindow(
-                "info_right_window_1",
-                vec2(ui.windowWidth() - ui.windowWidth() / 5, ui.getCursorY() + 15 * cui.uiScale()),
-                vec2(ui.windowWidth() / 5, 210 * cui.uiScale()),
-                ui.WindowFlags.None,
-                function()
-                        ui.setCursor(0)
-
-                        ui.drawRectFilled(0, ui.windowSize(), rgbm(0.1, 0.1, 0.1, 0.55))
-                        ui.drawRectFilled(0, vec2(ui.windowWidth(), genericButtonHeight), rgbm(0.1, 0.1, 0.1, 0.95))
-
-                        cui.snapCursor()
-                        ui.dwriteTextAligned(
-                                ac.getCarName(0, false),
-                                titleFontSize,
-                                ui.Alignment.Center,
-                                ui.Alignment.Center,
-                                vec2(ui.windowWidth(), genericButtonHeight)
-                        )
-
-                        cui.setCursorY(65)
-
-                        for _, carInfo in ipairs(carInfoTable) do
-                                ui.setCursorX(ui.windowWidth() * 0.05)
-                                cui.snapCursor()
-                                ui.dwriteTextAligned(
-                                        carInfo.label,
-                                        fontSize,
-                                        ui.Alignment.Start,
-                                        ui.Alignment.Center,
-                                        vec2(ui.windowWidth(), fontSize * 1.25)
-                                )
-                                ui.sameLine()
-                                ui.setCursorX(ui.windowWidth() * 0.5)
-                                cui.snapCursor()
-                                ui.dwriteTextAligned(
-                                        carInfo.value(),
                                         fontSize,
                                         ui.Alignment.Start,
                                         ui.Alignment.Center,

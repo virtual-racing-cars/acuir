@@ -17,6 +17,7 @@ function Car:initialize(carIndex)
 
         if not self.status then return false end
 
+        self.slot = nil
         self.laps = {}
         self.replayLapMarkers = {}
         self.timingGateTimes = {}

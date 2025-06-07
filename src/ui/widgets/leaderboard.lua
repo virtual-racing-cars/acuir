@@ -3,6 +3,16 @@ local settings = require("settings")
 local sim = ac.getSim()
 local race = require("race")
 
+local function drawTimeIndicator(width, height, color)
+        if not color then color = rgbm(0, 0.75, 0, 1) end
+
+        ui.drawRectFilled(
+                vec2(ui.getCursorX() + width * 0.01, ui.getCursorY() + height * 0.05),
+                vec2(ui.getCursorX() + width * 0.99, ui.getCursorY() + height * 0.95),
+                color
+        )
+end
+
 local entryLayout = {
         {
                 label = "",
@@ -41,16 +51,27 @@ local entryLayout = {
         },
         {
                 label = "Best",
-                value = function(car, width, height) return ac.lapTimeToString(car.status.bestLapTimeMs) end,
+                value = function(car, width, height)
+                        if car.bestLapTimeMs > 0 and car.bestLapTimeMs <= race.fastestLapTimeMs then
+                                drawTimeIndicator(width, height, rgbm(0.5, 0.2, 1, 1))
+                        end
+
+                        return ac.lapTimeToString(car.bestLapTimeMs)
+                end,
                 xShare = 0.09,
                 align = ui.Alignment.Center,
         },
         {
                 label = "Gap",
                 value = function(car, width, height)
-                        local gapToLeaderText = car.gapToLeader and string.format("%+.3f", car.gapToLeader / 1000)
-                                or "-.---"
-                        if race:getLeaderboardPosition(car.index) == 1 then gapToLeaderText = "Leader" end
+                        local gapToLeaderText
+                        if race:getLeaderboardPosition(car.index) == 1 then
+                                gapToLeaderText = "Leader"
+                        elseif sim.raceSessionType == ac.SessionType.Race and car.lapsToLeader > 0 then
+                                gapToLeaderText = "+%s L" % car.lapsToLeader
+                        else
+                                gapToLeaderText = string.format("%+.2f", car.gapToLeader / 1000)
+                        end
 
                         return gapToLeaderText
                 end,
@@ -60,10 +81,14 @@ local entryLayout = {
         {
                 label = "Int.",
                 value = function(car, width, height)
-                        local intervalText = car.gapToCarAheadLeaderboard
-                                        and string.format("%+.3f", car.gapToCarAheadLeaderboard / 1000)
-                                or "-.---"
-                        if race:getLeaderboardPosition(car.index) == 1 then intervalText = "Interval" end
+                        local intervalText
+                        if race:getLeaderboardPosition(car.index) == 1 then
+                                intervalText = "Interval"
+                        elseif sim.raceSessionType == ac.SessionType.Race and car.lapsToCarAheadLeaderboard > 0 then
+                                intervalText = "+%s L" % car.lapsToCarAheadLeaderboard
+                        else
+                                intervalText = string.format("%+.2f", car.gapToCarAheadLeaderboard / 1000)
+                        end
 
                         return intervalText
                 end,
@@ -127,11 +152,9 @@ local function leaderboardBanner(yPos, height)
         end
 end
 
-function leaderboardEntryButton(leaderboardIndex, carIndex, yPos, height)
+function leaderboardEntryButton(car, yPos, height)
         local xPos = 0
         local width = ui.windowWidth()
-
-        local car = race.cars[carIndex]
 
         ui.setCursorX(xPos)
         ui.setCursorY(yPos)
@@ -139,29 +162,43 @@ function leaderboardEntryButton(leaderboardIndex, carIndex, yPos, height)
                 if car.status.isConnected then ac.focusCar(car.index) end
         end
 
-        local evenCar = leaderboardIndex % 2 == 0
+        local leaderboardPosition = car.leaderboardPosition
+        local evenCar = leaderboardPosition % 2 == 0
 
-        ui.drawRectFilled(
-                vec2(xPos, yPos),
-                vec2(xPos + height, yPos + height),
-                sim.focusedCar == car.index and settings.Appearance.uiThemeColor2
-                        or (car.index == 0 and settings.Appearance.uiThemeColor3 or settings.Appearance.uiThemeColor1)
-        )
-
+        local numberBoxColor = rgbm.colors.transparent
+        if sim.focusedCar == car.index then
+                numberBoxColor = settings.Appearance.uiThemeColor2
+        elseif car.index == 0 then
+                numberBoxColor = settings.Appearance.uiThemeColor3
+        end
+        ui.drawRectFilled(vec2(xPos, yPos), vec2(xPos + height, yPos + height), settings.Appearance.uiThemeColor1)
         ui.drawRectFilled(
                 vec2(xPos, yPos),
                 vec2(xPos + width, yPos + height),
                 evenCar and settings.Appearance.uiThemeColor1 * 0.15 or settings.Appearance.uiThemeColor1 * 0.5
         )
+        ui.drawRectFilled(vec2(xPos, yPos), vec2(xPos + height, yPos + height), numberBoxColor)
 
-        ui.drawRectFilled(
-                vec2(xPos, yPos),
-                vec2(xPos + height, yPos + height),
-                sim.focusedCar == car.index and settings.Appearance.uiThemeColor2
-                        or (car.index == 0 and settings.Appearance.uiThemeColor3 or rgbm.colors.transparent)
+        local positionColor = rgbm.colors.transparent
+        if sim.raceSessionType ~= ac.SessionType.Race then
+                positionColor = rgbm.colors.transparent
+        elseif leaderboardPosition == 1 and car.slot.hasCompletedLastLap then
+                positionColor = rgbm(1, 0.78, 0.2, 1)
+        elseif leaderboardPosition == 2 and car.slot.hasCompletedLastLap then
+                positionColor = rgbm(0.6, 0.6, 0.7, 1)
+        elseif leaderboardPosition == 3 and car.slot.hasCompletedLastLap then
+                positionColor = rgbm(0.9, 0.4, 0, 1)
+        end
+        ui.drawRectFilledMultiColor(
+                vec2(xPos + height, yPos),
+                vec2(xPos + height + height * 0.75, yPos + height),
+                positionColor,
+                rgbm.colors.transparent,
+                rgbm.colors.transparent,
+                positionColor
         )
 
-        if sim.isOnlineRace then
+        if sim.isOnlineRace and car.status.isConnected then
                 local pingColor = rgbm.colors.green
 
                 if car.status.ping > 300 then
@@ -188,7 +225,7 @@ function leaderboardEntryButton(leaderboardIndex, carIndex, yPos, height)
                 local tempWidth = width - height - height * 0.2
                 cui.snapCursor()
                 local x, y = entry.xShare == -1 and height or tempWidth * entry.xShare, height
-                local value, color = entry.value(car, tempWidth, height)
+                local value, color = entry.value(car, x, y)
                 ui.dwriteTextAligned(value, height * 0.5, entry.align, ui.Alignment.Center, vec2(x, y), false, color)
                 ui.sameLine()
         end
@@ -198,29 +235,51 @@ function leaderboardEntryButton(leaderboardIndex, carIndex, yPos, height)
         end
 end
 
+local isLeaderboardShowingDisconnected = false
+
 function leaderboard:draw(xPos, yPos, width, height)
         cui.pushWindow("leaderboard_widget_window", xPos, yPos, width, height, false)
         ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiThemeColor1 * 0.25)
         ui.setCursor(0)
 
-        local height = ui.windowHeight() / 21
+        local height = ui.windowHeight() / 22
         leaderboardBanner(0, height)
 
-        cui.pushWindow("home_leaderboard_entrant_window", 0, height, ui.windowWidth(), ui.windowHeight() - height, true)
-        local leaderboardIndex = 0
-        for _, slot in ipairs(race.leaderboard) do
-                if slot.car.isConnected or slot.hasCompletedLastLap then
-                        leaderboardIndex = leaderboardIndex + 1
-                        leaderboardEntryButton(
-                                leaderboardIndex,
-                                slot.car.index,
-                                (leaderboardIndex - 1) * height,
-                                height
-                        )
+        cui.pushWindow(
+                "home_leaderboard_entrant_window",
+                0,
+                height,
+                ui.windowWidth(),
+                ui.windowHeight() - height * 2,
+                true
+        )
+        for leaderboardIndex, slot in ipairs(race.leaderboard) do
+                if slot.car.isConnected or isLeaderboardShowingDisconnected then
+                        leaderboardEntryButton(race.cars[slot.car.index], (leaderboardIndex - 1) * height, height)
                 end
         end
         cui.dummy(height, height)
         cui.popWindow(true)
+
+        ui.drawRectFilled(
+                vec2(0, ui.windowHeight() - height),
+                vec2(width, ui.windowHeight()),
+                rgbm(0.1, 0.1, 0.1, 0.95)
+        )
+
+        ui.setCursorX(0)
+
+        if
+                cui.menuButton(
+                        isLeaderboardShowingDisconnected and "Hide Disconnected" or "Show Disconnected",
+                        vec2(ui.windowWidth() * 0.2, height),
+                        0,
+                        0,
+                        ui.ButtonFlags.None
+                )
+        then
+                isLeaderboardShowingDisconnected = not isLeaderboardShowingDisconnected
+        end
 
         cui.popWindow()
 end

@@ -7,63 +7,44 @@ TabBar = class("TabBar")
 function TabBar:initialize(id)
         self.id = id
         self.currentTab = 1
-        self.position = 0
-        self.itemPositions = { [0] = 0 }
-        self.scrollDisabled = false
+        self.scrollDelayTimer = 0
+end
 
-        ac.onResolutionChange(function(newSize, makingScreenshot)
-                for i in ipairs(self.itemPositions) do
-                        self.itemPositions[i] = nil
-                end
-                self.currentTab = 1
-                self.position = 0
-        end)
+function toCapitalCase(str)
+        return (str:gsub("(%a)([%w_']*)", function(first, rest) return first:upper() .. rest:lower() end))
 end
 
 function TabBar:draw(tabs)
-        if ui.mouseLocalPos() >= vec2(0, 0) and ui.mouseLocalPos() < vec2(ui.windowWidth(), 56 * cui.uiScale()) then
+        if ui.windowHovered() and self.scrollDelayTimer < os.clock() then
                 if ui.mouseWheel() > 0 then
-                        self.currentTab = self.currentTab >= #tabs and 1 or self.currentTab + 1
-                        audio:trigger()
-                elseif ui.mouseWheel() < 0 then
                         self.currentTab = self.currentTab == 1 and #tabs or self.currentTab - 1
                         audio:trigger()
+                        self.scrollDelayTimer = os.clock() + settings.General.scrollDelayTimeMs / 1000
+                elseif ui.mouseWheel() < 0 then
+                        self.currentTab = self.currentTab >= #tabs and 1 or self.currentTab + 1
+                        audio:trigger()
+                        self.scrollDelayTimer = os.clock() + settings.General.scrollDelayTimeMs / 1000
                 end
         end
 
-        if not self.scrollDisabled and self.itemPositions[self.currentTab] then
-                self.position = math.applyLag(
-                        self.position,
-                        -math.max(self.itemPositions[self.currentTab] - ui.windowWidth() / 2, 0),
-                        0.4,
-                        ac.getScriptDeltaT()
-                )
-        end
-
-        ui.setCursorX(self.position)
+        ui.setCursorX(0)
         ui.pushStyleColor(ui.StyleColor.Button, settings.Appearance.uiThemeColor1)
         for i in ipairs(tabs) do
-                local buttonSize = self.scrollDisabled and vec2(ui.windowWidth() / #tabs, 56 * cui.uiScale()) or 56
+                ui.setCursorX(0)
+
                 if
-                        cui.menuButton(
-                                tabs[i].name,
-                                buttonSize,
-                                ui.Alignment.Center,
-                                ui.Alignment.Center,
-                                ui.ButtonFlags.None,
-                                self.currentTab == i
+                        cui.treeNodeButton(
+                                toCapitalCase(tabs[i].name),
+                                vec2(ui.windowWidth(), ui.windowHeight() / 22),
+                                self.currentTab == i,
+                                true
                         )
                 then
                         self.currentTab = i
                 end
 
-                ui.sameLine()
-                ui.offsetCursorX(-1)
-
-                if not self.itemPositions[i] then self.itemPositions[i] = ui.getCursorX() end
+                if self.currentTab == i then ui.setScrollY((i - 5) * 48 * cui.uiScale()) end
         end
-
-        if self.itemPositions[#tabs] <= ui.windowWidth() then self.scrollDisabled = true end
 
         ui.popStyleColor(1)
 

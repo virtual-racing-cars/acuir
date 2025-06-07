@@ -1,51 +1,53 @@
-local car = ac.getCar(0)
-local sim = ac.getSim()
-
 local page = {}
 
 local cui = require("ui.cui")
-local race = require("race")
+local lapTimeWidget = require("src.ui.widgets.lap_times")
+local simutils = require("simutils")
+local sim = ac.getSim()
+
+local vec2Temp1 = vec2()
+
+local lapTimeSession = 0
+
+ac.onSessionStart(function(sessionIndex, restarted)
+        lapTimeSession = sessionIndex
+end)
 
 function page.update() end
 
--- local listtable = SortableListTable({
---         { label = "Lap", proportion = 0.05 },
---         { label = "Valid", proportion = 0.05 },
---         { label = "Tyre", proportion = 0.15 },
---         { label = "Time", proportion = 0.15 },
---         { label = "S1", proportion = 0.15 },
---         { label = "S2", proportion = 0.15 },
---         { label = "S3", proportion = 0.15 },
---         { label = "Diff-Best", proportion = 0.15 },
--- })
-
 function page.draw()
+        local height = 50 * cui.uiScale()
+
         cui.pushWindow(
                 "home_leaderboard_window",
                 0,
                 0,
-                ui.windowWidth() * 0.5,
-                ui.windowHeight() - 420 * cui.uiScale(),
-                true
+                ui.windowWidth() * 0.5 - 7.5 * cui.uiScale(),
+                ui.windowHeight() - 255 * cui.uiScale(),
+                false
         )
+        ui.drawRectFilled(0, vec2(ui.windowWidth(), 50 * cui.uiScale()), rgbm(0, 0, 0, 1))
 
-        local height = 44 * cui.uiScale()
+        ui.setCursor(0)
 
-        listtable:draw({
-                race.laps[0],
-        }, ui.windowWidth(), ui.windowHeight() - height, height)
+        for i = 1, sim.sessionsCount do
+                if
+                        cui.menuButton(
+                                simutils.sessionTypeStrings[ac.getSession(i - 1).type],
+                                vec2Temp1:set(ui.windowWidth() / sim.sessionsCount, height),
+                                0,
+                                0,
+                                sim.currentSessionIndex + 1 >= i and ui.ButtonFlags.None or ui.ButtonFlags.Disabled,
+                                sim.sessionsCount > 1 and lapTimeSession == i - 1,
+                                false
+                        )
+                then
+                        lapTimeSession = i - 1
+                end
+                ui.sameLine()
+        end
 
-        cui.popWindow()
-
-        cui.pushWindow(
-                "home_bottom_bar",
-                0,
-                ui.windowHeight() - 240 * cui.uiScale(),
-                ui.windowWidth(),
-                240 * cui.uiScale(),
-                true
-        )
-        ui.drawRectFilled(vec2(0, 0), vec2(ui.windowWidth(), ui.windowHeight()), rgbm(0.1, 0.1, 0.1, 0.95))
+        lapTimeWidget:draw(0, height, ui.windowWidth(), ui.windowHeight() - height, ac.getSession(lapTimeSession).type)
 
         cui.popWindow()
 

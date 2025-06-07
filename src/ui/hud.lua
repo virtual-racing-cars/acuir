@@ -7,7 +7,6 @@ require("ui.windows.map_window")
 local app = require("app")
 local audio = require("audio")
 local camera = require("camera")
-local cui = require("ui.cui")
 local pages = require("ui.pages.pages")
 
 local hudModes = {
@@ -15,28 +14,6 @@ local hudModes = {
         menu = function(dt)
                 ui.forceSimplifiedComposition()
                 pages:setParentMainMenu()
-
-                local voteDetails = ac.getCurrentVoteDetails()
-                if voteDetails then
-                        if voteDetails.type ~= "unknown" then
-                                cui.menuBanner(
-                                        string.upper(
-                                                string.format(
-                                                        "Vote %s %s %s",
-                                                        voteDetails.type,
-                                                        voteDetails.type == "kick"
-                                                                        and ac.getDriverName(voteDetails.targetIndex)
-                                                                or "Session",
-                                                        voteDetails.voted and "" or "Yes [Y] No [N]"
-                                                )
-                                        ),
-                                        voteDetails.timeLeft,
-                                        rgbm.colors.red,
-                                        true,
-                                        "vote"
-                                )
-                        end
-                end
 
                 return MainMenuWindow(dt)
         end,
@@ -53,8 +30,10 @@ local hudModes = {
 ui.onExclusiveHUD(function(mode)
         if not app.state.appOpen or ac.getLastError() then return end
 
-        pages:goToSession()
+        -- pages:goToSession()
+        -- pages:goToLapTimes()
         -- pages:goToSetup()
+        pages:goToSettingsControls()
 
         camera.windowHovered = ui.getHoveredID() ~= 0
 
@@ -66,7 +45,7 @@ ui.onExclusiveHUD(function(mode)
 
                         if pages.manager.currentPageName and string.find(pages.manager.currentPageName, "Setting") then
                                 SettingsWindow(dt)
-                                return ""
+                                return "debug"
                         end
 
                         return hudMode(dt)

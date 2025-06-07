@@ -1,8 +1,6 @@
-local camera = require("camera")
 local cui = require("ui.cui")
 local race = require("race")
 local settings = require("settings")
-local units = require("units")
 local sim = ac.getSim()
 
 local card = {}
@@ -22,20 +20,13 @@ local spectatedCarInfo = {
         },
         {
                 label = "Pos",
-                value = function(car) return car.racePosition end,
+                value = function(car) return race:getLeaderboardPosition(car.index) end,
         },
         {
                 label = "Laps",
                 value = function(car) return car.lapCount end,
         },
-        {
-                label = "Best Lap",
-                value = function(car) return ac.lapTimeToString(car.bestLapTimeMs) end,
-        },
-        {
-                label = "Last Lap",
-                value = function(car) return ac.lapTimeToString(car.previousLapTimeMs) end,
-        },
+
         {
                 label = "Ping",
                 value = function(car) return string.format("%s ms", car.ping) end,
@@ -57,11 +48,13 @@ local cameraModeString = {
         [ac.CameraMode.Start] = function() return "Start" end,
 }
 
+local function getDriverTags(carIndex) return ac.DriverTags(ac.getDriverName(carIndex)) end
+
 function card:draw(xPos, yPos, width, height)
         local border = 10 * cui.uiScale()
 
         cui.pushWindow("card_widget_window", xPos, yPos, width, height, false)
-        ui.drawRectFilled(vec2(0, 0), vec2(ui.windowWidth() * 0.5, ui.windowHeight()), settings.Appearance.uiColor1)
+        ui.drawRectFilled(vec2(0, 0), vec2(ui.windowWidth(), ui.windowHeight()), settings.Appearance.uiColor1)
 
         local spectatedCar = ac.getCar(sim.focusedCar)
 
@@ -69,12 +62,12 @@ function card:draw(xPos, yPos, width, height)
                 "player_card",
                 border,
                 border,
-                (ui.windowWidth() - border * 2) * 0.5,
+                (ui.windowWidth() - border * 2),
                 ui.windowHeight() - border * 2,
                 false
         )
 
-        local fontSize = 20 * cui.uiScale()
+        local fontSize = 18 * cui.uiScale()
 
         ui.setCursor(0)
         for _, info in ipairs(spectatedCarInfo) do
@@ -94,23 +87,116 @@ function card:draw(xPos, yPos, width, height)
                 ac.getCarID(spectatedCar.index),
                 ac.getCarSkinID(spectatedCar.index)
         )
-        local skinImageSize = 100 * cui.uiScale()
+        local skinImageSize = 115 * cui.uiScale()
 
-        ui.setCursorX(ui.windowWidth() - skinImageSize - border)
-        ui.setCursorY(ui.windowHeight() - skinImageSize)
+        ui.setCursorX(ui.windowWidth() - skinImageSize)
+        ui.setCursorY(0)
         ui.image(skin, vec2(skinImageSize, skinImageSize))
 
-        cui:setCenterCursorAround(200, fontSize, ui.windowWidth() - skinImageSize * 0.5 - border, fontSize * 0.5)
-        ui.dwriteTextAligned("Camera", fontSize, ui.Alignment.Center, ui.Alignment.Center, vec2(200, fontSize))
+        local cameraTextWidth = 200 * cui.uiScale()
+        cui:setCenterCursorAround(
+                cameraTextWidth,
+                fontSize,
+                ui.windowWidth() - skinImageSize * 0.5,
+                ui.windowHeight() - fontSize * 3
+        )
+        ui.dwriteTextAligned(
+                "Camera",
+                fontSize,
+                ui.Alignment.Center,
+                ui.Alignment.Center,
+                vec2(cameraTextWidth, fontSize)
+        )
 
-        cui:setCenterCursorAround(200, fontSize, ui.windowWidth() - skinImageSize * 0.5 - border, fontSize * 2)
+        cui:setCenterCursorAround(
+                cameraTextWidth,
+                fontSize,
+                ui.windowWidth() - skinImageSize * 0.5,
+                ui.windowHeight() - fontSize
+        )
         ui.dwriteTextAligned(
                 cameraModeString[sim.cameraMode](),
                 fontSize,
                 ui.Alignment.Center,
                 ui.Alignment.Center,
-                vec2(200, fontSize)
+                vec2(cameraTextWidth, fontSize)
         )
+
+        local managePlayerButtonSize = 35 * cui:uiScale()
+        ui.setCursorX(0)
+        ui.setCursorY(ui.windowHeight() - managePlayerButtonSize * 1.75)
+
+        if not sim.isOnlineRace or spectatedCar.index == 0 then
+                cui.popWindow()
+                cui.popWindow()
+                return
+        end
+
+        local driverTags = getDriverTags(spectatedCar.index)
+
+        if
+                cui.iconButton(
+                        "Add",
+                        ui.Icons.Befriend,
+                        managePlayerButtonSize,
+                        managePlayerButtonSize,
+                        ui.ButtonFlags.None,
+                        false,
+                        1
+                )
+        then
+                driverTags.friend = not driverTags.friend
+        end
+
+        cui.dummy(30, 3)
+        ui.sameLine()
+
+        if
+                cui.iconButton(
+                        "Tag",
+                        ui.Icons.Tag,
+                        managePlayerButtonSize,
+                        managePlayerButtonSize,
+                        ui.ButtonFlags.None,
+                        false,
+                        1
+                )
+        then
+        end
+
+        cui.dummy(30, 3)
+        ui.sameLine()
+
+        if
+                cui.iconButton(
+                        "Mute",
+                        ui.Icons.Ban,
+                        managePlayerButtonSize,
+                        managePlayerButtonSize,
+                        ui.ButtonFlags.None,
+                        false,
+                        1
+                )
+        then
+                driverTags.mute = not driverTags.mute
+        end
+
+        cui.dummy(30, 3)
+        ui.sameLine()
+
+        if
+                cui.iconButton(
+                        "Kick",
+                        ui.Icons.Kick,
+                        managePlayerButtonSize,
+                        managePlayerButtonSize,
+                        ui.ButtonFlags.None,
+                        false,
+                        1
+                )
+        then
+                ac.castVote("kick", true, spectatedCar.index)
+        end
 
         cui.popWindow()
 

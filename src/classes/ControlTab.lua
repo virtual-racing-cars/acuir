@@ -1,24 +1,18 @@
-ControlsTabBar = class("ControlsTabBar")
+local ControlTab = class("ControlTab")
 
-TabBarType = {
-        ContentManager = 0,
-        Car = 1,
-        App = 2,
-}
+function ControlTab:initialize(name, tabs, tabOrder) self.name = name end
 
-function ControlsTabBar:initialize(name, tabs, tabOrder) self.name = name end
-
-function ControlsTabBar:addTab(name)
+function ControlTab:addGroup(name)
         if not self.tabs then
                 self.tabs = {}
                 self.tabOrder = {}
         end
 
-        table.insert(self.tabs, ControlsTab(name))
+        table.insert(self.tabs, { name = name, content = {} })
         table.insert(self.tabOrder, name)
 end
 
-function ControlsTabBar:addControl(controlBinding)
+function ControlTab:addControl(controlBinding)
         if controlBinding ~= nil then
                 local tab = controlBinding.tab
                 local tabIndex = table.indexOf(self.tabOrder, tab)
@@ -26,18 +20,10 @@ function ControlsTabBar:addControl(controlBinding)
                 if controlBinding.order ~= 0 then
                         self.tabs[tabIndex].content[controlBinding.order] = controlBinding
                 else
+                        ac.log(tabIndex)
                         table.insert(self.tabs[tabIndex].content, controlBinding)
                 end
         end
 end
 
-ControlsTab = class("ControlsTab")
-
-function ControlsTab:initialize(name)
-        self.name = name
-        self.content = {}
-
-        return self
-end
-
-function ControlsTab:addContent() end
+return ControlTab

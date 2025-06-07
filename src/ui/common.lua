@@ -5,6 +5,7 @@ local chatWidget = require("ui.widgets.chat")
 local csp = require("csp")
 local cui = require("ui.cui")
 local pages = require("ui.pages.pages")
+local pedalsWidget = require("ui.widgets.pedals")
 local replayWidget = require("ui.widgets.replay")
 local settings = require("settings")
 local simutils = require("simutils")
@@ -130,8 +131,7 @@ function topBar(path)
         topSubBar(path)
 
         ui.setCursorY(topBarHeight / 2 - driveButtonHeight / 2)
-        ui.setCursorX(ui.windowWidth() / 2 - driveButtonWidth / 2)
-        ui.offsetCursorX(-driveButtonHeight * 5.25)
+        cui.setCursorX(210)
         ui.offsetCursorY(-driveButtonHeight * 0.2)
         if
                 cui.iconButton(
@@ -155,28 +155,28 @@ function topBar(path)
 
         if
                 cui.iconButton(
-                        "Garage",
-                        ui.Icons.Wrench,
+                        "Laps",
+                        ui.Icons.List,
                         driveButtonHeight,
                         driveButtonHeight,
                         ui.ButtonFlags.None,
                         false,
                         nil,
-                        pages.manager.currentPageName == "SetupPage"
+                        pages.manager.currentPageName == "LapTimesPage"
                 )
         then
-                if pages.manager.currentPageName == "SetupPage" then
+                if pages.manager.currentPageName == "LapTimesPage" then
                         pages:goToMainMenu()
                 else
-                        pages:goToSetup()
+                        pages:goToLapTimes()
                 end
         end
         ui.offsetCursorX(driveButtonHeight * 0.75)
 
         if
                 cui.iconButton(
-                        "Laps",
-                        ui.Icons.List,
+                        "Telemetry",
+                        ui.Icons.Barcode,
                         driveButtonHeight,
                         driveButtonHeight,
                         ui.ButtonFlags.Disabled,
@@ -192,7 +192,7 @@ function topBar(path)
                 end
         end
 
-        ui.offsetCursorX(driveButtonHeight * 0.75)
+        ui.setCursorX(ui.windowWidth() / 2 - driveButtonWidth / 2)
         ui.offsetCursorY(driveButtonHeight * 0.2)
 
         local readyToDriveState = simutils.readyToDriveState
@@ -213,50 +213,37 @@ function topBar(path)
                 ac.tryToStart()
         end
         ui.sameLine()
-        ui.offsetCursorX(driveButtonHeight * 0.75)
+
+        ui.setCursorX(ui.windowWidth() - (ui.windowWidth() / 65) - driveButtonHeight * 4.75)
         ui.offsetCursorY(-driveButtonHeight * 0.2)
 
         if
                 cui.iconButton(
-                        sim.isOnlineRace and "Vote Restart" or "Restart",
-                        ui.Icons.Reset,
+                        "Garage",
+                        ui.Icons.Wrench,
                         driveButtonHeight,
                         driveButtonHeight,
-                        ui.ButtonFlags.None
+                        ui.ButtonFlags.None,
+                        false,
+                        nil,
+                        pages.manager.currentPageName == "SetupPage"
                 )
         then
-                if sim.isOnlineRace then
-                        ac.castVote("restart", true)
+                if pages.manager.currentPageName == "SetupPage" then
+                        pages:goToMainMenu()
                 else
-                        ac.tryToRestartSession()
+                        pages:goToSetup()
                 end
         end
         ui.offsetCursorX(driveButtonHeight * 0.75)
 
-        if
-                cui.iconButton(
-                        sim.isOnlineRace and "Vote Skip" or "Skip",
-                        ui.Icons.Skip,
-                        driveButtonHeight,
-                        driveButtonHeight,
-                        simutils.sessionSkippable and ui.ButtonFlags.None or ui.ButtonFlags.Disabled
-                )
-        then
-                if sim.isOnlineRace then
-                        ac.castVote("skip", true)
-                else
-                        ac.tryToSkipSession()
-                end
+        if cui.iconButton("Settings", ui.Icons.Settings, driveButtonHeight, driveButtonHeight, ui.ButtonFlags.None) then
+                pages:goToSettings()
         end
         ui.offsetCursorX(driveButtonHeight * 0.75)
 
         if cui.iconButton("Quit", ui.Icons.Leave, driveButtonHeight, driveButtonHeight, ui.ButtonFlags.None) then
                 cui:promptShutdownAC()
-        end
-
-        ui.setCursorX(ui.windowWidth() - (ui.windowWidth() / 65) - driveButtonHeight)
-        if cui.iconButton("Settings", ui.Icons.Settings, driveButtonHeight, driveButtonHeight, ui.ButtonFlags.None) then
-                pages:goToSettings()
         end
 end
 
@@ -277,7 +264,13 @@ function bottomWidgetBar()
         local widgetWidth = ui.windowWidth() / 3 - border
         local widgetHeight = 240 * cui.uiScale() - border * 2
 
-        cardWidget:draw(border, widgetYPos, widgetWidth, widgetHeight)
+        cardWidget:draw(border, widgetYPos, widgetWidth * 0.5 - border * 0.25, widgetHeight)
+        pedalsWidget:draw(
+                border + widgetWidth * 0.5 + border * 0.25,
+                widgetYPos,
+                widgetWidth * 0.5 - border * 0.25,
+                widgetHeight
+        )
         tracesWidget:draw(ui.windowWidth() * 0.5 - widgetWidth * 0.5, widgetYPos, widgetWidth, widgetHeight)
         chatWidget:draw(
                 ui.windowWidth() * 0.5 + widgetWidth * 0.5 + border * 0.5,

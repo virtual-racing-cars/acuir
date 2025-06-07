@@ -2,15 +2,18 @@
 
 package.add("src")
 require("audio")
+require("laps")
 require("ui.hud")
 local acc = require("ac_control")
 local app = require("app")
 local callback = require("callback")
 local camera = require("camera")
 local carSetup = require("car_setup")
+local controllers = require("controllers")
 local pitstop = require("pitstop")
 local race = require("race")
 local settings = require("settings")
+local voting = require("voting")
 
 app.state.appOpen = settings.General.autoStart
 app.state.hasAppOpened = false
@@ -20,6 +23,9 @@ function script.update(dt)
 
         if not app.state.appOpen then return end
 
+        -- ac.blockEscapeButton()
+
+        voting:step()
         camera:step()
         carSetup:step()
         race:step()

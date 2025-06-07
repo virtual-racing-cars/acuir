@@ -175,11 +175,19 @@ local entryLayout = {
         {
                 label = "Best",
                 value = function(car, width, height)
+                        local textColor = rgbm.colors.white
+
                         if car.bestLapTimeMs > 0 and car.bestLapTimeMs <= race.fastestLapTimeMs then
                                 drawTimeIndicator(width, height, rgbm(0.5, 0.2, 1, 1))
+                        elseif
+                                car.status.isLastLapValid
+                                and car.status.previousLapTimeMs <= car.status.bestLapTimeMs
+                        then
+                                drawTimeIndicator(width, height)
+                                textColor = rgbm.colors.black
                         end
 
-                        return ac.lapTimeToString(car.bestLapTimeMs)
+                        return ac.lapTimeToString(car.bestLapTimeMs), textColor
                 end,
                 xShare = 0.07,
                 align = ui.Alignment.Center,
@@ -256,11 +264,9 @@ local function timetableBanner(yPos, height)
         end
 end
 
-function timetableEntryButton(leaderboardIndex, carIndex, yPos, height)
+function timetableEntryButton(car, yPos, height)
         local xPos = 0
         local width = ui.windowWidth()
-
-        local car = race.cars[carIndex]
 
         ui.setCursorX(xPos)
         ui.setCursorY(yPos)
@@ -268,7 +274,8 @@ function timetableEntryButton(leaderboardIndex, carIndex, yPos, height)
                 if car.status.isConnected then ac.focusCar(car.index) end
         end
 
-        local evenCar = leaderboardIndex % 2 == 0
+        local leaderboardPosition = car.leaderboardPosition
+        local evenCar = leaderboardPosition % 2 == 0
 
         local numberBoxColor = rgbm.colors.transparent
         if sim.focusedCar == car.index then
@@ -285,23 +292,25 @@ function timetableEntryButton(leaderboardIndex, carIndex, yPos, height)
         ui.drawRectFilled(vec2(xPos, yPos), vec2(xPos + height, yPos + height), numberBoxColor)
 
         local positionColor = rgbm.colors.transparent
-        if leaderboardIndex == 1 then
+        if sim.raceSessionType ~= ac.SessionType.Race then
+                positionColor = rgbm.colors.transparent
+        elseif leaderboardPosition == 1 and car.slot.hasCompletedLastLap then
                 positionColor = rgbm(1, 0.78, 0.2, 1)
-        elseif leaderboardIndex == 2 then
+        elseif leaderboardPosition == 2 and car.slot.hasCompletedLastLap then
                 positionColor = rgbm(0.6, 0.6, 0.7, 1)
-        elseif leaderboardIndex == 3 then
+        elseif leaderboardPosition == 3 and car.slot.hasCompletedLastLap then
                 positionColor = rgbm(0.9, 0.4, 0, 1)
         end
         ui.drawRectFilledMultiColor(
                 vec2(xPos + height, yPos),
-                vec2(xPos + height + height * 0.5, yPos + height),
+                vec2(xPos + height + height * 0.75, yPos + height),
                 positionColor,
                 rgbm.colors.transparent,
                 rgbm.colors.transparent,
                 positionColor
         )
 
-        if sim.isOnlineRace then
+        if sim.isOnlineRace and car.status.isConnected then
                 local pingColor = rgbm.colors.green
 
                 if car.status.ping > 300 then
@@ -328,7 +337,7 @@ function timetableEntryButton(leaderboardIndex, carIndex, yPos, height)
                 local tempWidth = width - height - height * 0.2
                 cui.snapCursor()
                 local x, y = entry.xShare == -1 and height or tempWidth * entry.xShare, height
-                local value, color = entry.value(car, x, height)
+                local value, color = entry.value(car, x, y)
                 ui.dwriteTextAligned(value, height * 0.5, entry.align, ui.Alignment.Center, vec2(x, y), false, color)
                 ui.sameLine()
         end
@@ -338,20 +347,51 @@ function timetableEntryButton(leaderboardIndex, carIndex, yPos, height)
         end
 end
 
+local isTimetableShowingDisconnected = false
+
 function timetable:draw(xPos, yPos, width, height)
         cui.pushWindow("timetable_widget_window", xPos, yPos, width, height, false)
         ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiThemeColor1 * 0.25)
         ui.setCursor(0)
 
-        local height = ui.windowHeight() / 21
+        local height = ui.windowHeight() / 22
         timetableBanner(0, height)
 
-        cui.pushWindow("home_timetable_entrant_window", 0, height, ui.windowWidth(), ui.windowHeight() - height, true)
+        cui.pushWindow(
+                "home_timetable_entrant_window",
+                0,
+                height,
+                ui.windowWidth(),
+                ui.windowHeight() - height * 2,
+                true
+        )
         for leaderboardIndex, slot in ipairs(race.leaderboard) do
-                timetableEntryButton(leaderboardIndex, slot.car.index, (leaderboardIndex - 1) * height, height)
+                if slot.car.isConnected or isTimetableShowingDisconnected then
+                        timetableEntryButton(race.cars[slot.car.index], (leaderboardIndex - 1) * height, height)
+                end
         end
         cui.dummy(height, height)
         cui.popWindow(true)
+
+        ui.drawRectFilled(
+                vec2(0, ui.windowHeight() - height),
+                vec2(width, ui.windowHeight()),
+                rgbm(0.1, 0.1, 0.1, 0.95)
+        )
+
+        ui.setCursorX(0)
+
+        if
+                cui.menuButton(
+                        isTimetableShowingDisconnected and "Hide Disconnected" or "Show Disconnected",
+                        vec2(ui.windowWidth() * 0.2, height),
+                        0,
+                        0,
+                        ui.ButtonFlags.None
+                )
+        then
+                isTimetableShowingDisconnected = not isTimetableShowingDisconnected
+        end
 
         cui.popWindow()
 end

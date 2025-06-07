@@ -1,131 +1,12 @@
 local cui = require("ui.cui")
+local messages = require("messages")
 local settings = require("settings")
 local sim = ac.getSim()
 
 local chat = {
-        log = {},
-        inputMessage = "",
         autoScroll = true,
         emojisOpen = false,
 }
-
-local emojiList = {
-        { label = "grin_face", icon = "😄" },
-        { label = "grin_sweat_face", icon = "😅" },
-        { label = "grin_tears_joy_face", icon = "😂" },
-        { label = "upsidedown_face", icon = "🙃" },
-        { label = "melting_face", icon = "🫠" },
-        { label = "winking_face", icon = "😉" },
-        { label = "smiling_face_halo", icon = "😇" },
-        { label = "smiling_face_hearts", icon = "🥰" },
-        { label = "smiling_face_heart_eyes", icon = "😍" },
-        { label = "smiling_face_star_eyes", icon = "🤩" },
-        { label = "face_blow_kiss", icon = "😘" },
-        { label = "smiling_face_tear", icon = "🥲" },
-        { label = "face_zany", icon = "🤪" },
-        { label = "face_hand_over_mouth", icon = "🫢" },
-        { label = "face_shush", icon = "🤫" },
-        { label = "face_thinking", icon = "🤔" },
-        { label = "face_salute", icon = "🫡" },
-        { label = "face_neutral", icon = "😐" },
-        { label = "face_expressionless", icon = "😑" },
-        { label = "face_eye_roll", icon = "🙄" },
-        { label = "face_hot", icon = "🥵" },
-        { label = "face_cold", icon = "🥶" },
-        { label = "face_eyes_crossed_out", icon = "😵" },
-        { label = "exploding_head", icon = "🤯" },
-        { label = "face_cowboy_hat", icon = "🤠" },
-        { label = "face_partying", icon = "🥳" },
-        { label = "face_sunglasses", icon = "😎" },
-        { label = "face_nerd", icon = "🤓" },
-        { label = "face_monocle", icon = "🧐" },
-        { label = "face_pleading", icon = "🥺" },
-        { label = "face_steam_nose", icon = "😤" },
-        { label = "face_enraged", icon = "😡" },
-        { label = "face_enraged_symbols", icon = "🤬" },
-        { label = "face_angry", icon = "😠" },
-        { label = "face_smiling_horns", icon = "😈" },
-        { label = "face_angry_horns", icon = "👿" },
-        { label = "skull", icon = "💀" },
-        { label = "pile_of_poop", icon = "💩" },
-        { label = "clown", icon = "🤡" },
-        { label = "ogre", icon = "👹" },
-        { label = "goblin", icon = "👺" },
-        { label = "ghost", icon = "👻" },
-        { label = "alien", icon = "👽" },
-        { label = "alien_monster", icon = "👾" },
-        { label = "robot", icon = "🤖" },
-        { label = "monkey_see_no_evil", icon = "🙈" },
-        { label = "monkey_hear_no_evil", icon = "🙉" },
-        { label = "monkey_speak_no_evil", icon = "🙊" },
-}
-
-ac.onOnlineWelcome(function(message, config)
-        if isempty(message) then return end
-
-        table.insert(chat.log, {
-                sender = -1,
-                msg = message,
-                color = rgbm.colors.orange,
-                timestamp = "",
-        })
-end)
-
-ac.onChatMessage(function(message, senderCarIndex, senderSessionID)
-        if isempty(message) then return end
-
-        local chatColor = rgbm.colors.white
-
-        if senderCarIndex == 0 then
-                chatColor = rgbm.colors.yellow
-        elseif senderCarIndex == -1 then
-                chatColor = rgbm.colors.orange
-        else
-                local tags = ac.DriverTags(ac.getDriverName(senderCarIndex))
-                if tags.friend then chatColor = rgbm.colors.green end
-        end
-
-        local msgBlocks = string.split(message, "\n")
-
-        for i, msg in ipairs(msgBlocks) do
-                table.insert(chat.log, {
-                        sender = senderCarIndex,
-                        msg = msg,
-                        color = chatColor,
-                        timestamp = i == 1 and os.date("%H:%M", os.time()) or "",
-                })
-        end
-end)
-
-ac.onClientConnected(
-        function(connectedCarIndex, connectedSessionID)
-                table.insert(chat.log, {
-                        sender = -1,
-                        msg = string.format(
-                                "%s joined, driving the %s",
-                                ac.getDriverName(connectedCarIndex),
-                                ac.getCarName(connectedCarIndex)
-                        ),
-                        color = rgbm.colors.gray,
-                        timestamp = os.date("%H:%M", os.time()),
-                })
-        end
-)
-
-ac.onClientDisconnected(
-        function(connectedCarIndex, connectedSessionID)
-                table.insert(chat.log, {
-                        sender = -1,
-                        msg = string.format(
-                                "%s left, the %s is now free",
-                                ac.getDriverName(connectedCarIndex),
-                                ac.getCarName(connectedCarIndex)
-                        ),
-                        color = rgbm.colors.gray,
-                        timestamp = os.date("%H:%M", os.time()),
-                })
-        end
-)
 
 local function logWindow(height)
         cui.pushWindow("chat_log_window", 0, 0, ui.windowWidth(), height, true)
@@ -135,7 +16,7 @@ local function logWindow(height)
         local chatLineSize = 24 * cui.uiScale()
 
         ui.setCursorY(5 * cui.uiScale())
-        for i, line in ipairs(chat.log) do
+        for i, line in ipairs(messages.log) do
                 if line.sender == -1 then
                         ui.setCursorX(ui.windowWidth() * 0.01)
                         cui.snapCursor()
@@ -213,16 +94,16 @@ end
 local chatActive = false
 
 local function chatInput(height)
-        if not isempty(chat.inputMessage) and ui.keyPressed(ui.Key.Enter) and chatActive then
-                ac.sendChatMessage(chat.inputMessage)
-                chat.inputMessage = ""
+        if not isempty(messages.input) and ui.keyPressed(ui.Key.Enter) and chatActive then
+                ac.sendChatMessage(messages.input)
+                messages.input = ""
         end
 
         cui.setCursorX(0)
         ui.setCursorY(ui.windowHeight() - height)
 
-        chat.inputMessage, chatActive =
-                cui.inputText("##chatInput", "", chat.inputMessage, "", vec2(ui.windowWidth() * 0.75, height))
+        messages.input, chatActive =
+                cui.inputText("##chatInput", "", messages.input, "", vec2(ui.windowWidth() * 0.75, height))
         ui.drawRect(
                 vec2(0, ui.windowHeight() - height),
                 ui.windowSize(),
@@ -241,12 +122,12 @@ local function chatInput(height)
                         ui.Icons.Cancel,
                         height,
                         height,
-                        isempty(chat.inputMessage) and ui.ButtonFlags.Disabled or ui.ButtonFlags.None,
+                        isempty(messages.input) and ui.ButtonFlags.Disabled or ui.ButtonFlags.None,
                         false,
                         1
                 )
         then
-                chat.inputMessage = ""
+                messages.input = ""
         end
         ui.sameLine()
 
@@ -278,7 +159,7 @@ local function chatInput(height)
                 ui.setCursorY(38 * cui.uiScale())
                 ui.setCursorX(ui.windowWidth() * 0.02)
 
-                for i, emoji in ipairs(emojiList) do
+                for i, emoji in ipairs(messages.emojiList) do
                         if i > 1 and (i - 1) % 10 == 0 then
                                 ui.newLine()
                                 ui.setCursorX(ui.windowWidth() * 0.02)
@@ -294,7 +175,7 @@ local function chatInput(height)
                                         false
                                 )
                         then
-                                chat.inputMessage = chat.inputMessage .. emoji.icon
+                                messages.input = messages.input .. emoji.icon
                         end
                         ui.sameLine()
                 end
@@ -333,20 +214,20 @@ local function chatInput(height)
                         ui.Icons.Send,
                         height,
                         height,
-                        isempty(chat.inputMessage) and ui.ButtonFlags.Disabled or ui.ButtonFlags.None,
+                        isempty(messages.input) and ui.ButtonFlags.Disabled or ui.ButtonFlags.None,
                         false,
                         1
                 )
         then
-                ac.sendChatMessage(chat.inputMessage)
-                chat.inputMessage = ""
+                ac.sendChatMessage(messages.input)
+                messages.input = ""
         end
 
         ui.setCursorX(ui.windowWidth() * 0.01)
         ui.setCursorY(ui.windowHeight() - height)
         cui.snapCursor()
         ui.dwriteTextAligned(
-                isempty(chat.inputMessage) and "Type message..." or "",
+                isempty(messages.input) and "Type message..." or "",
                 math.floor(height * 0.55),
                 ui.Alignment.Start,
                 ui.Alignment.Center,
