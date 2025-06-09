@@ -1,3 +1,5 @@
+local sim = ac.getSim()
+
 local ControlBinding = require("src.classes.ControlBinding")
 local ControlTab = require("src.classes.ControlTab")
 local controlsINI = ac.INIConfig.controlsConfig()
@@ -13,27 +15,11 @@ local carControlsINI = ac.INIConfig.load(carControlsFile)
 
 local controls = {
         preset = controlsINI:get("__LAUNCHER_CM", "PRESET_NAME", nil),
-        inputMethod = 1,
-        inputMethods = {
-                WHEEL = 1,
-                X360 = 2,
-                KEYBOARD = 3,
-        },
+        inputMethod = controlsINI:get("HEADER", "INPUT_METHOD", "WHEEL"),
+        inputMod = 0,
         tabs = {},
         binds = {},
 }
-
--- local carSpecificPreset = controlsINI:get("__LAUNCHER_CM", "PRESET_NAME", "")
--- local carSpecificPresetEnabled = controlsINI:get("__LAUNCHER_CM", "PRESET_CHANGED", -1) == 0
-
--- if carSpecificPresetEnabled then
---         carSpecificPreset =
---                 string.replace(string.replace(carSpecificPreset, "savedSetups\\", ""), ".ini", "")
--- end
-
--- local cfgInputGeneral = MappedConfig(ac.getFolder(ac.FolderID.ExtCfgUser) .. "/general.ini", {
--- 	CONTROL = { NO_MOUSE_STEERING_FOR_INACTIVE = false },
--- })
 
 ac.reloadControlSettings()
 ac.onControlSettingsChanged(function() controlsINI = ac.INIConfig.controlsConfig() end)
@@ -65,10 +51,22 @@ function controls:initialize()
                 table.insert(controls.tabs, initializeControlTab(appName, ac.INIConfig.load(appControlsFile)))
         end)
 
-        controls.inputMethod = controlsINI:get("HEADER", "INPUT_METHOD", 1)
+        controls.input = sim.inputMode > 1 and 1 or 0
 
         table.insert(controls.tabs, 1, initializeControlTab("General", contentManagerControlsINI))
         table.insert(controls.tabs, 1, initializeControlTab("Car", carControlsINI))
 end
 
 return controls
+
+-- local carSpecificPreset = controlsINI:get("__LAUNCHER_CM", "PRESET_NAME", "")
+-- local carSpecificPresetEnabled = controlsINI:get("__LAUNCHER_CM", "PRESET_CHANGED", -1) == 0
+
+-- if carSpecificPresetEnabled then
+--         carSpecificPreset =
+--                 string.replace(string.replace(carSpecificPreset, "savedSetups\\", ""), ".ini", "")
+-- end
+
+-- local cfgInputGeneral = MappedConfig(ac.getFolder(ac.FolderID.ExtCfgUser) .. "/general.ini", {
+-- 	CONTROL = { NO_MOUSE_STEERING_FOR_INACTIVE = false },
+-- })

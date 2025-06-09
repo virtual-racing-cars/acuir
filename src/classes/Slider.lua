@@ -46,7 +46,7 @@ end
 
 local scrollDelayTimer = 0
 
-function drawSlider(
+local function drawSlider(
         id,
         name,
         xPos,

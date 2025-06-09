@@ -1,6 +1,6 @@
 local ControlTab = class("ControlTab")
 
-function ControlTab:initialize(name, tabs, tabOrder) self.name = name end
+function ControlTab:initialize(name) self.name = name end
 
 function ControlTab:addGroup(name)
         if not self.tabs then

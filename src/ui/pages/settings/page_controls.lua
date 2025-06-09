@@ -11,16 +11,6 @@ local bottomBarButtons = {
                 enabled = true,
                 func = function() pages:goToSettings() end,
         },
-        {
-                label = "APPLY",
-                enabled = false,
-                func = function() end,
-        },
-        {
-                label = "CANCEL",
-                enabled = false,
-                func = function() end,
-        },
 }
 
 function page.draw()

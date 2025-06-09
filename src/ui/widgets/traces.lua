@@ -98,14 +98,12 @@ function tracesGraph:draw(xPos, yPos, width, height)
         ui.drawRectFilled(0, vec2(ui.windowWidth(), ui.windowHeight()), rgbm(0.1, 0.1, 0.1, 1))
         drawGridLines()
 
-        local spectatedCar = ac.getCar(sim.focusedCar)
-
         if sim.focusedCar ~= spectatedCarIndexLast then
                 clearTraceData()
                 spectatedCarIndexLast = sim.focusedCar
         end
 
-        if updateTimer <= 0 then updateTraceData(spectatedCar) end
+        if updateTimer <= 0 then updateTraceData(ac.getCar(sim.focusedCar)) end
 
         drawTraces()
 

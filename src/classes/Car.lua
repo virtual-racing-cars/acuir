@@ -1,14 +1,3 @@
-local lap = require("src.classes.Lap")
-local sim = ac.getSim()
-
-local trackLegnth = 1 / sim.trackLengthM * 50
-
--- local timingGateCount = 0
--- for i = 0, 1, trackLegnth do
---         timingGateCount = timingGateCount + 1
---         session.timingGates[timingGateCount] = i
--- end
-
 local Car = class("Car")
 
 function Car:initialize(carIndex)

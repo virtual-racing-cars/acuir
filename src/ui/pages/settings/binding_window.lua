@@ -1,5 +1,6 @@
 local bindings = {}
 
+require("src.classes.SettingSlider")
 local TabBar = require("classes.TabBar")
 local controls = require("controls")
 local cui = require("ui.cui")
@@ -296,6 +297,153 @@ end
 local applicationControlsTabBar = TabBar()
 local appsTabBars = {}
 
+local function newSetting(section, id, label, min, max, step, shiftStep, mult, offset, format, unit, help)
+        return {
+                section = section,
+                id = id,
+                label = label,
+                min = min or 0,
+                max = max or 1,
+                step = step or 0.01,
+                shiftStep = shiftStep or 0.05,
+                mult = mult or 100,
+                offset = offset or 0,
+                format = format or "%.0f %s",
+                unit = unit or "%",
+                help = help or "",
+        }
+end
+
+local extraSettings = {}
+
+extraSettings.KEYBOARD = {}
+
+extraSettings.X360 = {
+        {
+                label = "X360",
+                tweaks = {
+                        newSetting("STEER_SPEED", "Steer Speed"),
+                        newSetting("STEER_GAMMA", "Gamma"),
+                        newSetting("STEER_FILTER", "Filter"),
+                        newSetting("SPEED_SENSITIVITY", "Speed Sensitivity"),
+                        newSetting("STEER_DEADZONE", "Deadzone"),
+                        newSetting("RUMBLE_INTENSITY", "Rumble Intensity"),
+                },
+        },
+}
+
+extraSettings.WHEEL = {
+
+        {
+                label = "AXIS",
+                content = {
+                        {
+                                group = "Steering",
+                                tweaks = {
+                                        newSetting("STEER", "STEER_GAMMA", "Steer Gamma", 0.2, 4, 0.01, nil, 100),
+                                        newSetting(
+                                                "STEER",
+                                                "SPEED_SENSITIVITY",
+                                                "Steer Sensitivity",
+                                                0,
+                                                1,
+                                                0.01,
+                                                nil,
+                                                100
+                                        ),
+                                },
+                        },
+                        {
+                                group = "Others",
+                                tweaks = {
+                                        newSetting(
+                                                "STEER",
+                                                "DEBOUNCING_MS",
+                                                "Debounce",
+                                                0,
+                                                200,
+                                                1,
+                                                nil,
+                                                1,
+                                                nil,
+                                                nil,
+                                                "ms"
+                                        ),
+                                        newSetting("THROTTLE", "GAMMA", "Throttle Gamma", 0.01, 5, 0.01, nil, 100),
+                                        newSetting("BRAKES", "GAMMA", "Brake Gamma", 0.01, 5, 0.01, nil, 100),
+                                        newSetting("CLUTCH", "GAMMA", "Clutch Gamma", 0.01, 5, 0.01, nil, 100),
+                                        newSetting("HANDBRAKE", "GAMMA", "Handbrake Gamma", 0.01, 5, 0.01, nil, 100),
+                                },
+                        },
+                },
+        },
+        {
+                label = "FFB",
+                content = {
+                        {
+                                group = "FFB",
+                                tweaks = {
+                                        newSetting("STEER", "FF_GAIN", "FFB Gain", 0, 2, 0.01, nil, 100),
+                                        newSetting("STEER", "FF_DAMPER", "FFB Damper"),
+                                        newSetting(
+                                                "FF_SKIP_STEPS",
+                                                "VALUE",
+                                                "FFB Skip",
+                                                0,
+                                                10,
+                                                1,
+                                                1,
+                                                1,
+                                                nil,
+                                                nil,
+                                                "steps"
+                                        ),
+                                },
+                        },
+                        {
+                                group = "FFB Tweaks",
+                                tweaks = {
+                                        newSetting("FF_TWEAKS", "MIN_FF", "Minimum Force", 0, 1, 0.01, nil, 100),
+                                        newSetting(
+                                                "FF_TWEAKS",
+                                                "CENTER_BOOST_GAIN",
+                                                "Center Boost Gain",
+                                                0,
+                                                10,
+                                                0.01,
+                                                nil,
+                                                100
+                                        ),
+                                        newSetting(
+                                                "FF_TWEAKS",
+                                                "CENTER_BOOST_RANGE",
+                                                "Center Boost Range",
+                                                0,
+                                                1,
+                                                0.01,
+                                                nil,
+                                                100
+                                        ),
+                                },
+                        },
+                        {
+                                group = "FFB Enhancements",
+                                tweaks = {
+                                        newSetting("FF_ENHANCEMENT", "CURBS", "Curbs", 0, 2, 0.01, nil, 100),
+                                        newSetting("FF_ENHANCEMENT", "ROAD", "Road", 0, 2, 0.01, nil, 100),
+                                        newSetting("FF_ENHANCEMENT", "SLIPS", "Slips", 0, 2, 0.01, nil, 100),
+                                        newSetting("FF_ENHANCEMENT", "ABS", "ABS", 0, 2, 0.01, nil, 100),
+                                },
+                        },
+                },
+        },
+}
+
+controlsINI:setAndSave("STEER", "AXLE", 1)
+ac.reloadControlSettings()
+
+local currentSection = 1
+
 function bindings:draw()
         cui.pushWindow("settings_button_bind_tabbar", 0, 0, ui.windowWidth() * 0.25, ui.windowHeight(), false)
         ui.setCursor(0)
@@ -346,7 +494,7 @@ function bindings:draw()
         if not appsTabBars[app.name] then appsTabBars[app.name] = TabBar() end
 
         ui.setCursor(0)
-        for i, tab in ipairs(app.tabs) do
+        for _, tab in ipairs(app.tabs) do
                 ui.setCursorX(0)
                 cui.snapCursor()
                 ui.dwriteTextAligned(
@@ -364,6 +512,117 @@ function bindings:draw()
         end
 
         cui.popWindow(true)
+        cui.popWindow()
+
+        cui.pushWindow(
+                "settings_controls_ffb",
+                ui.windowWidth() * 0.75,
+                0,
+                ui.windowWidth() * 0.25,
+                ui.windowHeight(),
+                false
+        )
+
+        ui.setCursor(0)
+
+        local deviceTabs = extraSettings[controlsINI:get("HEADER", "INPUT_METHOD", "WHEEL")]
+        for i, tab in ipairs(deviceTabs) do
+                if
+                        cui.menuButton(
+                                tab.label,
+                                vec2(ui.windowWidth() / #deviceTabs, 50),
+                                0,
+                                0,
+                                0,
+                                currentSection == i,
+                                false
+                        )
+                then
+                        currentSection = i
+                end
+                ui.sameLine()
+        end
+
+        cui.pushWindow(
+                "settings_controls_ffb",
+                0,
+                50 * cui.uiScale(),
+                ui.windowWidth(),
+                ui.windowHeight() - 50 * cui.uiScale(),
+                true
+        )
+        ui.setCursor(0)
+        ui.offsetCursorY(20)
+
+        if currentSection == 2 then
+                ui.setCursorX(ui.windowWidth() / 2 - 600 * cui.uiScale() / 2)
+                local value, changed, active, hovered = drawSettingsSpinner(
+                        "CAR.FFB",
+                        "Car FFB Gain",
+                        620 * cui.uiScale(),
+                        40 * cui.uiScale(),
+                        false,
+                        ac.getCar(0).ffbMultiplier,
+                        {
+                                section = "CAR",
+                                id = "CARFFB",
+                                label = "Car FFB",
+                                min = 0,
+                                max = 2,
+                                step = 0.01,
+                                shiftStep = 1,
+                                mult = 100,
+                                offset = 0,
+                                format = "%.0f %s",
+                                unit = "%",
+                                help = "",
+                        },
+                        true
+                )
+
+                if changed or active then ac.setFFBMultiplier(value) end
+        end
+        ui.offsetCursorY(20)
+
+        local i = 0
+        for _, tweakSection in
+                ipairs(extraSettings[controlsINI:get("HEADER", "INPUT_METHOD", "WHEEL")][currentSection].content)
+        do
+                ui.setCursorX(0)
+                ui.dwriteTextAligned(
+                        tweakSection.group,
+                        24 * cui.uiScale(),
+                        ui.Alignment.Center,
+                        ui.Alignment.Center,
+                        vec2(ui.windowWidth(), 48 * cui.uiScale())
+                )
+
+                for _, tweak in ipairs(tweakSection.tweaks) do
+                        ui.setCursorX(ui.windowWidth() / 2 - 600 * cui.uiScale() / 2)
+
+                        local value, changed, active, hovered = drawSettingsSpinner(
+                                tweak.section .. tweak.id,
+                                tweak.label,
+                                620 * cui.uiScale(),
+                                40 * cui.uiScale(),
+                                false,
+                                controlsINI:get(tweak.section, tweak.id, 0),
+                                tweak,
+                                false
+                        )
+
+                        if changed or active then
+                                controlsINI:setAndSave(tweak.section, tweak.id, value)
+                                ac.reloadControlSettings()
+                        end
+
+                        i = i + 1
+
+                        ui.offsetCursorY(20)
+                end
+        end
+        cui.popWindow(true)
+
         cui.popWindow()
 end
 
