@@ -362,12 +362,12 @@ function CUI.menuButton(label, size, horizontalAligment, verticalAlignment, flag
         return clicked and not (flags == ui.ButtonFlags.Disabled)
 end
 
-function CUI.bindingButton(bind, device, button, size, flags)
+function CUI.bindingButton(button, inputMode, device, buttonLabel, size, flags)
         if not flags then flags = ui.ButtonFlags.None end
 
         local sizeX = size.x
         local sizeY = size.y
-        local fontSize = math.floor(sizeY * 0.55)
+        local fontSize = math.floor(sizeY * 0.4)
         fontSize = (fontSize % 2 ~= 0) and fontSize + 1 or fontSize
         local fontColor = nil
 
@@ -380,7 +380,7 @@ function CUI.bindingButton(bind, device, button, size, flags)
         end
 
         local tempCursor = ui.getCursor()
-        local clicked = ui.button("##" .. bind, vec2Temp1(sizeX, sizeY), flags)
+        local clicked = ui.button("##" .. inputMode .. button.bind, vec2Temp1(sizeX, sizeY), flags)
         local hovered = ui.itemHovered()
 
         if flags == ui.ButtonFlags.Disabled then
@@ -394,7 +394,7 @@ function CUI.bindingButton(bind, device, button, size, flags)
         ui.setCursor(tempCursor)
         CUI.snapCursor()
         ui.dwriteTextAligned(
-                button,
+                buttonLabel,
                 fontSize,
                 ui.Alignment.Center,
                 ui.Alignment.Center,
@@ -407,7 +407,7 @@ function CUI.bindingButton(bind, device, button, size, flags)
         CUI.snapCursor()
         ui.dwriteTextAligned(
                 device,
-                fontSize / 2,
+                fontSize * 0.75,
                 ui.Alignment.Center,
                 ui.Alignment.End,
                 vec2Temp1(sizeX, sizeY),

@@ -54,9 +54,9 @@ function SettingsWindow(dt)
                 local childWindowHeight = ui.windowHeight() / 5
                 cui.pushWindow(
                         "callback_subwindow",
-                        (ui.windowWidth() - childWindowWith) / 2,
+                        0,
                         (ui.windowHeight() - childWindowHeight) / 2,
-                        childWindowWith,
+                        ui.windowWidth(),
                         childWindowHeight
                 )
 

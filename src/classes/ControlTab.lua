@@ -20,7 +20,6 @@ function ControlTab:addControl(controlBinding)
                 if controlBinding.order ~= 0 then
                         self.tabs[tabIndex].content[controlBinding.order] = controlBinding
                 else
-                        ac.log(tabIndex)
                         table.insert(self.tabs[tabIndex].content, controlBinding)
                 end
         end

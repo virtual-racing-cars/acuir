@@ -20,6 +20,7 @@ local controls = {
                 KEYBOARD = 3,
         },
         tabs = {},
+        binds = {},
 }
 
 -- local carSpecificPreset = controlsINI:get("__LAUNCHER_CM", "PRESET_NAME", "")
@@ -44,7 +45,7 @@ local function initializeControlTab(name, ini)
         end
 
         for bind, _ in pairs(ini.sections) do
-                if bind ~= "TAB_ORDER" then controlTab:addControl(ControlBinding(bind, ini)) end
+                if bind ~= "TAB_ORDER" then controlTab:addControl(ControlBinding(bind, ini, controls)) end
         end
 
         return controlTab

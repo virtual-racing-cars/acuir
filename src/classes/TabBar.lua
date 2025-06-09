@@ -2,16 +2,12 @@ local audio = require("audio")
 local cui = require("ui.cui")
 local settings = require("settings")
 
-TabBar = class("TabBar")
+local TabBar = class("TabBar")
 
 function TabBar:initialize(id)
         self.id = id
         self.currentTab = 1
         self.scrollDelayTimer = 0
-end
-
-function toCapitalCase(str)
-        return (str:gsub("(%a)([%w_']*)", function(first, rest) return first:upper() .. rest:lower() end))
 end
 
 function TabBar:draw(tabs)
@@ -50,3 +46,5 @@ function TabBar:draw(tabs)
 
         return tabs[self.currentTab]
 end
+
+return TabBar

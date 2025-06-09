@@ -1,15 +1,21 @@
 -- if true then return end
 
+function isempty(str) return str == nil or str == "" end
+
+function toCapitalCase(str)
+        return (str:gsub("(%a)([%w_']*)", function(first, rest) return first:upper() .. rest:lower() end))
+end
+
 package.add("src")
 require("audio")
 require("laps")
+require("controllers")
 require("ui.hud")
 local acc = require("ac_control")
 local app = require("app")
 local callback = require("callback")
 local camera = require("camera")
 local carSetup = require("car_setup")
-local controllers = require("controllers")
 local pitstop = require("pitstop")
 local race = require("race")
 local settings = require("settings")
