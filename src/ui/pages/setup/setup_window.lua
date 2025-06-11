@@ -72,7 +72,7 @@ local function linkButton(name, size, linked)
         return clicked
 end
 
-local spinnerWidth = 600 * cui.uiScale()
+local spinnerWidth = 700 * cui.uiScale()
 local spinnerHeight = 90 * cui.uiScale()
 
 local function drawSetupSpinner(si)
@@ -81,43 +81,38 @@ local function drawSetupSpinner(si)
         si:run(true)
 
         local positions = {
-                [0] = -20 * cui.uiScale(),
+                [0] = 40,
                 [0.5] = ui.windowWidth() / 2 - spinnerWidth / 2,
-                [1] = (ui.windowWidth() - spinnerWidth) + 20 * cui.uiScale(),
+                [1] = (ui.windowWidth() - spinnerWidth) - 40 * cui.uiScale(),
         }
 
         local xPos = positions[si.xPos]
-        local yPos = (si.yPos * 110 + 90) * cui.uiScale()
+        local yPos = (si.yPos * 95 + 90) * cui.uiScale()
 
         if si.items then
                 if #si.items > 0 then si.format = si.items[si.value + 1] end
         end
 
-        local value, changed, active, hovered = drawSpinner(
-                si.id,
-                si.name,
-                xPos,
-                yPos,
-                spinnerWidth,
-                spinnerHeight,
-                si.fixed,
-                si.value,
-                si.min,
-                si.max,
-                si.step,
-                1,
-                0,
-                si.format,
-                si.multiplier,
-                0,
-                false,
-                si.help
+        ui.setCursorX(xPos)
+        ui.setCursorY(yPos)
+        ui.drawRectFilled(
+                vec2(xPos, yPos),
+                vec2(xPos + spinnerWidth, yPos + spinnerHeight),
+                settings.Appearance.uiThemeColor1
         )
+        -- ui.drawSimpleLine(
+        --         vec2(xPos, yPos + spinnerHeight),
+        --         vec2(xPos + spinnerWidth, yPos + spinnerHeight),
+        --         rgbm.colors.black,
+        --         3
+        -- )
+        local value, changed, active, hovered =
+                drawSpinner(si.id, si.name, spinnerWidth, spinnerHeight, si.fixed, si.value, si, false)
 
         if si.mirrorAvailable and not si.fixed then
-                ui.setCursorX(ui.windowWidth() / 2 - spinnerHeight / 4)
-                ui.setCursorY(yPos + spinnerHeight / 4)
-                if linkButton(si.name, vec2(spinnerHeight / 2, spinnerHeight / 2), si.mirrored) then
+                ui.setCursorX(ui.windowWidth() / 2 - spinnerHeight / 3)
+                ui.setCursorY(yPos + spinnerHeight * 0.15)
+                if linkButton(si.name, vec2(spinnerHeight * 0.75, spinnerHeight * 0.75), si.mirrored) then
                         si.mirrored = not si.mirrored
                 end
         end
@@ -138,8 +133,8 @@ end
 
 local currentQuickPitPreset = 0
 function car_setup(sm)
-        spinnerWidth = 640 * cui.uiScale()
-        spinnerHeight = 75 * cui.uiScale()
+        spinnerWidth = 525 * cui.uiScale()
+        spinnerHeight = 95 * cui.uiScale()
 
         local changed = false
         local tab = sm.setupTabs[tonumber(app.state.setupTab)]

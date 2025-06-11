@@ -74,6 +74,17 @@ function topSubBar(path)
 
         cui.setCursorX(180)
         ui.setCursorY(topBarHeight / 2 - (100 * cui.uiScale()) / 2)
+
+        if not path then return end
+        local pathString = path == "" and "" or " / " .. path
+        ui.dwriteTextAligned(
+                " / Settings" .. pathString,
+                50 * cui.uiScale(),
+                ui.Alignment.Start,
+                ui.Alignment.Center,
+                vec2(600 * cui.uiScale(), 100 * cui.uiScale()),
+                false
+        )
 end
 
 function topBar(path)

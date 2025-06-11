@@ -23,6 +23,8 @@ local bottomBarButtons = {
 }
 
 function page.draw()
+        topSubBar("General")
+
         ui.drawLine(vec2(0, 160 * cui.uiScale()), vec2(ui.windowWidth(), 160 * cui.uiScale()), rgbm.colors.gray, 2)
         ui.drawRectFilled(
                 vec2(0, 160 * cui.uiScale()),
@@ -30,30 +32,36 @@ function page.draw()
                 rgbm(0, 0, 0, 0.2)
         )
 
+        cui.setCursorY(250)
+
         for i, v in ipairs(settings.General) do
-                cui.setCursorY(100 + 125 * i)
+                ui.setCursorX(ui.windowWidth() * 0.375)
 
                 if v.widget == 1 then
                         local value = settings.General[v.key] and 1 or 0
-                        local newValue = drawSpinner(
+
+                        local newValue, changed, active, hovered = drawSpinner(
                                 v.label,
                                 v.label,
-                                ui.windowWidth() / 2 - 600 * cui.uiScale() / 2,
-                                ui.getCursorY(),
-                                620 * cui.uiScale(),
-                                74 * cui.uiScale(),
+                                ui.windowWidth() * 0.25,
+                                80 * cui.uiScale(),
                                 false,
                                 value,
-                                0,
-                                1,
-                                1,
-                                1,
-                                0,
-                                settings.General[v.key] and "Enabled" or "Disabled",
-                                1,
-                                0,
-                                false,
-                                nil
+                                {
+                                        section = "SETTINGS",
+                                        id = v.label,
+                                        label = v.label,
+                                        min = v.min or 0,
+                                        max = v.max or 1,
+                                        step = 1,
+                                        shiftStep = 1,
+                                        multiplier = 1,
+                                        offset = 0,
+                                        format = settings.General[v.key] and "Enabled" or "Disabled",
+                                        unit = "%",
+                                        help = "",
+                                },
+                                true
                         )
 
                         settings.General[v.key] = newValue == 1 and true or false
@@ -61,22 +69,25 @@ function page.draw()
                         settings.General[v.key] = drawSpinner(
                                 v.label,
                                 v.label,
-                                ui.windowWidth() / 2 - 600 * cui.uiScale() / 2,
-                                ui.getCursorY(),
-                                620 * cui.uiScale(),
-                                74 * cui.uiScale(),
+                                ui.windowWidth() * 0.25,
+                                80 * cui.uiScale(),
                                 false,
                                 settings.General[v.key],
-                                v.min,
-                                v.max,
-                                1,
-                                1,
-                                0,
-                                v.format,
-                                1,
-                                0,
-                                false,
-                                nil
+                                {
+                                        section = "SETTINGS",
+                                        id = v.label,
+                                        label = v.label,
+                                        min = v.min or 0,
+                                        max = v.max or 1,
+                                        step = 1,
+                                        shiftStep = 1,
+                                        multiplier = 1,
+                                        offset = 0,
+                                        format = v.format,
+                                        unit = "%",
+                                        help = "",
+                                },
+                                true
                         )
                 end
         end

@@ -8,143 +8,132 @@ local vec2Temp2 = vec2()
 local itemActive = ""
 local itemHeld = ""
 
-local SpinnerButtonType = { Left = 0, Right = 1 }
-
-local spinnerButtonTimer = 0
-local spinnerButtonTime = 0
-
-local function drawSpinnerButton(direction, size, disabled)
-        style:pushSpinnerButtonStyle()
-
-        size = size / 2
-
-        local tmpPos = ui.getCursor()
-
-        local flags = ui.ButtonFlags.PressedOnClick
-        flags = disabled and flags + ui.ButtonFlags.Disabled or flags
-
-        local clicked = ui.button("##dummyButton" .. direction, size, flags)
-        local hovered = ui.itemHovered()
-        ui.setCursor(tmpPos)
-
-        local iconColor = hovered and rgbm.colors.red or rgbm.colors.white
-        iconColor = disabled and rgbm.colors.gray or iconColor
-        ui.icon(ui.Icons.Skip, size, iconColor, direction == SpinnerButtonType.Left and -size or size)
-
-        if clicked then
-                spinnerButtonTimer = os.clock() + 0.5
-                spinnerButtonTime = os.clock()
-        elseif spinnerButtonTimer < os.clock() and ui.itemActive() and ui.mouseDown(ui.MouseButton.Left) then
-                clicked = true
-                spinnerButtonTimer = (os.clock() - spinnerButtonTime) < 2.5 and os.clock() + 0.1 or os.clock() + 0.075
-        end
-
-        style:popSpinnerButtonStyle()
-
-        return clicked
-end
-
 local scrollDelayTimer = 0
 
-local function drawSlider(
-        id,
-        name,
-        xPos,
-        yPos,
-        width,
-        height,
-        locked,
-        value,
-        min,
-        max,
-        step,
-        shiftStep,
-        round,
-        format,
-        multiplier,
-        offset,
-        noScroll
-)
-        local _value = value
-        local value = (value - min) / step
-        local max = (max - min) / step
-        local changed = false
-        local xMax = xPos + width
-        local fontSize = math.floor(height * 0.38)
-        fontSize = (fontSize % 2 ~= 0) and fontSize + 1 or fontSize
+local function drawGrabber() end
 
-        ui.setCursorX(xPos)
-        ui.setCursorY(yPos)
+local function drawSlider(id, name, width, height, value, sliderParams, noScroll)
+        local p1 = ui.getCursor()
+        local p2 = p1 + vec2(width, height)
+
+        local min = sliderParams.min
+        local max = sliderParams.max
+        local step = sliderParams.step
+        local shiftStep = sliderParams.shiftStep
+        local format = sliderParams.format
+        local multiplier = sliderParams.multiplier
+        local offset = sliderParams.offset or 0
+        local unit = sliderParams.unit
+
+        local valueOriginal = value
+        local valueStep = (value - min) / step
+        local steps = (max - min) / step
+        local changed = false
+
+        local fontSize = height * 0.35
+        local barSize = height * 0.3
+        local grabberSize = math.max(width / (steps + 1), 35)
+
         cui.snapCursor()
         ui.dwriteTextAligned(
                 name:gsub("->            ", ""):gsub("             %?", ""),
                 fontSize,
-                ui.Alignment.Center,
-                ui.Alignment.Center,
-                vec2Temp1:set(width, height / 2),
+                ui.Alignment.Start,
+                ui.Alignment.Start,
+                vec2Temp1:set(width * 0.5, height),
                 false,
                 rgbm.colors.white
         )
 
-        ui.setCursorX(xPos)
-        ui.setCursorY(yPos)
-        ui.invisibleButton("invis" .. id, vec2Temp1:set(width, height))
+        ui.setCursorX(p1.x)
+        ui.setCursorY(p1.y + height - barSize)
+        ui.invisibleButton("slider" .. id, vec2Temp1:set(width, barSize))
+        local r1, r2 = ui.itemRect()
+        ui.drawRectFilled(r1, r2, rgbm.colors.black * 0.2, 5)
 
         local active = ui.itemActive() or (itemHeld == id and ui.mouseDown(ui.MouseButton.Left))
-        local sliderHovered = ui.mouseLocalPos() > vec2Temp1:set(xPos, yPos)
-                and ui.mouseLocalPos() <= vec2Temp2:set(xPos + width, yPos + height)
-        local sliderClicked = ui.mouseClicked(ui.MouseButton.Left) and not ui.itemHovered(ui.HoveredFlags.None)
-        local sliderScrolling = ui.itemHovered()
-                and ui.mouseWheel() ~= 0
-                and not noScroll
-                and scrollDelayTimer < os.clock()
+        local hovered = ui.mouseLocalPos() > p1 and ui.mouseLocalPos() <= p2
+        local scrolling = hovered and ui.mouseWheel() ~= 0 and not noScroll and scrollDelayTimer < os.clock()
+        local dragging = active or (hovered and ui.mouseClicked(ui.MouseButton.Left))
 
-        if active or (sliderHovered and (sliderClicked or sliderScrolling)) then
-                if sliderScrolling then
-                        local valueChangeAmount = (ui.keyboardButtonDown(ui.KeyIndex.Shift) and shiftStep or 1)
-                        value = ui.mouseWheel() < 0 and (value - valueChangeAmount) or (value + valueChangeAmount)
-                else
-                        itemHeld = id
-                        value = (ui.mouseLocalPos().x - xPos) / (xMax - xPos) * max
-                end
+        if active then itemActive = id end
 
+        if scrolling then
+                local scrollChange = (ui.keyboardButtonDown(ui.KeyIndex.Shift) and shiftStep or 1)
+                valueStep = ui.mouseWheel() < 0 and (valueStep - scrollChange) or (valueStep + scrollChange)
+                scrollDelayTimer = os.clock() + settings.General.scrollDelayTimeMs * 0.001
+                changed = true
+        elseif dragging then
+                valueStep = ((ui.mouseLocalPos().x - grabberSize * 0.5 - r1.x) / (width - grabberSize)) * steps
+                itemHeld = id
                 changed = true
         end
 
-        if sliderScrolling then scrollDelayTimer = os.clock() + settings.General.scrollDelayTimeMs / 1000 end
+        valueStep = math.round(math.clamp(valueStep, 0, steps))
 
-        value = math.round(math.clamp(value, 0, max))
+        local sliderFill = r1.x + ((valueStep / steps) * (width - grabberSize))
+        if sliderFill > r1.x then
+                ui.drawRectFilled(
+                        r1,
+                        vec2Temp1:set(sliderFill, r2.y),
+                        settings.Appearance.uiThemeColor2,
+                        5,
+                        ui.CornerFlags.Left
+                )
+        end
+        ui.drawRectFilledMultiColor(
+                vec2Temp1:set(sliderFill, r1.y),
+                vec2Temp2:set(r1.x, r2.y),
+                rgbm.colors.black * 0.25,
+                rgbm.colors.transparent,
+                rgbm.colors.transparent,
+                rgbm.colors.black * 0.25
+        )
+        ui.drawRectFilledMultiColor(
+                vec2Temp1:set(sliderFill, r1.y),
+                r2,
+                rgbm.colors.black * 0.25,
+                rgbm.colors.transparent,
+                rgbm.colors.transparent,
+                rgbm.colors.black * 0.25
+        )
 
         ui.drawRectFilled(
-                vec2Temp1:set(xPos, yPos + height),
-                vec2Temp2:set(xPos + ((value / max) * width), yPos + height * 1.083),
-                settings.Appearance.uiThemeColor2
+                vec2(sliderFill, r1.y - 5),
+                vec2(sliderFill + grabberSize, r2.y + 5),
+                rgbm.colors.black * 0.5,
+                5
         )
+        ui.drawRectFilled(
+                vec2(sliderFill + 1, r1.y - 3),
+                vec2(sliderFill + grabberSize - 1, r2.y + 3),
+                settings.Appearance.uiThemeColor2,
+                4
+        )
+        ui.setCursor(vec2(sliderFill, r2.y - barSize))
+        ui.icon(ui.Icons.Menu, vec2(grabberSize, barSize), rgbm.colors.black * 0.2, barSize)
 
-        value = value * step + min
+        local value = valueStep * step + min
 
-        if not sliderScrolling or value == _value then changed = false end
-
-        ui.setCursorX(xPos)
-        ui.setCursorY(yPos + height / 2)
+        ui.setCursor(p1)
         cui.snapCursor()
         ui.dwriteTextAligned(
-                string.format(format, value * multiplier + offset),
+                string.format(format, value * multiplier + offset, unit),
                 fontSize,
-                ui.Alignment.Center,
-                ui.Alignment.Center,
-                vec2Temp1:set(width, height / 2),
+                ui.Alignment.End,
+                ui.Alignment.Start,
+                vec2Temp1:set(width, height),
                 false,
-                rgbm.colors.black
+                rgbm.colors.white
         )
 
-        if ui.mouseDown(ui.MouseButton.Left) then changed = false end
-        if itemActive == id and ui.mouseReleased(ui.MouseButton.Left) then
+        if itemActive == id and not ui.mouseDown(ui.MouseButton.Left) then
                 changed = true
                 itemHeld = ""
                 itemActive = ""
         end
-        if active then itemActive = id end
+
+        if value == valueOriginal then changed = false end
 
         return value, changed, active
 end
@@ -152,44 +141,17 @@ end
 local hoveredId = nil
 local hoveredTimer = 0
 
-function drawSpinner(
-        id,
-        name,
-        xPos,
-        yPos,
-        width,
-        height,
-        locked,
-        value,
-        min,
-        max,
-        step,
-        shiftStep,
-        round,
-        format,
-        multiplier,
-        offset,
-        noScroll,
-        helpText
-)
-        local buttonSize = height / 2
+function drawSpinner(id, name, width, height, locked, value, sliderParams, noScroll)
+        local p1 = ui.getCursor()
+        local p2 = p1 + vec2(width, height)
         local value = value
         local changed = false
 
-        ui.setCursorX(xPos)
-        ui.setCursorY(yPos)
+        -- ui.drawRectFilled(p1, p2, rgbm.colors.aqua)
 
-        ui.drawRectFilled(
-                vec2Temp1:set(xPos + height, yPos),
-                vec2Temp2:set(xPos + width - height, yPos + buttonSize),
-                settings.Appearance.uiThemeColor1
-        )
+        local hovered = ui.mouseLocalPos() >= p1 and ui.mouseLocalPos() < p2 and not cui.modalDialogCallback
 
-        local hoveredHelp = ui.mouseLocalPos() >= vec2Temp1:set(xPos + height, yPos)
-                and ui.mouseLocalPos() < vec2Temp2:set(xPos + width - height, yPos + buttonSize)
-                and not cui.modalDialogCallback
-
-        if hoveredHelp and helpText and helpText ~= "NULL" and helpText ~= "" then
+        if hovered and sliderParams.helpText and sliderParams.helpText ~= "NULL" and sliderParams.helpText ~= "" then
                 if hoveredId ~= id then
                         hoveredTimer = os.clock() + 0.3
                         hoveredId = id
@@ -198,55 +160,16 @@ function drawSpinner(
                 if hoveredTimer < os.clock() then
                         ui.tooltip(vec2(10, 20) * cui.uiScale(), function()
                                 ui.pushTextWrapPosition(400 * cui.uiScale())
-                                helpText = helpText:gsub("\\n", "\n")
-                                ui.dwriteText(helpText, 20 * cui.uiScale())
+                                ui.dwriteText(sliderParams.helpText:gsub("\\n", "\n"), 20 * cui.uiScale())
                                 ui.popTextWrapPosition()
                         end)
                 end
         end
 
-        ui.drawRectFilled(
-                vec2Temp1:set(xPos + height, yPos + buttonSize),
-                vec2Temp2:set(xPos + width - height, yPos + height),
-                locked and settings.Appearance.uiThemeColor3 / 1.25 or settings.Appearance.uiThemeColor3
-        )
+        ui.setCursorX(p1.x + width * 0.04)
+        ui.setCursorY(p1.y + height * 0.1)
+        local _value, _changed, active = drawSlider(id, name, width * 0.92, height * 0.7, value, sliderParams, noScroll)
 
-        local hovered = ui.mouseLocalPos() >= vec2Temp1:set(xPos + buttonSize, yPos)
-                and ui.mouseLocalPos() < vec2Temp2:set(xPos + width - buttonSize, yPos + height)
-                and not cui.modalDialogCallback
-
-        ui.setCursorX(xPos + buttonSize)
-        ui.setCursorY(yPos + buttonSize)
-        if hovered and not locked then
-                if drawSpinnerButton(SpinnerButtonType.Left, vec2Temp1:set(height, height), value <= min) then
-                        if value ~= min then
-                                value = value - step
-                                changed = true
-                        end
-                end
-        else
-                ui.dummy(vec2Temp1:set(height, height))
-        end
-
-        local _value, _changed, active = drawSlider(
-                id,
-                name,
-                xPos + height,
-                yPos,
-                width - (height * 2),
-                height,
-                locked,
-                value,
-                min,
-                max,
-                step,
-                shiftStep,
-                round,
-                format,
-                multiplier,
-                offset,
-                noScroll
-        )
         if _changed then
                 value = _value
                 changed = _changed
@@ -254,19 +177,7 @@ function drawSpinner(
                 value = _value
         end
 
-        ui.setCursorX(xPos + width - height)
-        ui.setCursorY(yPos + buttonSize)
-
-        if hovered and not locked then
-                if drawSpinnerButton(SpinnerButtonType.Right, vec2Temp1:set(height, height), value >= max) then
-                        if value ~= max then
-                                value = value + step
-                                changed = true
-                        end
-                end
-        else
-                ui.dummy(vec2Temp1:set(height, height))
-        end
+        ui.setCursor(p2)
 
         return value, changed, active, hovered
 end

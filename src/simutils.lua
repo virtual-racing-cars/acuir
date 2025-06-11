@@ -89,7 +89,7 @@ end
 function simutils.sessionTimeLeftString()
         local leadCar = simutils.session().leaderboard[0]
 
-        if sim.timeToSessionStart >= 1e100 then -- Offline race
+        if not sim.isOnlineRace then -- Offline race
                 return "Click Drive To Start"
         elseif sim.timeToSessionStart > 5000 then
                 return simutils.timeToString(math.max(sim.timeToSessionStart - 5000, 0), "Countdown -")

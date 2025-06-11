@@ -32,15 +32,6 @@ function SettingsWindow(dt)
         cui.pushWindowFitted("settings_fitted_window")
         topSubBar()
 
-        ui.dwriteTextAligned(
-                " / Settings",
-                50 * cui.uiScale(),
-                ui.Alignment.Start,
-                ui.Alignment.Center,
-                vec2(600 * cui.uiScale(), 100 * cui.uiScale()),
-                false
-        )
-
         pages.manager:draw()
 
         cui.popWindow(false)

@@ -29,17 +29,16 @@ local settingsPages = {
                 enabled = false,
                 func = function() pages:goToSettingsAppearance() end,
         },
-        -- {
-        -- 	label = "AI",
-        -- 	icon = ui.Icons.AppWindow,
-        -- 	enabled = false,
-        -- 	func = function()
-        -- 		pages:goToSettingsAi()
-        -- 	end,
-        -- },
+        {
+                label = "AI",
+                icon = ui.Icons.AppWindow,
+                enabled = false,
+                func = function() pages:goToSettingsAi() end,
+        },
 }
 
 function page.draw()
+        topSubBar("")
         cui.pushWindowFitted("settings_page_window")
 
         local rowWidth = 1924 * cui.uiScale()
@@ -78,7 +77,7 @@ function page.draw()
                 {
                         label = "BACK",
                         enabled = true,
-                        func = function() pages:undo() end,
+                        func = function() pages:goToParent() end,
                 },
         })
 

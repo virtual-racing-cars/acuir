@@ -14,8 +14,8 @@ local bottomBarButtons = {
 }
 
 function page.draw()
+        topSubBar("Controls")
         cui.pushWindowFitted("settings_controls_main_window")
-        topSubBar("/ Settings / Controls")
 
         cui.pushWindow(
                 "settings_controls_window",
