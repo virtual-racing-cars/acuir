@@ -30,7 +30,7 @@ local function drawSlider(id, name, width, height, value, sliderParams, noScroll
         local steps = (max - min) / step
         local changed = false
 
-        local fontSize = height * 0.35
+        local fontSize = height * 0.32
         local barSize = height * 0.3
         local grabberSize = math.max(width / (steps + 1), 35)
 
@@ -107,11 +107,11 @@ local function drawSlider(id, name, width, height, value, sliderParams, noScroll
         ui.drawRectFilled(
                 vec2(sliderFill + 1, r1.y - 3),
                 vec2(sliderFill + grabberSize - 1, r2.y + 3),
-                settings.Appearance.uiThemeColor2,
+                active and settings.Appearance.uiThemeColor2 or settings.Appearance.uiThemeColor3 * 0.8,
                 4
         )
         ui.setCursor(vec2(sliderFill, r2.y - barSize))
-        ui.icon(ui.Icons.Menu, vec2(grabberSize, barSize), rgbm.colors.black * 0.2, barSize)
+        ui.icon(ui.Icons.Menu, vec2(grabberSize, barSize), rgbm.colors.black * 0.3, barSize)
 
         local value = valueStep * step + min
 

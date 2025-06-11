@@ -48,32 +48,29 @@ function setupTabBar(tabs)
         return currentApp + 1
 end
 
-local function linkButton(name, size, linked)
-        ui.pushStyleColor(ui.StyleColor.Button, rgbm(0, 0, 0, 0))
-        ui.pushStyleColor(ui.StyleColor.ButtonHovered, rgbm(0, 0, 0, 0))
-        ui.pushStyleColor(ui.StyleColor.ButtonActive, rgbm(0, 0, 0, 0))
+local spinnerWidth = 700 * cui.uiScale()
+local spinnerHeight = 90 * cui.uiScale()
 
-        local tmpPos = ui.getCursor()
-        local clicked = ui.button("##linkButton" .. name, size, ui.ButtonFlags.PressedOnClick)
+local function linkButton(name, size, linked)
+        local clicked = ui.invisibleButton(
+                "##linkButton" .. name,
+                vec2(((ui.windowWidth() - spinnerWidth) - 40 * cui.uiScale()) - ui.getCursorX(), size)
+        )
+        local r1, r2 = ui.itemRect()
         local hovered = ui.itemHovered() and not cui.modalDialogCallback
-        ui.setCursor(tmpPos)
+        ui.drawRectFilled(r1, r2, settings.Appearance.uiThemeColor1)
 
         ui.beginRotation()
-        ui.icon(
+        ui.addIcon(
                 linked and ui.Icons.Link or ui.Icons.LinkBroken,
-                size,
-                hovered and rgbm.colors.red or rgbm.colors.white,
-                size
+                vec2(size, size) * 0.4,
+                0.5,
+                hovered and rgbm.colors.red or rgbm.colors.white
         )
         ui.endRotation(0)
 
-        ui.popStyleColor(3)
-
         return clicked
 end
-
-local spinnerWidth = 700 * cui.uiScale()
-local spinnerHeight = 90 * cui.uiScale()
 
 local function drawSetupSpinner(si)
         if si.child or si.repair then return end
@@ -106,15 +103,14 @@ local function drawSetupSpinner(si)
         --         rgbm.colors.black,
         --         3
         -- )
+
         local value, changed, active, hovered =
                 drawSpinner(si.id, si.name, spinnerWidth, spinnerHeight, si.fixed, si.value, si, false)
 
         if si.mirrorAvailable and not si.fixed then
-                ui.setCursorX(ui.windowWidth() / 2 - spinnerHeight / 3)
-                ui.setCursorY(yPos + spinnerHeight * 0.15)
-                if linkButton(si.name, vec2(spinnerHeight * 0.75, spinnerHeight * 0.75), si.mirrored) then
-                        si.mirrored = not si.mirrored
-                end
+                ui.setCursorX(xPos + spinnerWidth)
+                ui.setCursorY(yPos)
+                if linkButton(si.name, spinnerHeight, si.mirrored) then si.mirrored = not si.mirrored end
         end
 
         if hovered and ui.mouseClicked(ui.MouseButton.Right) then

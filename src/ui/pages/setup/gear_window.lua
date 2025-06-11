@@ -4,9 +4,7 @@ local units = require("units")
 local car = ac.getCar(0)
 local uis = ac.getUI()
 
-local function getGearMaxSpeed(gear)
-        return math.round(units:speed(ac.getCarMaxSpeedWithGear(0, gear)))
-end
+local function getGearMaxSpeed(gear) return math.round(units:speed(ac.getCarMaxSpeedWithGear(0, gear))) end
 
 local maxSpeedWithGear = {
         [0] = 0,

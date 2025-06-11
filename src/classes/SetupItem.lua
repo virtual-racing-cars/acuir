@@ -108,7 +108,7 @@ function SetupItem:getValue()
         if self.independentSpinner then return end
 
         if self.mirrored then
-                self.value = ac.getSetupSpinnerValue(self.idMirror)
+                self:setValue(ac.getSetupSpinnerValue(self.idMirror))
         else
                 self.value = ac.getSetupSpinnerValue(self.id)
         end
