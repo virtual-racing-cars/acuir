@@ -22,7 +22,7 @@ function app.configDir() return ac.getFolder(ac.FolderID.ScriptConfig) end
 app.state = {
         appOpen = false,
         hasAppOpened = false,
-        setupTab = 1,
+        setupTab = 2,
         debug = appDebugMode,
 }
 

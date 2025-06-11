@@ -149,21 +149,27 @@ function drawSpinner(id, name, width, height, locked, value, sliderParams, noScr
 
         -- ui.drawRectFilled(p1, p2, rgbm.colors.aqua)
 
-        local hovered = ui.mouseLocalPos() >= p1 and ui.mouseLocalPos() < p2 and not cui.modalDialogCallback
+        local hovered = ui.mouseLocalPos() >= p1
+                and ui.mouseLocalPos() < vec2Temp1:set(p2.x, p1.y + height * 0.3)
+                and not cui.modalDialogCallback
 
-        if hovered and sliderParams.helpText and sliderParams.helpText ~= "NULL" and sliderParams.helpText ~= "" then
+        if hovered and sliderParams.help and sliderParams.help ~= "NULL" and sliderParams.help ~= "" then
                 if hoveredId ~= id then
-                        hoveredTimer = os.clock() + 0.3
+                        hoveredTimer = os.clock() + 0.4
                         hoveredId = id
                 end
 
                 if hoveredTimer < os.clock() then
                         ui.tooltip(vec2(10, 20) * cui.uiScale(), function()
+                                ui.drawRectFilled(0, ui.windowSize(), rgbm.colors.black)
                                 ui.pushTextWrapPosition(400 * cui.uiScale())
-                                ui.dwriteText(sliderParams.helpText:gsub("\\n", "\n"), 20 * cui.uiScale())
+                                cui.snapCursor()
+                                ui.dwriteText(sliderParams.help:gsub("\\n", "\n"), 20 * cui.uiScale())
                                 ui.popTextWrapPosition()
                         end)
                 end
+        elseif hoveredId == id then
+                hoveredId = nil
         end
 
         ui.setCursorX(p1.x + width * 0.04)

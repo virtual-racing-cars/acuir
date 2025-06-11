@@ -129,8 +129,8 @@ end
 
 local currentQuickPitPreset = 0
 function car_setup(sm)
-        spinnerWidth = 525 * cui.uiScale()
-        spinnerHeight = 95 * cui.uiScale()
+        spinnerWidth = 555 * cui.uiScale()
+        spinnerHeight = 100 * cui.uiScale()
 
         local changed = false
         local tab = sm.setupTabs[tonumber(app.state.setupTab)]
