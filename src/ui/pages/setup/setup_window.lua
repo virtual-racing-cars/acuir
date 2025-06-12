@@ -5,6 +5,8 @@ local audio = require("audio")
 local cui = require("ui.cui")
 local settings = require("settings")
 
+local vec2Temp1 = vec2()
+
 local currentApp = app.state.setupTab - 1
 local tabBarPosition = 0
 
@@ -52,10 +54,7 @@ local spinnerWidth = 700 * cui.uiScale()
 local spinnerHeight = 90 * cui.uiScale()
 
 local function linkButton(name, size, linked)
-        local clicked = ui.invisibleButton(
-                "##linkButton" .. name,
-                vec2(((ui.windowWidth() - spinnerWidth) - 40 * cui.uiScale()) - ui.getCursorX(), size)
-        )
+        local clicked = ui.invisibleButton("##linkButton" .. name, size)
         local r1, r2 = ui.itemRect()
         local hovered = ui.itemHovered() and not cui.modalDialogCallback
         ui.drawRectFilled(r1, r2, settings.Appearance.uiThemeColor1)
@@ -63,7 +62,7 @@ local function linkButton(name, size, linked)
         ui.beginRotation()
         ui.addIcon(
                 linked and ui.Icons.Link or ui.Icons.LinkBroken,
-                vec2(size, size) * 0.4,
+                size.y * 0.4,
                 0.5,
                 hovered and rgbm.colors.red or rgbm.colors.white
         )
@@ -84,7 +83,8 @@ local function drawSetupSpinner(si)
         }
 
         local xPos = positions[si.xPos]
-        local yPos = (si.yPos * 95 + 90) * cui.uiScale()
+        local yPos = (si.yPos * spinnerHeight / cui.uiScale()) * cui.uiScale()
+                + (ui.windowHeight() - spinnerHeight * 10) * 0.5
 
         if si.items then
                 if #si.items > 0 then si.format = si.items[si.value + 1] end
@@ -97,6 +97,45 @@ local function drawSetupSpinner(si)
                 vec2(xPos + spinnerWidth, yPos + spinnerHeight),
                 settings.Appearance.uiThemeColor1
         )
+
+        -- ui.drawRectFilledMultiColor(
+        --         vec2(xPos, yPos),
+        --         vec2(xPos + spinnerWidth, yPos + spinnerHeight * 0.7),
+        --         rgbm.colors.black * 0.2,
+        --         rgbm.colors.black * 0.2,
+        --         rgbm.colors.transparent,
+        --         rgbm.colors.transparent
+        -- )
+
+        if si.xPos < 0.5 then
+                ui.drawRectFilledMultiColor(
+                        vec2(xPos, yPos + spinnerHeight * 0),
+                        vec2(xPos + spinnerWidth, yPos + spinnerHeight),
+                        rgbm.colors.black * 0.2,
+                        rgbm.colors.transparent,
+                        rgbm.colors.transparent,
+                        rgbm.colors.black * 0.2
+                )
+        elseif si.xPos > 0.5 then
+                ui.drawRectFilledMultiColor(
+                        vec2(xPos, yPos + spinnerHeight * 0),
+                        vec2(xPos + spinnerWidth, yPos + spinnerHeight),
+                        rgbm.colors.transparent,
+                        rgbm.colors.black * 0.2,
+                        rgbm.colors.black * 0.2,
+                        rgbm.colors.transparent
+                )
+        else
+                ui.drawRectFilledMultiColor(
+                        vec2(xPos, yPos + spinnerHeight * 0),
+                        vec2(xPos + spinnerWidth, yPos + spinnerHeight),
+                        rgbm.colors.transparent,
+                        rgbm.colors.transparent,
+                        rgbm.colors.black * 0.2,
+                        rgbm.colors.black * 0.2
+                )
+        end
+
         -- ui.drawSimpleLine(
         --         vec2(xPos, yPos + spinnerHeight),
         --         vec2(xPos + spinnerWidth, yPos + spinnerHeight),
@@ -110,7 +149,18 @@ local function drawSetupSpinner(si)
         if si.mirrorAvailable and not si.fixed then
                 ui.setCursorX(xPos + spinnerWidth)
                 ui.setCursorY(yPos)
-                if linkButton(si.name, spinnerHeight, si.mirrored) then si.mirrored = not si.mirrored end
+                if
+                        linkButton(
+                                si.name,
+                                vec2Temp1:set(
+                                        ((ui.windowWidth() - spinnerWidth) - 40 * cui.uiScale()) - ui.getCursorX(),
+                                        spinnerHeight
+                                ),
+                                si.mirrored
+                        )
+                then
+                        si.mirrored = not si.mirrored
+                end
         end
 
         if hovered and ui.mouseClicked(ui.MouseButton.Right) then

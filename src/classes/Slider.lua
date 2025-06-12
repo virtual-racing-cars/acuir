@@ -34,13 +34,17 @@ local function drawSlider(id, name, width, height, value, sliderParams, noScroll
         local barSize = height * 0.3
         local grabberSize = math.max(width / (steps + 1), 35)
 
+        local sliderNameText = name:gsub("->            ", ""):gsub("             %?", "")
+
+        if sliderParams.default and sliderParams.default ~= value then sliderNameText = sliderNameText .. "*" end
+
         cui.snapCursor()
         ui.dwriteTextAligned(
-                name:gsub("->            ", ""):gsub("             %?", ""),
+                sliderNameText,
                 fontSize,
                 ui.Alignment.Start,
                 ui.Alignment.Start,
-                vec2Temp1:set(width * 0.5, height),
+                vec2Temp1:set(width * 0.6, height),
                 false,
                 rgbm.colors.white
         )
@@ -52,7 +56,7 @@ local function drawSlider(id, name, width, height, value, sliderParams, noScroll
         ui.drawRectFilled(r1, r2, rgbm.colors.black * 0.2, 5)
 
         local active = ui.itemActive() or (itemHeld == id and ui.mouseDown(ui.MouseButton.Left))
-        local hovered = ui.mouseLocalPos() > p1 and ui.mouseLocalPos() <= p2
+        local hovered = ui.mouseLocalPos() > r1 and ui.mouseLocalPos() <= r2
         local scrolling = hovered and ui.mouseWheel() ~= 0 and not noScroll and scrollDelayTimer < os.clock()
         local dragging = active or (hovered and ui.mouseClicked(ui.MouseButton.Left))
 
@@ -150,10 +154,13 @@ function drawSpinner(id, name, width, height, locked, value, sliderParams, noScr
         -- ui.drawRectFilled(p1, p2, rgbm.colors.aqua)
 
         local hovered = ui.mouseLocalPos() >= p1
+                and ui.mouseLocalPos() < vec2Temp1:set(p2.x, p1.y + height)
+                and not cui.modalDialogCallback
+        local helpHovered = ui.mouseLocalPos() >= p1
                 and ui.mouseLocalPos() < vec2Temp1:set(p2.x, p1.y + height * 0.3)
                 and not cui.modalDialogCallback
 
-        if hovered and sliderParams.help and sliderParams.help ~= "NULL" and sliderParams.help ~= "" then
+        if helpHovered and sliderParams.help and sliderParams.help ~= "NULL" and sliderParams.help ~= "" then
                 if hoveredId ~= id then
                         hoveredTimer = os.clock() + 0.4
                         hoveredId = id
@@ -165,6 +172,18 @@ function drawSpinner(id, name, width, height, locked, value, sliderParams, noScr
                                 ui.pushTextWrapPosition(400 * cui.uiScale())
                                 cui.snapCursor()
                                 ui.dwriteText(sliderParams.help:gsub("\\n", "\n"), 20 * cui.uiScale())
+
+                                if sliderParams.default and sliderParams.default ~= value then
+                                        ui.newLine()
+                                        ui.dwriteText(
+                                                string.format(
+                                                        "Default: %.2f. Right click to reset.",
+                                                        sliderParams.default * sliderParams.multiplier
+                                                ),
+                                                20 * cui.uiScale()
+                                        )
+                                end
+
                                 ui.popTextWrapPosition()
                         end)
                 end

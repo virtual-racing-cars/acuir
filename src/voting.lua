@@ -21,6 +21,12 @@ voteYesButton:onPressed(function()
                 return
         end
 
+        local voteTypeString = tostring(voteDetails.type)
+
+        if not ac.canCastVote(voteTypeString) then
+                ac.log("Can't cast %s vote, %.0f" % { voteTypeString, ac.timeToNextVote(voteTypeString) })
+        end
+
         if ac.castVote(tostring(voteDetails.type), true, voteDetails.targetIndex) then
                 ac.log("Voted YES")
         else
@@ -40,6 +46,12 @@ voteNoButton:onPressed(function()
         elseif voteDetails.type == "unknown" then
                 ac.log("Can't cast vote, unknown")
                 return
+        end
+
+        local voteTypeString = tostring(voteDetails.type)
+
+        if not ac.canCastVote(voteTypeString) then
+                ac.log("Can't cast %s vote, %.0f" % { voteTypeString, ac.timeToNextVote(voteTypeString) })
         end
 
         if ac.castVote(tostring(voteDetails.type), false, voteDetails.targetIndex) then
