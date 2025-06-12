@@ -1,0 +1,16 @@
+# ACUIR Changelog
+
+## 0.9.0.8
+
+Features:
+
+Fixes:
+- Improved the look of the setup slider background
+- Removed unused modules imports
+- All non-race sessions now grab the bestLapTimeMs from the StateSession table, rather than the StateCar table. Previously only Qualify sessions did so.
+- Leaving the Settings menu will return you to the same Setup menu page you were on before entering Settings. Previously it just set you to the empty screen.
+
+Bugfixes:
+
+- Removed lua debug visibility in Settings
+- JOY indexes not present in controls.ini no longer cause ACUIR to crash
