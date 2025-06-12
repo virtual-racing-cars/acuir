@@ -9,7 +9,7 @@ local bottomBarButtons = {
         {
                 label = "BACK",
                 enabled = true,
-                func = function() pages:goToSettings() end,
+                func = function() pages:undo() end,
         },
 }
 
