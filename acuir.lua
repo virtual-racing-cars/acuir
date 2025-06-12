@@ -17,10 +17,12 @@ local callback = require("callback")
 local camera = require("camera")
 local carSetup = require("car_setup")
 local controls = require("controls")
+local cui = require("src.ui.cui")
 local pitstop = require("pitstop")
 local race = require("race")
 local settings = require("settings")
 local voting = require("voting")
+local sim = ac.getSim()
 
 controls:initialize()
 
@@ -31,8 +33,6 @@ function script.update(dt)
         acc:step()
 
         if not app.state.appOpen then return end
-
-        -- ac.blockEscapeButton()
 
         voting:step()
         camera:step()
@@ -45,8 +45,6 @@ function script.update(dt)
                 if callback.sim() then callback.sim = nil end
         end
 end
-
-function script.pause() end
 
 -- ---Similar to `ui.invisibleButton()`, but this one can be activated similar to text input and if it is active, will monitor keyboard state.
 -- ---@param id string? @Default value: `'nil'`.

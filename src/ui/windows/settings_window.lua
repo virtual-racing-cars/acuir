@@ -16,6 +16,9 @@ function SettingsWindow(dt)
                         + ui.WindowFlags.NoInputs
                         + ui.WindowFlags.NoMouseInputs
                         + ui.WindowFlags.NoFocusOnAppearing
+                app.state.blockEscapeButton = true
+        else
+                app.state.blockEscapeButton = false
         end
 
         updateCommon()

@@ -1,8 +1,11 @@
 # ACUIR Changelog
 
-## 0.9.0.8
+## 0.9.0.9
 
-Features:
+Fixes:
+- Escape key no longer unpauses AC when a dialog popup is present.
+
+## 0.9.0.8
 
 Fixes:
 - Improved the look of the setup slider background

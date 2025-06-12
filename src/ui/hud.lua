@@ -11,13 +11,22 @@ local pages = require("ui.pages.pages")
 local hudModes = {
         game = function(dt) pages:setParentMainMenu() end,
         menu = function(dt)
+                if pages.manager.currentPageName and string.find(pages.manager.currentPageName, "Setting") then
+                        return SettingsWindow(dt)
+                end
+
                 ui.forceSimplifiedComposition()
                 pages:setParentMainMenu()
 
                 return MainMenuWindow(dt)
         end,
         pause = function(dt)
+                if pages.manager.currentPageName and string.find(pages.manager.currentPageName, "Setting") then
+                        return SettingsWindow(dt)
+                end
+
                 pages:setParentPauseMenu()
+
                 return PauseMenuWindow()
         end,
         results = function(dt)
@@ -42,11 +51,6 @@ ui.onExclusiveHUD(function(mode)
                         local dt = ac.getScriptDeltaT()
 
                         audio:driver(dt)
-
-                        if pages.manager.currentPageName and string.find(pages.manager.currentPageName, "Setting") then
-                                SettingsWindow(dt)
-                                return "debug"
-                        end
 
                         return hudMode(dt)
                 end

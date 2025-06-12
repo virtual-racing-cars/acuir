@@ -24,6 +24,7 @@ app.state = {
         hasAppOpened = false,
         setupTab = 2,
         debug = appDebugMode,
+        blockEscapeButton = false,
 }
 
 local proxy = {}

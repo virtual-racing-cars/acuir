@@ -37,6 +37,11 @@ function accontrol:step()
 
         local redirectVM = (sim.isInMainMenu and ac.isWindowOpen("main")) or sim.isPaused
         ac.redirectVirtualMirror(redirectVM)
+
+        if app.state.blockEscapeButton and app.state.appOpen and not sim.isPaused then
+                ac.tryToPause(true)
+                app.state.blockEscapeButton = false
+        end
 end
 
 return accontrol
