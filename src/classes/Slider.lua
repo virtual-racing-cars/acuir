@@ -54,7 +54,7 @@ local function drawSlider(id, name, width, height, value, sliderParams, noScroll
         ui.drawRectFilled(r1, r2, rgbm.colors.black * 0.2, 5)
 
         local active = ui.itemActive() or (itemHeld == id and ui.mouseDown(ui.MouseButton.Left))
-        local hovered = ui.mouseLocalPos() > r1 and ui.mouseLocalPos() <= r2
+        local hovered = ui.rectHovered(r1, r2)
         local scrolling = hovered and ui.mouseWheel() ~= 0 and not noScroll and scrollDelayTimer < os.clock()
         local dragging = active or (hovered and ui.mouseClicked(ui.MouseButton.Left))
 
@@ -151,11 +151,9 @@ function drawSpinner(id, name, width, height, locked, value, sliderParams, noScr
 
         -- ui.drawRectFilled(p1, p2, rgbm.colors.aqua)
 
-        local hovered = ui.mouseLocalPos() >= p1
-                and ui.mouseLocalPos() < vec2Temp1:set(p2.x, p1.y + height)
-                and not cui.modalDialogCallback
-        local helpHovered = ui.mouseLocalPos() >= p1
-                and ui.mouseLocalPos() < vec2Temp1:set(p2.x, p1.y + height * 0.3)
+        local hovered = ui.rectHovered(p1, vec2Temp1:set(p2.x, p1.y + height)) and not cui.modalDialogCallback
+        local helpHovered = hovered
+                and ui.rectHovered(p1, vec2Temp1:set(p2.x, p1.y + height * 0.3))
                 and not cui.modalDialogCallback
 
         if helpHovered and sliderParams.help and sliderParams.help ~= "NULL" and sliderParams.help ~= "" then
