@@ -16,10 +16,13 @@ local app = require("app")
 local callback = require("callback")
 local camera = require("camera")
 local carSetup = require("car_setup")
+local controls = require("controls")
 local pitstop = require("pitstop")
 local race = require("race")
 local settings = require("settings")
 local voting = require("voting")
+
+controls:initialize()
 
 app.state.appOpen = settings.General.autoStart
 app.state.hasAppOpened = false

@@ -78,7 +78,7 @@ local function drawSetupSpinner(si)
         si:run(true)
 
         local positions = {
-                [0] = 40,
+                [0] = 40 * cui.uiScale(),
                 [0.5] = ui.windowWidth() / 2 - spinnerWidth / 2,
                 [1] = (ui.windowWidth() - spinnerWidth) - 40 * cui.uiScale(),
         }

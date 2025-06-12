@@ -59,8 +59,12 @@ function MappedConfig:set(section, key, value, triggerControlReload, hexFormat)
 end
 
 function MappedConfig:get(section, key)
+        if not self.data[section] then
+                self.data[section] = {}
+                self.data[section][key] = self.ini:get(section, key, -1)
+        end
+
         local value = self.data[section][key]
-        if value ~= self.ini:get(section, key, -1) then self.ini:setAndSave(section, key, value) end
 
         return type(value) == "boolean" and (value and 1 or 0) or value
 end

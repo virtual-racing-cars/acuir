@@ -278,7 +278,7 @@ function page.draw()
                                 vec2(ui.windowWidth(), genericButtonHeight)
                         )
 
-                        local driveButtonHeight = 80
+                        local driveButtonHeight = 80 * cui.uiScale()
 
                         ui.setCursorX(driveButtonHeight)
                         cui.setCursorY(70)
@@ -316,7 +316,7 @@ function page.draw()
                                 end
                         end
 
-                        if not ac.canCastVote() then
+                        if not ac.canCastVote() and sim.isOnlineRace then
                                 ui.setCursorX(0)
                                 ui.setCursorY(ui.windowHeight() - 36 * cui.uiScale())
                                 ui.dwriteTextAligned(

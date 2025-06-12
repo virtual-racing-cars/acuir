@@ -11,15 +11,15 @@ local ControlButton = class("ControlButton")
 
 local inputModeStringKeys = {
         "BUTTON",
-        "BUTTON",
+        "XBOXBUTTON",
         "KEY",
 }
 
 local function buttonString(button, buttonMod)
-        if button == -1 then return "" end
-        if buttonMod == -1 then return string.format("Button %s", button) end
+        if button == 0 then return "" end
+        if buttonMod == 0 then return string.format("Button %s", button) end
 
-        return string.format("Button %s + Button %s", button, buttonMod)
+        return string.format("Button %s + Button %s", buttonMod, button)
 end
 
 local function gamepadString(button, buttonMod)
@@ -42,6 +42,8 @@ function ControlButton:initialize(bind, defaults)
         self._button = ac.ControlButton(self.bind, self.defaults)
         self.listenerButton = -1
         self.listenerModificator = -1
+        self.listenerController = -1
+        self.listenerControllerModificator = -1
 end
 
 function ControlButton:disabled() return self._button:disabled() end
@@ -54,7 +56,7 @@ function ControlButton:boundToController()
         local buttonMod = controlsINI:get(self.bind, "BUTTON_MODIFICATOR", -1)
 
         if con >= 0 then
-                return controllers[con].CON, buttonString(button, buttonMod)
+                return controllers[con].CON, buttonString(button + 1, buttonMod + 1)
         else
                 return "", "Click to Assign"
         end
@@ -62,10 +64,9 @@ end
 
 function ControlButton:boundToGamepad()
         local button = controlsINI:get(self.bind, "XBOXBUTTON", "")
-        local buttonMod = controlsINI:get(self.bind, "XBOXBUTTON_MODIFICATOR", "")
 
         if button and button ~= "-1" and button ~= "" then
-                return "Gamepad", gamepadString(gamepad.codeStringList[button], gamepad.codeStringList[buttonMod])
+                return "Gamepad", gamepadString(gamepad.codeStringList[button])
         else
                 return "", "Click to Assign"
         end
@@ -97,12 +98,20 @@ function ControlButton:listenControllerInputs()
 
         for con = 0, ac.getJoystickCount() - 1 do
                 for button = 0, ac.getJoystickButtonsCount(con) - 1 do
-                        if ac.isJoystickButtonPressed(con, button) and button ~= self.listenerButton then
-                                if self.listenerButton ~= -1 then
+                        if ac.isJoystickButtonPressed(con, button) then
+                                if
+                                        self.listenerButton ~= -1
+                                        and button ~= self.listenerButton
+                                        and button ~= self.listenerModificator
+                                then
                                         self.listenerModificator = self.listenerButton
+                                        self.listenerControllerModificator = self.listenerController
+
                                         self.listenerButton = button
-                                else
+                                        self.listenerController = con
+                                elseif self.listenerButton == -1 then
                                         self.listenerButton = button
+                                        self.listenerController = con
                                 end
 
                                 anyButtonDown = true
@@ -110,9 +119,7 @@ function ControlButton:listenControllerInputs()
                 end
         end
 
-        if not anyButtonDown then return true end
-
-        return (self.listenerModificator ~= -1)
+        if not anyButtonDown or self.listenerModificator ~= -1 then return true end
 end
 
 function ControlButton:listenGamepadInputs()
@@ -121,14 +128,7 @@ function ControlButton:listenGamepadInputs()
         for con = 0, 7 do
                 for buttonString, buttonID in pairs(ac.GamepadButton) do
                         if ac.isGamepadButtonPressed(con, buttonID) and buttonString ~= self.listenerButton then
-                                if self.listenerButton ~= -1 then
-                                        self.listenerModificator = self.listenerButton
-                                        self.listenerButton = buttonString
-                                else
-                                        self.listenerButton = buttonString
-                                end
-
-                                ac.log(con, buttonString)
+                                self.listenerButton = gamepad.indexCodeList[ac.GamepadButton[buttonString]]
 
                                 anyButtonDown = true
                         end
@@ -137,7 +137,7 @@ function ControlButton:listenGamepadInputs()
 
         if not anyButtonDown then return true end
 
-        return (self.listenerModificator ~= -1)
+        return (self.listenerButton ~= -1)
 end
 
 function ControlButton:listenKeyboardInputs()
@@ -171,7 +171,7 @@ end
 
 ControlButton.listeners = {
         ControlButton.listenControllerInputs,
-        ControlButton.listenControllerInputs,
+        ControlButton.listenGamepadInputs,
         ControlButton.listenKeyboardInputs,
 }
 
@@ -186,7 +186,7 @@ function ControlButton:assignBind(inputMode)
 end
 
 function ControlButton:clearAssign()
-        self.listenerButton, self.listenerModificator = -1, -1
+        self.listenerButton, self.listenerModificator, self.listenerController = -1, -1, -1
 end
 
 function ControlButton:saveBind(inputMode)
@@ -199,9 +199,15 @@ function ControlButton:saveBind(inputMode)
                                 inputModeStringKeys[inputMode] .. "_MODIFICATOR",
                                 self.listenerModificator
                         )
-                else
+
+                        if inputMode == 1 then
+                                controlsINI:setAndSave(self.bind, "JOY_MODIFICATOR", self.listenerControllerModificator)
+                        end
+                elseif inputMode ~= 2 then
                         controlsINI:setAndSave(self.bind, inputModeStringKeys[inputMode] .. "_MODIFICATOR", -1)
                 end
+
+                if inputMode == 1 then controlsINI:setAndSave(self.bind, "JOY", self.listenerController) end
 
                 self:clearAssign()
                 ac.reloadControlSettings()
@@ -213,6 +219,14 @@ end
 
 function ControlButton:unbind(inputMode)
         controlsINI:setAndSave(self.bind, inputModeStringKeys[inputMode], -1)
+
+        if inputMode == 1 then
+                controlsINI:setAndSave(self.bind, "JOY", -1)
+                controlsINI:setAndSave(self.bind, "JOY_MODIFICATOR", -1)
+        elseif inputMode == 2 then
+                return
+        end
+
         controlsINI:setAndSave(self.bind, inputModeStringKeys[inputMode] .. "_MODIFICATOR", -1)
 end
 

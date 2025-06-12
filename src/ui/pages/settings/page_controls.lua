@@ -1,9 +1,10 @@
 local page = {}
 
-local bindindWindow = require("ui.pages.settings.binding_window")
+local bindindWindow = require("ui.pages.settings.controls.bindings")
 local cui = require("ui.cui")
 local pages = require("ui.pages.pages")
 local settings = require("settings")
+local tweaksWindow = require("ui.pages.settings.controls.tweaks")
 
 local bottomBarButtons = {
         {
@@ -27,6 +28,7 @@ function page.draw()
         )
 
         bindindWindow:draw()
+        tweaksWindow:draw()
 
         cui.popWindow()
 

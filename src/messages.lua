@@ -74,8 +74,7 @@ ac.onChatMessage(function(message, senderCarIndex, senderSessionID)
         elseif senderCarIndex == -1 then
                 chatColor = rgbm.colors.orange
         else
-                local tags = ac.DriverTags(ac.getDriverName(senderCarIndex))
-                if tags.friend then chatColor = rgbm.colors.green end
+                if ac.DriverTags(ac.getDriverName(senderCarIndex)).friend then chatColor = rgbm.colors.green end
         end
 
         local msgBlocks = string.split(message, "\n")
