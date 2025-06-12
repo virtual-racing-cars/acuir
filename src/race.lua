@@ -162,7 +162,7 @@ function session:step()
                         end
                 end
 
-                car.bestLapTimeMs = sim.raceSessionType == ac.SessionType.Qualify and slot.bestLapTimeMs
+                car.bestLapTimeMs = sim.raceSessionType ~= ac.SessionType.Race and slot.bestLapTimeMs
                         or car.status.bestLapTimeMs
                 session.fastestLapTimeMs = updateBestTime(session.fastestLapTimeMs, car.bestLapTimeMs)
 
