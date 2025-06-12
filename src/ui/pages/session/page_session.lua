@@ -7,8 +7,6 @@ local uis = ac.getUI()
 local page = {}
 
 local cui = require("ui.cui")
-local race = require("race")
-local settings = require("settings")
 local simutils = require("simutils")
 local assistsINI = ac.INIConfig.load(ac.getFolder(ac.FolderID.Cfg) .. "\\assists.ini")
 local raceINI = ac.INIConfig.raceConfig()

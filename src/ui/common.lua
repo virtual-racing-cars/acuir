@@ -9,9 +9,7 @@ local pedalsWidget = require("ui.widgets.pedals")
 local replayWidget = require("ui.widgets.replay")
 local settings = require("settings")
 local simutils = require("simutils")
-local style = require("style")
 local tracesWidget = require("ui.widgets.traces")
-local sim = ac.getSim()
 
 local acLogo = ac.getFolder(ac.FolderID.Root) .. "\\launcher\\themes\\default\\graphics\\btn_AC_logo.png"
 local acLogoSize = ui.imageSize(acLogo) * cui.uiScale()

@@ -3,7 +3,6 @@ local CUI = {}
 local audio = require("audio")
 local callback = require("callback")
 local settings = require("settings")
-local simutils = require("simutils")
 local style = require("style")
 local sim = ac.getSim()
 local guiINI = ac.INIConfig.cspModule(ac.CSPModuleID.GUI)

@@ -1,8 +1,7 @@
 local cui = require("ui.cui")
-local settings = require("settings")
-local sim = ac.getSim()
 local laps = require("laps")
 local race = require("race")
+local settings = require("settings")
 local simutils = require("simutils")
 
 local function drawTimeIndicator(width, height, color)

@@ -1,5 +1,4 @@
 local configs = require("configs")
-local controls = require("controls")
 
 local gamepadAxisList = {
         [0] = "L2",

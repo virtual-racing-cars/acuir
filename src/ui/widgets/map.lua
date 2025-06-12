@@ -1,7 +1,6 @@
 local AISpline = require("ai_spline")
 local cui = require("ui.cui")
 local race = require("race")
-local settings = require("settings")
 local car = ac.getCar(0)
 local sim = ac.getSim()
 

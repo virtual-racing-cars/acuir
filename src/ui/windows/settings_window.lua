@@ -5,7 +5,6 @@ local cui = require("ui.cui")
 local pages = require("ui.pages.pages")
 local settings = require("settings")
 local style = require("style")
-local sim = ac.getSim()
 
 function SettingsWindow(dt)
         style:pushStyleMain()

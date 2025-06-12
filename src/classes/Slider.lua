@@ -1,6 +1,5 @@
 local cui = require("ui.cui")
 local settings = require("settings")
-local style = require("style")
 
 local vec2Temp1 = vec2()
 local vec2Temp2 = vec2()
@@ -14,7 +13,6 @@ local function drawGrabber() end
 
 local function drawSlider(id, name, width, height, value, sliderParams, noScroll)
         local p1 = ui.getCursor()
-        local p2 = p1 + vec2(width, height)
 
         local min = sliderParams.min
         local max = sliderParams.max
