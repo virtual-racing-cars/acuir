@@ -694,12 +694,7 @@ function CUI.inputTextBox(label, stringPrefix, stringInput, size)
 
         local tempCursor = ui.getCursor()
 
-        ui.pushStyleColor(ui.StyleColor.Button, settings.Appearance.uiThemeColor1)
-        ui.pushStyleColor(ui.StyleColor.ButtonHovered, settings.Appearance.uiThemeColor1)
-        ui.pushStyleColor(ui.StyleColor.ButtonActive, settings.Appearance.uiThemeColor1)
-        local clicked = ui.button("##" .. label, size, ui.ButtonFlags.None)
-        ui.popStyleColor(3)
-
+        local clicked = ui.invisibleButton("##textinput" .. label, size, ui.ButtonFlags.None)
         local r1, r2 = ui.itemRect()
         local hovered = ui.itemHovered()
         local id = ui.getLastID()

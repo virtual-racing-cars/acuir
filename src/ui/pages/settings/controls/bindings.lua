@@ -277,10 +277,14 @@ end
 local applicationControlsTabBar = TabBar()
 local appsTabBars = {}
 
+local settingsSearchInput = ""
+local settingsSearchActive = false
+
 function bindings:draw()
         cui.pushWindow("settings_button_bind_tabbar", 0, 0, ui.windowWidth() * 0.25, ui.windowHeight(), false)
         ui.setCursor(0)
         ui.drawRectFilled(vec2(0, 0), vec2(ui.windowWidth(), ui.windowHeight()), rgbm.colors.black * 0.25)
+
         local app = applicationControlsTabBar:draw(controls.tabs)
         cui.popWindow()
 
@@ -293,6 +297,39 @@ function bindings:draw()
                 false
         )
 
+        ui.setCursor(0)
+        ui.drawRectFilled(
+                0,
+                vec2(ui.windowWidth() * 0.4, ui.windowHeight() / 22 - 2 * cui.uiScale()),
+                rgbm.colors.black * 0.25
+        )
+
+        settingsSearchInput, settingsSearchActive = cui.inputText(
+                "##controlsSearcher",
+                "",
+                settingsSearchInput,
+                "",
+                vec2(ui.windowWidth() * 0.4, ui.windowHeight() / 22)
+        )
+
+        ui.setCursorX(ui.windowWidth() * 0.4 - 30 * cui.uiScale())
+        ui.setCursorY((ui.windowHeight() / 22) * 0.25)
+        ui.icon(ui.Icons.ZoomIn, (ui.windowHeight() / 22) * 0.5, rgbm.colors.gray)
+        ui.setCursorY(ui.windowHeight() / 22)
+
+        cui.setCursorX(10)
+        ui.setCursorY(0)
+        cui.snapCursor()
+        ui.dwriteTextAligned(
+                isempty(settingsSearchInput) and "Search controls..." or "",
+                math.floor(ui.windowHeight() / 22 * 0.55),
+                ui.Alignment.Start,
+                ui.Alignment.Center,
+                vec2(ui.windowWidth() * 0.75, ui.windowHeight() / 22),
+                false,
+                rgbm.colors.gray
+        )
+
         ui.setCursorY(0)
         ui.setCursorX(ui.windowWidth() * 0.4)
         cui.snapCursor()
@@ -301,7 +338,7 @@ function bindings:draw()
                 24 * cui.uiScale(),
                 ui.Alignment.Center,
                 ui.Alignment.Center,
-                vec2(ui.windowWidth() * 0.2, 50 * cui.uiScale())
+                vec2(ui.windowWidth() * 0.2, ui.windowHeight() / 22)
         )
         ui.sameLine()
         cui.snapCursor()
@@ -310,7 +347,7 @@ function bindings:draw()
                 24 * cui.uiScale(),
                 ui.Alignment.Center,
                 ui.Alignment.Center,
-                vec2(ui.windowWidth() * 0.2, 50 * cui.uiScale())
+                vec2(ui.windowWidth() * 0.2, ui.windowHeight() / 22)
         )
         ui.sameLine()
         cui.snapCursor()
@@ -319,7 +356,7 @@ function bindings:draw()
                 24 * cui.uiScale(),
                 ui.Alignment.Center,
                 ui.Alignment.Center,
-                vec2(ui.windowWidth() * 0.2, 50 * cui.uiScale())
+                vec2(ui.windowWidth() * 0.2, ui.windowHeight() / 22)
         )
 
         cui.pushWindow(
@@ -335,28 +372,43 @@ function bindings:draw()
 
         if not appsTabBars[app.name] then appsTabBars[app.name] = TabBar() end
 
-        ui.setCursor(0)
+        ui.setCursorX(0)
+        cui.setCursorY(15)
+
         for _, tab in ipairs(app.tabs) do
                 ui.setCursorX(0)
-                ui.drawRectFilled(
-                        ui.getCursor(),
-                        ui.getCursor() + vec2(ui.windowWidth(), 50 * cui.uiScale()),
-                        rgbm.colors.black * 0.25
-                )
 
-                cui.setCursorX(20)
-                cui.snapCursor()
-                ui.dwriteTextAligned(
-                        string.upper(tab.name),
-                        24 * cui.uiScale(),
-                        ui.Alignment.Start,
-                        ui.Alignment.Center,
-                        vec2(ui.windowWidth(), 50 * cui.uiScale())
-                )
+                if isempty(settingsSearchInput) then
+                        ui.drawRectFilled(
+                                ui.getCursor(),
+                                ui.getCursor() + vec2(ui.windowWidth(), ui.windowHeight() / 22),
+                                rgbm.colors.black * 0.25
+                        )
+
+                        cui.setCursorX(20)
+                        cui.snapCursor()
+                        ui.dwriteTextAligned(
+                                string.upper(tab.name),
+                                24 * cui.uiScale(),
+                                ui.Alignment.Start,
+                                ui.Alignment.Center,
+                                vec2(ui.windowWidth(), ui.windowHeight() / 22)
+                        )
+                end
 
                 for _, controlBinding in pairs(tab.content) do
-                        buttonBinder(controlBinding)
-                        ui.newLine()
+                        local startIndex, endIndex = string.find(
+                                string.upper(controlBinding.name),
+                                string.upper(settingsSearchInput),
+                                1,
+                                true
+                        )
+
+                        if settingsSearchInput == "" or startIndex or endIndex then
+                                buttonBinder(controlBinding)
+
+                                ui.newLine()
+                        end
                 end
         end
 
