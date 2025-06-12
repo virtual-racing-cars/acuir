@@ -56,7 +56,11 @@ function ControlButton:boundToController()
         local buttonMod = controlsINI:get(self.bind, "BUTTON_MODIFICATOR", -1)
 
         if con >= 0 then
-                return controllers[con].CON, buttonString(button + 1, buttonMod + 1)
+                local controllerString = "Joy %s" % con
+
+                if controllers[con] then controllerString = controllers[con].CON end
+
+                return controllerString, buttonString(button + 1, buttonMod + 1)
         else
                 return "", "Click to Assign"
         end

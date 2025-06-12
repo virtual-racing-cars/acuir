@@ -47,3 +47,10 @@ function script.update(dt)
 end
 
 function script.pause() end
+
+-- ---Similar to `ui.invisibleButton()`, but this one can be activated similar to text input and if it is active, will monitor keyboard state.
+-- ---@param id string? @Default value: `'nil'`.
+-- ---@param size vec2? @Default value: `vec2(0, 0)`.
+-- ---@return ui.CapturedKeyboard?
+-- ---@return boolean @Set to `true` if area was just activated.
+-- function ui.interactiveArea(id, size) end
