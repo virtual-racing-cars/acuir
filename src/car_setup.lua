@@ -71,7 +71,10 @@ function setup:load()
         end
 end
 
-ac.onSetupsListRefresh(function() setup:load() end)
+ac.onFolderChanged(setupsDir, "{?.ini}", true, function(files)
+        ac.refreshSetups()
+        setup:load()
+end)
 
 setup:load()
 
