@@ -3,16 +3,13 @@
 *Ctrl+Shift+F5 to toggle UI*
 ### 0.9.1.7
 
-Fixes:
-- Fixing a setup slider overlap edge case
-
-### 0.9.1.1
-
 Features:
 - Larger font size for sliders
 
 Fixes:
+- Better layout for View Settings
 - Setups list now reacts properly to changes made in the setup directory.
+- Fixing a setup slider overlap edge case
 
 ## 0.9.1.0
 

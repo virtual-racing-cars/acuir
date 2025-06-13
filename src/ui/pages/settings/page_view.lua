@@ -4,6 +4,7 @@ local cui = require("ui.cui")
 local pages = require("ui.pages.pages")
 local settings = require("settings")
 local sim = ac.getSim()
+local firstPersonCameraFOV = sim.firstPersonCameraFOV
 
 local bottomBarButtons = {
         {
@@ -12,7 +13,7 @@ local bottomBarButtons = {
                 func = function() pages:undo() end,
         },
         {
-                label = "RESET",
+                label = "RESET TO DEFAULT",
                 enabled = true,
                 func = function()
                         ac.setOnboardCameraParams(0, ac.getOnboardCameraDefaultParams(0), false)
@@ -20,9 +21,20 @@ local bottomBarButtons = {
                 end,
         },
         {
+                label = "RESET",
+                enabled = false,
+                func = function()
+                        ac.setOnboardCameraParams(0, ac.getOnboardCameraDefaultParams(0), false)
+                        ac.setFirstPersonCameraFOV(firstPersonCameraFOV)
+                end,
+        },
+        {
                 label = "SAVE",
                 enabled = true,
-                func = function() ac.setOnboardCameraParams(0, ac.getOnboardCameraParams(0), true) end,
+                func = function()
+                        firstPersonCameraFOV = sim.firstPersonCameraFOV
+                        ac.setOnboardCameraParams(0, ac.getOnboardCameraParams(0), true)
+                end,
         },
 }
 
@@ -145,15 +157,20 @@ function page:draw()
 
         ui.drawRectFilled(
                 vec2(0, 0),
-                vec2(ui.windowWidth() * 0.5, ui.windowHeight() * 0.55),
+                vec2(ui.windowWidth(), ui.windowHeight() * 0.3),
                 settings.Appearance.uiThemeColor1 * 0.2
         )
 
         local onboardParams = ac.getOnboardCameraParams(0)
 
         cui.setCursorY(10)
-        for _, viewSetting in ipairs(views) do
-                ui.setCursorX(0)
+        for i, viewSetting in ipairs(views) do
+                if i % 2 == 0 then
+                        ui.sameLine()
+                        ui.setCursorX(ui.windowWidth() * 0.5)
+                else
+                        ui.setCursorX(0)
+                end
 
                 local value, changed = drawSpinner(
                         "##" .. viewSetting.id,
@@ -179,7 +196,7 @@ function page:draw()
                 if changed then viewSetting.set(onboardParams, value) end
         end
 
-        bottomBarButtons[3].enabled = ac.areOnboardCameraParamsNeedSaving()
+        -- bottomBarButtons[2].enabled = ac.areOnboardCameraParamsNeedSaving()
 
         cui.popWindow()
         bottomBar(bottomBarButtons)
