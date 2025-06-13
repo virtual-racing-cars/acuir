@@ -28,7 +28,7 @@ local function drawSlider(id, name, width, height, value, sliderParams, noScroll
         local steps = (max - min) / step
         local changed = false
 
-        local fontSize = height * 0.32
+        local fontSize = height * 0.4
         local barSize = height * 0.3
         local grabberSize = math.max(width / (steps + 1), 35)
 
@@ -44,7 +44,7 @@ local function drawSlider(id, name, width, height, value, sliderParams, noScroll
                 fontSize,
                 ui.Alignment.Start,
                 ui.Alignment.Start,
-                vec2Temp1:set(width * 0.6, height),
+                vec2Temp1:set(width, height),
                 false,
                 rgbm.colors.white
         )

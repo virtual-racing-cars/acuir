@@ -324,7 +324,7 @@ local function loadSetupSpinners()
                                 items,
                                 format,
                                 xPos,
-                                yPos,
+                                math.round(yPos),
                                 uid,
                                 false,
                                 nil,
