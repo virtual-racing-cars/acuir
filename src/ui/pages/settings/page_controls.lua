@@ -3,6 +3,7 @@ local page = {}
 local bindindWindow = require("ui.pages.settings.controls.bindings")
 local cui = require("ui.cui")
 local pages = require("ui.pages.pages")
+local settings = require("settings")
 local tweaksWindow = require("ui.pages.settings.controls.tweaks")
 
 local bottomBarButtons = {
@@ -14,8 +15,14 @@ local bottomBarButtons = {
 }
 
 function page.draw()
-        topSubBar("Controls")
+        ui.drawRectFilled(
+                vec2(0, 0),
+                vec2(ui.windowWidth(), ui.windowHeight()),
+                settings.Appearance.uiThemeColor1 / 1.1
+        )
+
         cui.pushWindowFitted("settings_controls_main_window")
+        topSubBar("Controls")
 
         cui.pushWindow(
                 "settings_controls_window",

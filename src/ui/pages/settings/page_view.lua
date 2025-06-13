@@ -1,17 +1,182 @@
+local page = {}
+
+local cui = require("ui.cui")
+local pages = require("ui.pages.pages")
+local settings = require("settings")
 local sim = ac.getSim()
-local car = ac.getCar(0)
 
-function viewSettings()
-        setCursorY(60)
+local bottomBarButtons = {
+        {
+                label = "BACK",
+                enabled = true,
+                func = function() pages:undo() end,
+        },
+        {
+                label = "RESET",
+                enabled = true,
+                func = function()
+                        ac.setOnboardCameraParams(0, ac.getOnboardCameraDefaultParams(0), false)
+                        ac.resetFirstPersonCameraFOV()
+                end,
+        },
+        {
+                label = "SAVE",
+                enabled = true,
+                func = function() ac.setOnboardCameraParams(0, ac.getOnboardCameraParams(0), true) end,
+        },
+}
 
-        setCursorX(10)
-        ui.setNextItemWidth(300)
-        local value, changed = ui.slider("##fpv_slider", sim.firstPersonCameraFOV, 30, 120, "First Person FOV: %.0f")
+local onboardParamsDefaults = ac.getOnboardCameraDefaultParams(0)
 
-        if changed then ac.setFirstPersonCameraFOV(value) end
+local views = {
+        {
+                id = "SEAT.PARAM.HEIGHT",
+                label = "Height",
+                min = 0,
+                max = 2,
+                step = 0.0001,
+                multiplier = 100,
+                format = "%.2f %s",
+                unit = "cm",
+                default = onboardParamsDefaults.position.y,
+                get = function(seatParams) return seatParams.position.y end,
+                set = function(seatParams, newValue)
+                        seatParams.position.y = newValue
+                        ac.setCurrentCamera(ac.CameraMode.Cockpit)
+                        ac.setOnboardCameraParams(0, seatParams, false)
+                end,
+        },
+        {
+                id = "SEAT.PARAM.LATERAL",
+                label = "Lateral",
+                min = -1,
+                max = 1,
+                step = 0.0001,
+                multiplier = -100,
+                format = "%.2f %s",
+                unit = "cm",
+                default = -onboardParamsDefaults.position.x,
+                get = function(seatParams) return -seatParams.position.x end,
+                set = function(seatParams, newValue)
+                        seatParams.position.x = -newValue
+                        ac.setCurrentCamera(ac.CameraMode.Cockpit)
+                        ac.setOnboardCameraParams(0, seatParams, false)
+                end,
+        },
+        {
+                id = "SEAT.PARAM.DISTANCE",
+                label = "Distance",
+                min = -2,
+                max = 2,
+                step = 0.0001,
+                multiplier = 100,
+                format = "%.2f %s",
+                unit = "cm",
+                default = onboardParamsDefaults.position.z,
+                get = function(seatParams) return seatParams.position.z end,
+                set = function(seatParams, newValue)
+                        seatParams.position.z = newValue
+                        ac.setCurrentCamera(ac.CameraMode.Cockpit)
+                        ac.setOnboardCameraParams(0, seatParams, false)
+                end,
+        },
+        {
+                id = "SEAT.PARAM.FOV",
+                label = "FOV",
+                min = 1,
+                max = 125,
+                step = 0.01,
+                multiplier = 1,
+                format = "%.2f %s",
+                unit = "°",
+                default = 56,
+                get = function(seatParams) return sim.firstPersonCameraFOV end,
+                set = function(seatParams, newValue) ac.setFirstPersonCameraFOV(newValue) end,
+        },
+        {
+                id = "SEAT.PARAM.PITCH",
+                label = "Pitch",
+                min = -14,
+                max = 14,
+                step = 0.01,
+                multiplier = 1,
+                format = "%.3f %s",
+                unit = "°",
+                default = onboardParamsDefaults.pitch,
+                get = function(seatParams) return seatParams.pitch end,
+                set = function(seatParams, newValue)
+                        seatParams.pitch = newValue
+                        ac.setCurrentCamera(ac.CameraMode.Cockpit)
+                        ac.setOnboardCameraParams(0, seatParams, false)
+                end,
+        },
+        {
+                id = "SEAT.PARAM.YAW",
+                label = "Yaw",
+                min = -45,
+                max = 45,
+                step = 0.01,
+                multiplier = 1,
+                format = "%.3f %s",
+                unit = "°",
+                default = onboardParamsDefaults.yaw,
+                get = function(seatParams) return seatParams.yaw end,
+                set = function(seatParams, newValue)
+                        seatParams.yaw = newValue
+                        ac.setCurrentCamera(ac.CameraMode.Cockpit)
+                        ac.setOnboardCameraParams(0, seatParams, false)
+                end,
+        },
+}
 
-        ui.sameLine()
-        if ui.modernButton("##reset_fpv_fov", vec2(30, 30), ui.ButtonFlags.None, ui.Icons.Restart) then
-                ac.resetFirstPersonCameraFOV()
+function page:draw()
+        cui.pushWindowFitted("settings_view_main_window")
+        topSubBar("View")
+
+        cui.pushWindow("settings_view_window", 0, 180 * cui.uiScale(), ui.windowWidth(), ui.windowHeight() * 0.8, false)
+
+        ui.drawSimpleLine(
+                vec2(ui.windowWidth() * 0.5, 0),
+                vec2(ui.windowWidth() * 0.5, ui.windowHeight()),
+                settings.Appearance.uiThemeColor2
+        )
+
+        local onboardParams = ac.getOnboardCameraParams(0)
+
+        for _, viewSetting in ipairs(views) do
+                ui.setCursorX(0)
+
+                local value, changed = drawSpinner(
+                        "##" .. viewSetting.id,
+                        viewSetting.label,
+                        ui.windowWidth() * 0.5,
+                        95 * cui.uiScale(),
+                        false,
+                        viewSetting.get(onboardParams),
+                        {
+                                min = viewSetting.min,
+                                max = viewSetting.max,
+                                step = viewSetting.step,
+                                shiftStep = 1,
+                                multiplier = viewSetting.multiplier,
+                                default = viewSetting.default,
+                                offset = 0,
+                                format = viewSetting.format,
+                                unit = viewSetting.unit,
+                                help = "",
+                        }
+                )
+
+                if changed then viewSetting.set(onboardParams, value) end
         end
+
+        bottomBarButtons[3].enabled = ac.areOnboardCameraParamsNeedSaving()
+
+        cui.popWindow()
+        bottomBar(bottomBarButtons)
+        cui.popWindow()
+
+        return ""
 end
+
+return page

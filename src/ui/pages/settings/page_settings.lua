@@ -2,14 +2,10 @@ local page = {}
 
 local cui = require("ui.cui")
 local pages = require("ui.pages.pages")
+local settings = require("settings")
 
 local settingsPages = {
-        {
-                label = "General",
-                icon = ui.Icons.AppWindow,
-                enabled = true,
-                func = function() pages:goToSettingsGeneral() end,
-        },
+
         {
                 label = "Controls",
                 icon = ui.Icons.SteeringWheel,
@@ -18,9 +14,15 @@ local settingsPages = {
         },
         {
                 label = "Audio",
-                icon = ui.Icons.Music,
-                enabled = false,
+                icon = ui.Icons.VolumeHigh,
+                enabled = true,
                 func = function() pages:goToSettingsAudio() end,
+        },
+        {
+                label = "View",
+                icon = ui.Icons.Webcam,
+                enabled = true,
+                func = function() pages:goToSettingsView() end,
         },
         {
                 label = "Appearance",
@@ -29,16 +31,28 @@ local settingsPages = {
                 func = function() pages:goToSettingsAppearance() end,
         },
         {
-                label = "AI",
+                label = "ACUIR",
                 icon = ui.Icons.AppWindow,
+                enabled = true,
+                func = function() pages:goToSettingsGeneral() end,
+        },
+        {
+                label = "AI",
+                icon = ui.Icons.Process,
                 enabled = false,
                 func = function() pages:goToSettingsAi() end,
         },
 }
 
 function page.draw()
-        topSubBar("")
+        ui.drawRectFilled(
+                vec2(0, 0),
+                vec2(ui.windowWidth(), ui.windowHeight()),
+                settings.Appearance.uiThemeColor1 / 1.1
+        )
+
         cui.pushWindowFitted("settings_page_window")
+        topSubBar("")
 
         local rowWidth = 1924 * cui.uiScale()
         ui.setCursorX((ui.windowWidth() - rowWidth) / 2)

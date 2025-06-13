@@ -15,6 +15,7 @@ pages.manager:registerPage("SettingsPage", require("ui.pages.settings.page_setti
 pages.manager:registerPage("SettingsGeneralPage", require("ui.pages.settings.page_general"))
 pages.manager:registerPage("SettingsControlsPage", require("ui.pages.settings.page_controls"))
 pages.manager:registerPage("SettingsAudioPage", require("ui.pages.settings.page_audio"))
+pages.manager:registerPage("SettingsViewPage", require("ui.pages.settings.page_view"))
 pages.manager:registerPage("SettingsAppearancePage", require("ui.pages.settings.page_appearance"))
 pages.manager:registerPage("SettingsAiPage", require("ui.pages.settings.page_ai"))
 pages.manager:registerPage("TelemetryPage", require("ui.pages.telemetry.page_telemetry"))

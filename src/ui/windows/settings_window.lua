@@ -25,18 +25,14 @@ function SettingsWindow(dt)
 
         cui.pushWindowFull("settings_main_window", mainWindowFlags, false)
 
-        ui.drawRectFilled(
-                vec2(0, 0),
-                vec2(ui.windowWidth(), ui.windowHeight()),
-                settings.Appearance.uiThemeColor1 / 1.1
-        )
-
-        cui.pushWindowFitted("settings_fitted_window")
-        topSubBar()
+        -- ui.drawRectFilled(
+        --         vec2(0, 0),
+        --         vec2(ui.windowWidth(), ui.windowHeight()),
+        --         settings.Appearance.uiThemeColor1 / 1.1
+        -- )
 
         pages.manager:draw()
 
-        cui.popWindow(false)
         cui.popWindow(false)
 
         if cui.modalDialogCallback then

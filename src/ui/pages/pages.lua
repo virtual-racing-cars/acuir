@@ -60,6 +60,8 @@ function pages:goToSettingsControls() pages.manager:setPage("SettingsControlsPag
 
 function pages:goToSettingsAudio() pages.manager:setPage("SettingsAudioPage") end
 
+function pages:goToSettingsView() pages.manager:setPage("SettingsViewPage") end
+
 function pages:goToSettingsAppearance() pages.manager:setPage("SettingsAppearancePage") end
 
 function pages:goToSettingsAi() pages.manager:setPage("SettingsAiPage") end

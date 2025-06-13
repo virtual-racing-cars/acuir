@@ -10,19 +10,17 @@ local bottomBarButtons = {
                 enabled = true,
                 func = function() pages:undo() end,
         },
-        {
-                label = "APPLY",
-                enabled = false,
-                func = function() end,
-        },
-        {
-                label = "CANCEL",
-                enabled = false,
-                func = function() end,
-        },
 }
 
 function page.draw()
+        ui.drawRectFilled(
+                vec2(0, 0),
+                vec2(ui.windowWidth(), ui.windowHeight()),
+                settings.Appearance.uiThemeColor1 / 1.1
+        )
+
+        cui.pushWindowFitted("general_page_window")
+
         topSubBar("General")
 
         ui.drawLine(vec2(0, 160 * cui.uiScale()), vec2(ui.windowWidth(), 160 * cui.uiScale()), rgbm.colors.gray, 2)
@@ -44,7 +42,7 @@ function page.draw()
                                 v.label,
                                 v.label,
                                 ui.windowWidth() * 0.25,
-                                80 * cui.uiScale(),
+                                95 * cui.uiScale(),
                                 false,
                                 value,
                                 {
@@ -70,7 +68,7 @@ function page.draw()
                                 v.label,
                                 v.label,
                                 ui.windowWidth() * 0.25,
-                                80 * cui.uiScale(),
+                                95 * cui.uiScale(),
                                 false,
                                 settings.General[v.key],
                                 {
@@ -100,6 +98,8 @@ function page.draw()
         )
 
         bottomBar(bottomBarButtons)
+
+        cui.popWindow()
 
         return ""
 end

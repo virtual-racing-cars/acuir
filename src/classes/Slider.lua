@@ -34,7 +34,9 @@ local function drawSlider(id, name, width, height, value, sliderParams, noScroll
 
         local sliderNameText = name:gsub("->            ", ""):gsub("             %?", "")
 
-        if sliderParams.default and sliderParams.default ~= value then sliderNameText = sliderNameText .. "*" end
+        if sliderParams.default and math.round(sliderParams.default, 4) ~= math.round(value, 4) then
+                sliderNameText = sliderNameText .. "*"
+        end
 
         cui.snapCursor()
         ui.dwriteTextAligned(
