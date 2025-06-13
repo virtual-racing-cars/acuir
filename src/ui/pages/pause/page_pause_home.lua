@@ -31,12 +31,7 @@ local pauseButtons = {
                 condition = function() end,
                 func = function() pages:goToSettings() end,
         },
-        {
-                label = "View Settings",
-                enabled = false,
-                condition = function() end,
-                func = function() end,
-        },
+
         {
                 label = "Go To Garage",
                 enabled = true,
@@ -55,7 +50,7 @@ local pauseButtons = {
                 end,
         },
         {
-                label = "Go To Pitlane",
+                label = "Back To Pitlane",
                 enabled = true,
                 condition = function() end,
                 func = function()
@@ -81,8 +76,8 @@ local pauseButtons = {
 }
 
 function page.draw(dt)
-        local childWindowWith = (2560 * cui.uiScale()) / 5
-        local childWindowHeight = (1440 * cui.uiScale()) * 0.5
+        local childWindowWith = (500 * cui.uiScale())
+        local childWindowHeight = (700 * cui.uiScale())
         local mainWindowFlags = ui.WindowFlags.NoScrollbar + ui.WindowFlags.NoScrollWithMouse
 
         if cui.modalDialogCallback then
@@ -98,20 +93,20 @@ function page.draw(dt)
                 vec2(childWindowWith, childWindowHeight),
                 mainWindowFlags,
                 function()
-                        ui.drawRectFilled(vec2(0, 0), ui.availableSpace(), settings.Appearance.uiThemeColor1 / 1.5)
+                        ui.setCursor(0)
+                        cui.offsetCursorY(30)
 
-                        acLogoSize = ui.imageSize(acLogo) * 1.25 * cui.uiScale()
+                        ui.drawRectFilled(vec2(0, 0), ui.windowSize(), settings.Appearance.uiThemeColor1 / 1.5)
+
+                        acLogoSize = vec2(ui.windowHeight() * 0.2, ui.windowHeight() * 0.2)
                         ui.setCursorX(ui.windowWidth() / 2 - acLogoSize.x / 2)
                         ui.image(acLogo, acLogoSize)
-                        ui.newLine()
+                        cui.offsetCursorY(30)
 
-                        ui.setCursorX(ui.windowWidth() / 8)
-                        ui.beginGroup(ui.windowWidth() - (ui.windowWidth() / 8) * 2)
+                        ui.setCursorX(ui.windowWidth() * 0.1)
+                        ui.beginGroup(ui.windowWidth() * 0.1)
 
-                        local itemSpacing = 12 * cui.uiScale()
-                        ui.pushStyleVar(ui.StyleVar.ItemSpacing, itemSpacing)
-
-                        local menuButtonSize = vec2(ui.availableSpaceX(), ui.availableSpaceY() / 11)
+                        local menuButtonSize = vec2(ui.windowWidth() * 0.8, ui.windowHeight() / 14)
 
                         ui.pushStyleColor(ui.StyleColor.Button, settings.Appearance.uiThemeColor1)
                         for i in ipairs(pauseButtons) do
@@ -119,10 +114,7 @@ function page.draw(dt)
                                 local enabled = menuButton.enabled
                                 local hidden = false
 
-                                if menuButton.condition() then
-                                        hidden = true
-                                        ui.offsetCursorY(menuButtonSize.y + itemSpacing)
-                                end
+                                if menuButton.condition() then hidden = true end
 
                                 if
                                         not hidden
@@ -136,10 +128,10 @@ function page.draw(dt)
                                 then
                                         menuButton.func()
                                 end
+                                cui.offsetCursorY(15)
                         end
 
                         ui.popStyleColor(1)
-                        ui.popStyleVar(1)
 
                         ui.endGroup()
                 end
