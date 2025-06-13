@@ -14,18 +14,17 @@ local bottomBarButtons = {
 
 local audioChannels = {
         "Main",
-        "Rain",
-        "Weather",
-        "Track",
-        "Wipers",
-        "Car Components",
-        "Wind",
-        "Tyres",
-        "Surfaces",
-        "Dirt",
         "Engine",
         "Transmission",
+        "Wipers",
+        "Car Components",
+        "Tyres",
         "Opponents",
+        "Weather",
+        "Wind",
+        "Track",
+        "Surfaces",
+        "Dirt",
 }
 
 -- table.sort(audioChannels)
@@ -58,7 +57,7 @@ function page.draw()
         for i, v in ipairs(audioChannels) do
                 local id = string.replace(v, " ", "")
 
-                if i == 1 then
+                if i == 1 or i == #audioChannels then
                         ui.setCursorX(ui.windowWidth() * 0.375)
                 elseif i % 2 == 0 then
                         ui.setCursorX(ui.windowWidth() * 0.25)

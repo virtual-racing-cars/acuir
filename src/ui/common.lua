@@ -188,16 +188,16 @@ function topBar(path)
                         ui.Icons.Barcode,
                         driveButtonHeight,
                         driveButtonHeight,
-                        ui.ButtonFlags.Disabled,
+                        ui.ButtonFlags.None,
                         false,
                         nil,
-                        pages.manager.currentPageName == "LapTimesPage"
+                        pages.manager.currentPageName == "TelemetryPage"
                 )
         then
-                if pages.manager.currentPageName == "LapTimesPage" then
+                if pages.manager.currentPageName == "TelemetryPage" then
                         pages:goToMainMenu()
                 else
-                        pages:goToLapTimes()
+                        pages:goToTelemetry()
                 end
         end
 

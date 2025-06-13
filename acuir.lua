@@ -21,6 +21,7 @@ local cui = require("src.ui.cui")
 local pitstop = require("pitstop")
 local race = require("race")
 local settings = require("settings")
+local telemetry = require("telemetry")
 local voting = require("voting")
 local sim = ac.getSim()
 
@@ -39,6 +40,9 @@ function script.update(dt)
         carSetup:step()
         race:step()
         pitstop:step(dt)
+
+        -- ac.log(telemetry)
+
         -- replay:step(dt)
 
         if callback.sim then
