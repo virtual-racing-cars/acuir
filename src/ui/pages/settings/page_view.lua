@@ -130,19 +130,28 @@ local views = {
 }
 
 function page:draw()
-        cui.pushWindowFitted("settings_view_main_window")
-        topSubBar("View")
-
-        cui.pushWindow("settings_view_window", 0, 180 * cui.uiScale(), ui.windowWidth(), ui.windowHeight() * 0.8, false)
-
         ui.drawSimpleLine(
                 vec2(ui.windowWidth() * 0.5, 0),
                 vec2(ui.windowWidth() * 0.5, ui.windowHeight()),
                 settings.Appearance.uiThemeColor2
         )
 
+        cui.pushWindowFitted("settings_view_main_window")
+        ui.drawRectFilled(0, vec2(ui.windowWidth(), 130 * cui.uiScale()), rgbm(0.1, 0.1, 0.1, 0.95))
+
+        topSubBar("View")
+
+        cui.pushWindow("settings_view_window", 0, 180 * cui.uiScale(), ui.windowWidth(), ui.windowHeight() * 0.8, false)
+
+        ui.drawRectFilled(
+                vec2(0, 0),
+                vec2(ui.windowWidth() * 0.5, ui.windowHeight() * 0.55),
+                settings.Appearance.uiThemeColor1 * 0.2
+        )
+
         local onboardParams = ac.getOnboardCameraParams(0)
 
+        cui.setCursorY(10)
         for _, viewSetting in ipairs(views) do
                 ui.setCursorX(0)
 

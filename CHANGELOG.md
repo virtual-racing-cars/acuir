@@ -2,6 +2,11 @@
 
 ## 0.9.0.9
 
+Features:
+- Added V0 Settings->Audio page
+- Added V0 Settings-View page
+- New Search functionality for Settings->Controls
+
 Fixes:
 - Escape key no longer unpauses AC when a dialog popup is present.
 
