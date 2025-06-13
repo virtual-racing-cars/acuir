@@ -324,7 +324,7 @@ local function loadSetupSpinners()
                                 items,
                                 format,
                                 xPos,
-                                math.round(yPos),
+                                yPos,
                                 uid,
                                 false,
                                 nil,
@@ -338,6 +338,8 @@ local function loadSetupSpinners()
                         table.insert(pairedItems[uid], 1, id)
                 end
         end
+
+        table.sort(setupSpinners, function(a, b) return a.yPos < b.yPos end)
 
         for uid, uidPairs in pairs(pairedItems) do
                 if #uidPairs > 1 then
@@ -396,11 +398,9 @@ function SetupManager:initialize()
                 table.insert(self.setupTabs, SetupTab(self._tabNames[i]))
         end
 
-        for k, v in pairs(self._setupSpinners) do
+        for _, v in ipairs(self._setupSpinners) do
                 for i in ipairs(self.setupTabs) do
-                        if self.setupTabs[i].name == v.tab then
-                                table.insert(self.setupTabs[i].setupSpinners, self._setupSpinners[k])
-                        end
+                        if self.setupTabs[i].name == v.tab then table.insert(self.setupTabs[i].setupSpinners, v) end
                 end
         end
 

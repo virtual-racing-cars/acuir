@@ -1,6 +1,11 @@
 ## ACUIR Changelog
 *Requires minimum CSP version 0.2.10 (3459)*
 *Ctrl+Shift+F5 to toggle UI*
+### 0.9.1.7
+
+Fixes:
+- Fixing a setup slider overlap edge case
+
 ### 0.9.1.1
 
 Features:
@@ -8,7 +13,6 @@ Features:
 
 Fixes:
 - Setups list now reacts properly to changes made in the setup directory.
-- Attempt at fixing overlapped sliders
 
 ## 0.9.1.0
 

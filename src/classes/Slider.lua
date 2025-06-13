@@ -9,8 +9,6 @@ local itemHeld = ""
 
 local scrollDelayTimer = 0
 
-local function drawGrabber() end
-
 local function drawSlider(id, name, width, height, value, sliderParams, noScroll)
         local p1 = ui.getCursor()
 
@@ -50,7 +48,7 @@ local function drawSlider(id, name, width, height, value, sliderParams, noScroll
         )
 
         ui.setCursorX(p1.x)
-        ui.setCursorY(p1.y + height - barSize)
+        ui.setCursorY(p1.y + height - height * 0.4)
         ui.invisibleButton("slider" .. id, vec2Temp1:set(width, barSize))
         local r1, r2 = ui.itemRect()
         ui.drawRectFilled(r1, r2, rgbm.colors.black * 0.2, 5)
@@ -59,6 +57,14 @@ local function drawSlider(id, name, width, height, value, sliderParams, noScroll
         local hovered = ui.rectHovered(r1, r2)
         local scrolling = hovered and ui.mouseWheel() ~= 0 and not noScroll and scrollDelayTimer < os.clock()
         local dragging = active or (hovered and ui.mouseClicked(ui.MouseButton.Left))
+
+        local sticking = 0
+
+        if active then
+                for i = 0, 7 do
+                        if sticking == 0 then sticking = ac.getGamepadAxisValue(i, 2) end
+                end
+        end
 
         if active then itemActive = id end
 
@@ -70,6 +76,10 @@ local function drawSlider(id, name, width, height, value, sliderParams, noScroll
         elseif dragging then
                 valueStep = ((ui.mouseLocalPos().x - grabberSize * 0.5 - r1.x) / (width - grabberSize)) * steps
                 itemHeld = id
+                changed = true
+        elseif sticking ~= 0 and scrollDelayTimer < os.clock() then
+                valueStep = valueStep + math.round(math.abs(sticking)) * math.sign(sticking)
+                scrollDelayTimer = os.clock() + settings.General.scrollDelayTimeMs * 0.001
                 changed = true
         end
 

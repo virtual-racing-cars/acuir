@@ -198,11 +198,11 @@ function car_setup(sm)
                 end
         end
 
-        for _, v in pairs(tab.setupSpinners) do
+        for _, v in ipairs(tab.setupSpinners) do
                 if v.yPos > -2 then
                         if v.tab == "GEARS" and #tab.setupSpinners == 1 then
                                 v.xPos = 0.5
-                                v.yPos = 6
+                                v.yPos = 7
                         end
 
                         if drawSetupSpinner(v) then changed = true end
