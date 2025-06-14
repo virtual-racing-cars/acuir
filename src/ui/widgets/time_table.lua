@@ -95,7 +95,7 @@ local entryLayout = {
 
                         if delta < 0 then deltaPrefix = "-" end
 
-                        return string.format("%s %.2f", deltaPrefix, math.abs(delta) / 1000), rgbm.colors.black
+                        return string.format("%s %.3f", deltaPrefix, math.abs(delta) / 1000), rgbm.colors.black
                 end,
                 xShare = 0.07,
                 align = ui.Alignment.Center,
@@ -209,7 +209,7 @@ local entryLayout = {
 
                         if delta < 0 then deltaPrefix = "-" end
 
-                        return string.format("%s %.2f", deltaPrefix, math.abs(delta) / 1000), rgbm.colors.black
+                        return string.format("%s %.3f", deltaPrefix, math.abs(delta) / 1000), rgbm.colors.black
                 end,
                 xShare = 0.07,
                 align = ui.Alignment.Center,
@@ -221,7 +221,7 @@ local entryLayout = {
                                 return "+%s L" % car.lapsToLeader
                         end
 
-                        local gapToLeaderText = string.format("%+.2f", car.gapToLeader / 1000)
+                        local gapToLeaderText = string.format("%+.3f", car.gapToLeader / 1000)
                         if race:getLeaderboardPosition(car.index) == 1 then gapToLeaderText = "Leader" end
 
                         return gapToLeaderText
@@ -236,7 +236,7 @@ local entryLayout = {
                                 return "+%s L" % car.lapsToCarAheadLeaderboard
                         end
 
-                        local intervalText = string.format("%+.2f", car.gapToCarAheadLeaderboard / 1000)
+                        local intervalText = string.format("%+.3f", car.gapToCarAheadLeaderboard / 1000)
                         if race:getLeaderboardPosition(car.index) == 1 then intervalText = "Interval" end
 
                         return intervalText

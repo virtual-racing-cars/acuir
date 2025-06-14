@@ -7,6 +7,7 @@ Features:
 - App toggle binding can now be bound in Settings->Controls-ACUIR->App
 
 Fixes:
+- Times now show 3 decimals, instead of 2
 - Larger font size for sliders
 - Better layout for View Settings
 - Setups list now reacts properly to changes made in the setup directory

@@ -70,7 +70,7 @@ local entryLayout = {
                         elseif sim.raceSessionType == ac.SessionType.Race and car.lapsToLeader > 0 then
                                 gapToLeaderText = "+%s L" % car.lapsToLeader
                         else
-                                gapToLeaderText = string.format("%+.2f", car.gapToLeader / 1000)
+                                gapToLeaderText = string.format("%+.3f", car.gapToLeader / 1000)
                         end
 
                         return gapToLeaderText
@@ -87,7 +87,7 @@ local entryLayout = {
                         elseif sim.raceSessionType == ac.SessionType.Race and car.lapsToCarAheadLeaderboard > 0 then
                                 intervalText = "+%s L" % car.lapsToCarAheadLeaderboard
                         else
-                                intervalText = string.format("%+.2f", car.gapToCarAheadLeaderboard / 1000)
+                                intervalText = string.format("%+.3f", car.gapToCarAheadLeaderboard / 1000)
                         end
 
                         return intervalText

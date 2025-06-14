@@ -6,6 +6,31 @@ function toCapitalCase(str)
         return (str:gsub("(%a)([%w_']*)", function(first, rest) return first:upper() .. rest:lower() end))
 end
 
+ac.lapTimeToString = function(time, allowHours)
+        allowHours = allowHours == true
+        time = tonumber(time)
+
+        if not time or time == 0 then return "--:--.---" end
+
+        local totalSeconds = math.floor(time / 1000)
+        local ms = time % 1000
+        local seconds = totalSeconds % 60
+        local minutes = math.floor(totalSeconds / 60) % 60
+        local hours = math.floor(minutes / 60)
+
+        if allowHours then
+                local centiseconds = math.floor(ms / 10 + 0.5)
+                return string.format("%d:%02d:%02d.%02d", hours, minutes, seconds, centiseconds)
+        else
+                local fullMinutes = math.floor(totalSeconds / 60)
+                if fullMinutes < 10 then
+                        return string.format("%d:%02d.%03d", fullMinutes, seconds, ms)
+                else
+                        return string.format("%02d:%02d.%03d", fullMinutes, seconds, ms)
+                end
+        end
+end
+
 package.add("src")
 require("audio")
 require("laps")

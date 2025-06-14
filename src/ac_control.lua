@@ -16,6 +16,16 @@ local waitTimeMs = sim.resultScreenTime * 1000
 local accontrol = { sessionWaitTime = 0 }
 
 function accontrol:step()
+        if
+                not appControlButton:configured()
+                and uis.ctrlDown
+                and uis.shiftDown
+                and ui.keyboardButtonPressed(ui.KeyIndex.F5)
+        then
+                settings.General.autoStart = not app.state.appOpen
+                app.state.appOpen = not app.state.appOpen
+        end
+
         if app.state.appOpen and sim.isInMainMenu then
                 ac.tryToOpenRaceMenu(nil)
                 ac.tryToOpenRaceMenu("setup")
