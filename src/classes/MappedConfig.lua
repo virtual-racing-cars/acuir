@@ -9,7 +9,7 @@ local ignoreChangesUntil = 0
 local MappedConfig = class("MappedConfig")
 
 function MappedConfig:initialize(filename, map)
-        local ini = ac.INIConfig.load(filename)
+        local ini = ac.INIConfig.load(filename, ac.INIFormat.Extended)
         local data = ini:mapConfig(map)
 
         self.filename = filename
@@ -25,7 +25,7 @@ function MappedConfig:initialize(filename, map)
 end
 
 function MappedConfig:reload()
-        self.ini = ac.INIConfig.load(self.filename) or self.ini
+        self.ini = ac.INIConfig.load(self.filename, ac.INIFormat.Extended) or self.ini
         self.data = self.ini:mapConfig(self.map)
 end
 
@@ -58,10 +58,10 @@ function MappedConfig:set(section, key, value, triggerControlReload, hexFormat)
         end, 0.02, section .. key)
 end
 
-function MappedConfig:get(section, key)
+function MappedConfig:get(section, key, defaultValue)
         if not self.data[section] then
                 self.data[section] = {}
-                self.data[section][key] = self.ini:get(section, key, -1)
+                self.data[section][key] = self.ini:get(section, key, defaultValue or -1)
         end
 
         local value = self.data[section][key]

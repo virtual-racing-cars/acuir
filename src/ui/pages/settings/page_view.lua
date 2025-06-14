@@ -103,7 +103,10 @@ local views = {
                 unit = "°",
                 default = 56,
                 get = function(seatParams) return sim.firstPersonCameraFOV end,
-                set = function(seatParams, newValue) ac.setFirstPersonCameraFOV(newValue) end,
+                set = function(seatParams, newValue)
+                        ac.setCurrentCamera(ac.CameraMode.Cockpit)
+                        ac.setFirstPersonCameraFOV(newValue)
+                end,
         },
         {
                 id = "SEAT.PARAM.PITCH",

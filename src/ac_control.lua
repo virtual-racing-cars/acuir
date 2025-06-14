@@ -3,16 +3,19 @@ local settings = require("settings")
 local sim = ac.getSim()
 local uis = ac.getUI()
 
+local appControlButton =
+        ac.ControlButton("ACUIR_TOGGLE_APP", { keyboard = { key = ui.KeyIndex.F5, ctrl = true, alt = true } })
+
+appControlButton:onPressed(function()
+        settings.General.autoStart = not app.state.appOpen
+        app.state.appOpen = not app.state.appOpen
+end)
+
 local waitTimeMs = sim.resultScreenTime * 1000
 
 local accontrol = { sessionWaitTime = 0 }
 
 function accontrol:step()
-        if uis.ctrlDown and uis.shiftDown and ui.keyboardButtonPressed(ui.KeyIndex.F5) then
-                settings.General.autoStart = not app.state.appOpen
-                app.state.appOpen = not app.state.appOpen
-        end
-
         if app.state.appOpen and sim.isInMainMenu then
                 ac.tryToOpenRaceMenu(nil)
                 ac.tryToOpenRaceMenu("setup")

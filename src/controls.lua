@@ -11,6 +11,11 @@ local controls = {
         binds = {},
 }
 
+-- setTimeout(function()
+--         configs.CONTROLS.ini:setAndSave("TEST", "TESTER", { { 1, 2, 3 } })
+--         ac.log("hi")
+-- end, 2)
+
 local function initializeControlTab(name, ini)
         local controlTab = ControlTab(name)
 

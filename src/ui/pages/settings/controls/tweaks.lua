@@ -24,7 +24,7 @@ local function drawGammaCurve(value, label)
                 local x = (i / 30) ^ 2
                 ui.pathLineTo(f + vec2(x, x ^ value) * s)
         end
-        ui.pathStroke(settings.Appearance.uiColor2, false, 3 * cui.uiScale())
+        ui.pathStroke(settings.Appearance.uiThemeColor2, false, 3 * cui.uiScale())
 end
 
 local function drawGamepadGammaCurve()
@@ -60,7 +60,7 @@ local function drawGamepadGammaCurve()
                                 ui.pathLineTo(f + vec2(0.5 - 0.5 * x, 0.5 - 0.5 * x ^ v) * s)
                         end
                 end
-                ui.pathStroke(settings.Appearance.uiColor2, false, 3 * cui.uiScale())
+                ui.pathStroke(settings.Appearance.uiThemeColor2, false, 3 * cui.uiScale())
         end
 end
 
@@ -80,7 +80,7 @@ local function drawCurve(curve, label)
         for i = 0, 30 do
                 ui.pathLineTo(f + vec2(i / 30, c:get(i / 30)) * s)
         end
-        ui.pathStroke(settings.Appearance.uiColor2, false, 5)
+        ui.pathStroke(settings.Appearance.uiThemeColor2, false, 5)
 end
 
 local function reloadCurves()

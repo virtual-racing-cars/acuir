@@ -173,7 +173,7 @@ local function mfdWidgetSpinner(name, height, index, value, format, min, max, it
 end
 
 function script.pitstopWindow(dt)
-        if not app.state.appOpen or ac.getLastError() then
+        if not app.state.appOpen then
                 pitstop:setWindowOpen(false)
                 ac.disableQuickMenuPitstop(false)
                 return

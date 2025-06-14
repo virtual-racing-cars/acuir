@@ -36,12 +36,12 @@ local hudModes = {
 }
 
 ui.onExclusiveHUD(function(mode)
-        if not app.state.appOpen or ac.getLastError() then return end
+        if not app.state.appOpen then return end
 
         -- pages:goToSession()
         -- pages:goToLapTimes()
         -- pages:goToSetup()
-        -- pages:goToSettingsControls()
+        pages:goToSettingsControls()
         -- pages:goToSettingsGeneral()
         -- pages:goToSettingsAudio()
         -- pages:goToSettingsView()

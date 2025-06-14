@@ -17,7 +17,6 @@ local callback = require("callback")
 local camera = require("camera")
 local carSetup = require("car_setup")
 local controls = require("controls")
-local cui = require("src.ui.cui")
 local pitstop = require("pitstop")
 local race = require("race")
 local settings = require("settings")
@@ -31,6 +30,14 @@ app.state.appOpen = settings.General.autoStart
 app.state.hasAppOpened = false
 
 function script.update(dt)
+        if ac.getLastError() and not app.state.debug then
+                app.state.open = false
+                settings.General.autoStart = false
+                ui.toast(ui.Icons.Warning, "ACUIR ERROR!!! Open Lua Debug for more info\n\n" .. ac.getLastError())
+                        :button(ui.Icons.RestartWarning, "Attempt Reload", function() ac.restartApp() end)
+                return
+        end
+
         acc:step()
 
         if not app.state.appOpen then return end

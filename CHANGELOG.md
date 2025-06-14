@@ -4,12 +4,17 @@
 ### 0.9.1.7
 
 Features:
-- Larger font size for sliders
+- App toggle binding can now be bound in Settings->Controls-ACUIR->App
 
 Fixes:
+- Larger font size for sliders
 - Better layout for View Settings
-- Setups list now reacts properly to changes made in the setup directory.
+- Setups list now reacts properly to changes made in the setup directory
 - Fixing a setup slider overlap edge case
+- Fixed calling of unused theme color indexes
+- Added a toast popup for any lua errors
+- Errors will disable Auto-Start feature for ACUIR, allowing normal operation of other UIs
+- Keyboard bindings can now do more than 1 modifier
 
 ## 0.9.1.0
 
