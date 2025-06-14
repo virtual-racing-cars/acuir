@@ -141,6 +141,16 @@ local function drawSetupControls(sm)
         )
 
         ui.setCursorX(groupBegin)
+        ui.drawRectFilled(
+                ui.getCursor(),
+                ui.getCursor() + vec2Temp1:set(buttonWidth, iconButtonHeight),
+                settings.Appearance.uiThemeColor1
+        )
+        ui.drawRect(
+                ui.getCursor(),
+                ui.getCursor() + vec2Temp1:set(buttonWidth, iconButtonHeight),
+                rgbm.colors.white * 0.65
+        )
         carSetup.input.name = cui.inputText(
                 "##SetupName",
                 carSetup.input.track .. "/",

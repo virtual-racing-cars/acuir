@@ -1,7 +1,13 @@
 ## ACUIR Changelog
 *Requires minimum CSP version 0.2.10 (3459)*
 *Ctrl+Shift+F5 to toggle UI. You can now bind a custom bind for this*
-### 0.9.1.9
+### 0.9.2.1
+
+Fixes:
+- Fixed Telemetry module import
+- Fixed coloring for Car Setup I/O text input
+
+### 0.9.2.0
 
 Features:
 - New V0 Telemetry tab, should replicate the new CSP UI Telemetry for now.
