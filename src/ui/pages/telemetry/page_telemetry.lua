@@ -7,7 +7,7 @@ function page:draw(dt)
 
         telemetryViewer:draw(0, 0, ui.windowWidth(), ui.windowHeight())
 
-        return "debug"
+        return ""
 end
 
 return page
