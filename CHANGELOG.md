@@ -1,7 +1,7 @@
 ## ACUIR Changelog
 *Requires minimum CSP version 0.2.10 (3459)*
 *Ctrl+Shift+F5 to toggle UI*
-### 0.9.1.7
+### 0.9.1.9
 
 Features:
 - App toggle binding can now be bound in Settings->Controls-ACUIR->App
