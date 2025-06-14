@@ -15,19 +15,18 @@ ac.lapTimeToString = function(time, allowHours)
         local totalSeconds = math.floor(time / 1000)
         local ms = time % 1000
         local seconds = totalSeconds % 60
-        local minutes = math.floor(totalSeconds / 60) % 60
+        local minutes = math.floor(totalSeconds / 60)
         local hours = math.floor(minutes / 60)
+        minutes = minutes % 60
 
-        if allowHours then
+        if allowHours and hours > 0 then
                 local centiseconds = math.floor(ms / 10 + 0.5)
-                return string.format("%d:%02d:%02d.%02d", hours, minutes, seconds, centiseconds)
+                return string.format("%d:%d:%02d.%02d", hours, minutes, seconds, centiseconds)
+        elseif allowHours then
+                local centiseconds = math.floor(ms / 10 + 0.5)
+                return string.format("%d:%02d.%02d", minutes, seconds, centiseconds)
         else
-                local fullMinutes = math.floor(totalSeconds / 60)
-                if fullMinutes < 10 then
-                        return string.format("%d:%02d.%03d", fullMinutes, seconds, ms)
-                else
-                        return string.format("%02d:%02d.%03d", fullMinutes, seconds, ms)
-                end
+                return string.format("%d:%02d.%03d", math.floor(totalSeconds / 60), seconds, ms)
         end
 end
 

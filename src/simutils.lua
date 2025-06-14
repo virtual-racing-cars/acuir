@@ -86,6 +86,10 @@ function simutils.timeToString(timeMs, postfix)
         return string.format("%s %02d:%02d", postfix, minutes, seconds)
 end
 
+-- function simutils.timeToString(timeMs, prefix)
+--         return prefix .. " " .. ac.lapTimeToString(timeMs, true)
+-- end
+
 function simutils.sessionTimeLeftString()
         local leadCar = simutils.session().leaderboard[0]
 
