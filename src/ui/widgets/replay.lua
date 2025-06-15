@@ -96,7 +96,7 @@ local replayButtons = {
 
 function replayWidget:draw(xPos, yPos, width, height)
         cui.pushWindow("replay_widget_window", xPos, yPos, width, height, false)
-        ui.drawRectFilled(vec2(0, 0), ui.windowSize(), settings.Appearance.uiThemeColor1)
+        ui.drawRectFilled(vec2(0, 0), ui.windowSize(), settings.Appearance.uiColorPrimary)
 
         cui.setCursorX(0)
 

@@ -10,7 +10,7 @@ ac.lapTimeToString = function(time, allowHours)
         allowHours = allowHours == true
         time = tonumber(time)
 
-        if not time or time == 0 then return "--:--.---" end
+        if not time or time <= 0 or math.abs(time) == math.huge then return "--:--.---" end
 
         local totalSeconds = math.floor(time / 1000)
         local ms = time % 1000

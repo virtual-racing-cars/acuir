@@ -93,7 +93,7 @@ function page.draw(dt)
         end
 
         cui.contentWindow("results_home_window", vec2(0, 0), ui.windowSize(), mainWindowFlags, function()
-                ui.drawRectFilled(vec2(0, 0), ui.windowSize(), settings.Appearance.uiThemeColor1 / 4)
+                ui.drawRectFilled(vec2(0, 0), ui.windowSize(), settings.Appearance.uiColorPrimary / 4)
 
                 acLogoSize = ui.imageSize(acLogo) * 2 * cui.uiScale()
                 ui.setCursorX(ui.windowWidth() / 2 - acLogoSize.x / 2)

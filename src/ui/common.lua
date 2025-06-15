@@ -23,7 +23,7 @@ function bottomBar(buttons)
         ui.drawRectFilled(
                 vec2(0, ui.windowHeight() - 56 * cui.uiScale()),
                 vec2(ui.windowWidth(), ui.windowHeight()),
-                settings.Appearance.uiThemeColor1 / 3
+                settings.Appearance.uiColorPrimary / 3
         )
 
         if settings.General.showVersions then

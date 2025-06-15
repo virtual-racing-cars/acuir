@@ -30,7 +30,7 @@ function page.draw()
         ui.drawRectFilled(
                 vec2(0, 0),
                 vec2(ui.windowWidth(), ui.windowHeight()),
-                settings.Appearance.uiThemeColor1 / 1.1
+                settings.Appearance.uiColorPrimary / 1.1
         )
 
         cui.pushWindowFitted("settings_appearance_window")
@@ -40,7 +40,7 @@ function page.draw()
         ui.drawRectFilled(
                 vec2(0, 0),
                 vec2(ui.windowWidth(), ui.windowHeight()),
-                settings.Appearance.uiThemeColor1 / 1.1
+                settings.Appearance.uiColorPrimary / 1.1
         )
         ui.drawRectFilled(vec2(0, 2), vec2(ui.windowWidth(), ui.windowHeight()), rgbm(0, 0, 0, 0.2))
 
@@ -52,17 +52,17 @@ function page.draw()
         ui.sameLine()
         cui.setCursorX(210)
         ui.setNextItemWidth(275)
-        local primaryColor, primaryOpacity = settings.Appearance.uiThemeColor1:unpack()
+        local primaryColor, primaryOpacity = settings.Appearance.uiColorPrimary:unpack()
         local newPrimaryOpacity, primaryOpacityChanged =
                 ui.slider("##ui_primary_slider", primaryOpacity * 100, 0, 100, "Opacity: %.0f%%")
 
         if primaryOpacityChanged then
-                settings.Appearance.uiThemeColor1 =
-                        settings.Appearance.uiThemeColor1:set(primaryColor, newPrimaryOpacity / 100)
+                settings.Appearance.uiColorPrimary =
+                        settings.Appearance.uiColorPrimary:set(primaryColor, newPrimaryOpacity / 100)
         end
 
         ui.sameLine()
-        if ui.colorButton("##primary", settings.Appearance.uiThemeColor1, ui.ColorPickerFlags.None) then
+        if ui.colorButton("##primary", settings.Appearance.uiColorPrimary, ui.ColorPickerFlags.None) then
                 primaryActive = not primaryActive
                 secondaryActive = false
         end
@@ -76,13 +76,13 @@ function page.draw()
                 if
                         ui.colorPicker(
                                 "##ui_primary_picker",
-                                settings.Appearance.uiThemeColor1,
+                                settings.Appearance.uiColorPrimary,
                                 ui.ColorPickerFlags.DisplayRGB
                                         + ui.ColorPickerFlags.NoAlpha
                                         + ui.ColorPickerFlags.NoSidePreview
                         )
                 then
-                        settings.Appearance.uiThemeColor1 = settings.Appearance.uiThemeColor1
+                        settings.Appearance.uiColorPrimary = settings.Appearance.uiColorPrimary
                 end
         end
 
@@ -91,17 +91,17 @@ function page.draw()
         ui.sameLine()
         cui.setCursorX(210)
         ui.setNextItemWidth(275)
-        local secondaryColor, secondaryOpacity = settings.Appearance.uiThemeColor2:unpack()
+        local secondaryColor, secondaryOpacity = settings.Appearance.uiColorSecondary:unpack()
         local newSecondaryOpacity, secondaryOpacityChanged =
                 ui.slider("##ui_secondary_slider", secondaryOpacity * 100, 0, 100, "Opacity: %.0f%%")
 
         if secondaryOpacityChanged then
-                settings.Appearance.uiThemeColor2 =
-                        settings.Appearance.uiThemeColor2:set(secondaryColor, newSecondaryOpacity / 100)
+                settings.Appearance.uiColorSecondary =
+                        settings.Appearance.uiColorSecondary:set(secondaryColor, newSecondaryOpacity / 100)
         end
 
         ui.sameLine()
-        if ui.colorButton("##secondary", settings.Appearance.uiThemeColor2, ui.ColorPickerFlags.None) then
+        if ui.colorButton("##secondary", settings.Appearance.uiColorSecondary, ui.ColorPickerFlags.None) then
                 secondaryActive = not secondaryActive
                 primaryActive = false
         end
@@ -115,13 +115,13 @@ function page.draw()
                 if
                         ui.colorPicker(
                                 "##ui_secondary_picker",
-                                settings.Appearance.uiThemeColor2,
+                                settings.Appearance.uiColorSecondary,
                                 ui.ColorPickerFlags.DisplayRGB
                                         + ui.ColorPickerFlags.NoAlpha
                                         + ui.ColorPickerFlags.NoSidePreview
                         )
                 then
-                        settings.Appearance.uiThemeColor2 = settings.Appearance.uiThemeColor2
+                        settings.Appearance.uiColorSecondary = settings.Appearance.uiColorSecondary
                 end
         end
 
@@ -130,17 +130,17 @@ function page.draw()
         ui.sameLine()
         cui.setCursorX(210)
         ui.setNextItemWidth(275)
-        local tertiaryColor, tertiaryOpacity = settings.Appearance.uiThemeColor3:unpack()
+        local tertiaryColor, tertiaryOpacity = settings.Appearance.uiColorAccent:unpack()
         local newtertiaryOpacity, tertiaryOpacityChanged =
                 ui.slider("##ui_tertiary_slider", tertiaryOpacity * 100, 0, 100, "Opacity: %.0f%%")
 
         if tertiaryOpacityChanged then
-                settings.Appearance.uiThemeColor3 =
-                        settings.Appearance.uiThemeColor3:set(tertiaryColor, newtertiaryOpacity / 100)
+                settings.Appearance.uiColorAccent =
+                        settings.Appearance.uiColorAccent:set(tertiaryColor, newtertiaryOpacity / 100)
         end
 
         ui.sameLine()
-        if ui.colorButton("##tertiary", settings.Appearance.uiThemeColor3, ui.ColorPickerFlags.None) then
+        if ui.colorButton("##tertiary", settings.Appearance.uiColorAccent, ui.ColorPickerFlags.None) then
                 tertiaryActive = not tertiaryActive
                 primaryActive = false
         end
@@ -154,13 +154,13 @@ function page.draw()
                 if
                         ui.colorPicker(
                                 "##ui_tertiary_picker",
-                                settings.Appearance.uiThemeColor3,
+                                settings.Appearance.uiColorAccent,
                                 ui.ColorPickerFlags.DisplayRGB
                                         + ui.ColorPickerFlags.NoAlpha
                                         + ui.ColorPickerFlags.NoSidePreview
                         )
                 then
-                        settings.Appearance.uiThemeColor3 = settings.Appearance.uiThemeColor3
+                        settings.Appearance.uiColorAccent = settings.Appearance.uiColorAccent
                 end
         end
 

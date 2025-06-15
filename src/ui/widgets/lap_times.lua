@@ -221,7 +221,7 @@ local function noEntryBanner(yPos, height)
         local width = ui.windowWidth()
         local fontSize = height * 0.5
 
-        ui.drawRectFilled(vec2(0, 0), vec2(0 + width, height), settings.Appearance.uiThemeColor1 * 0.5)
+        ui.drawRectFilled(vec2(0, 0), vec2(0 + width, height), settings.Appearance.uiColorPrimary * 0.5)
 
         ui.setCursorX(height * 1.2)
         ui.setCursorY(0)
@@ -248,11 +248,11 @@ function lapTimeEntryButton(car, lap, yPos, height)
         local lapNumber = lap.number
         local evenCar = lapNumber % 2 == 0
 
-        ui.drawRectFilled(vec2(xPos, yPos), vec2(xPos + height, yPos + height), settings.Appearance.uiThemeColor1)
+        ui.drawRectFilled(vec2(xPos, yPos), vec2(xPos + height, yPos + height), settings.Appearance.uiColorPrimary)
         ui.drawRectFilled(
                 vec2(xPos, yPos),
                 vec2(xPos + width, yPos + height),
-                evenCar and settings.Appearance.uiThemeColor1 * 0.15 or settings.Appearance.uiThemeColor1 * 0.5
+                evenCar and settings.Appearance.uiColorPrimary * 0.15 or settings.Appearance.uiColorPrimary * 0.5
         )
 
         ui.setCursorX(height * 0.2)
@@ -270,7 +270,7 @@ end
 
 function lapTimes:draw(xPos, yPos, width, height, session)
         cui.pushWindow("lapTimes_widget_window", xPos, yPos, width, height, false)
-        ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiThemeColor1 * 0.25)
+        ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiColorPrimary * 0.25)
         ui.setCursor(0)
 
         local height = ui.windowHeight() / 22

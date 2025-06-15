@@ -48,7 +48,7 @@ function page.draw()
         ui.drawRectFilled(
                 vec2(0, 0),
                 vec2(ui.windowWidth(), ui.windowHeight()),
-                settings.Appearance.uiThemeColor1 / 1.1
+                settings.Appearance.uiColorPrimary / 1.1
         )
 
         cui.pushWindowFitted("settings_page_window")

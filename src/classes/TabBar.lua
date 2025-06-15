@@ -24,7 +24,7 @@ function TabBar:draw(tabs)
         end
 
         ui.setCursorX(0)
-        ui.pushStyleColor(ui.StyleColor.Button, settings.Appearance.uiThemeColor1)
+        ui.pushStyleColor(ui.StyleColor.Button, settings.Appearance.uiColorPrimary)
         for i in ipairs(tabs) do
                 ui.setCursorX(0)
 

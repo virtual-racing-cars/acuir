@@ -51,7 +51,7 @@ local function drawSlider(id, name, width, height, value, sliderParams, noScroll
         ui.setCursorY(p1.y + height - height * 0.4)
         ui.invisibleButton("slider" .. id, vec2Temp1:set(width, barSize))
         local r1, r2 = ui.itemRect()
-        ui.drawRectFilled(r1, r2, rgbm.colors.black * 0.2, 5)
+        ui.drawRectFilled(r1, r2, settings.Appearance.uiColorBackground * 0.2, 5)
 
         local active = ui.itemActive() or (itemHeld == id and ui.mouseDown(ui.MouseButton.Left))
         local hovered = ui.rectHovered(r1, r2)
@@ -90,7 +90,7 @@ local function drawSlider(id, name, width, height, value, sliderParams, noScroll
                 ui.drawRectFilled(
                         r1,
                         vec2Temp1:set(sliderFill, r2.y),
-                        settings.Appearance.uiThemeColor2,
+                        settings.Appearance.uiColorSecondary,
                         5,
                         ui.CornerFlags.Left
                 )
@@ -121,7 +121,7 @@ local function drawSlider(id, name, width, height, value, sliderParams, noScroll
         ui.drawRectFilled(
                 vec2(sliderFill + 1, r1.y - 3),
                 vec2(sliderFill + grabberSize - 1, r2.y + 3),
-                active and settings.Appearance.uiThemeColor2 or settings.Appearance.uiThemeColor3 * 0.8,
+                active and settings.Appearance.uiColorSecondary or settings.Appearance.uiColorAccent * 0.8,
                 4
         )
         ui.setCursor(vec2(sliderFill, r2.y - barSize))

@@ -96,7 +96,7 @@ function page.draw(dt)
                         ui.setCursor(0)
                         cui.offsetCursorY(30)
 
-                        ui.drawRectFilled(vec2(0, 0), ui.windowSize(), settings.Appearance.uiThemeColor1 / 1.5)
+                        ui.drawRectFilled(vec2(0, 0), ui.windowSize(), settings.Appearance.uiColorPrimary / 1.5)
 
                         acLogoSize = vec2(ui.windowHeight() * 0.2, ui.windowHeight() * 0.2)
                         ui.setCursorX(ui.windowWidth() / 2 - acLogoSize.x / 2)
@@ -108,7 +108,7 @@ function page.draw(dt)
 
                         local menuButtonSize = vec2(ui.windowWidth() * 0.8, ui.windowHeight() / 14)
 
-                        ui.pushStyleColor(ui.StyleColor.Button, settings.Appearance.uiThemeColor1)
+                        ui.pushStyleColor(ui.StyleColor.Button, settings.Appearance.uiColorPrimary)
                         for i in ipairs(pauseButtons) do
                                 local menuButton = pauseButtons[i]
                                 local enabled = menuButton.enabled

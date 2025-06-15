@@ -22,7 +22,7 @@ local function promptDeleteSetup()
                 ui.drawSimpleLine(
                         vec2(ui.windowWidth() / 2 - titleTextWidth / 2, ui.getCursorY()),
                         vec2(ui.windowWidth() / 2 + titleTextWidth / 2, ui.getCursorY()),
-                        settings.Appearance.uiThemeColor2,
+                        settings.Appearance.uiColorSecondary,
                         3
                 )
 
@@ -83,7 +83,7 @@ local function promptOverwriteSetup()
                 ui.drawSimpleLine(
                         vec2(ui.windowWidth() / 2 - titleTextWidth / 2, ui.getCursorY()),
                         vec2(ui.windowWidth() / 2 + titleTextWidth / 2, ui.getCursorY()),
-                        settings.Appearance.uiThemeColor2,
+                        settings.Appearance.uiColorSecondary,
                         3
                 )
 
@@ -144,7 +144,7 @@ local function drawSetupControls(sm)
         ui.drawRectFilled(
                 ui.getCursor(),
                 ui.getCursor() + vec2Temp1:set(buttonWidth, iconButtonHeight),
-                settings.Appearance.uiThemeColor1
+                settings.Appearance.uiColorPrimary
         )
         ui.drawRect(
                 ui.getCursor(),
@@ -173,7 +173,7 @@ local function drawSetupControls(sm)
         ui.drawRectFilled(
                 ui.getCursor(),
                 ui.getCursor() + vec2Temp1:set(buttonWidth, iconButtonHeight),
-                settings.Appearance.uiThemeColor1
+                settings.Appearance.uiColorPrimary
         )
 
         if
@@ -198,7 +198,7 @@ local function drawSetupControls(sm)
         ui.drawRectFilled(
                 ui.getCursor(),
                 ui.getCursor() + vec2Temp1:set(buttonWidth / 2, iconButtonHeight),
-                settings.Appearance.uiThemeColor1
+                settings.Appearance.uiColorPrimary
         )
         if
                 cui.menuButton(
@@ -217,7 +217,7 @@ local function drawSetupControls(sm)
         ui.drawRectFilled(
                 ui.getCursor(),
                 ui.getCursor() + vec2Temp1:set(buttonWidth / 2, iconButtonHeight),
-                settings.Appearance.uiThemeColor1
+                settings.Appearance.uiColorPrimary
         )
         if cui.menuButton("Save Setup", vec2Temp1:set(buttonWidth / 2, iconButtonHeight)) then
                 if setupFileExists then
@@ -236,7 +236,7 @@ local function drawSetupControls(sm)
         ui.drawRectFilled(
                 ui.getCursor(),
                 ui.getCursor() + vec2Temp1:set(buttonWidth, iconButtonHeight),
-                settings.Appearance.uiThemeColor1
+                settings.Appearance.uiColorPrimary
         )
 
         if cui.menuButton("Reset Setup To Default", vec2Temp1:set(buttonWidth, iconButtonHeight), nil, nil) then

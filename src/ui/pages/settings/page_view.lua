@@ -148,7 +148,7 @@ function page:draw()
         ui.drawSimpleLine(
                 vec2(ui.windowWidth() * 0.5, 0),
                 vec2(ui.windowWidth() * 0.5, ui.windowHeight()),
-                settings.Appearance.uiThemeColor2
+                settings.Appearance.uiColorSecondary
         )
 
         cui.pushWindowFitted("settings_view_main_window")
@@ -161,7 +161,7 @@ function page:draw()
         ui.drawRectFilled(
                 vec2(0, 0),
                 vec2(ui.windowWidth(), ui.windowHeight() * 0.3),
-                settings.Appearance.uiThemeColor1 * 0.2
+                settings.Appearance.uiColorPrimary * 0.2
         )
 
         local onboardParams = ac.getOnboardCameraParams(0)

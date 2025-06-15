@@ -15,7 +15,7 @@ function card:draw(xPos, yPos, width, height)
         local border = 20 * cui.uiScale()
 
         cui.pushWindow("pedals_widget_window", xPos, yPos, width, height, false)
-        ui.drawRectFilled(vec2(0, 0), ui.windowSize(), settings.Appearance.uiThemeColor1)
+        ui.drawRectFilled(vec2(0, 0), ui.windowSize(), settings.Appearance.uiColorPrimary)
 
         local spectatedCar = ac.getCar(sim.focusedCar)
 

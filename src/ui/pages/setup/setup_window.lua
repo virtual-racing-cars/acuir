@@ -38,7 +38,7 @@ function setupTabBar(tabs)
         end
 
         ui.setCursorX(tabBarPosition)
-        ui.pushStyleColor(ui.StyleColor.Button, settings.Appearance.uiThemeColor1)
+        ui.pushStyleColor(ui.StyleColor.Button, settings.Appearance.uiColorPrimary)
         for i in ipairs(tabs) do
                 ui.setCursorX(0)
 
@@ -57,7 +57,7 @@ local function linkButton(name, size, linked)
         local clicked = ui.invisibleButton("##linkButton" .. name, size)
         local r1, r2 = ui.itemRect()
         local hovered = ui.itemHovered() and not cui.modalDialogCallback
-        ui.drawRectFilled(r1, r2, settings.Appearance.uiThemeColor1)
+        ui.drawRectFilled(r1, r2, settings.Appearance.uiColorPrimary)
 
         ui.beginRotation()
         ui.addIcon(
@@ -95,7 +95,7 @@ local function drawSetupSpinner(si)
         ui.drawRectFilled(
                 vec2(xPos, yPos),
                 vec2(xPos + spinnerWidth, yPos + spinnerHeight),
-                settings.Appearance.uiThemeColor1
+                settings.Appearance.uiColorPrimary
         )
 
         -- ui.drawRectFilledMultiColor(

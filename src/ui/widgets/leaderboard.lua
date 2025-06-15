@@ -121,7 +121,7 @@ local entryLayout = {
                                 ui.drawRectFilled(
                                         vec2(ui.getCursorX(), ui.getCursorY()),
                                         vec2(ui.getCursorX() + width, ui.getCursorY() + height),
-                                        settings.Appearance.uiThemeColor3
+                                        settings.Appearance.uiColorAccent
                                 )
                         end
 
@@ -167,15 +167,15 @@ function leaderboardEntryButton(car, yPos, height)
 
         local numberBoxColor = rgbm.colors.transparent
         if sim.focusedCar == car.index then
-                numberBoxColor = settings.Appearance.uiThemeColor2
+                numberBoxColor = settings.Appearance.uiColorSecondary
         elseif car.index == 0 then
-                numberBoxColor = settings.Appearance.uiThemeColor3
+                numberBoxColor = settings.Appearance.uiColorAccent
         end
-        ui.drawRectFilled(vec2(xPos, yPos), vec2(xPos + height, yPos + height), settings.Appearance.uiThemeColor1)
+        ui.drawRectFilled(vec2(xPos, yPos), vec2(xPos + height, yPos + height), settings.Appearance.uiColorPrimary)
         ui.drawRectFilled(
                 vec2(xPos, yPos),
                 vec2(xPos + width, yPos + height),
-                evenCar and settings.Appearance.uiThemeColor1 * 0.15 or settings.Appearance.uiThemeColor1 * 0.5
+                evenCar and settings.Appearance.uiColorPrimary * 0.15 or settings.Appearance.uiColorPrimary * 0.5
         )
         ui.drawRectFilled(vec2(xPos, yPos), vec2(xPos + height, yPos + height), numberBoxColor)
 
@@ -239,7 +239,7 @@ local isLeaderboardShowingDisconnected = false
 
 function leaderboard:draw(xPos, yPos, width, height)
         cui.pushWindow("leaderboard_widget_window", xPos, yPos, width, height, false)
-        ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiThemeColor1 * 0.25)
+        ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiColorPrimary * 0.25)
         ui.setCursor(0)
 
         local height = ui.windowHeight() / 22

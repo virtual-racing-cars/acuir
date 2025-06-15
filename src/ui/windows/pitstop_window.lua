@@ -189,8 +189,8 @@ function script.pitstopWindow(dt)
         ui.beginToolWindow("toolWindowTest", ui.cursorScreenPos(), windowSize, true, true)
         style:pushStyleMain()
 
-        ui.drawRectFilled(0, ui.availableSpace(), settings.Appearance.uiThemeColor1 * 0.65)
-        ui.drawRectFilled(0, vec2(ui.windowWidth(), itemHeight * 1.2), settings.Appearance.uiThemeColor1 * 0.65)
+        ui.drawRectFilled(0, ui.availableSpace(), settings.Appearance.uiColorPrimary * 0.65)
+        ui.drawRectFilled(0, vec2(ui.windowWidth(), itemHeight * 1.2), settings.Appearance.uiColorPrimary * 0.65)
 
         ui.setCursor(0)
         ui.dwriteTextAligned(
@@ -221,7 +221,7 @@ function script.pitstopWindow(dt)
                                 ui.drawRectFilled(
                                         ui.getCursor(),
                                         ui.getCursor() + vec2(ui.windowWidth(), itemHeight),
-                                        settings.Appearance.uiThemeColor1 * 0.65
+                                        settings.Appearance.uiColorPrimary * 0.65
                                 )
 
                                 ui.dwriteTextAligned(
@@ -247,7 +247,7 @@ function script.pitstopWindow(dt)
                 end
         end
 
-        ui.drawRectFilled(ui.getCursor(), ui.windowSize(), settings.Appearance.uiThemeColor1 * 0.65)
+        ui.drawRectFilled(ui.getCursor(), ui.windowSize(), settings.Appearance.uiColorPrimary * 0.65)
         cui.snapCursor()
         ui.dwriteTextAligned(
                 "Estimated Stop Time: %.1f s" % pitstop:getEstimatedTime(),

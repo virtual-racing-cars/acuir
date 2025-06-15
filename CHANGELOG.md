@@ -1,6 +1,11 @@
 ## ACUIR Changelog
 *Requires minimum CSP version 0.2.10 (3459)*
 *Ctrl+Shift+F5 to toggle UI. You can now bind a custom bind for this*
+### 0.9.2.3 (unreleased)
+
+Fixes:
+- Fixed fahrenheit/lbs value being shown for metric units
+
 ### 0.9.2.2
 
 Fixes:

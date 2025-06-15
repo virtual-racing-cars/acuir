@@ -28,14 +28,31 @@ local settings = {
                 { key = "developerMode", label = "Developer Mode", default = false, widget = 1 },
         },
         Appearance = {
-                { key = "uiThemeColor1", label = "Primay UI Color", default = rgbm.new("#3e3c46"), widget = 1 },
+                { key = "uiColorBackground", label = "Background Color", default = rgbm.colors.black, widget = 1 },
+                { key = "uiColorText", label = "Text Color", default = rgbm.colors.white, widget = 1 },
+                { key = "uiColorTextDim", label = "Text Dim Color", default = rgbm.new("#707070"), widget = 1 },
+                { key = "uiColorPrimary", label = "Primay Color", default = rgbm.new("#3e3c46"), widget = 1 },
                 {
-                        key = "uiThemeColor2",
-                        label = "Secondary UI Color",
-                        default = rgbm(0.92, 0.08, 0.12, 1),
+                        key = "uiColorPrimaryShade",
+                        label = "Primay Shade Color",
+                        default = rgbm.new("#5c5966"),
                         widget = 1,
                 },
-                { key = "uiThemeColor3", label = "Tertiary UI Color", default = rgbm(1, 1, 1, 1), widget = 1 },
+                {
+                        key = "uiColorSecondary",
+                        label = "Secondary Color",
+                        default = rgbm.new("#EB141F"),
+                        widget = 1,
+                },
+                {
+                        key = "uiColorSecondaryShade",
+                        label = "Secondary Shade Color",
+                        default = rgbm.new("#f3535b"),
+                        widget = 1,
+                },
+                { key = "uiColorAccent", label = "Accent Color", default = rgbm.colors.white, widget = 1 },
+                { key = "uiColorError", label = "Error Color", default = rgbm.colors.red, widget = 1 },
+                { key = "uiColorSuccess", label = "Success Color", default = rgbm.colors.green, widget = 1 },
         },
 }
 
@@ -48,6 +65,10 @@ for category, settingsTable in pairs(settings) do
                 __index = function(_, key) return db:get(category, key) end,
                 __newindex = function(_, key, value) db:set(category, key, value) end,
         })
+end
+
+for k, v in pairs(settings.Appearance) do
+        db:set("Appearance", v.key, v.default)
 end
 
 return settings
