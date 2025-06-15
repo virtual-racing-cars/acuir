@@ -40,6 +40,20 @@ local function drawTelemetryGraphs()
                         25 * cui.uiScale(),
                         rgbm.colors.white
                 )
+
+                if bestLapChannel.data[0] == nil and lastLapChannel.data[0] == nil then
+                        ui.setCursorX(0)
+                        ui.dwriteTextAligned(
+                                "NO DATA",
+                                50 * cui.uiScale(),
+                                ui.Alignment.Center,
+                                ui.Alignment.Center,
+                                vec2Temp1:set(graphWidth, r2.y - ui.getCursorY()),
+                                false,
+                                rgbm.colors.gray
+                        )
+                end
+
                 ui.setCursor(r2)
 
                 r1.y = r1.y + 40 * cui.uiScale()
@@ -83,13 +97,22 @@ local function drawTelemetryGraphs()
 end
 
 local function drawTelemetrySlice()
-        if not ui.windowHovered() then return end
-
         local mousePos = ui.mouseLocalPos()
-        ui.drawSimpleLine(vec2(mousePos.x, 0), vec2(mousePos.x, ui.windowHeight()), rgbm.colors.yellow)
 
         local splinePos = math.round(math.clamp(1 - (ui.windowWidth() - mousePos.x) / ui.windowWidth(), 0, 1), 3)
         local dataIndex = math.floor(splinePos * telemetry.dataCount)
+
+        local bestLapChannel = telemetry.bestLap.channels[1]
+        local lastLapChannel = telemetry.lastLap.channels[1]
+
+        if
+                not ui.windowHovered()
+                or (bestLapChannel.data[dataIndex] == nil and lastLapChannel.data[dataIndex] == nil)
+        then
+                return
+        end
+
+        ui.drawSimpleLine(vec2(mousePos.x, 0), vec2(mousePos.x, ui.windowHeight()), rgbm.colors.yellow)
 
         local pointData = {
                 {

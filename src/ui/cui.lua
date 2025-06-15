@@ -368,7 +368,7 @@ function CUI.bindingButton(button, inputMode, device, buttonLabel, size, flags)
         local sizeY = size.y
         local fontSize = math.floor(sizeY * 0.4)
         fontSize = (fontSize % 2 ~= 0) and fontSize + 1 or fontSize
-        local fontColor = nil
+        local fontColor = rgbm.colors.white
 
         ui.pushStyleColor(ui.StyleColor.ButtonHovered, settings.Appearance.uiColorSecondary)
         ui.pushStyleColor(ui.StyleColor.ButtonActive, settings.Appearance.uiColorSecondary)
@@ -384,20 +384,21 @@ function CUI.bindingButton(button, inputMode, device, buttonLabel, size, flags)
 
         if flags == ui.ButtonFlags.Disabled then
                 ui.popStyleColor(1)
-        elseif hovered then
-                fontColor = rgbm(1, 1, 1, 1)
+        elseif not hovered and device == "" then
+                fontColor = rgbm.colors.gray
         end
 
         ui.popStyleColor(2)
 
         ui.setCursor(tempCursor)
+        CUI.offsetCursorY(device == "" and 0 or -sizeY * 0.15)
         CUI.snapCursor()
         ui.dwriteTextAligned(
                 buttonLabel,
                 fontSize,
                 ui.Alignment.Center,
                 ui.Alignment.Center,
-                vec2Temp1(sizeX, sizeY * 0.8),
+                vec2Temp1(sizeX, sizeY),
                 false,
                 fontColor
         )
