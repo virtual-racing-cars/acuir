@@ -327,7 +327,7 @@ local settingsSearchInput = ""
 local settingsSearchActive = false
 
 function bindings:draw()
-        cui.pushWindow("settings_button_bind_tabbar", 0, 0, ui.windowWidth() * 0.25, ui.windowHeight(), false)
+        cui.pushWindow("settings_button_bind_tabbar", 0, 0, ui.windowWidth() * 0.2, ui.windowHeight(), false)
         ui.setCursor(0)
         ui.drawRectFilled(
                 vec2(0, 0),
@@ -340,7 +340,7 @@ function bindings:draw()
 
         cui.pushWindow(
                 "settings_button_binds_window2",
-                ui.windowWidth() * 0.25,
+                ui.windowWidth() * 0.2,
                 0,
                 ui.windowWidth() * 0.5,
                 ui.windowHeight(),

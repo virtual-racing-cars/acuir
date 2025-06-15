@@ -104,9 +104,9 @@ local currentSection = 1
 function tweaks:draw()
         cui.pushWindow(
                 "settings_controls_ffb",
-                ui.windowWidth() * 0.75,
+                ui.windowWidth() * 0.7,
                 0,
-                ui.windowWidth() * 0.25,
+                ui.windowWidth() * 0.3,
                 ui.windowHeight(),
                 false
         )

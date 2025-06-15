@@ -219,7 +219,7 @@ local function drawCarDot(car, position)
         elseif
                 sim.raceSessionType == ac.SessionType.Race
                 and (spectatedCar.lapCount + spectatedCar.splinePosition)
-                        > (car.lapCount + car.splinePosition) + 1
+                        > (car.lapCount + car.splinePosition) + 0.8
         then
                 carColor = carPositionColors.blueFlag
         end

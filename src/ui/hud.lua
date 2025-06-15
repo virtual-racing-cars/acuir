@@ -45,16 +45,14 @@ ui.onExclusiveHUD(function(mode)
         -- pages:goToSettingsGeneral()
         -- pages:goToSettingsAudio()
         -- pages:goToSettingsView()
-        pages:goToTelemetry()
+        -- pages:goToTelemetry()
 
         camera.windowHovered = ui.getHoveredID() ~= 0
 
         for hud, hudMode in pairs(hudModes) do
                 if mode == hud then
                         local dt = ac.getScriptDeltaT()
-
                         audio:driver(dt)
-
                         return hudMode(dt)
                 end
         end
