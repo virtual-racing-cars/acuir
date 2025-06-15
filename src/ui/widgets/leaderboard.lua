@@ -18,7 +18,8 @@ local entryLayout = {
                 label = "",
                 value = function(car, width, height)
                         return car.leaderboardPosition,
-                                (car.index == sim.focusedCar or car.index == 0) and rgbm.colors.black
+                                (car.index == sim.focusedCar or car.index == 0)
+                                                and settings.Appearance.uiColorBackground
                                         or rgbm.colors.white
                 end,
                 xShare = -1,
@@ -125,7 +126,7 @@ local entryLayout = {
                                 )
                         end
 
-                        return statusText, altStatus and rgbm.colors.black or rgbm.colors.white
+                        return statusText, altStatus and settings.Appearance.uiColorBackground or rgbm.colors.white
                 end,
                 xShare = 0.06,
                 align = ui.Alignment.Center,
@@ -209,7 +210,11 @@ function leaderboardEntryButton(car, yPos, height)
                         pingColor = rgbm.colors.yellow
                 end
 
-                ui.drawRectFilled(vec2(height * 0.1, yPos), vec2(0, yPos + height), rgbm.colors.black)
+                ui.drawRectFilled(
+                        vec2(height * 0.1, yPos),
+                        vec2(0, yPos + height),
+                        settings.Appearance.uiColorBackground
+                )
 
                 ui.drawRectFilled(
                         vec2(height * 0.1, yPos + height * math.min(car.status.ping / 400, 0.9)),

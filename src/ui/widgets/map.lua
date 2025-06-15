@@ -1,6 +1,7 @@
 local AISpline = require("ai_spline")
 local cui = require("ui.cui")
 local race = require("race")
+local settings = require("settings")
 local car = ac.getCar(0)
 local sim = ac.getSim()
 
@@ -41,7 +42,7 @@ local strokeWidths = {
 }
 local colors = {
         drs = rgbm(0.4, 1, 0.4, 1),
-        trackMain = rgbm.colors.black,
+        trackMain = settings.Appearance.uiColorBackground,
         trackEdge = rgbm.colors.white,
         split = rgbm.colors.white,
 }
@@ -126,7 +127,13 @@ local function drawMarker(progress, color, lengthMeters, widthMeters)
         local p4 = center - halfLength + halfWidth
 
         ui.drawQuadFilled(getCanvasPos(p1), getCanvasPos(p2), getCanvasPos(p3), getCanvasPos(p4), color)
-        ui.drawQuad(getCanvasPos(p1), getCanvasPos(p2), getCanvasPos(p3), getCanvasPos(p4), rgbm.colors.black)
+        ui.drawQuad(
+                getCanvasPos(p1),
+                getCanvasPos(p2),
+                getCanvasPos(p3),
+                getCanvasPos(p4),
+                settings.Appearance.uiColorBackground
+        )
 end
 
 local function drawDrsZones()
@@ -149,7 +156,7 @@ local function drawPitlane()
                 local wp = worldCoordsPit[index + 1]
                 if wp then ui.pathLineTo(getCanvasPos(wp)) end
         end
-        ui.pathStroke(rgbm.colors.black, false, strokeWidths.trackPitEdge)
+        ui.pathStroke(settings.Appearance.uiColorBackground, false, strokeWidths.trackPitEdge)
 
         ui.pathClear()
         for t = 0, #spline.points - 1 do
@@ -199,7 +206,7 @@ local function drawCarDot(car, position)
         local textSize = dotSize * 2
 
         local carColor = carPositionColors.behind
-        local backColor = rgbm.colors.black
+        local backColor = settings.Appearance.uiColorBackground
 
         local leaderboardPosition = race:getLeaderboardPosition(car.index)
 
@@ -244,7 +251,7 @@ local function drawCarDot(car, position)
                 0,
                 vec2(textSize, textSize) * 2 * cui.uiScale(),
                 false,
-                spectatedCar.index == car.index and rgbm.colors.black or rgbm.colors.white
+                spectatedCar.index == car.index and settings.Appearance.uiColorBackground or rgbm.colors.white
         )
 end
 

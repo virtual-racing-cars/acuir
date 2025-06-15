@@ -30,7 +30,8 @@ local entryLayout = {
                 label = "",
                 value = function(car, width, height)
                         return race:getLeaderboardPosition(car.index),
-                                (car.index == sim.focusedCar or car.index == 0) and rgbm.colors.black
+                                (car.index == sim.focusedCar or car.index == 0)
+                                                and settings.Appearance.uiColorBackground
                                         or rgbm.colors.white
                 end,
                 xShare = -1,
@@ -70,7 +71,7 @@ local entryLayout = {
                                 and car.status.previousLapTimeMs <= car.status.bestLapTimeMs
                         then
                                 drawTimeIndicator(width, height)
-                                textColor = rgbm.colors.black
+                                textColor = settings.Appearance.uiColorBackground
                         end
 
                         return ac.lapTimeToString(car.status.previousLapTimeMs), textColor
@@ -95,7 +96,8 @@ local entryLayout = {
 
                         if delta < 0 then deltaPrefix = "-" end
 
-                        return string.format("%s %.3f", deltaPrefix, math.abs(delta) / 1000), rgbm.colors.black
+                        return string.format("%s %.3f", deltaPrefix, math.abs(delta) / 1000),
+                                settings.Appearance.uiColorBackground
                 end,
                 xShare = 0.07,
                 align = ui.Alignment.Center,
@@ -184,7 +186,7 @@ local entryLayout = {
                                 and car.status.previousLapTimeMs <= car.status.bestLapTimeMs
                         then
                                 drawTimeIndicator(width, height)
-                                textColor = rgbm.colors.black
+                                textColor = settings.Appearance.uiColorBackground
                         end
 
                         return ac.lapTimeToString(car.bestLapTimeMs), textColor
@@ -209,7 +211,8 @@ local entryLayout = {
 
                         if delta < 0 then deltaPrefix = "-" end
 
-                        return string.format("%s %.3f", deltaPrefix, math.abs(delta) / 1000), rgbm.colors.black
+                        return string.format("%s %.3f", deltaPrefix, math.abs(delta) / 1000),
+                                settings.Appearance.uiColorBackground
                 end,
                 xShare = 0.07,
                 align = ui.Alignment.Center,
@@ -321,7 +324,11 @@ function timetableEntryButton(car, yPos, height)
                         pingColor = rgbm.colors.yellow
                 end
 
-                ui.drawRectFilled(vec2(height * 0.1, yPos), vec2(0, yPos + height), rgbm.colors.black)
+                ui.drawRectFilled(
+                        vec2(height * 0.1, yPos),
+                        vec2(0, yPos + height),
+                        settings.Appearance.uiColorBackground
+                )
 
                 ui.drawRectFilled(
                         vec2(height * 0.1, yPos + height * math.min(car.status.ping / 400, 0.9)),

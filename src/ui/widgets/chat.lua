@@ -145,7 +145,11 @@ local function chatInput(height)
                         true
                 )
 
-                ui.drawRectFilled(vec2(0, 0), vec2(ui.windowWidth(), 2000 * cui.uiScale()), rgbm.colors.black)
+                ui.drawRectFilled(
+                        vec2(0, 0),
+                        vec2(ui.windowWidth(), 2000 * cui.uiScale()),
+                        settings.Appearance.uiColorBackground
+                )
                 ui.setCursorX(ui.windowWidth() * 0.02)
                 ui.setCursorY(10 * cui.uiScale())
                 ui.dwriteTextAligned(

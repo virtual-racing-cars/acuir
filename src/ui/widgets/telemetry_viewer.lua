@@ -1,4 +1,5 @@
 local cui = require("ui.cui")
+local settings = require("settings")
 local telemetry = require("telemetry")
 local sim = ac.getSim()
 
@@ -24,7 +25,11 @@ local function drawTelemetryGraphs()
                 )
                 local r1, r2 = ui.itemRect()
                 ui.drawRectFilled(r1, r2, rgbm.colors.white * 0.3)
-                ui.drawRectFilled(r1, vec2Temp1:set(r2.x, r1.y + 40 * cui.uiScale()), rgbm.colors.black * 0.2)
+                ui.drawRectFilled(
+                        r1,
+                        vec2Temp1:set(r2.x, r1.y + 40 * cui.uiScale()),
+                        settings.Appearance.uiColorBackground * 0.2
+                )
 
                 ui.setCursor(r1)
 
@@ -258,7 +263,7 @@ end
 function telemetryViewer:draw(xPos, yPos, width, height)
         cui.pushWindow("telemetry_viewer_widget", xPos, yPos, width, height, false)
         ui.setCursor(0)
-        ui.drawRectFilled(0, ui.windowSize(), rgbm.colors.black * 0.65)
+        ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiColorBackground * 0.65)
 
         drawTelemetryGraphs()
         drawTelemetrySlice()

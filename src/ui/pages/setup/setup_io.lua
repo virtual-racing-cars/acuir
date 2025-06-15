@@ -350,7 +350,7 @@ function drawSetupIO(sm)
         end
 
         cui.pushWindow("load_setups", 0, 0, ui.windowWidth(), ui.windowHeight() * 0.5, true, ui.ButtonFlags.None)
-        ui.drawRectFilled(0, ui.windowSize(), rgbm.colors.black)
+        ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiColorBackground)
 
         drawSetupList()
         cui.popWindow(true)

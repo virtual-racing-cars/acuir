@@ -2,8 +2,9 @@ local TabBar = require("classes.TabBar")
 local configs = require("configs")
 local controls = require("controls")
 local cui = require("ui.cui")
-local sim = ac.getSim()
 local keys = require("keys")
+local settings = require("settings")
+local sim = ac.getSim()
 
 local inputModeStringKeys = {
         "BUTTON",
@@ -283,7 +284,11 @@ local settingsSearchActive = false
 function bindings:draw()
         cui.pushWindow("settings_button_bind_tabbar", 0, 0, ui.windowWidth() * 0.25, ui.windowHeight(), false)
         ui.setCursor(0)
-        ui.drawRectFilled(vec2(0, 0), vec2(ui.windowWidth(), ui.windowHeight()), rgbm.colors.black * 0.25)
+        ui.drawRectFilled(
+                vec2(0, 0),
+                vec2(ui.windowWidth(), ui.windowHeight()),
+                settings.Appearance.uiColorBackground * 0.25
+        )
 
         local app = applicationControlsTabBar:draw(controls.tabs)
         cui.popWindow()
@@ -301,7 +306,7 @@ function bindings:draw()
         ui.drawRectFilled(
                 0,
                 vec2(ui.windowWidth() * 0.4, ui.windowHeight() / 22 - 2 * cui.uiScale()),
-                rgbm.colors.black * 0.25
+                settings.Appearance.uiColorBackground * 0.25
         )
 
         settingsSearchInput, settingsSearchActive = cui.inputText(
@@ -368,7 +373,7 @@ function bindings:draw()
                 true
         )
 
-        -- ui.drawRectFilled(vec2(0, 0), vec2(ui.windowWidth(), ui.windowHeight()), rgbm.colors.black)
+        -- ui.drawRectFilled(vec2(0, 0), vec2(ui.windowWidth(), ui.windowHeight()), settings.Appearance.uiColorBackground)
 
         if not appsTabBars[app.name] then appsTabBars[app.name] = TabBar() end
 
@@ -382,7 +387,7 @@ function bindings:draw()
                         ui.drawRectFilled(
                                 ui.getCursor(),
                                 ui.getCursor() + vec2(ui.windowWidth(), ui.windowHeight() / 22),
-                                rgbm.colors.black * 0.25
+                                settings.Appearance.uiColorBackground * 0.25
                         )
 
                         cui.setCursorX(20)

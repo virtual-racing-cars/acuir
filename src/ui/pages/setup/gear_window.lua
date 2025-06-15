@@ -113,7 +113,7 @@ function gearWindow(spinnerCount)
                         0,
                         vec2(labelWidth + (labelPadding * 2), labelHeight),
                         false,
-                        rgbm.colors.black
+                        settings.Appearance.uiColorBackground
                 )
 
                 prevGearSpeed = maxGearSpeed

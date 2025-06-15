@@ -461,7 +461,7 @@ function CUI.specialButton(label, size, horizontalAligment, verticalAlignment, c
                         ui.Alignment.Start,
                         buttonSize,
                         false,
-                        rgbm.colors.black
+                        settings.Appearance.uiColorBackground
                 )
 
                 ui.setCursor(tempCursor)
@@ -473,7 +473,7 @@ function CUI.specialButton(label, size, horizontalAligment, verticalAlignment, c
                         ui.Alignment.End,
                         buttonSize,
                         false,
-                        rgbm.colors.black
+                        settings.Appearance.uiColorBackground
                 )
         else
                 CUI.snapCursor()

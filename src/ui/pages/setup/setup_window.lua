@@ -101,8 +101,8 @@ local function drawSetupSpinner(si)
         -- ui.drawRectFilledMultiColor(
         --         vec2(xPos, yPos),
         --         vec2(xPos + spinnerWidth, yPos + spinnerHeight * 0.7),
-        --         rgbm.colors.black * 0.2,
-        --         rgbm.colors.black * 0.2,
+        --         settings.Appearance.uiColorBackground * 0.2,
+        --         settings.Appearance.uiColorBackground * 0.2,
         --         rgbm.colors.transparent,
         --         rgbm.colors.transparent
         -- )
@@ -111,18 +111,18 @@ local function drawSetupSpinner(si)
                 ui.drawRectFilledMultiColor(
                         vec2(xPos, yPos + spinnerHeight * 0),
                         vec2(xPos + spinnerWidth, yPos + spinnerHeight),
-                        rgbm.colors.black * 0.2,
+                        settings.Appearance.uiColorBackground * 0.2,
                         rgbm.colors.transparent,
                         rgbm.colors.transparent,
-                        rgbm.colors.black * 0.2
+                        settings.Appearance.uiColorBackground * 0.2
                 )
         elseif si.xPos > 0.5 then
                 ui.drawRectFilledMultiColor(
                         vec2(xPos, yPos + spinnerHeight * 0),
                         vec2(xPos + spinnerWidth, yPos + spinnerHeight),
                         rgbm.colors.transparent,
-                        rgbm.colors.black * 0.2,
-                        rgbm.colors.black * 0.2,
+                        settings.Appearance.uiColorBackground * 0.2,
+                        settings.Appearance.uiColorBackground * 0.2,
                         rgbm.colors.transparent
                 )
         else
@@ -131,15 +131,15 @@ local function drawSetupSpinner(si)
                         vec2(xPos + spinnerWidth, yPos + spinnerHeight),
                         rgbm.colors.transparent,
                         rgbm.colors.transparent,
-                        rgbm.colors.black * 0.2,
-                        rgbm.colors.black * 0.2
+                        settings.Appearance.uiColorBackground * 0.2,
+                        settings.Appearance.uiColorBackground * 0.2
                 )
         end
 
         -- ui.drawSimpleLine(
         --         vec2(xPos, yPos + spinnerHeight),
         --         vec2(xPos + spinnerWidth, yPos + spinnerHeight),
-        --         rgbm.colors.black,
+        --         settings.Appearance.uiColorBackground,
         --         3
         -- )
 

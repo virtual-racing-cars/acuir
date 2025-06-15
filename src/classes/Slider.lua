@@ -98,24 +98,24 @@ local function drawSlider(id, name, width, height, value, sliderParams, noScroll
         ui.drawRectFilledMultiColor(
                 vec2Temp1:set(sliderFill, r1.y),
                 vec2Temp2:set(r1.x, r2.y),
-                rgbm.colors.black * 0.25,
+                settings.Appearance.uiColorBackground * 0.25,
                 rgbm.colors.transparent,
                 rgbm.colors.transparent,
-                rgbm.colors.black * 0.25
+                settings.Appearance.uiColorBackground * 0.25
         )
         ui.drawRectFilledMultiColor(
                 vec2Temp1:set(sliderFill, r1.y),
                 r2,
-                rgbm.colors.black * 0.25,
+                settings.Appearance.uiColorBackground * 0.25,
                 rgbm.colors.transparent,
                 rgbm.colors.transparent,
-                rgbm.colors.black * 0.25
+                settings.Appearance.uiColorBackground * 0.25
         )
 
         ui.drawRectFilled(
                 vec2(sliderFill, r1.y - 5),
                 vec2(sliderFill + grabberSize, r2.y + 5),
-                rgbm.colors.black * 0.5,
+                settings.Appearance.uiColorBackground * 0.5,
                 5
         )
         ui.drawRectFilled(
@@ -125,7 +125,7 @@ local function drawSlider(id, name, width, height, value, sliderParams, noScroll
                 4
         )
         ui.setCursor(vec2(sliderFill, r2.y - barSize))
-        ui.icon(ui.Icons.Menu, vec2(grabberSize, barSize), rgbm.colors.black * 0.3, barSize)
+        ui.icon(ui.Icons.Menu, vec2(grabberSize, barSize), settings.Appearance.uiColorBackground * 0.3, barSize)
 
         local value = valueStep * step + min
 
@@ -176,7 +176,7 @@ function drawSpinner(id, name, width, height, locked, value, sliderParams, noScr
 
                 if hoveredTimer < os.clock() then
                         ui.tooltip(vec2(10, 20) * cui.uiScale(), function()
-                                ui.drawRectFilled(0, ui.windowSize(), rgbm.colors.black)
+                                ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiColorBackground)
                                 ui.pushTextWrapPosition(400 * cui.uiScale())
                                 cui.snapCursor()
                                 ui.dwriteText(sliderParams.help:gsub("\\n", "\n"), 20 * cui.uiScale())
