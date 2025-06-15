@@ -44,9 +44,9 @@ local function bindingInUseDialog(button, name, inputMode, inUseBinds)
                 local inUseString = ""
                 for i, bind in ipairs(inUseBinds) do
                         if i > 1 then
-                                inUseString = inUseString .. ", " .. bind.tab .. ":" .. bind.bind
+                                inUseString = inUseString .. ", " .. bind.bind
                         else
-                                inUseString = bind.tab .. ":" .. bind.bind
+                                inUseString = bind.bind
                         end
                 end
 
@@ -85,8 +85,7 @@ local function bindingInUseDialog(button, name, inputMode, inUseBinds)
                         button:saveBind(inputMode)
 
                         for _, bind in ipairs(inUseBinds) do
-                                configs.CONTROLS:set(bind.bind, inputModeStringKeys[inputMode], -1)
-                                configs.CONTROLS:set(bind.bind, inputModeStringKeys[inputMode] .. "_MODIFICATOR", -1)
+                                bind:unbind(inputMode)
                         end
 
                         ui.popStyleVar(1)
@@ -152,38 +151,84 @@ local function bindingDialog(button, name, inputMode)
                         return true
                 end
 
-                local assigned, assignedButton, assignedModificator = button:assignBind(inputMode)
+                local assigned, assignedJoy, assignedButton, assignedJoyModificator, assignedModificator =
+                        button:assignBind(inputMode)
 
-                if assigned then
-                        local inUseList = {}
-                        for _, bind in pairs(controls.binds) do
-                                local controlTab, controlBind = bind.tab, bind.bind
-                                local boundButton = configs.CONTROLS:get(controlBind, "KEY", -1)
-                                local boundModificator = configs.CONTROLS:get(controlBind, "KEY_MODIFICATOR", -1)
+                if not assigned then
+                        ui.popStyleVar(1)
+
+                        return false
+                end
+
+                local inUseList = {}
+
+                if inputMode == 1 then
+                        for bindButton in controls:iterate() do
+                                local controlBind = bindButton.bind
+                                local boundJoy = configs.CONTROLS.ini:get(controlBind, "JOY", -1)
+                                local boundButton = configs.CONTROLS.ini:get(controlBind, "BUTTON", -1)
+                                local boundJoyModificator = configs.CONTROLS.ini:get(controlBind, "JOY_MODIFICATOR", -1)
+                                local boundModificator = configs.CONTROLS.ini:get(controlBind, "BUTTON_MODIFICATOR", {})
+
+                                if tonumber(boundModificator[1]) == -1 then boundModificator[1] = nil end
 
                                 if
                                         controlBind ~= button.bind
-                                        and keys.hexIndexList[assignedButton] == boundButton
-                                        and assignedModificator == boundModificator
+                                        and tonumber(assignedJoy) == tonumber(boundJoy)
+                                        and tonumber(assignedButton) == tonumber(boundButton)
+                                        and tonumber(assignedJoyModificator) == tonumber(boundJoyModificator)
+                                        and (
+                                                #assignedModificator > 0
+                                                        and tonumber(assignedModificator[1]) == tonumber(
+                                                                boundModificator[1]
+                                                        )
+                                                or true
+                                        )
                                 then
-                                        table.insert(inUseList, bind)
-                                        ac.log("Already BOUND!", controlTab, controlBind)
+                                        table.insert(inUseList, bindButton)
                                 end
                         end
+                elseif inputMode == 2 then
+                        for bindButton in controls:iterate() do
+                                local controlBind = bindButton.bind
+                                local boundButton = configs.CONTROLS.ini:get(controlBind, "XBOXBUTTON", "")
 
-                        if #inUseList > 0 then
-                                bindingInUseDialog(button, name, inputMode, inUseList)
-                        else
-                                button:saveBind(inputMode)
+                                if controlBind ~= button.bind and tonumber(assignedButton) == tonumber(boundButton) then
+                                        table.insert(inUseList, bindButton)
+                                end
+                        end
+                elseif inputMode == 3 then
+                        for bindButton in controls:iterate() do
+                                local controlBind = bindButton.bind
+                                local boundButton = configs.CONTROLS.ini:get(controlBind, "KEY", -1)
+                                local boundModificator = configs.CONTROLS.ini:get(controlBind, "KEY_MODIFICATOR", {})
 
-                                ui.popStyleVar(1)
-                                return true
+                                if
+                                        controlBind ~= button.bind
+                                        and tonumber(keys.hexIndexList[assignedButton]) == tonumber(boundButton)
+                                        and (
+                                                #assignedModificator > 0
+                                                        and tonumber(assignedModificator[1]) == tonumber(
+                                                                boundModificator[1]
+                                                        )
+                                                or true
+                                        )
+                                then
+                                        table.insert(inUseList, bindButton)
+                                end
                         end
                 end
 
-                --  then return true end
+                if #inUseList > 0 then
+                        bindingInUseDialog(button, name, inputMode, inUseList)
+                else
+                        button:saveBind(inputMode)
 
-                ui.popStyleVar(1)
+                        ui.popStyleVar(1)
+                        return true
+                end
+
+                --  then return true end
         end)
 end
 
@@ -380,7 +425,7 @@ function bindings:draw()
         ui.setCursorX(0)
         cui.setCursorY(15)
 
-        for _, tab in ipairs(app.tabs) do
+        for _, group in ipairs(app.groups) do
                 ui.setCursorX(0)
 
                 if isempty(settingsSearchInput) then
@@ -393,7 +438,7 @@ function bindings:draw()
                         cui.setCursorX(20)
                         cui.snapCursor()
                         ui.dwriteTextAligned(
-                                string.upper(tab.name),
+                                string.upper(group.name),
                                 24 * cui.uiScale(),
                                 ui.Alignment.Start,
                                 ui.Alignment.Center,
@@ -401,7 +446,7 @@ function bindings:draw()
                         )
                 end
 
-                for _, controlBinding in pairs(tab.content) do
+                for _, controlBinding in pairs(group.content) do
                         local startIndex, endIndex = string.find(
                                 string.upper(controlBinding.name),
                                 string.upper(settingsSearchInput),

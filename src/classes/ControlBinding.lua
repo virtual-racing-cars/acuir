@@ -79,6 +79,7 @@ function ControlBinding:initialize(bind, ini, controls)
         self.isLuaControlled = isLuaControlled and isLuaControlled or false
         self.isExtendedPhysics = isExtendedPhysics and isExtendedPhysics or false
         self.help = helpString and helpString or ""
+        self.buttons = {}
 
         if self.isActivationBind then
                 self:bindActivation(controls, activationLabel, activationHoldMode)
@@ -116,7 +117,7 @@ function ControlBinding:bindActivation(controls, label, holdMode)
         self.activationLabel = label and label or "Activate"
         self.button = ControlButton(self.bind, { hold = holdMode and holdMode or nil })
 
-        table.insert(controls.binds, { tab = self.tab, bind = self.bind })
+        table.insert(self.buttons, self.button)
 end
 
 function ControlBinding:bindSequential(controls, bind, downBind, downLabel, upBind, upLabel)
@@ -134,11 +135,11 @@ function ControlBinding:bindSequential(controls, bind, downBind, downLabel, upBi
         self.buttonDown = ControlButton(self.bindDown)
         self.buttonUp = ControlButton(self.bindUp)
 
+        table.insert(self.buttons, self.buttonDown)
+        table.insert(self.buttons, self.buttonUp)
+
         self.buttonDownLabel = not isempty(downLabel) and downLabel or "Decrease"
         self.buttonUpLabel = not isempty(upLabel) and upLabel or "Increase"
-
-        table.insert(controls.binds, { tab = self.tab, bind = self.bindDown })
-        table.insert(controls.binds, { tab = self.tab, bind = self.bindUp })
 end
 
 function ControlBinding:bindMultiPositionSwitch(
@@ -149,7 +150,6 @@ function ControlBinding:bindMultiPositionSwitch(
         switchLabel,
         switchLabelUnit
 )
-        self.mpsToggle = self.buttonUp:disabled() and self.buttonDown:disabled()
         self.multiPositionSwitchCount = switchCount and switchCount or 0
         self.multiPositionSwitchIndex = switchIndexOffset
 
@@ -172,11 +172,7 @@ function ControlBinding:bindMultiPositionSwitch(
                         self.buttonPosition[i] = ControlButton(self.bindMps[i])
                 end
 
-                if self.mpsToggle then
-                        self.buttonPosition[i]:setDisabled(false)
-                else
-                        self.buttonPosition[i]:setDisabled(true)
-                end
+                table.insert(self.buttons, self.buttonPosition[i])
 
                 self.buttonPositionLabel[i] = self.buttonPositionLabelExplicit and switchLabel[i] .. switchLabelUnit
                         or (
@@ -186,36 +182,6 @@ function ControlBinding:bindMultiPositionSwitch(
                                 .. " "
                                 .. switchLabelUnit
                         )
-
-                table.insert(controls.binds, { tab = self.tab, bind = self.bindMps[i] })
-        end
-
-        if self.mpsToggle then
-                self.buttonDown:setDisabled(true)
-                self.buttonUp:setDisabled(true)
-        else
-                self.buttonDown:setDisabled(false)
-                self.buttonUp:setDisabled(false)
-        end
-end
-
-function ControlBinding:toggleMPS()
-        self.mpsToggle = not self.mpsToggle
-
-        for i = 1, self.multiPositionSwitchCount do
-                if self.mpsToggle then
-                        self.buttonPosition[i]:setDisabled(false)
-                else
-                        self.buttonPosition[i]:setDisabled(true)
-                end
-        end
-
-        if self.mpsToggle then
-                self.buttonDown:setDisabled(true)
-                self.buttonUp:setDisabled(true)
-        else
-                self.buttonDown:setDisabled(false)
-                self.buttonUp:setDisabled(false)
         end
 end
 

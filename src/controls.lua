@@ -8,13 +8,7 @@ local configs = require("configs")
 
 local controls = {
         tabs = {},
-        binds = {},
 }
-
--- setTimeout(function()
---         configs.CONTROLS.ini:setAndSave("TEST", "TESTER", { { 1, 2, 3 } })
---         ac.log("hi")
--- end, 2)
 
 local function initializeControlTab(name, ini)
         local controlTab = ControlTab(name)
@@ -47,6 +41,20 @@ function controls:initialize()
 
         table.insert(controls.tabs, 1, initializeControlTab("General", configs.CM))
         table.insert(controls.tabs, 1, initializeControlTab("Car", configs.CAR_DEFAULT))
+end
+
+function controls:iterate()
+        return coroutine.wrap(function()
+                for _, controlTab in ipairs(self.tabs) do
+                        for _, controlTabGroup in ipairs(controlTab.groups) do
+                                for _, bind in ipairs(controlTabGroup.content) do
+                                        for _, button in ipairs(bind.buttons) do
+                                                coroutine.yield(button)
+                                        end
+                                end
+                        end
+                end
+        end)
 end
 
 return controls

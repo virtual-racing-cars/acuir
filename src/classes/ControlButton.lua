@@ -36,7 +36,8 @@ local function keybindString(modifierKeys, primaryKey)
 
         if primaryKey ~= nil and primaryKey ~= -1 and primaryKey ~= "-1" and primaryKey ~= "" then
                 bindingString = bindingString .. keys.indexStringList[tonumber(primaryKey)]
-        elseif bindingString == "" then
+                deviceString = "Keyboard"
+        else
                 bindingString = "Click to Assign"
         end
 
@@ -48,7 +49,7 @@ function ControlButton:initialize(bind, defaults)
         self.defaults = defaults
         self._button = ac.ControlButton(self.bind, self.defaults)
         self.listenerButton = -1
-        self.listenerModificator = -1
+        self.listenerModificators = {}
         self.listenerController = -1
         self.listenerControllerModificator = -1
 end
@@ -111,9 +112,9 @@ function ControlButton:listenControllerInputs()
                                 if
                                         self.listenerButton ~= -1
                                         and button ~= self.listenerButton
-                                        and button ~= self.listenerModificator
+                                        and button ~= self.listenerModificators[1]
                                 then
-                                        self.listenerModificator = self.listenerButton
+                                        self.listenerModificators = { self.listenerButton }
                                         self.listenerControllerModificator = self.listenerController
 
                                         self.listenerButton = button
@@ -128,7 +129,7 @@ function ControlButton:listenControllerInputs()
                 end
         end
 
-        if not anyButtonDown or self.listenerModificator ~= -1 then return true end
+        if not anyButtonDown or #self.listenerModificators > 0 then return true end
 end
 
 function ControlButton:listenGamepadInputs()
@@ -167,7 +168,7 @@ function ControlButton:listenKeyboardInputs()
                         if ac.isKeyDown(ui.KeyIndex.Menu) then table.insert(modifiers, tostring(ui.KeyIndex.Menu)) end
                         if ac.isKeyDown(ui.KeyIndex.Shift) then table.insert(modifiers, tostring(ui.KeyIndex.Shift)) end
 
-                        if #modifiers > 0 then self.listenerModificator = modifiers end
+                        if #modifiers > 0 then self.listenerModificators = modifiers end
 
                         self.listenerButton = v
 
@@ -189,26 +190,30 @@ ControlButton.listeners = {
 function ControlButton:assignBind(inputMode)
         local released = self.listeners[inputMode](self)
 
-        if not released then return false, self.listenerButton, self.listenerModificator end
+        if not released then return false, self.listenerButton, self.listenerModificators end
 
-        return (self.listenerModificator ~= -1 or self.listenerButton ~= -1),
+        return (#self.listenerModificators > 0 or self.listenerButton ~= -1),
+                self.listenerController,
                 self.listenerButton,
-                self.listenerModificator
+                self.listenerControllerModificator,
+                self.listenerModificators
 end
 
 function ControlButton:clearAssign()
-        self.listenerButton, self.listenerModificator, self.listenerController = -1, -1, -1
+        self.listenerButton, self.listenerModificators, self.listenerController = -1, {}, -1
 end
 
 function ControlButton:saveBind(inputMode)
         if self.listenerButton and self.listenerButton ~= -1 and self.listenerButton ~= "" then
                 configs.CONTROLS.ini:setAndSave(self.bind, inputModeStringKeys[inputMode], self.listenerButton)
 
-                if self.listenerModificator and self.listenerModificator ~= -1 and self.listenerModificator ~= "" then
+                if inputMode == 1 then configs.CONTROLS.ini:setAndSave(self.bind, "JOY", self.listenerController) end
+
+                if #self.listenerModificators > 0 then
                         configs.CONTROLS.ini:setAndSave(
                                 self.bind,
                                 inputModeStringKeys[inputMode] .. "_MODIFICATOR",
-                                { self.listenerModificator }
+                                { self.listenerModificators }
                         )
 
                         if inputMode == 1 then
@@ -221,8 +226,6 @@ function ControlButton:saveBind(inputMode)
                 elseif inputMode ~= 2 then
                         configs.CONTROLS.ini:setAndSave(self.bind, inputModeStringKeys[inputMode] .. "_MODIFICATOR", -1)
                 end
-
-                if inputMode == 1 then configs.CONTROLS.ini:setAndSave(self.bind, "JOY", self.listenerController) end
 
                 self:clearAssign()
 

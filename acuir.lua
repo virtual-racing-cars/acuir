@@ -46,12 +46,15 @@ local race = require("race")
 local settings = require("settings")
 local telemetry = require("telemetry")
 local voting = require("voting")
-local sim = ac.getSim()
 
 controls:initialize()
 
 app.state.appOpen = settings.General.autoStart
 app.state.hasAppOpened = false
+
+for _, v in pairs(settings.Appearance) do
+        settings.Appearance[v.key] = v.default
+end
 
 function script.update(dt)
         if ac.getLastError() and not app.state.debug then

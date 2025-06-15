@@ -29,6 +29,12 @@ local settings = {
         },
         Appearance = {
                 { key = "uiColorBackground", label = "Background Color", default = rgbm.colors.black, widget = 1 },
+                {
+                        key = "uiColorBackgroundShade",
+                        label = "Background Shade Color",
+                        default = rgbm.colors.black,
+                        widget = 1,
+                },
                 { key = "uiColorText", label = "Text Color", default = rgbm.colors.white, widget = 1 },
                 { key = "uiColorTextDim", label = "Text Dim Color", default = rgbm.new("#707070"), widget = 1 },
                 { key = "uiColorPrimary", label = "Primay Color", default = rgbm.new("#3e3c46"), widget = 1 },
@@ -53,6 +59,15 @@ local settings = {
                 { key = "uiColorAccent", label = "Accent Color", default = rgbm.colors.white, widget = 1 },
                 { key = "uiColorError", label = "Error Color", default = rgbm.colors.red, widget = 1 },
                 { key = "uiColorSuccess", label = "Success Color", default = rgbm.colors.green, widget = 1 },
+                { key = "uiColorRed", label = "Red Color", default = rgbm.colors.red, widget = 1 },
+                { key = "uiColorPurple", label = "Purple Color", default = rgbm.colors.red, widget = 1 },
+                { key = "uiColorOrange", label = "Orange Color", default = rgbm.colors.orange, widget = 1 },
+                { key = "uiColorBlue", label = "Blue Color", default = rgbm.colors.blue, widget = 1 },
+                { key = "uiColorGreen", label = "Green Color", default = rgbm.colors.green, widget = 1 },
+                { key = "uiColorYellow", label = "Yellow Color", default = rgbm.colors.yellow, widget = 1 },
+                { key = "uiColorGold", label = "Gold Color", default = rgbm.colors.yellow, widget = 1 },
+                { key = "uiColorSilver", label = "Silver Color", default = rgbm.colors.yellow, widget = 1 },
+                { key = "uiColorBronze", label = "Bronze Color", default = rgbm.colors.yellow, widget = 1 },
         },
 }
 
@@ -65,10 +80,6 @@ for category, settingsTable in pairs(settings) do
                 __index = function(_, key) return db:get(category, key) end,
                 __newindex = function(_, key, value) db:set(category, key, value) end,
         })
-end
-
-for k, v in pairs(settings.Appearance) do
-        db:set("Appearance", v.key, v.default)
 end
 
 return settings

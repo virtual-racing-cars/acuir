@@ -25,12 +25,6 @@ function SettingsWindow(dt)
 
         cui.pushWindowFull("settings_main_window", mainWindowFlags, false)
 
-        -- ui.drawRectFilled(
-        --         vec2(0, 0),
-        --         vec2(ui.windowWidth(), ui.windowHeight()),
-        --         settings.Appearance.uiColorPrimary / 1.1
-        -- )
-
         pages.manager:draw()
 
         cui.popWindow(false)

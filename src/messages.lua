@@ -1,3 +1,5 @@
+local settings = require("settings")
+
 local messages = {
         log = {},
         input = "",
@@ -59,7 +61,7 @@ ac.onOnlineWelcome(function(message, config)
         table.insert(messages.log, 1, {
                 sender = -1,
                 msg = message,
-                color = rgbm.colors.orange,
+                color = settings.Appearance.uiColorOrange,
                 timestamp = "",
         })
 end)
@@ -67,14 +69,16 @@ end)
 ac.onChatMessage(function(message, senderCarIndex, senderSessionID)
         if isempty(message) then return end
 
-        local chatColor = rgbm.colors.white
+        local chatColor = settings.Appearance.uiColorText
 
         if senderCarIndex == 0 then
-                chatColor = rgbm.colors.yellow
+                chatColor = settings.Appearance.uiColorYellow
         elseif senderCarIndex == -1 then
-                chatColor = rgbm.colors.orange
+                chatColor = settings.Appearance.uiColorOrange
         else
-                if ac.DriverTags(ac.getDriverName(senderCarIndex)).friend then chatColor = rgbm.colors.green end
+                if ac.DriverTags(ac.getDriverName(senderCarIndex)).friend then
+                        chatColor = settings.Appearance.uiColorGreen
+                end
         end
 
         local msgBlocks = string.split(message, "\n")
@@ -98,7 +102,7 @@ ac.onClientConnected(
                                 ac.getDriverName(connectedCarIndex),
                                 ac.getCarName(connectedCarIndex)
                         ),
-                        color = rgbm.colors.gray,
+                        color = settings.Appearance.uiColorTextDim,
                         timestamp = os.date("%H:%M", os.time()),
                 })
         end
@@ -113,7 +117,7 @@ ac.onClientDisconnected(
                                 ac.getDriverName(connectedCarIndex),
                                 ac.getCarName(connectedCarIndex)
                         ),
-                        color = rgbm.colors.gray,
+                        color = settings.Appearance.uiColorTextDim,
                         timestamp = os.date("%H:%M", os.time()),
                 })
         end
