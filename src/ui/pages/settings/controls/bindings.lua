@@ -312,7 +312,6 @@ local function buttonBinder(controlBinding)
         if controlBinding.isMultiPositionSwitchBind then
                 for index, button in ipairs(controlBinding.buttonPosition) do
                         ui.newLine()
-                        ui.setCursorX(margin)
 
                         button:setDisabled(false)
 

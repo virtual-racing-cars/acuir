@@ -26,7 +26,7 @@ function card:draw(xPos, yPos, width, height)
                 18 * cui.uiScale(),
                 ui.Alignment.Start,
                 ui.Alignment.Center,
-                vec2(ui.windowWidth() / 3, 36 * cui.uiScale())
+                vec2(ui.windowWidth() / 3, 32 * cui.uiScale())
         )
         ui.sameLine()
 
@@ -36,7 +36,7 @@ function card:draw(xPos, yPos, width, height)
                 18 * cui.uiScale(),
                 ui.Alignment.Start,
                 ui.Alignment.Center,
-                vec2(ui.windowWidth() / 3, 36 * cui.uiScale())
+                vec2(ui.windowWidth() / 3, 32 * cui.uiScale())
         )
         ui.sameLine()
 
@@ -46,7 +46,7 @@ function card:draw(xPos, yPos, width, height)
                 18 * cui.uiScale(),
                 ui.Alignment.Start,
                 ui.Alignment.Center,
-                vec2(ui.windowWidth() / 3, 36 * cui.uiScale())
+                vec2(ui.windowWidth() / 3, 32 * cui.uiScale())
         )
 
         cui.setCursorX(15)
@@ -54,30 +54,30 @@ function card:draw(xPos, yPos, width, height)
         cui.snapCursor()
         ui.dwriteTextAligned(
                 math.round(units:speed(spectatedCar.speedKmh)),
-                36 * cui.uiScale(),
+                32 * cui.uiScale(),
                 ui.Alignment.Start,
                 ui.Alignment.Center,
-                vec2(ui.windowWidth() / 3, 36 * cui.uiScale())
+                vec2(ui.windowWidth() / 3, 32 * cui.uiScale())
         )
         ui.sameLine()
 
         cui.snapCursor()
         ui.dwriteTextAligned(
                 race:getLeaderboardPosition(spectatedCar.index),
-                36 * cui.uiScale(),
+                32 * cui.uiScale(),
                 ui.Alignment.Start,
                 ui.Alignment.Center,
-                vec2(ui.windowWidth() / 3, 36 * cui.uiScale())
+                vec2(ui.windowWidth() / 3, 32 * cui.uiScale())
         )
         ui.sameLine()
 
         cui.snapCursor()
         ui.dwriteTextAligned(
                 ac.lapTimeToString(spectatedCar.bestLapTimeMs),
-                36 * cui.uiScale(),
+                32 * cui.uiScale(),
                 ui.Alignment.Start,
                 ui.Alignment.Center,
-                vec2(ui.windowWidth() / 3, 36 * cui.uiScale())
+                vec2(ui.windowWidth() / 3, 32 * cui.uiScale())
         )
         ui.sameLine()
 

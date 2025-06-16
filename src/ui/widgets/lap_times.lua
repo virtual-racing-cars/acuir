@@ -226,6 +226,7 @@ local function noEntryBanner(yPos, height)
         ui.setCursorX(height * 1.2)
         ui.setCursorY(0)
 
+        cui.snapCursor()
         ui.dwriteTextAligned(
                 "No entries",
                 fontSize,
