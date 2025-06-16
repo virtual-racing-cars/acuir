@@ -1,7 +1,6 @@
 ## ACUIR Changelog
-*Requires minimum CSP version 0.2.10 (3459)*
-*Ctrl+Shift+F5 to toggle UI. You can now bind a custom bind for this*
-### 0.9.2.3 (unreleased)
+*Requires minimum CSP version 0.2.11 (3465)*
+### 0.9.2.7
 
 Features:
 - New entry point window for when using other UI's, to easily activate ACUIR
@@ -11,13 +10,19 @@ Features:
  - Has spacing for headers/footers
  - Will lead to the overall "widgets" idea and everything being customizable/moveable
 - New sort by alphabetical option for Setup I/O
+- New options to only show best or last lap in Telemetry tab
 
 Fixes:
-- Fixed rogue .sp file being saved in AC root
+- Fixed the rogue .sp files being saved in AC root
 - Fixed keybinding logic in general
 - Fixed some timings showing 2 decimals instead of 3
-- Fixed fahrenheit/lbs value being shown for metric units
-- Fixed some general spacings
+- Fixed imperials unit values being shown instead of metric units when useImperialUnits is false
+- Fixed some general UI spacings
+
+Known Issues:
+- Modifiers show incorrect values online sometimes, needs further investigation
+- Color flickering on track map when crossing the finish line
+- Joining online session, mid session, will show incorrect "Wait-Time" period if joined in that time
 
 ### 0.9.2.2
 
