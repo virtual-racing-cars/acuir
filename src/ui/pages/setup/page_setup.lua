@@ -37,18 +37,7 @@ local function carStatusWindow()
                 ui.windowHeight(),
                 function()
                         ui.setCursor(0)
-                        if
-                                cui.menuButton(
-                                        "Car Status",
-                                        40,
-                                        0,
-                                        0,
-                                        0,
-                                        carStatusActive,
-                                        false,
-                                        ui.CornerFlags.TopLeft
-                                )
-                        then
+                        if cui.menuButton("Car Status", 40, 0, 0, 0, carStatusActive, false, ui.CornerFlags.Top) then
                         end
 
                         ui.sameLine()
@@ -62,7 +51,7 @@ local function carStatusWindow()
                                         ui.ButtonFlags.Disabled,
                                         not carStatusActive,
                                         false,
-                                        ui.CornerFlags.TopRight
+                                        ui.CornerFlags.Top
                                 )
                         then
                         end
@@ -120,7 +109,7 @@ local function setupIoWindow()
                                         0,
                                         not setupExchangeActive,
                                         false,
-                                        ui.CornerFlags.TopLeft
+                                        ui.CornerFlags.Top
                                 )
                         then
                                 setupExchangeActive = false
@@ -136,7 +125,7 @@ local function setupIoWindow()
                                         0,
                                         setupExchangeActive,
                                         false,
-                                        ui.CornerFlags.TopRight
+                                        ui.CornerFlags.Top
                                 )
                         then
                                 setupExchangeActive = true

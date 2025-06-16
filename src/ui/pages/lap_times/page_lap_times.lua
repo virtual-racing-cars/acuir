@@ -38,7 +38,7 @@ function page.draw()
                                                         or ui.ButtonFlags.Disabled,
                                                 sim.sessionsCount > 1 and lapTimeSession == i - 1,
                                                 false,
-                                                ui.CornerFlags.TopLeft
+                                                ui.CornerFlags.Top
                                         )
                                 then
                                         lapTimeSession = i - 1

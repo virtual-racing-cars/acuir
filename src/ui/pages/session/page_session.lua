@@ -172,7 +172,7 @@ local function trackMapWindow()
                 930 * cui.uiScale(),
                 function()
                         ui.setCursor(0)
-                        if cui.menuButton("TRACK MAP", 40, 0, 0, 0, false, false, ui.CornerFlags.TopLeft) then
+                        if cui.menuButton("TRACK MAP", 40, 0, 0, 0, false, false, ui.CornerFlags.Top) then
                         end
                 end,
                 function() mapWidget:drawFooter() end
@@ -218,7 +218,7 @@ local function sessionControlWindow()
                 220 * cui.uiScale(),
                 function()
                         ui.setCursor(0)
-                        if cui.menuButton("Session Control", 40, 0, 0, 0, false, false, ui.CornerFlags.TopLeft) then
+                        if cui.menuButton("Session Control", 40, 0, 0, 0, false, false, ui.CornerFlags.Top) then
                         end
                 end
         )
@@ -285,7 +285,7 @@ local function conditionsWindow()
                 310 * cui.uiScale(),
                 function()
                         ui.setCursor(0)
-                        if cui.menuButton("Conditions", 40, 0, 0, 0, false, false, ui.CornerFlags.TopLeft) then
+                        if cui.menuButton("Conditions", 40, 0, 0, 0, false, false, ui.CornerFlags.Top) then
                         end
                 end
         )
@@ -327,7 +327,7 @@ local function modifiersWindow()
                 372 * cui.uiScale(),
                 function()
                         ui.setCursor(0)
-                        if cui.menuButton("Modifiers", 40, 0, 0, 0, false, false, ui.CornerFlags.TopLeft) then
+                        if cui.menuButton("Modifiers", 40, 0, 0, 0, false, false, ui.CornerFlags.Top) then
                         end
                 end
         )
@@ -375,18 +375,7 @@ function page.draw()
                 ui.windowHeight() - 255 * cui.uiScale(),
                 function()
                         ui.setCursor(0)
-                        if
-                                cui.menuButton(
-                                        "LEADERBOARD",
-                                        40,
-                                        0,
-                                        0,
-                                        0,
-                                        leaderboardActive,
-                                        false,
-                                        ui.CornerFlags.TopLeft
-                                )
-                        then
+                        if cui.menuButton("LEADERBOARD", 40, 0, 0, 0, leaderboardActive, false, ui.CornerFlags.Top) then
                                 leaderboardActive = true
                         end
                         ui.sameLine()
@@ -400,7 +389,7 @@ function page.draw()
                                         ui.ButtonFlags.None,
                                         not leaderboardActive,
                                         false,
-                                        ui.CornerFlags.TopRight
+                                        ui.CornerFlags.Top
                                 )
                         then
                                 leaderboardActive = false
