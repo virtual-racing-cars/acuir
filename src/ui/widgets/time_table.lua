@@ -253,8 +253,6 @@ local function timetableBanner(yPos, height)
         local width = ui.windowWidth()
         local fontSize = height * 0.5
 
-        ui.drawRectFilled(vec2(0, yPos), vec2(width, yPos + height), rgbm(0.1, 0.1, 0.1, 0.95))
-
         ui.setCursorX(height * 0.2)
         ui.setCursorY(yPos)
 
@@ -375,12 +373,6 @@ function timetable:draw(xPos, yPos, width, height)
         end
         cui.dummy(height, height)
         cui.popWindow(true)
-
-        ui.drawRectFilled(
-                vec2(0, ui.windowHeight() - height),
-                vec2(width, ui.windowHeight()),
-                rgbm(0.1, 0.1, 0.1, 0.95)
-        )
 
         ui.setCursorX(0)
 

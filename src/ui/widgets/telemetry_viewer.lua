@@ -35,6 +35,7 @@ local function drawTelemetryGraphs()
 
                 cui.offsetCursorX(10)
                 cui.offsetCursorY(5)
+                cui.snapCursor()
                 ui.dwriteText(
                         string.format("%s %s", lastLapChannel.label, lastLapChannel.units),
                         25 * cui.uiScale(),
@@ -43,6 +44,7 @@ local function drawTelemetryGraphs()
 
                 if bestLapChannel.data[0] == nil and lastLapChannel.data[0] == nil then
                         ui.setCursorX(0)
+                        cui.snapCursor()
                         ui.dwriteTextAligned(
                                 "NO DATA",
                                 50 * cui.uiScale(),

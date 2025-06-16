@@ -203,8 +203,6 @@ local function lapTimeBanner(yPos, height)
         local width = ui.windowWidth()
         local fontSize = height * 0.5
 
-        ui.drawRectFilled(vec2(0, yPos), vec2(width, yPos + height), rgbm(0.1, 0.1, 0.1, 0.95))
-
         ui.setCursorX(height * 0.2)
         ui.setCursorY(yPos)
 
