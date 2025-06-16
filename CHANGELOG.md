@@ -4,6 +4,7 @@
 ### 0.9.2.3 (unreleased)
 
 Features:
+- New entry point window for when using other UI's, to easily activate ACUIR.
 - New "checkbox" UI element
 - Updated car status, will get to adding graphs similar to CSP UI later.
 - New window style

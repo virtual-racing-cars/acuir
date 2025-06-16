@@ -1,3 +1,5 @@
+local csp = require("csp")
+
 local app = {}
 
 local appManifestINI = ac.INIConfig.load("manifest.ini", ac.INIFormat.Extended)
@@ -7,9 +9,13 @@ local appName = appManifestINI:get("ABOUT", "NAME", "App")
 local appDescription = appManifestINI:get("ABOUT", "DESCRIPTION", "")
 local appDebugMode = appManifestINI:get("DEV", "DEBUG_MODE", 0) == 1
 
+local appFullInfo = string.format("%s: %s | CSP: %s (%s)", appName, appVersionString, csp.version, csp.versionCode)
+
 function app.version() return appVersionString end
 
 function app.fullName() return appfullName end
+
+function app.fullInfo() return appFullInfo end
 
 function app.name() return appName end
 

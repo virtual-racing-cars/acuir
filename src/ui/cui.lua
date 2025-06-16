@@ -1060,7 +1060,6 @@ function CUI.pushContentWindow(id, x, y, width, height, headerFunc, footerFunc, 
 
         ui.beginGradientShade()
         ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiColorPrimary, noCorners and 0 or 16 * uiScale)
-
         ui.endGradientShade(
                 vec2Temp1:set(ui.windowWidth(), 0),
                 ui.windowSize(),
