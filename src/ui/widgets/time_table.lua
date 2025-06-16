@@ -357,10 +357,6 @@ end
 local isTimetableShowingDisconnected = false
 
 function timetable:draw(xPos, yPos, width, height)
-        cui.pushWindow("timetable_widget_window", xPos, yPos, width, height, false)
-        ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiColorPrimary * 0.25)
-        ui.setCursor(0)
-
         local height = ui.windowHeight() / 22
         timetableBanner(0, height)
 
@@ -399,8 +395,6 @@ function timetable:draw(xPos, yPos, width, height)
         then
                 isTimetableShowingDisconnected = not isTimetableShowingDisconnected
         end
-
-        cui.popWindow()
 end
 
 return timetable

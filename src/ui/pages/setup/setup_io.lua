@@ -126,26 +126,13 @@ end
 
 local function drawSetupControls(sm)
         local iconButtonHeight = 42 * cui.uiScale()
-        local buttonWidth = (ui.windowWidth() / 24) * 22
+        local buttonWidth = ui.windowWidth() * 0.99
         local groupBegin = (ui.windowWidth() / 24)
         local fontSize = 22 * cui.uiScale()
 
-        ui.setCursor(0)
-        cui.snapCursor()
-        ui.dwriteTextAligned(
-                "Current Setup - " .. carSetup.current,
-                fontSize,
-                ui.Alignment.Center,
-                ui.Alignment.Center,
-                vec2(ui.availableSpaceX(), fontSize * 2)
-        )
+        ui.setCursorX(ui.windowWidth() * 0.005)
+        ui.setCursorY(iconButtonHeight * 0.2)
 
-        ui.setCursorX(groupBegin)
-        ui.drawRectFilled(
-                ui.getCursor(),
-                ui.getCursor() + vec2Temp1:set(buttonWidth, iconButtonHeight),
-                settings.Appearance.uiColorPrimary
-        )
         ui.drawRect(
                 ui.getCursor(),
                 ui.getCursor() + vec2Temp1:set(buttonWidth, iconButtonHeight),
@@ -166,60 +153,42 @@ local function drawSetupControls(sm)
                 setupFileExists = io.fileExists(carSetup.input.path)
         end
 
-        ui.setCursorX(groupBegin)
+        -- if
+        --         cui.menuButton(
+        --                 "Load Setup",
+        --                 vec2Temp1:set(buttonWidth, iconButtonHeight),
+        --                 nil,
+        --                 nil,
+        --                 setupFileExists and ui.ButtonFlags.None or ui.ButtonFlags.Disabled
+        --         )
+        -- then
+        --         cui.menuBanner("Loaded Setup", nil, rgbm.colors.green)
+        --         sm:LoadStuff(carSetup.selected.path)
+        --         carSetup.current = carSetup.selected.track .. "/" .. carSetup.selected.name
+        -- end
 
-        cui.offsetCursorY(10)
+        -- if
+        --         cui.menuButton(
+        --                 "Delete Setup",
+        --                 vec2Temp1:set(buttonWidth / 2, iconButtonHeight),
+        --                 nil,
+        --                 nil,
+        --                 setupFileExists and ui.ButtonFlags.None or ui.ButtonFlags.Disabled
+        --         )
+        -- then
+        --         if #carSetup.selected.name > 0 then promptDeleteSetup() end
+        -- end
+        -- ui.sameLine()
 
+        ui.setCursorX(ui.windowWidth() * 0.005)
+        ui.offsetCursorY(iconButtonHeight * 0.2)
         ui.drawRectFilled(
                 ui.getCursor(),
                 ui.getCursor() + vec2Temp1:set(buttonWidth, iconButtonHeight),
                 settings.Appearance.uiColorPrimary
         )
 
-        if
-                cui.menuButton(
-                        "Load Setup",
-                        vec2Temp1:set(buttonWidth, iconButtonHeight),
-                        nil,
-                        nil,
-                        setupFileExists and ui.ButtonFlags.None or ui.ButtonFlags.Disabled
-                )
-        then
-                cui.menuBanner("Loaded Setup", nil, rgbm.colors.green)
-                sm:LoadStuff(carSetup.selected.path)
-                carSetup.current = carSetup.selected.track .. "/" .. carSetup.selected.name
-        end
-
-        cui.offsetCursorY(10)
-
-        buttonWidth = buttonWidth - 10 * cui.uiScale()
-
-        ui.setCursorX(groupBegin)
-        ui.drawRectFilled(
-                ui.getCursor(),
-                ui.getCursor() + vec2Temp1:set(buttonWidth / 2, iconButtonHeight),
-                settings.Appearance.uiColorPrimary
-        )
-        if
-                cui.menuButton(
-                        "Delete Setup",
-                        vec2Temp1:set(buttonWidth / 2, iconButtonHeight),
-                        nil,
-                        nil,
-                        setupFileExists and ui.ButtonFlags.None or ui.ButtonFlags.Disabled
-                )
-        then
-                if #carSetup.selected.name > 0 then promptDeleteSetup() end
-        end
-        ui.sameLine()
-
-        ui.offsetCursorX(10 * cui.uiScale())
-        ui.drawRectFilled(
-                ui.getCursor(),
-                ui.getCursor() + vec2Temp1:set(buttonWidth / 2, iconButtonHeight),
-                settings.Appearance.uiColorPrimary
-        )
-        if cui.menuButton("Save Setup", vec2Temp1:set(buttonWidth / 2, iconButtonHeight)) then
+        if cui.menuButton("Save Setup", vec2Temp1:set(buttonWidth, iconButtonHeight)) then
                 if setupFileExists then
                         promptOverwriteSetup(sm)
                 else
@@ -230,19 +199,10 @@ local function drawSetupControls(sm)
 
         buttonWidth = buttonWidth + 10 * cui.uiScale()
 
-        cui.offsetCursorY(10)
-
-        ui.setCursorX(groupBegin)
-        ui.drawRectFilled(
-                ui.getCursor(),
-                ui.getCursor() + vec2Temp1:set(buttonWidth, iconButtonHeight),
-                settings.Appearance.uiColorPrimary
-        )
-
-        if cui.menuButton("Reset Setup To Default", vec2Temp1:set(buttonWidth, iconButtonHeight), nil, nil) then
-                ac.resetSetupToDefault()
-                cui.menuBanner("Setup reset to default", nil, rgbm.colors.green)
-        end
+        -- if cui.menuButton("Reset Setup To Default", vec2Temp1:set(buttonWidth, iconButtonHeight), nil, nil) then
+        --         ac.resetSetupToDefault()
+        --         cui.menuBanner("Setup reset to default", nil, rgbm.colors.green)
+        -- end
 end
 
 local rightClicked = ""
@@ -349,15 +309,13 @@ function drawSetupIO(sm)
                 cui.menuBanner("Deleted Setup", nil, rgbm.colors.red)
         end
 
-        cui.pushWindow("load_setups", 0, 0, ui.windowWidth(), ui.windowHeight() * 0.5, true, ui.ButtonFlags.None)
+        cui.pushWindow("load_setups", 0, 0, ui.windowWidth(), ui.windowHeight() * 0.7, true, ui.ButtonFlags.None)
         ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiColorBackground)
-
         drawSetupList()
         cui.popWindow(true)
 
-        cui.pushWindow("setup_io_saved_setups", 0, ui.windowHeight() * 0.5, ui.windowWidth(), ui.windowHeight() / 2)
+        cui.pushWindow("setup_io_saved_setups", 0, ui.windowHeight() * 0.75, ui.windowWidth(), ui.windowHeight() * 0.25)
         drawSetupControls(sm)
-
         cui.popWindow()
 
         return ""

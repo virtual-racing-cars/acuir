@@ -243,10 +243,6 @@ end
 local isLeaderboardShowingDisconnected = false
 
 function leaderboard:draw(xPos, yPos, width, height)
-        cui.pushWindow("leaderboard_widget_window", xPos, yPos, width, height, false)
-        ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiColorPrimary * 0.25)
-        ui.setCursor(0)
-
         local height = ui.windowHeight() / 22
         leaderboardBanner(0, height)
 
@@ -285,8 +281,6 @@ function leaderboard:draw(xPos, yPos, width, height)
         then
                 isLeaderboardShowingDisconnected = not isLeaderboardShowingDisconnected
         end
-
-        cui.popWindow()
 end
 
 return leaderboard

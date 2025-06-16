@@ -90,12 +90,16 @@ end
 
 function tracesGraph:draw(xPos, yPos, width, height)
         cui.pushWindow("traces_widget_window", xPos, yPos, width, height, false)
-        ui.drawRectFilled(vec2(0, 0), vec2(ui.windowWidth(), ui.windowHeight()), settings.Appearance.uiColorPrimary)
+        ui.drawRectFilled(
+                vec2(0, 0),
+                vec2(ui.windowWidth(), ui.windowHeight()),
+                settings.Appearance.uiColorBackground,
+                12
+        )
 
         border = 7.5 * cui.uiScale()
 
         cui.pushWindow("traces_widget_window2", border, border, width - border * 2, height - border * 2, false)
-        ui.drawRectFilled(0, vec2(ui.windowWidth(), ui.windowHeight()), rgbm(0.1, 0.1, 0.1, 1))
         drawGridLines()
 
         if sim.focusedCar ~= spectatedCarIndexLast then

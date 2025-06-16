@@ -105,11 +105,11 @@ local function chatInput(height)
         messages.input, chatActive =
                 cui.inputText("##chatInput", "", messages.input, "", vec2(ui.windowWidth() * 0.75, height))
         ui.drawRect(
-                vec2(0, ui.windowHeight() - height),
-                ui.windowSize(),
+                vec2(3, ui.windowHeight() - height),
+                ui.windowSize() - vec2(3, 0),
                 settings.Appearance.uiColorPrimary * 2,
-                0,
-                ui.CornerFlags.None,
+                12,
+                ui.CornerFlags.All,
                 2
         )
 
@@ -242,12 +242,17 @@ local function chatInput(height)
 end
 
 function chat:draw(xPos, yPos, width, height)
-        if not sim.isOnlineRace then return end
+        -- if not sim.isOnlineRace then return end
 
         local chatInputHeight = 40 * cui.uiScale()
 
         cui.pushWindow("chat_widget_window", xPos, yPos, width, height, false)
-        ui.drawRectFilled(vec2(0, 0), vec2(ui.windowWidth(), ui.windowHeight()), settings.Appearance.uiColorPrimary)
+        ui.drawRectFilled(
+                vec2(0, 0),
+                vec2(ui.windowWidth(), ui.windowHeight()),
+                settings.Appearance.uiColorBackground,
+                12
+        )
 
         logWindow(height - chatInputHeight)
         chatInput(chatInputHeight)

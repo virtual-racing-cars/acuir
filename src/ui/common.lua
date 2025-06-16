@@ -95,7 +95,13 @@ function topBar(path)
         --         rgbm.colors.aqua
         -- )
 
-        ui.drawRectFilled(0, vec2(ui.windowWidth(), topBarHeight), rgbm(0.1, 0.1, 0.1, 0.95))
+        ui.drawRectFilled(
+                0,
+                vec2(ui.windowWidth(), topBarHeight),
+                settings.Appearance.uiColorBackground,
+                12,
+                ui.CornerFlags.Top
+        )
 
         cui.contentWindow(
                 "top_bar_banner",
@@ -106,7 +112,9 @@ function topBar(path)
                         ui.drawRectFilled(
                                 vec2(0, 0),
                                 vec2(ui.windowWidth(), ui.windowHeight()),
-                                rgbm(0.1, 0.1, 0.1, 0.75)
+                                settings.Appearance.uiColorBackground * 0.5,
+                                12,
+                                ui.CornerFlags.Bottom
                         )
 
                         ui.setCursorX(ui.windowWidth() * 0.5 - 320 * cui.uiScale())
@@ -257,38 +265,28 @@ function topBar(path)
 end
 
 function bottomWidgetBar()
-        cui.pushWindow(
+        cui.pushContentWindow(
                 "bottom_widget_bar_window",
                 0,
                 ui.windowHeight() - 240 * cui.uiScale(),
                 ui.windowWidth(),
                 240 * cui.uiScale(),
+                nil,
                 true
         )
-        ui.drawRectFilled(vec2(0, 0), vec2(ui.windowWidth(), ui.windowHeight()), rgbm(0.1, 0.1, 0.1, 0.95))
 
-        local border = 15 * cui.uiScale()
+        local border = 3 * cui.uiScale()
 
-        local widgetYPos = ui.windowHeight() - 240 * cui.uiScale() + border
-        local widgetWidth = ui.windowWidth() / 3 - border
-        local widgetHeight = 240 * cui.uiScale() - border * 2
+        local widgetYPos = 0
+        local widgetWidth = ui.windowWidth() / 3 - border * 2
+        local widgetHeight = ui.windowHeight()
 
-        cardWidget:draw(border, widgetYPos, widgetWidth * 0.5 - border * 0.25, widgetHeight)
-        pedalsWidget:draw(
-                border + widgetWidth * 0.5 + border * 0.25,
-                widgetYPos,
-                widgetWidth * 0.5 - border * 0.25,
-                widgetHeight
-        )
+        cardWidget:draw(0, widgetYPos, widgetWidth * 0.5, widgetHeight)
+        pedalsWidget:draw(widgetWidth * 0.5, widgetYPos, widgetWidth * 0.5, widgetHeight)
         tracesWidget:draw(ui.windowWidth() * 0.5 - widgetWidth * 0.5, widgetYPos, widgetWidth, widgetHeight)
-        chatWidget:draw(
-                ui.windowWidth() * 0.5 + widgetWidth * 0.5 + border * 0.5,
-                widgetYPos,
-                widgetWidth,
-                widgetHeight
-        )
+        chatWidget:draw(ui.windowWidth() - widgetWidth, widgetYPos, widgetWidth, widgetHeight)
 
-        cui.popWindow()
+        cui.popContentWindow()
 end
 
 function settingsMenuCommon(path, bottomBarButtons)

@@ -269,7 +269,6 @@ function lapTimeEntryButton(car, lap, yPos, height)
 end
 
 function lapTimes:draw(xPos, yPos, width, height, session)
-        cui.pushWindow("lapTimes_widget_window", xPos, yPos, width, height, false)
         ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiColorPrimary * 0.25)
         ui.setCursor(0)
 
@@ -360,8 +359,6 @@ function lapTimes:draw(xPos, yPos, width, height, session)
                         outputFile:close()
                 end
         end
-
-        cui.popWindow()
 end
 
 return lapTimes

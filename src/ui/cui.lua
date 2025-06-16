@@ -286,63 +286,54 @@ function CUI.modalButton(label, sizeX, sizeY, flags)
                 or (label == "Confirm" and not settings.General.showConfirmDialogs)
 end
 
-function CUI.menuButton(label, size, horizontalAligment, verticalAlignment, flags, active, bold)
+function CUI.menuButton(label, size, horizontalAligment, verticalAlignment, flags, active, bold, cornerFlags)
+        if not horizontalAligment then horizontalAligment = ui.Alignment.Center end
+        if not verticalAlignment then verticalAlignment = ui.Alignment.Center end
+        if not flags then flags = ui.ButtonFlags.None end
+        if not cornerFlags then cornerFlags = ui.CornerFlags.None end
+
         if bold then
                 style:pushFontBold()
         else
                 style:pushFontRegular()
         end
 
-        if not horizontalAligment then horizontalAligment = ui.Alignment.Center end
-
-        if not verticalAlignment then verticalAlignment = ui.Alignment.Center end
-
-        if not flags then flags = ui.ButtonFlags.None end
-
         local sizeX, sizeY, buttonSize, fontSize
 
         if type(size) == "number" then
                 size = size * uiScale
                 sizeY = size
-                fontSize = math.floor(sizeY * 0.55)
-                fontSize = (fontSize % 2 ~= 0) and fontSize + 1 or fontSize
+                fontSize = sizeY * 0.65
                 buttonSize = vec2Temp1:set(
-                        math.round(ui.measureDWriteText(string.upper(label), fontSize).x + 100 * CUI.uiScale()),
+                        math.round(ui.measureDWriteText(string.upper(label), fontSize).x + 50 * CUI.uiScale()),
                         size
                 )
         else
                 sizeX = size.x
                 sizeY = size.y
-                fontSize = math.floor(sizeY * 0.55)
-                fontSize = (fontSize % 2 ~= 0) and fontSize + 1 or fontSize
+                fontSize = sizeY * 0.65
                 buttonSize = vec2Temp1(sizeX, sizeY)
         end
 
-        local fontColor = active and rgbm(0, 0, 0, 1) or nil
-
-        ui.pushStyleColor(ui.StyleColor.ButtonHovered, settings.Appearance.uiColorSecondary)
-        ui.pushStyleColor(ui.StyleColor.ButtonActive, settings.Appearance.uiColorSecondary)
-
-        if active then ui.pushStyleColor(ui.StyleColor.Button, settings.Appearance.uiColorAccent) end
-
-        if flags == ui.ButtonFlags.Disabled then
-                fontColor = rgbm(0.6, 0.6, 0.6, 1)
-                ui.pushStyleColor(ui.StyleColor.Button, rgbm(0.05, 0.05, 0.05, 1))
-        end
-
         local tempCursor = ui.getCursor()
-        local clicked = ui.button("##" .. label, buttonSize, flags)
+        local clicked = ui.invisibleButton("##" .. label, buttonSize, flags)
+        local r1, r2 = ui.itemRect()
         local hovered = ui.itemHovered()
 
+        local buttonColor = rgbm.colors.transparent
+        local fontColor = settings.Appearance.uiColorText
+
         if flags == ui.ButtonFlags.Disabled then
-                ui.popStyleColor(1)
+                buttonColor = settings.Appearance.uiColorBackground
+                fontColor = rgbm(0.6, 0.6, 0.6, 1)
         elseif hovered then
-                fontColor = rgbm(1, 1, 1, 1)
+                buttonColor = settings.Appearance.uiColorSecondary
+        elseif active then
+                buttonColor = settings.Appearance.uiColorAccent
+                fontColor = rgbm.colors.black
         end
 
-        if active then ui.popStyleColor(1) end
-
-        ui.popStyleColor(2)
+        ui.drawRectFilled(r1, r2, buttonColor, 6, cornerFlags)
 
         ui.setCursor(tempCursor)
         CUI.snapCursor()
@@ -564,7 +555,10 @@ function CUI.treeNodeButton(label, size, active, bold, count, defaultOpen)
         fontSize = (fontSize % 2 ~= 0) and fontSize + 1 or fontSize
         local fontColor = active and rgbm(0, 0, 0, 1) or nil
 
-        ui.pushStyleColor(ui.StyleColor.Button, bold and settings.Appearance.uiColorPrimary or rgbm(0.1, 0.1, 0.1, 1))
+        ui.pushStyleColor(
+                ui.StyleColor.Button,
+                bold and settings.Appearance.uiColorBackgroundShade or rgbm(0.1, 0.1, 0.1, 1)
+        )
         ui.pushStyleColor(ui.StyleColor.ButtonHovered, settings.Appearance.uiColorSecondary)
         ui.pushStyleColor(ui.StyleColor.ButtonActive, settings.Appearance.uiColorSecondary)
 
@@ -591,7 +585,7 @@ function CUI.treeNodeButton(label, size, active, bold, count, defaultOpen)
 
         ui.sameLine()
 
-        local textOffset = bold and size.x / 60 or size.x / 30
+        local textOffset = bold and size.x / 20 or size.x / 40
         ui.setCursor(tempCursor)
         ui.offsetCursorX(textOffset)
 
@@ -1022,7 +1016,13 @@ end
 
 function CUI.dummy(x, y) ui.dummy(vec2Temp1:set(x * uiScale, y * uiScale)) end
 
-local margins = 15
+local margins = 14
+
+-- ui.setCursorX(margins)
+-- ui.setCursorY(margins)
+-- ui.drawRectFilled(0, ui.windowSize(), rgbm.colors.red / 2, 20)
+
+-- ui.beginChild(id, vec2(tabWidth - margins * 2, tabHeight - margins * 2), false, windowFlags)
 
 function CUI.pushWindow(id, x, y, width, height, scroll, flags)
         if not flags then flags = 0 end
@@ -1038,14 +1038,11 @@ function CUI.pushWindow(id, x, y, width, height, scroll, flags)
         ui.setCursorY(y)
 
         ui.pushStyleVar(ui.StyleVar.WindowPadding, 0)
-        ui.beginChild(id, vec2(tabWidth, tabHeight), true, windowFlags)
 
-        if not scroll then ui.pushClipRect(vec2(0, 0), vec2(tabWidth, tabHeight)) end
+        ui.beginChild(id, vec2(tabWidth, tabHeight), false, windowFlags)
+        ui.setCursor(0)
 
-        ui.setCursorX(margins)
-        ui.setCursorY(margins)
-
-        ui.beginGroup(tabWidth)
+        if not scroll then ui.pushClipRect(0, vec2(tabWidth, tabHeight)) end
 end
 
 function CUI.popWindow(scroll, flags)
@@ -1056,8 +1053,52 @@ function CUI.popWindow(scroll, flags)
                 if ui.getScrollMaxY() - ui.getScrollY() < 5 * uiScale then ui.setScrollY(ui.getScrollMaxY()) end
         end
 
-        ui.endGroup()
         ui.endChild()
+        ui.popStyleVar(1)
+end
+
+function CUI.pushContentWindow(id, x, y, width, height, headerFunc, hideBackground)
+        ui.pushStyleVar(ui.StyleVar.WindowRounding, 100)
+
+        CUI.pushWindow(id .. "_background", x, y, width, height)
+
+        ui.beginGradientShade()
+        ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiColorPrimary, 12)
+        ui.endGradientShade(
+                vec2Temp1:set(ui.windowWidth(), 0),
+                ui.windowSize(),
+                settings.Appearance.uiColorPrimary,
+                settings.Appearance.uiColorBackgroundShade,
+                true
+        )
+
+        x = 10
+        y = 12
+        width = width - 10 * 2
+        height = height - 12 * 2
+
+        local headerSize = 50 * CUI.uiScale()
+
+        if headerFunc then
+                ui.setCursor(0)
+                CUI.pushWindow(id .. "_header", x, y, width, headerSize)
+                ui.setCursor(0)
+                headerFunc()
+                CUI.popWindow()
+
+                height = height - headerSize
+                y = y + headerSize
+        end
+
+        CUI.pushWindow(id .. "_content", x, y, width, height)
+
+        if not hideBackground then ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiColorBackground, 12) end
+end
+
+function CUI.popContentWindow()
+        CUI.popWindow()
+        CUI.popWindow()
+
         ui.popStyleVar(1)
 end
 
@@ -1067,8 +1108,8 @@ function CUI.pushWindowFitted(id, flags, scroll)
 
         CUI.pushWindow(
                 id,
-                (ui.windowWidth() - childWindowWith) / 2,
-                (ui.windowHeight() - childWindowHeight) / 2,
+                (ui.windowWidth() - childWindowWith) * 0.5,
+                (ui.windowHeight() - childWindowHeight) * 0.5,
                 childWindowWith,
                 childWindowHeight,
                 scroll

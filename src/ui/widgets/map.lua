@@ -43,7 +43,7 @@ local strokeWidths = {
 local colors = {
         drs = rgbm(0.4, 1, 0.4, 1),
         trackMain = settings.Appearance.uiColorBackground,
-        trackEdge = rgbm.colors.white,
+        trackEdge = settings.Appearance.uiColorText,
         split = rgbm.colors.white,
 }
 

@@ -11,7 +11,7 @@ local currentApp = app.state.setupTab - 1
 local tabBarPosition = 0
 
 local function tabItem(index, title)
-        if cui.treeNodeButton(title, vec2(ui.windowWidth(), ui.windowHeight() / 11), currentApp == index, true) then
+        if cui.treeNodeButton(title, vec2(ui.windowWidth(), ui.windowHeight() / 10), currentApp == index, true) then
                 currentApp = index
         end
 

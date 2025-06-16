@@ -370,7 +370,7 @@ SetupManager = class("SetupManager")
 function SetupManager:initialize()
         self._setupSpinners = loadSetupSpinners()
         self._pitSpinners = createPitstopStratItems()
-        self._defaultTabNames = { "ELECTRONICS", "PITSTOP STRATEGY", "FUEL", "TYRES", "GEARS", "APPS" }
+        self._defaultTabNames = { "ELECTRONICS", "PITSTOP STRATEGY", "FUEL", "TYRES", "GEARS" }
         self._tabNames = {}
         self._tabCount = 0
         self._defaultSetup = ac.stringifyCurrentSetup()
@@ -410,7 +410,6 @@ function SetupManager:initialize()
                         and v.name ~= "PITSTOP STRATEGY"
                         and v.name ~= "GEARS"
                         and #v.setupSpinners == 0
-                        and v.name ~= "APPS"
                 then
                         table.removeItem(self.setupTabs, v)
                 else

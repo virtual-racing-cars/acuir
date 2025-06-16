@@ -28,11 +28,16 @@ local settings = {
                 { key = "developerMode", label = "Developer Mode", default = false, widget = 1 },
         },
         Appearance = {
-                { key = "uiColorBackground", label = "Background Color", default = rgbm.colors.black, widget = 1 },
+                {
+                        key = "uiColorBackground",
+                        label = "Background Color",
+                        default = rgbm(0.08, 0.08, 0.09, 1),
+                        widget = 1,
+                },
                 {
                         key = "uiColorBackgroundShade",
                         label = "Background Shade Color",
-                        default = rgbm.colors.black,
+                        default = rgbm(0.15, 0.15, 0.17, 1),
                         widget = 1,
                 },
                 { key = "uiColorText", label = "Text Color", default = rgbm.colors.white, widget = 1 },
