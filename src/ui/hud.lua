@@ -38,7 +38,7 @@ local hudModes = {
 ui.onExclusiveHUD(function(mode)
         if not app.state.appOpen then return end
 
-        pages:goToSession()
+        -- pages:goToSession()
         -- pages:goToLapTimes()
         -- pages:goToSetup()
         -- pages:goToSettingsControls()

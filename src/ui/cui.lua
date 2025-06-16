@@ -303,7 +303,7 @@ function CUI.menuButton(label, size, horizontalAligment, verticalAlignment, flag
         if type(size) == "number" then
                 size = size * uiScale
                 sizeY = size
-                fontSize = sizeY * 0.65
+                fontSize = sizeY * 0.6
                 buttonSize = vec2Temp1:set(
                         math.round(ui.measureDWriteText(string.upper(label), fontSize).x + 50 * CUI.uiScale()),
                         size
@@ -1057,13 +1057,11 @@ function CUI.popWindow(scroll, flags)
         ui.popStyleVar(1)
 end
 
-function CUI.pushContentWindow(id, x, y, width, height, headerFunc, hideBackground)
-        ui.pushStyleVar(ui.StyleVar.WindowRounding, 100)
-
+function CUI.pushContentWindow(id, x, y, width, height, headerFunc, hideBackground, noCorners)
         CUI.pushWindow(id .. "_background", x, y, width, height)
 
         ui.beginGradientShade()
-        ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiColorPrimary, 12)
+        ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiColorPrimary, noCorners and 0 or 12)
         ui.endGradientShade(
                 vec2Temp1:set(ui.windowWidth(), 0),
                 ui.windowSize(),
@@ -1072,12 +1070,12 @@ function CUI.pushContentWindow(id, x, y, width, height, headerFunc, hideBackgrou
                 true
         )
 
-        x = 10
-        y = 12
-        width = width - 10 * 2
-        height = height - 12 * 2
+        x = 10 * uiScale
+        y = 12 * uiScale
+        width = width - x * 2
+        height = height - y * 2
 
-        local headerSize = 50 * CUI.uiScale()
+        local headerSize = 50 * uiScale
 
         if headerFunc then
                 ui.setCursor(0)
@@ -1092,14 +1090,14 @@ function CUI.pushContentWindow(id, x, y, width, height, headerFunc, hideBackgrou
 
         CUI.pushWindow(id .. "_content", x, y, width, height)
 
-        if not hideBackground then ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiColorBackground, 12) end
+        if not hideBackground then
+                ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiColorBackground, noCorners and 0 or 12)
+        end
 end
 
 function CUI.popContentWindow()
         CUI.popWindow()
         CUI.popWindow()
-
-        ui.popStyleVar(1)
 end
 
 function CUI.pushWindowFitted(id, flags, scroll)

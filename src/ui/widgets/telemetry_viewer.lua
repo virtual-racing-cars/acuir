@@ -286,7 +286,6 @@ end
 function telemetryViewer:draw(xPos, yPos, width, height)
         cui.pushWindow("telemetry_viewer_widget", xPos, yPos, width, height, false)
         ui.setCursor(0)
-        ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiColorBackground * 0.65)
 
         drawTelemetryGraphs()
         drawTelemetrySlice()

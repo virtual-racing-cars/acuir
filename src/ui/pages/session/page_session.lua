@@ -171,18 +171,7 @@ local function trackMapWindow()
                 930 * cui.uiScale(),
                 function()
                         ui.setCursor(0)
-                        if
-                                cui.menuButton(
-                                        "TRACK MAP",
-                                        genericButtonHeight,
-                                        0,
-                                        0,
-                                        0,
-                                        false,
-                                        false,
-                                        ui.CornerFlags.TopLeft
-                                )
-                        then
+                        if cui.menuButton("TRACK MAP", 40, 0, 0, 0, false, false, ui.CornerFlags.TopLeft) then
                         end
                 end
         )
@@ -275,18 +264,7 @@ local function sessionControlWindow()
                 210 * cui.uiScale(),
                 function()
                         ui.setCursor(0)
-                        if
-                                cui.menuButton(
-                                        "Session Control",
-                                        genericButtonHeight,
-                                        0,
-                                        0,
-                                        0,
-                                        false,
-                                        false,
-                                        ui.CornerFlags.TopLeft
-                                )
-                        then
+                        if cui.menuButton("Session Control", 40, 0, 0, 0, false, false, ui.CornerFlags.TopLeft) then
                         end
                 end
         )
@@ -353,18 +331,7 @@ local function conditionsWindow()
                 310 * cui.uiScale(),
                 function()
                         ui.setCursor(0)
-                        if
-                                cui.menuButton(
-                                        "Conditions",
-                                        genericButtonHeight,
-                                        0,
-                                        0,
-                                        0,
-                                        false,
-                                        false,
-                                        ui.CornerFlags.TopLeft
-                                )
-                        then
+                        if cui.menuButton("Conditions", 40, 0, 0, 0, false, false, ui.CornerFlags.TopLeft) then
                         end
                 end
         )
@@ -406,18 +373,7 @@ local function modifiersWindow()
                 372 * cui.uiScale(),
                 function()
                         ui.setCursor(0)
-                        if
-                                cui.menuButton(
-                                        "Modifiers",
-                                        genericButtonHeight,
-                                        0,
-                                        0,
-                                        0,
-                                        false,
-                                        false,
-                                        ui.CornerFlags.TopLeft
-                                )
-                        then
+                        if cui.menuButton("Modifiers", 40, 0, 0, 0, false, false, ui.CornerFlags.TopLeft) then
                         end
                 end
         )
@@ -468,7 +424,7 @@ function page.draw()
                         if
                                 cui.menuButton(
                                         "LEADERBOARD",
-                                        genericButtonHeight,
+                                        40,
                                         0,
                                         0,
                                         0,
@@ -484,7 +440,7 @@ function page.draw()
                         if
                                 cui.menuButton(
                                         "TIME TABLE",
-                                        genericButtonHeight,
+                                        40,
                                         0,
                                         0,
                                         ui.ButtonFlags.None,

@@ -1,4 +1,5 @@
 local cui = require("ui.cui")
+local style = require("style")
 local units = require("units")
 local uis = ac.getUI()
 
@@ -8,25 +9,24 @@ local car = ac.getCar(0)
 local carINI = ac.INIConfig.carData(0, "car.ini")
 local kgPerL = carINI:get("FUEL_EXT", "KG_PER_LITER", 0.7339)
 
+local columnHeaders = { "", "Left", "Σ/Δ", "Right" }
+
 local cornerStatusLabels = { "FRONT LEFT", "FRONT RIGHT", "REAR LEFT", "REAR RIGHT" }
 local cornerStatusInfo = {
-        [0] = {
-                label = "Camber",
-                value = function(i) return car.wheels[i].camber end,
-                round = 2,
-                unit = "",
-        },
+
         {
                 label = "Camber",
                 value = function(i) return car.wheels[i].camber end,
                 round = 2,
-                unit = "",
+                compare = true,
+                unit = "°",
         },
         {
                 label = "Caster",
                 value = function(i) return car.caster end,
                 round = 2,
-                unit = "",
+                compare = true,
+                unit = "°",
         },
         {
                 label = "Toe",
@@ -37,7 +37,8 @@ local cornerStatusInfo = {
                         return car.wheels[i].toeIn * sign
                 end,
                 round = 2,
-                unit = "",
+                compare = true,
+                unit = "°",
         },
         {
                 label = "Travel",
@@ -54,12 +55,7 @@ local cornerStatusInfo = {
         {
                 label = "Pressure",
                 value = function(i) return car.wheels[i].tyreStaticPressure end,
-                round = 2,
-                unit = "psi",
-        },
-        {
-                label = "Pressure (hot)",
-                value = function(i) return car.wheels[i].tyrePressure end,
+                value2 = function(i) return car.wheels[i].tyrePressure end,
                 round = 2,
                 unit = "psi",
         },
@@ -69,6 +65,13 @@ local cornerStatusInfo = {
                 round = 2,
                 unit = "°C",
         },
+        {
+                label = "Grain & Blister",
+                value = function(i) return car.wheels[i].tyreGrain end,
+                value2 = function(i) return car.wheels[i].tyreBlister end,
+                round = 4,
+                unit = "%",
+        },
 }
 
 local centerStatusInfo = {
@@ -76,7 +79,8 @@ local centerStatusInfo = {
                 label = "Front Ride Height",
                 value = function(i) return car.rideHeight[0] * 1000 end,
                 round = 1,
-                unit = "mm (min: %s)" % math.max(round(car.minHeight * 1000), 0),
+                min = "min: %s" % math.max(round(car.minHeight * 1000), 0),
+                unit = "mm",
                 warn = function() return car.rideHeight[0] < car.minHeight end,
         },
         {
@@ -123,73 +127,240 @@ local centerStatusInfo = {
                 label = "Rear Ride Height",
                 value = function(i) return car.rideHeight[1] * 1000 end,
                 round = 1,
-                unit = "mm (min: %s)" % math.max(round(car.minHeight * 1000), 0),
+                min = "min: %s" % math.max(round(car.minHeight * 1000), 0),
+                unit = "mm",
                 warn = function() return car.rideHeight[1] < car.minHeight end,
         },
 }
 
 function CarStatusWindow()
-        if car == nil then
-                car = ac.getCar(0)
-                return
+        local spaceSize = ui.windowHeight() / 28
+        local fontSize = spaceSize * 0.5
+
+        style:pushFontBold()
+        for _, v in ipairs(columnHeaders) do
+                ui.sameLine()
+                ui.dwriteTextAligned(
+                        v,
+                        fontSize * 1.2,
+                        ui.Alignment.Center,
+                        ui.Alignment.Center,
+                        vec2(ui.windowWidth() * 0.25, spaceSize * 1.2)
+                )
         end
+        ui.popDWriteFont()
 
         for i = 1, #cornerStatusInfo do
                 local infoBlock = cornerStatusInfo[i]
-                for j = 0, 3 do
-                        local xPos = (j % 2 == 0) and 20 or 326
-                        local yPos = j < 2 and 10 or 870
-                        local row = (i > 1 and j > 1) and i - 1 or i
 
-                        if i == 2 and j > 1 then goto continue end
+                cui.offsetCursorX(15)
+                cui.snapCursor()
+                ui.dwriteTextAligned(
+                        string.format("%s (%s)", infoBlock.label, infoBlock.unit),
+                        fontSize,
+                        ui.Alignment.Start,
+                        ui.Alignment.Center,
+                        vec2(ui.windowWidth() * 0.25, spaceSize)
+                )
+                ui.sameLine()
+                ui.setCursorX(ui.windowWidth() * 0.25)
 
-                        if i == 1 then
-                                cui.dwriteText({
-                                        text = cornerStatusLabels[j + 1],
-                                        fontSize = 25,
-                                        xPos = xPos,
-                                        yPos = yPos,
-                                })
-                        end
+                if infoBlock.compare then
+                        local xSpace = ui.availableSpaceX() / 3
+                        cui.snapCursor()
+                        ui.dwriteTextAligned(
+                                round(infoBlock.value(0), infoBlock.round),
+                                fontSize,
+                                ui.Alignment.Center,
+                                ui.Alignment.Center,
+                                vec2(xSpace, spaceSize)
+                        )
+                        ui.sameLine()
 
-                        cui.dwriteText({
-                                text = infoBlock.label .. ":",
-                                fontSize = 25,
-                                xPos = xPos,
-                                yPos = yPos + row * 28,
-                        })
+                        cui.snapCursor()
+                        ui.dwriteTextAligned(
+                                round(infoBlock.value(0) - infoBlock.value(1), infoBlock.round),
+                                fontSize,
+                                ui.Alignment.Center,
+                                ui.Alignment.Center,
+                                vec2(xSpace, spaceSize)
+                        )
+                        ui.sameLine()
 
-                        if infoBlock.value(j) then
-                                cui.dwriteText({
-                                        text = math.round(infoBlock.value(j), infoBlock.round) .. " " .. infoBlock.unit,
-                                        fontSize = 25,
-                                        xPos = xPos + 174,
-                                        yPos = yPos + row * 28,
-                                })
-                        end
+                        cui.snapCursor()
+                        ui.dwriteTextAligned(
+                                round(infoBlock.value(1), infoBlock.round),
+                                fontSize,
+                                ui.Alignment.Center,
+                                ui.Alignment.Center,
+                                vec2(xSpace, spaceSize)
+                        )
+                elseif infoBlock.value2 then
+                        local xSpace = ui.availableSpaceX() / 2
+                        cui.snapCursor()
+                        ui.dwriteTextAligned(
+                                round(infoBlock.value(0), infoBlock.round)
+                                        .. "/"
+                                        .. round(infoBlock.value2(0), infoBlock.round),
+                                fontSize,
+                                ui.Alignment.Center,
+                                ui.Alignment.Center,
+                                vec2(xSpace, spaceSize)
+                        )
+                        ui.sameLine()
 
-                        ::continue::
+                        cui.snapCursor()
+                        ui.dwriteTextAligned(
+                                round(infoBlock.value(1), infoBlock.round)
+                                        .. "/"
+                                        .. round(infoBlock.value2(1), infoBlock.round),
+                                fontSize,
+                                ui.Alignment.Center,
+                                ui.Alignment.Center,
+                                vec2(xSpace, spaceSize)
+                        )
+                else
+                        local xSpace = ui.availableSpaceX() / 2
+                        cui.snapCursor()
+                        ui.dwriteTextAligned(
+                                round(infoBlock.value(0), infoBlock.round),
+                                fontSize,
+                                ui.Alignment.Center,
+                                ui.Alignment.Center,
+                                vec2(xSpace, spaceSize)
+                        )
+                        ui.sameLine()
+
+                        cui.snapCursor()
+                        ui.dwriteTextAligned(
+                                round(infoBlock.value(1), infoBlock.round),
+                                fontSize,
+                                ui.Alignment.Center,
+                                ui.Alignment.Center,
+                                vec2(xSpace, spaceSize)
+                        )
                 end
         end
+        ui.dummy(spaceSize)
 
         for i = 1, #centerStatusInfo do
                 local infoBlock = centerStatusInfo[i]
-                local xPos = 100
-                local yPos = 325
-                local row = i
 
-                cui.dwriteText({
-                        text = infoBlock.label .. ":",
-                        fontSize = 25,
-                        xPos = xPos,
-                        yPos = yPos + row * 50,
-                })
-                cui.dwriteText({
-                        text = math.round(infoBlock.value(i), infoBlock.round) .. " " .. infoBlock.unit,
-                        fontSize = 25,
-                        xPos = xPos + 240,
-                        yPos = yPos + row * 50,
-                        color = (infoBlock.warn and infoBlock.warn()) and rgbm.colors.red or rgbm.colors.white,
-                })
+                cui.offsetCursorX(15)
+                cui.snapCursor()
+                ui.dwriteTextAligned(
+                        string.format("%s (%s)", infoBlock.label, infoBlock.unit),
+                        fontSize,
+                        ui.Alignment.Start,
+                        ui.Alignment.Center,
+                        vec2(ui.windowWidth() * 0.4, spaceSize)
+                )
+                ui.sameLine()
+                ui.setCursorX(ui.windowWidth() * 0.25)
+
+                cui.snapCursor()
+                ui.dwriteTextAligned(
+                        round(infoBlock.value(1), infoBlock.round) .. (infoBlock.min and " " .. infoBlock.min or ""),
+                        fontSize,
+                        ui.Alignment.Center,
+                        ui.Alignment.Center,
+                        vec2(ui.availableSpaceX(), spaceSize),
+                        false,
+                        (infoBlock.warn and infoBlock.warn()) and rgbm.colors.red or rgbm.colors.white
+                )
+        end
+
+        ui.dummy(spaceSize)
+
+        for i = 1, #cornerStatusInfo do
+                local infoBlock = cornerStatusInfo[i]
+
+                cui.offsetCursorX(15)
+                cui.snapCursor()
+                ui.dwriteTextAligned(
+                        string.format("%s (%s)", infoBlock.label, infoBlock.unit),
+                        fontSize,
+                        ui.Alignment.Start,
+                        ui.Alignment.Center,
+                        vec2(ui.windowWidth() * 0.25, spaceSize)
+                )
+                ui.sameLine()
+                ui.setCursorX(ui.windowWidth() * 0.25)
+
+                if infoBlock.compare then
+                        local xSpace = ui.availableSpaceX() / 3
+                        cui.snapCursor()
+                        ui.dwriteTextAligned(
+                                round(infoBlock.value(2), infoBlock.round),
+                                fontSize,
+                                ui.Alignment.Center,
+                                ui.Alignment.Center,
+                                vec2(xSpace, spaceSize)
+                        )
+                        ui.sameLine()
+
+                        cui.snapCursor()
+                        ui.dwriteTextAligned(
+                                round(infoBlock.value(2) - infoBlock.value(3), infoBlock.round),
+                                fontSize,
+                                ui.Alignment.Center,
+                                ui.Alignment.Center,
+                                vec2(xSpace, spaceSize)
+                        )
+                        ui.sameLine()
+
+                        cui.snapCursor()
+                        ui.dwriteTextAligned(
+                                round(infoBlock.value(3), infoBlock.round),
+                                fontSize,
+                                ui.Alignment.Center,
+                                ui.Alignment.Center,
+                                vec2(xSpace, spaceSize)
+                        )
+                elseif infoBlock.value2 then
+                        local xSpace = ui.availableSpaceX() / 2
+                        cui.snapCursor()
+                        ui.dwriteTextAligned(
+                                round(infoBlock.value(2), infoBlock.round)
+                                        .. "/"
+                                        .. round(infoBlock.value2(2), infoBlock.round),
+                                fontSize,
+                                ui.Alignment.Center,
+                                ui.Alignment.Center,
+                                vec2(xSpace, spaceSize)
+                        )
+                        ui.sameLine()
+
+                        cui.snapCursor()
+                        ui.dwriteTextAligned(
+                                round(infoBlock.value(3), infoBlock.round)
+                                        .. "/"
+                                        .. round(infoBlock.value2(3), infoBlock.round),
+                                fontSize,
+                                ui.Alignment.Center,
+                                ui.Alignment.Center,
+                                vec2(xSpace, spaceSize)
+                        )
+                else
+                        local xSpace = ui.availableSpaceX() / 2
+                        cui.snapCursor()
+                        ui.dwriteTextAligned(
+                                round(infoBlock.value(2), infoBlock.round),
+                                fontSize,
+                                ui.Alignment.Center,
+                                ui.Alignment.Center,
+                                vec2(xSpace, spaceSize)
+                        )
+                        ui.sameLine()
+
+                        cui.snapCursor()
+                        ui.dwriteTextAligned(
+                                round(infoBlock.value(3), infoBlock.round),
+                                fontSize,
+                                ui.Alignment.Center,
+                                ui.Alignment.Center,
+                                vec2(xSpace, spaceSize)
+                        )
+                end
         end
 end

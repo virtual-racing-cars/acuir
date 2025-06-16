@@ -50,28 +50,27 @@ function setupTabBar(tabs)
         return currentApp + 1
 end
 
-local spinnerWidth = 700 * cui.uiScale()
-local spinnerHeight = 90 * cui.uiScale()
-
 local function linkButton(name, size, linked)
         local clicked = ui.invisibleButton("##linkButton" .. name, size)
         local r1, r2 = ui.itemRect()
         local hovered = ui.itemHovered() and not cui.modalDialogCallback
         ui.drawRectFilled(r1, r2, settings.Appearance.uiColorPrimary)
 
+        local color = settings.Appearance.uiColorSecondary
+
+        if hovered then color = settings.Appearance.uiColorSecondary end
+
         ui.beginRotation()
-        ui.addIcon(
-                linked and ui.Icons.Link or ui.Icons.LinkBroken,
-                size.y * 0.4,
-                0.5,
-                hovered and rgbm.colors.red or rgbm.colors.white
-        )
+        ui.addIcon(linked and ui.Icons.Link or ui.Icons.LinkBroken, size.y * 0.4, 0.5, color)
         ui.endRotation(0)
 
         return clicked
 end
 
 local function drawSetupSpinner(si)
+        local spinnerWidth = ui.windowWidth() * 0.42
+        local spinnerHeight = 90 * cui.uiScale()
+
         if si.child or si.repair then return end
 
         si:run(true)
@@ -90,12 +89,24 @@ local function drawSetupSpinner(si)
                 if #si.items > 0 then si.format = si.items[si.value + 1] end
         end
 
+        local cornerFlags = ui.CornerFlags.All
+
+        if (si.mirror or si.mirrorAvailable) and not si.fixed then
+                if si.xPos < 0.5 then
+                        cornerFlags = ui.CornerFlags.Left
+                elseif si.xPos > 0.5 then
+                        cornerFlags = ui.CornerFlags.Right
+                end
+        end
+
         ui.setCursorX(xPos)
         ui.setCursorY(yPos)
         ui.drawRectFilled(
-                vec2(xPos, yPos),
-                vec2(xPos + spinnerWidth, yPos + spinnerHeight),
-                settings.Appearance.uiColorPrimary
+                vec2(xPos, yPos - spinnerHeight * 0.18),
+                vec2(xPos + spinnerWidth, yPos + spinnerHeight * 1.18),
+                settings.Appearance.uiColorPrimary,
+                12,
+                cornerFlags
         )
 
         -- ui.drawRectFilledMultiColor(
@@ -107,54 +118,47 @@ local function drawSetupSpinner(si)
         --         rgbm.colors.transparent
         -- )
 
-        if si.xPos < 0.5 then
-                ui.drawRectFilledMultiColor(
-                        vec2(xPos, yPos + spinnerHeight * 0),
-                        vec2(xPos + spinnerWidth, yPos + spinnerHeight),
-                        settings.Appearance.uiColorBackground * 0.2,
-                        rgbm.colors.transparent,
-                        rgbm.colors.transparent,
-                        settings.Appearance.uiColorBackground * 0.2
-                )
-        elseif si.xPos > 0.5 then
-                ui.drawRectFilledMultiColor(
-                        vec2(xPos, yPos + spinnerHeight * 0),
-                        vec2(xPos + spinnerWidth, yPos + spinnerHeight),
-                        rgbm.colors.transparent,
-                        settings.Appearance.uiColorBackground * 0.2,
-                        settings.Appearance.uiColorBackground * 0.2,
-                        rgbm.colors.transparent
-                )
-        else
-                ui.drawRectFilledMultiColor(
-                        vec2(xPos, yPos + spinnerHeight * 0),
-                        vec2(xPos + spinnerWidth, yPos + spinnerHeight),
-                        rgbm.colors.transparent,
-                        rgbm.colors.transparent,
-                        settings.Appearance.uiColorBackground * 0.2,
-                        settings.Appearance.uiColorBackground * 0.2
-                )
-        end
-
-        -- ui.drawSimpleLine(
-        --         vec2(xPos, yPos + spinnerHeight),
-        --         vec2(xPos + spinnerWidth, yPos + spinnerHeight),
-        --         settings.Appearance.uiColorBackground,
-        --         3
-        -- )
+        -- if si.xPos < 0.5 then
+        --         ui.drawRectFilledMultiColor(
+        --                 vec2(xPos, yPos + spinnerHeight * 0),
+        --                 vec2(xPos + spinnerWidth, yPos + spinnerHeight),
+        --                 settings.Appearance.uiColorBackground * 0.2,
+        --                 rgbm.colors.transparent,
+        --                 rgbm.colors.transparent,
+        --                 settings.Appearance.uiColorBackground * 0.2
+        --         )
+        -- elseif si.xPos > 0.5 then
+        --         ui.drawRectFilledMultiColor(
+        --                 vec2(xPos, yPos + spinnerHeight * 0),
+        --                 vec2(xPos + spinnerWidth, yPos + spinnerHeight),
+        --                 rgbm.colors.transparent,
+        --                 settings.Appearance.uiColorBackground * 0.2,
+        --                 settings.Appearance.uiColorBackground * 0.2,
+        --                 rgbm.colors.transparent
+        --         )
+        -- else
+        --         ui.drawRectFilledMultiColor(
+        --                 vec2(xPos, yPos + spinnerHeight * 0),
+        --                 vec2(xPos + spinnerWidth, yPos + spinnerHeight),
+        --                 rgbm.colors.transparent,
+        --                 rgbm.colors.transparent,
+        --                 settings.Appearance.uiColorBackground * 0.2,
+        --                 settings.Appearance.uiColorBackground * 0.2
+        --         )
+        -- end
 
         local value, changed, active, hovered =
                 drawSpinner(si.id, si.name, spinnerWidth, spinnerHeight, si.fixed, si.value, si, false)
 
         if si.mirrorAvailable and not si.fixed then
                 ui.setCursorX(xPos + spinnerWidth)
-                ui.setCursorY(yPos)
+                ui.setCursorY(yPos - spinnerHeight * 0.18)
                 if
                         linkButton(
                                 si.name,
                                 vec2Temp1:set(
                                         ((ui.windowWidth() - spinnerWidth) - 40 * cui.uiScale()) - ui.getCursorX(),
-                                        spinnerHeight
+                                        spinnerHeight * 1.36
                                 ),
                                 si.mirrored
                         )
@@ -179,9 +183,6 @@ end
 
 local currentQuickPitPreset = 0
 function car_setup(sm)
-        spinnerWidth = 555 * cui.uiScale()
-        spinnerHeight = 100 * cui.uiScale()
-
         local changed = false
         local tab = sm.setupTabs[tonumber(app.state.setupTab)]
 

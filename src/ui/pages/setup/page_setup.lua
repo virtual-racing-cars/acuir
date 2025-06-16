@@ -7,6 +7,7 @@ require("ui.pages.setup.setup_io")
 require("classes.SetupManager")
 local app = require("app")
 local cui = require("ui.cui")
+local settings = require("settings")
 
 local carStatusActive = true
 local setupExchangeActive = false
@@ -14,18 +15,16 @@ local setupAppsActive = false
 
 local vec2Temp1 = vec2()
 
-local genericButtonHeight = 50
-local fontSize = genericButtonHeight
-
 sm = SetupManager()
 
 local function setupItemWindow()
-        ui.setCursor(0)
-        cui.pushWindow("car_setup_items_window", ui.windowWidth() / 4, 0, ui.windowWidth() / 2, ui.windowHeight())
-        ui.drawRectFilled(0, ui.windowSize(), rgbm(0, 0, 0, 0.25))
+        cui.pushWindow("car_setup_items_window", ui.windowWidth() * 0.25, 0, ui.windowWidth() * 0.5, ui.windowHeight())
 
-        ui.setCursor(0)
-        car_setup(sm)
+        if setupAppsActive then
+        else
+                car_setup(sm)
+        end
+
         cui.popWindow()
 end
 
@@ -41,7 +40,7 @@ local function carStatusWindow()
                         if
                                 cui.menuButton(
                                         "Car Status",
-                                        genericButtonHeight,
+                                        40,
                                         0,
                                         0,
                                         0,
@@ -57,10 +56,10 @@ local function carStatusWindow()
                         if
                                 cui.menuButton(
                                         "Last Outing",
-                                        genericButtonHeight,
+                                        40,
                                         0,
                                         0,
-                                        0,
+                                        ui.ButtonFlags.Disabled,
                                         not carStatusActive,
                                         false,
                                         ui.CornerFlags.TopRight
@@ -90,36 +89,7 @@ local function setupIoWindow()
                 ui.windowHeight() * 0.5 - 7.5 * cui.uiScale(),
                 function()
                         ui.setCursor(0)
-                        if
-                                cui.menuButton(
-                                        "Car Setup",
-                                        genericButtonHeight,
-                                        0,
-                                        0,
-                                        0,
-                                        not setupAppsActive,
-                                        false,
-                                        ui.CornerFlags.TopLeft
-                                )
-                        then
-                                setupAppsActive = false
-                        end
-
-                        ui.sameLine()
-
-                        if
-                                cui.menuButton(
-                                        "Setup Apps",
-                                        genericButtonHeight,
-                                        0,
-                                        0,
-                                        0,
-                                        setupAppsActive,
-                                        false,
-                                        ui.CornerFlags.TopRight
-                                )
-                        then
-                                setupAppsActive = true
+                        if cui.menuButton("Car Setup", 40, 0, 0, 0, not setupAppsActive, false, ui.CornerFlags.Top) then
                         end
                 end
         )
@@ -138,7 +108,7 @@ local function setupIoWindow()
                         if
                                 cui.menuButton(
                                         "Local Setups",
-                                        genericButtonHeight,
+                                        40,
                                         0,
                                         0,
                                         0,
@@ -155,7 +125,7 @@ local function setupIoWindow()
                         if
                                 cui.menuButton(
                                         "Setup Exchange",
-                                        genericButtonHeight,
+                                        40,
                                         0,
                                         0,
                                         0,
@@ -180,9 +150,6 @@ local function setupIoWindow()
 end
 
 function page:draw()
-        genericButtonHeight = 50 * cui.uiScale()
-        fontSize = math.floor(genericButtonHeight * 0.55)
-
         setupItemWindow()
         carStatusWindow()
         setupIoWindow()
