@@ -1,4 +1,5 @@
 local app = require("app")
+local csp = require("csp")
 local settings = require("settings")
 local sim = ac.getSim()
 local uis = ac.getUI()
@@ -55,6 +56,8 @@ function accontrol:step()
                 ac.tryToPause(true)
                 app.state.blockEscapeButton = false
         end
+
+        if not csp.versionAllowed then app.state.appOpen = false end
 end
 
 return accontrol

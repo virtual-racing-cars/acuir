@@ -60,7 +60,6 @@ end
 function script.update(dt)
         if ac.getLastError() and not app.state.debug then
                 app.state.open = false
-                settings.General.autoStart = false
                 ui.toast(ui.Icons.Warning, "ACUIR ERROR!!! Open Lua Debug for more info\n\n" .. ac.getLastError())
                         :button(ui.Icons.RestartWarning, "Attempt Reload", function() ac.restartApp() end)
                 return
