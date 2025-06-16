@@ -2,10 +2,11 @@ local AISpline = require("ai_spline")
 local cui = require("ui.cui")
 local race = require("race")
 local settings = require("settings")
+local weather = require("weather")
 local car = ac.getCar(0)
 local sim = ac.getSim()
 
-local map = {}
+local map = { isShowingCars = true, isShowingSectors = true, isShowingWeather = true }
 
 local aiFolder = ac.getFolder(ac.FolderID.CurrentTrackLayout) .. "/ai"
 local splineFilename ---@type string
@@ -143,8 +144,8 @@ local function drawDrsZones()
 end
 
 local function drawTrack()
-        drawSegment(0, 1, colors.trackMain, strokeWidths.trackMain)
-        drawSegment(0, 1, colors.trackEdge, strokeWidths.trackEdge)
+        drawLoopedSegment(0, 1.101, colors.trackMain, strokeWidths.trackMain)
+        drawLoopedSegment(0, 1.01, colors.trackEdge, strokeWidths.trackEdge)
 end
 
 local function drawPitlane()
@@ -174,9 +175,11 @@ local function drawMapCanvas()
                 drawPitlane()
                 drawTrack()
 
-                for i = 0, #sim.lapSplits - 1 do
-                        local split = sim.lapSplits[i]
-                        drawMarker(split, i == 0 and rgbm.colors.red or rgbm.colors.yellow, 30, 2)
+                if map.isShowingSectors then
+                        for i = 0, #sim.lapSplits - 1 do
+                                local split = sim.lapSplits[i]
+                                drawMarker(split, i == 0 and rgbm.colors.red or rgbm.colors.yellow, 30, 2)
+                        end
                 end
 
                 if car.drsPresent then
@@ -255,6 +258,50 @@ local function drawCarDot(car, position)
         )
 end
 
+local function drawWeather()
+        local xStart = 80 * cui.uiScale()
+        local yStart = 50 * cui.uiScale()
+        local size = 50 * cui.uiScale()
+        local row = 0
+        local column = 0
+        local xGap = 100 * cui.uiScale()
+        local yGap = 120 * cui.uiScale()
+        local columnMax = 5
+
+        for i = 0, 24 do
+                column = column + 1
+
+                if i % columnMax == 0 then
+                        row = row + 1
+                        column = 0
+                end
+
+                local x = xStart + column * xGap
+                local y = yStart + row * yGap
+
+                if row % 2 ~= 0 then x = x + xGap end
+
+                ui.beginRotation()
+                ui.drawIcon(ui.Icons.UpAlt, vec2(x, y), vec2(x + size, y + size), rgbm(0.6, 0.7, 0.9, 0.1))
+                ui.endRotation(90 - sim.windDirectionDeg)
+        end
+
+        ui.drawIcon(
+                weather.typeIcon[sim.weatherType],
+                vec2(25 * cui.uiScale(), ui.windowHeight() - 75 * cui.uiScale()),
+                vec2(75 * cui.uiScale(), ui.windowHeight() - 25 * cui.uiScale())
+        )
+
+        ui.drawIcon(
+                ui.Icons.Compass,
+                vec2(ui.windowWidth() - 75 * cui.uiScale(), ui.windowHeight() - 75 * cui.uiScale()),
+                vec2(ui.windowWidth() - 25 * cui.uiScale(), ui.windowHeight() - 25 * cui.uiScale())
+        )
+        ui.setCursorX(ui.windowWidth() - 62 * cui.uiScale())
+        ui.setCursorY(ui.windowHeight() - 125 * cui.uiScale())
+        ui.dwriteText("N", 40 * cui.uiScale())
+end
+
 drawMapCanvas()
 
 function map:draw(isWidget)
@@ -266,17 +313,37 @@ function map:draw(isWidget)
         ui.setCursor(canvasPos)
         ui.image(mapCanvas, canvasSizeScaled, sim.raceFlagType == ac.FlagType.Caution and rgbm.colors.yellow or nil)
 
-        for _, c in ac.iterateCars.ordered(false) do
-                local car = c
-                if car and car.position and car.index ~= spectatedCar.index then drawCarDot(car, canvasPos) end
+        if map.isShowingCars then
+                for _, c in ac.iterateCars.ordered(false) do
+                        local car = c
+                        if car and car.position and car.index ~= spectatedCar.index then drawCarDot(car, canvasPos) end
+                end
+
+                drawCarDot(spectatedCar, canvasPos)
         end
 
-        drawCarDot(spectatedCar, canvasPos)
+        if map.isShowingWeather then drawWeather() end
 
         -- if isWidget then
         --         ui.endToolWindow()
         --         ui.setCursor(vec2(500, 500))
         -- end
+end
+
+function map:drawFooter()
+        local changed = false
+        local height = ui.windowHeight() * 0.65
+
+        map.isShowingCars = drawCheckbox("##mapisShowingCars", "Cars", height, false, map.isShowingCars)
+        ui.sameLine(ui.windowWidth() * 0.5 - height * 4)
+
+        map.isShowingSectors, changed =
+                drawCheckbox("##mapisShowingSectors", "Sectors", height, false, map.isShowingSectors)
+        ui.sameLine(ui.windowWidth() * 0.75)
+
+        map.isShowingWeather = drawCheckbox("##mapisShowingWeather", "Weather", height, false, map.isShowingWeather)
+
+        if changed then drawMapCanvas() end
 end
 
 return map

@@ -197,7 +197,9 @@ local statsLayout = {
         },
 }
 
-local lapTimes = {}
+local lapTimes = {
+        sessionLaps = nil,
+}
 
 local function lapTimeBanner(yPos, height)
         local width = ui.windowWidth()
@@ -282,10 +284,10 @@ function lapTimes:draw(xPos, yPos, width, height, session)
                 true
         )
 
-        local sessionLaps = laps[session]
+        lapTimes.sessionLaps = laps[session]
 
-        if sessionLaps and #sessionLaps > 0 then
-                for lapIndex, lap in ipairs(sessionLaps) do
+        if lapTimes.sessionLaps and #lapTimes.sessionLaps > 0 then
+                for lapIndex, lap in ipairs(lapTimes.sessionLaps) do
                         lapTimeEntryButton(race.cars[0], lap, (lapIndex - 1) * height, height)
                 end
         else
@@ -294,21 +296,18 @@ function lapTimes:draw(xPos, yPos, width, height, session)
 
         cui.dummy(height, height)
         cui.popWindow(true)
+end
 
-        ui.drawRectFilled(
-                vec2(0, ui.windowHeight() - height),
-                vec2(width, ui.windowHeight()),
-                rgbm(0.1, 0.1, 0.1, 0.95)
-        )
+function lapTimes:drawFooter()
+        local height = ui.windowHeight()
 
-        ui.setCursorX(0)
         for _, entry in ipairs(statsLayout) do
                 cui.snapCursor()
-                local x, y = entry.xShare == -1 and height or width * entry.xShare, height
-                local value, color = entry.value(sessionLaps)
+                local x, y = entry.xShare == -1 and height or ui.windowWidth() * entry.xShare, height
+                local value, color = entry.value(lapTimes.sessionLaps)
                 ui.dwriteTextAligned(
                         string.format("%s: %s", entry.label, value),
-                        height * 0.5,
+                        height * 0.65,
                         entry.align,
                         ui.Alignment.Center,
                         vec2(x, y),
@@ -324,7 +323,8 @@ function lapTimes:draw(xPos, yPos, width, height, session)
                         vec2(ui.windowWidth() * 0.2, height),
                         0,
                         0,
-                        (sessionLaps and #sessionLaps > 0) and ui.ButtonFlags.None or ui.ButtonFlags.Disabled
+                        (lapTimes.sessionLaps and #lapTimes.sessionLaps > 0) and ui.ButtonFlags.None
+                                or ui.ButtonFlags.Disabled
                 )
         then
                 local outputFilePath = string.format(
@@ -339,7 +339,7 @@ function lapTimes:draw(xPos, yPos, width, height, session)
 
                 if outputFile then
                         outputFile:write("LAP,VALIDITY,TYRES,LAPTIME,SPLIT1,SPLIT2,SPLIT3,DELTA\n")
-                        for _, lap in ipairs(sessionLaps) do
+                        for _, lap in ipairs(lapTimes.sessionLaps) do
                                 outputFile:write(
                                         string.format(
                                                 "%s,%s,%s,%s,%s,%s,%s,%s\n",

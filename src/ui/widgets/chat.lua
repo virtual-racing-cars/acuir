@@ -108,7 +108,7 @@ local function chatInput(height)
                 vec2(3, ui.windowHeight() - height),
                 ui.windowSize() - vec2(3, 0),
                 settings.Appearance.uiColorPrimary * 2,
-                12,
+                6 * cui.uiScale(),
                 ui.CornerFlags.All,
                 2
         )
@@ -247,12 +247,7 @@ function chat:draw(xPos, yPos, width, height)
         local chatInputHeight = 40 * cui.uiScale()
 
         cui.pushWindow("chat_widget_window", xPos, yPos, width, height, false)
-        ui.drawRectFilled(
-                vec2(0, 0),
-                vec2(ui.windowWidth(), ui.windowHeight()),
-                settings.Appearance.uiColorBackground,
-                12
-        )
+        ui.drawRectFilled(vec2(0, 0), ui.windowSize(), settings.Appearance.uiColorBackground, 12)
 
         logWindow(height - chatInputHeight)
         chatInput(chatInputHeight)

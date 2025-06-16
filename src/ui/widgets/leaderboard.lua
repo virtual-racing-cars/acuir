@@ -1,3 +1,4 @@
+require("src.classes.Checkbox")
 local cui = require("ui.cui")
 local settings = require("settings")
 local sim = ac.getSim()
@@ -133,7 +134,7 @@ local entryLayout = {
         },
 }
 
-local leaderboard = {}
+local leaderboard = { isShowingDisconnected = false }
 
 local function leaderboardBanner(yPos, height)
         local width = ui.windowWidth()
@@ -244,41 +245,26 @@ function leaderboard:draw(xPos, yPos, width, height)
         local height = ui.windowHeight() / 22
         leaderboardBanner(0, height)
 
-        cui.pushWindow(
-                "home_leaderboard_entrant_window",
-                0,
-                height,
-                ui.windowWidth(),
-                ui.windowHeight() - height * 2,
-                true
-        )
+        cui.pushWindow("home_leaderboard_entrant_window", 0, height, ui.windowWidth(), ui.windowHeight() - height, true)
+
         for leaderboardIndex, slot in ipairs(race.leaderboard) do
-                if slot.car.isConnected or isLeaderboardShowingDisconnected then
+                if slot.car.isConnected or leaderboard.isShowingDisconnected then
                         leaderboardEntryButton(race.cars[slot.car.index], (leaderboardIndex - 1) * height, height)
                 end
         end
-        cui.dummy(height, height)
         cui.popWindow(true)
+end
 
-        ui.drawRectFilled(
-                vec2(0, ui.windowHeight() - height),
-                vec2(width, ui.windowHeight()),
-                rgbm(0.1, 0.1, 0.1, 0.95)
+function leaderboard:drawFooter()
+        if not sim.isOnlineRace then return end
+
+        leaderboard.isShowingDisconnected = drawCheckbox(
+                "##isLeaderboardShowingDisconnected",
+                "Show Disconnected",
+                ui.windowHeight() * 0.65,
+                false,
+                leaderboard.isShowingDisconnected
         )
-
-        ui.setCursorX(0)
-
-        if
-                cui.menuButton(
-                        isLeaderboardShowingDisconnected and "Hide Disconnected" or "Show Disconnected",
-                        vec2(ui.windowWidth() * 0.2, height),
-                        0,
-                        0,
-                        ui.ButtonFlags.None
-                )
-        then
-                isLeaderboardShowingDisconnected = not isLeaderboardShowingDisconnected
-        end
 end
 
 return leaderboard

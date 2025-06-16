@@ -101,46 +101,29 @@ reloadCurves()
 
 local currentSection = 1
 
-function tweaks:draw()
-        cui.pushWindow(
-                "settings_controls_ffb",
-                ui.windowWidth() * 0.7,
-                0,
-                ui.windowWidth() * 0.3,
-                ui.windowHeight(),
-                false
-        )
-
-        ui.setCursor(0)
-
+function tweaks:drawHeader()
         local deviceTabs = controllerTweaks[configs.CONTROLS.ini:get("HEADER", "INPUT_METHOD", "WHEEL")]
         for i, tab in ipairs(deviceTabs) do
                 if
                         cui.menuButton(
                                 tab.label,
-                                vec2(ui.windowWidth() / #deviceTabs, 50 * cui.uiScale()),
+                                40,
                                 0,
                                 0,
                                 0,
-                                currentSection == i,
-                                false
+                                currentSection == i and #deviceTabs > 1,
+                                false,
+                                ui.CornerFlags.Top
                         )
                 then
                         currentSection = i
                 end
                 ui.sameLine()
         end
+end
 
-        cui.pushWindow(
-                "settings_controls_ffb",
-                0,
-                50 * cui.uiScale(),
-                ui.windowWidth(),
-                ui.windowHeight() - 50 * cui.uiScale(),
-                true
-        )
-        ui.setCursor(0)
-        ui.offsetCursorY(20)
+function tweaks:draw()
+        cui.pushWindow("settings_controls_ffb", 0, 0, ui.windowWidth(), ui.windowHeight(), true)
 
         if currentSection == 2 then
                 ui.setCursorX(ui.windowWidth() * 0.01)
@@ -458,8 +441,6 @@ function tweaks:draw()
         end
 
         cui.popWindow(true)
-
-        cui.popWindow()
 end
 
 return tweaks

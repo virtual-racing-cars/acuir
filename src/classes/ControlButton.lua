@@ -35,7 +35,7 @@ local function keybindString(modifierKeys, primaryKey)
         end
 
         if primaryKey ~= nil and primaryKey ~= -1 and primaryKey ~= "-1" and primaryKey ~= "" then
-                bindingString = bindingString .. keys.indexStringList[tonumber(primaryKey)]
+                bindingString = bindingString .. keys:indexToString(primaryKey)
                 deviceString = "Keyboard"
         else
                 bindingString = "Click to Assign"

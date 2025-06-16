@@ -45,11 +45,7 @@ local settingsPages = {
 }
 
 function page.draw()
-        ui.drawRectFilled(
-                vec2(0, 0),
-                vec2(ui.windowWidth(), ui.windowHeight()),
-                settings.Appearance.uiColorPrimary / 1.1
-        )
+        ui.drawRectFilled(vec2(0, 0), ui.windowSize(), settings.Appearance.uiColorBackgroundShade * 0.75)
 
         cui.pushWindowFitted("settings_page_window")
         topSubBar("")

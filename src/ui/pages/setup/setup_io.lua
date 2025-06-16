@@ -124,19 +124,20 @@ local function promptOverwriteSetup()
         end, false)
 end
 
-local function drawSetupControls(sm)
-        local iconButtonHeight = 42 * cui.uiScale()
+function drawSetupControls(sm)
+        local iconButtonHeight = ui.windowHeight() * 0.35
         local buttonWidth = ui.windowWidth() * 0.99
         local groupBegin = (ui.windowWidth() / 24)
         local fontSize = 22 * cui.uiScale()
 
         ui.setCursorX(ui.windowWidth() * 0.005)
-        ui.setCursorY(iconButtonHeight * 0.2)
+        ui.setCursorY(ui.windowHeight() * 0.1)
 
         ui.drawRect(
                 ui.getCursor(),
                 ui.getCursor() + vec2Temp1:set(buttonWidth, iconButtonHeight),
-                rgbm.colors.white * 0.65
+                rgbm.colors.white * 0.65,
+                6 * cui.uiScale()
         )
         carSetup.input.name = cui.inputText(
                 "##SetupName",
@@ -181,11 +182,12 @@ local function drawSetupControls(sm)
         -- ui.sameLine()
 
         ui.setCursorX(ui.windowWidth() * 0.005)
-        ui.offsetCursorY(iconButtonHeight * 0.2)
+        ui.offsetCursorY(ui.windowHeight() * 0.05)
         ui.drawRectFilled(
                 ui.getCursor(),
                 ui.getCursor() + vec2Temp1:set(buttonWidth, iconButtonHeight),
-                settings.Appearance.uiColorPrimary
+                settings.Appearance.uiColorPrimary,
+                6 * cui.uiScale()
         )
 
         if cui.menuButton("Save Setup", vec2Temp1:set(buttonWidth, iconButtonHeight)) then
@@ -299,18 +301,34 @@ local function drawSetupList()
         end
 end
 
-local lastHide = settings.General.hideOtherTrackSetups
-
 function drawSetupIO(sm)
-        if lastHide ~= settings.General.hideOtherTrackSetups then carSetup:load() end
-
         if ui.keyPressed(ui.Key.Delete) then
                 carSetup:delete()
                 cui.menuBanner("Deleted Setup", nil, rgbm.colors.red)
         end
 
-        cui.pushWindow("load_setups", 0, 0, ui.windowWidth(), ui.windowHeight() * 0.7, true, ui.ButtonFlags.None)
-        ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiColorBackground)
+        cui.setCursorX(0)
+        local hideChanged = false
+        settings.General.hideOtherTrackSetups, hideChanged = drawCheckbox(
+                "##isLeaderboardShowingDisconnected",
+                "Show Other Tracks",
+                20 * cui.uiScale(),
+                false,
+                settings.General.hideOtherTrackSetups
+        )
+
+        if hideChanged then carSetup:load() end
+
+        cui.pushWindow(
+                "load_setups",
+                0,
+                30 * cui.uiScale(),
+                ui.windowWidth(),
+                ui.windowHeight() * 0.7,
+                true,
+                ui.ButtonFlags.None
+        )
+        ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiColorBackground, 6 * cui.uiScale())
         drawSetupList()
         cui.popWindow(true)
 

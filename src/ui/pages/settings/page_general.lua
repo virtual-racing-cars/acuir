@@ -13,27 +13,29 @@ local bottomBarButtons = {
 }
 
 function page.draw()
-        ui.drawRectFilled(
-                vec2(0, 0),
-                vec2(ui.windowWidth(), ui.windowHeight()),
-                settings.Appearance.uiColorPrimary / 1.1
-        )
+        ui.drawRectFilled(vec2(0, 0), ui.windowSize(), settings.Appearance.uiColorBackgroundShade * 0.75)
 
         cui.pushWindowFitted("general_page_window")
 
-        topSubBar("General")
+        topSubBar("ACUIR")
 
-        ui.drawLine(vec2(0, 160 * cui.uiScale()), vec2(ui.windowWidth(), 160 * cui.uiScale()), rgbm.colors.gray, 2)
-        ui.drawRectFilled(
-                vec2(0, 160 * cui.uiScale()),
-                vec2(ui.windowWidth(), ui.windowHeight() - 96 * cui.uiScale()),
-                rgbm(0, 0, 0, 0.2)
+        cui.pushContentWindow(
+                "settings_general_window",
+                ui.windowWidth() * 0.25,
+                180 * cui.uiScale(),
+                ui.windowWidth() * 0.5,
+                ui.windowHeight() - 303 * cui.uiScale(),
+                function()
+                        if cui.menuButton("General", 40, 0, 0, 0, false, false, ui.CornerFlags.Top) then
+                        end
+                        ui.sameLine()
+                end,
+                nil,
+                true
         )
 
-        cui.setCursorY(250)
-
         for i, v in ipairs(settings.General) do
-                ui.setCursorX(ui.windowWidth() * 0.375)
+                ui.setCursorX(ui.windowWidth() * 0.25)
 
                 if v.widget == 1 then
                         local value = settings.General[v.key] and 1 or 0
@@ -41,7 +43,7 @@ function page.draw()
                         local newValue, changed, active, hovered = drawSpinner(
                                 v.label,
                                 v.label,
-                                ui.windowWidth() * 0.25,
+                                ui.windowWidth() * 0.5,
                                 95 * cui.uiScale(),
                                 false,
                                 value,
@@ -67,7 +69,7 @@ function page.draw()
                         settings.General[v.key] = drawSpinner(
                                 v.label,
                                 v.label,
-                                ui.windowWidth() * 0.25,
+                                ui.windowWidth() * 0.5,
                                 95 * cui.uiScale(),
                                 false,
                                 settings.General[v.key],
@@ -90,12 +92,7 @@ function page.draw()
                 end
         end
 
-        ui.drawLine(
-                vec2(0, ui.windowHeight() - 96 * cui.uiScale()),
-                vec2(ui.windowWidth(), ui.windowHeight() - 96 * cui.uiScale()),
-                rgbm.colors.gray,
-                2
-        )
+        cui.popContentWindow()
 
         bottomBar(bottomBarButtons)
 

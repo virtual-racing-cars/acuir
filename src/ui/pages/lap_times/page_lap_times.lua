@@ -45,7 +45,8 @@ function page.draw()
                                 end
                                 ui.sameLine()
                         end
-                end
+                end,
+                function() lapTimeWidget:drawFooter() end
         )
 
         lapTimeWidget:draw(0, 0, ui.windowWidth(), ui.windowHeight(), ac.getSession(lapTimeSession).type)

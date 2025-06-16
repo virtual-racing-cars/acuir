@@ -27,40 +27,35 @@ local audioChannels = {
         "Dirt",
 }
 
--- table.sort(audioChannels)
-
 function page.draw()
-        ui.drawRectFilled(
-                vec2(0, 0),
-                vec2(ui.windowWidth(), ui.windowHeight()),
-                settings.Appearance.uiColorPrimary / 1.1
-        )
+        ui.drawRectFilled(vec2(0, 0), ui.windowSize(), settings.Appearance.uiColorBackgroundShade * 0.75)
 
         cui.pushWindowFitted("settings_audio_main_window")
         topSubBar("Audio")
 
-        cui.pushWindow(
-                "settings_audio_window",
-                0,
+        cui.pushContentWindow(
+                "settings_AUDIO_window",
+                ui.windowWidth() * 0.25,
                 180 * cui.uiScale(),
-                ui.windowWidth(),
+                ui.windowWidth() * 0.5,
                 ui.windowHeight() - 303 * cui.uiScale(),
-                false
+                function()
+                        if cui.menuButton("General", 40, 0, 0, 0, false, false, ui.CornerFlags.Top) then
+                        end
+                        ui.sameLine()
+                end,
+                nil,
+                true
         )
-
-        ui.drawLine(vec2(0, 2), vec2(ui.windowWidth(), 2), rgbm.colors.gray, 2)
-        ui.drawRectFilled(vec2(0, 2), vec2(ui.windowWidth(), ui.windowHeight()), rgbm(0, 0, 0, 0.2))
-
-        cui.setCursorY(160)
 
         local p = ui.getCursor()
         for i, v in ipairs(audioChannels) do
                 local id = string.replace(v, " ", "")
 
                 if i == 1 or i == #audioChannels then
-                        ui.setCursorX(ui.windowWidth() * 0.375)
-                elseif i % 2 == 0 then
                         ui.setCursorX(ui.windowWidth() * 0.25)
+                elseif i % 2 == 0 then
+                        ui.setCursorX(ui.windowWidth() * 0)
                         p = ui.getCursor()
                 else
                         ui.setCursor(p)
@@ -70,7 +65,7 @@ function page.draw()
                 local value, changed = drawSpinner(
                         "##" .. id,
                         v,
-                        ui.windowWidth() * 0.25,
+                        ui.windowWidth() * 0.5,
                         95 * cui.uiScale(),
                         false,
                         ac.getAudioVolume(ac.AudioChannel[id]) * 100,
@@ -93,9 +88,7 @@ function page.draw()
                 if changed then ac.setAudioVolume(ac.AudioChannel[id], value / 100) end
         end
 
-        ui.drawLine(vec2(0, ui.windowHeight() - 2), vec2(ui.windowWidth(), ui.windowHeight() - 2), rgbm.colors.gray, 2)
-
-        cui.popWindow()
+        cui.popContentWindow()
 
         bottomBar(bottomBarButtons)
 

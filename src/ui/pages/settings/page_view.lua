@@ -161,7 +161,8 @@ function page:draw()
         ui.drawRectFilled(
                 vec2(0, 0),
                 vec2(ui.windowWidth(), ui.windowHeight() * 0.3),
-                settings.Appearance.uiColorPrimary * 0.2
+                settings.Appearance.uiColorPrimary * 0.2,
+                12 * cui.uiScale()
         )
 
         local onboardParams = ac.getOnboardCameraParams(0)

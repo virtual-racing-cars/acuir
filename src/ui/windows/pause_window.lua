@@ -45,8 +45,8 @@ function PauseMenuWindow(dt)
                                 ui.setCursor(0)
                                 ui.drawRectFilled(
                                         vec2(0, 0),
-                                        ui.availableSpace(),
-                                        settings.Appearance.uiColorPrimary / 1.2
+                                        ui.windowSize(),
+                                        settings.Appearance.uiColorBackgroundShade * 0.98
                                 )
                                 local childWindowWith = ui.windowWidth() / 5
                                 local childWindowHeight = ui.windowHeight() / 5

@@ -5,7 +5,10 @@ local sim = ac.getSim()
 
 local vec2Temp1 = vec2()
 
-local telemetryViewer = {}
+local telemetryViewer = {
+        isShowingBest = true,
+        isShowingLast = true,
+}
 
 local function drawTelemetryGraphs()
         local channelsCount = #telemetry.lastLap.channels
@@ -24,7 +27,6 @@ local function drawTelemetryGraphs()
                         ui.ButtonFlags.Disabled
                 )
                 local r1, r2 = ui.itemRect()
-                ui.drawRectFilled(r1, r2, rgbm.colors.white * 0.3)
                 ui.drawRectFilled(
                         r1,
                         vec2Temp1:set(r2.x, r1.y + 40 * cui.uiScale()),
@@ -66,33 +68,53 @@ local function drawTelemetryGraphs()
                 local yMax = math.min(bestLapChannel.min, lastLapChannel.min)
                 local xSegment = (r2.x - r1.x) / telemetry.dataCount
 
-                ui.pathClear()
-                for x = 0, telemetry.dataCount - 1 do
-                        local y = bestLapChannel.data[x]
-                        if y then
-                                ui.pathLineTo(
-                                        vec2Temp1:set(
-                                                r1.x + x * xSegment,
-                                                r1.y + (math.lerp(0, 1, (1 - (y - yMax) / (yMin - yMax))) * height)
+                if telemetryViewer.isShowingBest then
+                        ui.pathClear()
+                        for x = 0, telemetry.dataCount - 1 do
+                                local y = bestLapChannel.data[x]
+                                if y then
+                                        ui.pathLineTo(
+                                                vec2Temp1:set(
+                                                        r1.x + x * xSegment,
+                                                        r1.y
+                                                                + (
+                                                                        math.lerp(
+                                                                                0,
+                                                                                1,
+                                                                                (1 - (y - yMax) / (yMin - yMax))
+                                                                        )
+                                                                        * height
+                                                                )
+                                                )
                                         )
-                                )
+                                end
                         end
+                        ui.pathSmoothStroke(rgbm(0, 1, 0, 1), false, 2 * cui.uiScale())
                 end
-                ui.pathSmoothStroke(rgbm(0, 1, 0, 1), false, 2 * cui.uiScale())
 
-                ui.pathClear()
-                for x = 0, telemetry.dataCount - 1 do
-                        local y = lastLapChannel.data[x]
-                        if y then
-                                ui.pathLineTo(
-                                        vec2Temp1:set(
-                                                r1.x + x * xSegment,
-                                                r1.y + (math.lerp(0, 1, (1 - (y - yMax) / (yMin - yMax))) * height)
+                if telemetryViewer.isShowingLast then
+                        ui.pathClear()
+                        for x = 0, telemetry.dataCount - 1 do
+                                local y = lastLapChannel.data[x]
+                                if y then
+                                        ui.pathLineTo(
+                                                vec2Temp1:set(
+                                                        r1.x + x * xSegment,
+                                                        r1.y
+                                                                + (
+                                                                        math.lerp(
+                                                                                0,
+                                                                                1,
+                                                                                (1 - (y - yMax) / (yMin - yMax))
+                                                                        )
+                                                                        * height
+                                                                )
+                                                )
                                         )
-                                )
+                                end
                         end
+                        ui.pathSmoothStroke(rgbm.colors.red, false, 2 * cui.uiScale())
                 end
-                ui.pathSmoothStroke(rgbm.colors.red, false, 2 * cui.uiScale())
 
                 cui.offsetCursorY(20)
         end
@@ -293,6 +315,19 @@ function telemetryViewer:draw(xPos, yPos, width, height)
         drawTelemetrySlice()
 
         cui.popWindow()
+end
+
+function telemetryViewer:drawFooter()
+        local changed = false
+        local height = ui.windowHeight() * 0.65
+
+        telemetryViewer.isShowingBest =
+                drawCheckbox("##telemetryViewerIsShowingBest", "Best Lap", height, false, telemetryViewer.isShowingBest)
+        ui.sameLine()
+        cui.setCursorX(200)
+
+        telemetryViewer.isShowingLast =
+                drawCheckbox("##telemetryViewerIsShowingLast", "Last Lap", height, false, telemetryViewer.isShowingLast)
 end
 
 return telemetryViewer

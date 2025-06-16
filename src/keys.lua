@@ -22,7 +22,7 @@ local keys = {
                 [ac.KeyIndex.NonConvert] = { string = "NonConvert", hex = "0x1D" },
                 [ac.KeyIndex.Accept] = { string = "Accept", hex = "0x1E" },
                 [ac.KeyIndex.ModeChange] = { string = "ModeChange", hex = "0x1F" },
-                [ac.KeyIndex.Space] = { string = " ", hex = "0x20" },
+                [ac.KeyIndex.Space] = { string = "Space", hex = "0x20" },
                 [ac.KeyIndex.PageUp] = { string = "PageUp", hex = "0x21" },
                 [ac.KeyIndex.PageDown] = { string = "PageDown", hex = "0x22" },
                 [ac.KeyIndex.End] = { string = "End", hex = "0x23" },
@@ -135,6 +135,12 @@ local keys = {
         hexIndexList = {},
         hexStringList = {},
 }
+
+function keys:indexToString(keyIndex)
+        local string = keys.indexStringList[tonumber(keyIndex)]
+
+        return string or "Unknown"
+end
 
 for k, v in pairs(keys.keyList) do
         keys.indexStringList[k] = v.string

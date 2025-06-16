@@ -29,7 +29,7 @@ function setup:load()
         setup.loaded[ac.getTrackID()] = {}
 
         io.scanDir(setupsDir, function(dirName)
-                if settings.General.hideOtherTrackSetups then
+                if not settings.General.hideOtherTrackSetups then
                         if dirName ~= ac.getTrackID() and dirName ~= "generic" then return end
                 end
 

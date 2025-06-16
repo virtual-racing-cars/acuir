@@ -212,20 +212,23 @@ function CUI.settingsButton(label, sizeX, sizeY, flags, icon)
         local fontSize = sizeY / 5
 
         local disabled = flags == ui.ButtonFlags.Disabled
-
-        ui.pushStyleColor(ui.StyleColor.Button, settings.Appearance.uiColorPrimary)
-        ui.pushStyleColor(ui.StyleColor.ButtonHovered, settings.Appearance.uiColorSecondary)
-        ui.pushStyleColor(ui.StyleColor.ButtonActive, settings.Appearance.uiColorSecondary)
         local tempCursor = ui.getCursor()
-        local clicked = ui.button("##" .. label, vec2Temp1:set(sizeX, sizeY), flags)
+        local clicked = ui.invisibleButton("##" .. label, vec2Temp1:set(sizeX, sizeY), flags)
         local hovered = ui.itemHovered()
         local r1, r2 = ui.itemRect()
-        ui.popStyleColor(3)
 
-        ui.addIcon(icon, vec2Temp1:set(sizeY / 4, sizeY / 4), vec2Temp2:set(0.5, 0.25), nil)
+        local buttonColor = settings.Appearance.uiColorPrimary
+        local fontColor = settings.Appearance.uiColorText
+
+        if hovered and not disabled then buttonColor = settings.Appearance.uiColorSecondary end
+        if disabled then fontColor = settings.Appearance.uiColorTextDim end
+
+        ui.drawRectFilled(r1, r2, buttonColor, 12 * uiScale)
+
+        ui.addIcon(icon, vec2Temp1:set(sizeY / 4, sizeY / 4), vec2Temp2:set(0.5, 0.25), fontColor)
 
         if not ui.itemHovered() or disabled then
-                ui.drawRect(r1, r2, disabled and rgbm.colors.gray or rgbm.colors.white, 0, ui.CornerFlags.None, 1)
+                ui.drawRect(r1, r2, disabled and rgbm.colors.gray or rgbm.colors.white, 12 * uiScale)
         end
 
         ui.setCursor(tempCursor)
@@ -238,7 +241,7 @@ function CUI.settingsButton(label, sizeX, sizeY, flags, icon)
                 ui.Alignment.Center,
                 vec2Temp1:set(sizeX, sizeY * 1.4),
                 false,
-                rgbm.colors.white
+                fontColor
         )
         ui.popDWriteFont()
 
@@ -290,7 +293,7 @@ function CUI.menuButton(label, size, horizontalAligment, verticalAlignment, flag
         if not horizontalAligment then horizontalAligment = ui.Alignment.Center end
         if not verticalAlignment then verticalAlignment = ui.Alignment.Center end
         if not flags then flags = ui.ButtonFlags.None end
-        if not cornerFlags then cornerFlags = ui.CornerFlags.None end
+        if not cornerFlags then cornerFlags = ui.CornerFlags.All end
 
         if bold then
                 style:pushFontBold()
@@ -361,25 +364,16 @@ function CUI.bindingButton(button, inputMode, device, buttonLabel, size, flags)
         fontSize = (fontSize % 2 ~= 0) and fontSize + 1 or fontSize
         local fontColor = rgbm.colors.white
 
-        ui.pushStyleColor(ui.StyleColor.ButtonHovered, settings.Appearance.uiColorSecondary)
-        ui.pushStyleColor(ui.StyleColor.ButtonActive, settings.Appearance.uiColorSecondary)
-
-        if flags == ui.ButtonFlags.Disabled then
-                fontColor = rgbm(0.6, 0.6, 0.6, 1)
-                ui.pushStyleColor(ui.StyleColor.Button, rgbm(0.05, 0.05, 0.05, 1))
-        end
+        if flags == ui.ButtonFlags.Disabled then fontColor = settings.Appearance.uiColorTextDim end
 
         local tempCursor = ui.getCursor()
-        local clicked = ui.button("##" .. inputMode .. button.bind, vec2Temp1(sizeX, sizeY), flags)
+        local clicked = ui.invisibleButton("##" .. inputMode .. button.bind, vec2Temp1(sizeX, sizeY), flags)
         local hovered = ui.itemHovered()
 
         if flags == ui.ButtonFlags.Disabled then
-                ui.popStyleColor(1)
         elseif not hovered and device == "" then
-                fontColor = rgbm.colors.gray
+                fontColor = settings.Appearance.uiColorTextDim
         end
-
-        ui.popStyleColor(2)
 
         ui.setCursor(tempCursor)
         CUI.offsetCursorY(device == "" and 0 or -sizeY * 0.15)
@@ -424,22 +418,22 @@ function CUI.specialButton(label, size, horizontalAligment, verticalAlignment, c
         fontSize = (fontSize % 2 ~= 0) and fontSize + 1 or fontSize
         local buttonSize = vec2Temp1(sizeX, sizeY)
 
-        if locked then
-                ui.pushStyleColor(ui.StyleColor.ButtonHovered, color)
-                ui.pushStyleColor(ui.StyleColor.ButtonActive, color)
-                ui.pushStyleColor(ui.StyleColor.Button, color)
-        else
-                ui.pushStyleColor(ui.StyleColor.ButtonHovered, color * 1.1)
-                ui.pushStyleColor(ui.StyleColor.ButtonActive, color * 0.9)
-                ui.pushStyleColor(ui.StyleColor.Button, color)
-        end
-
         local tempCursor = ui.getCursor()
-        local clicked = ui.button("##" .. label, buttonSize, flags)
+        local clicked = ui.invisibleButton("##" .. label, buttonSize, flags)
         local hovered = ui.itemHovered()
         local r1, r2 = ui.itemRect()
 
-        ui.popStyleColor(3)
+        local buttonColor = color
+
+        if not locked then
+                if ui.itemActive() then
+                        buttonColor = color * 1.1
+                elseif hovered then
+                        buttonColor = color * 0.9
+                end
+        end
+
+        ui.drawRectFilled(r1, r2, buttonColor, 12 * uiScale)
 
         ui.sameLine()
         ui.setCursor(tempCursor)
@@ -553,35 +547,39 @@ function CUI.treeNodeButton(label, size, active, bold, count, defaultOpen)
 
         local fontSize = math.floor(size.y * 0.55)
         fontSize = (fontSize % 2 ~= 0) and fontSize + 1 or fontSize
-        local fontColor = active and rgbm(0, 0, 0, 1) or nil
-
-        ui.pushStyleColor(
-                ui.StyleColor.Button,
-                bold and settings.Appearance.uiColorBackgroundShade or rgbm(0.1, 0.1, 0.1, 1)
-        )
-        ui.pushStyleColor(ui.StyleColor.ButtonHovered, settings.Appearance.uiColorSecondary)
-        ui.pushStyleColor(ui.StyleColor.ButtonActive, settings.Appearance.uiColorSecondary)
-
-        if active then ui.pushStyleColor(ui.StyleColor.Button, settings.Appearance.uiColorAccent) end
+        local fontColor = settings.Appearance.uiColorText
 
         local tempCursor = ui.getCursor()
-        local clicked = ui.button(
+        local clicked = ui.invisibleButton(
                 "##" .. label .. treeNodeParent,
                 size,
                 ui.ButtonFlags.PressedOnClick + ui.ButtonFlags.PressedOnDoubleClick
         )
+        local r1, r2 = ui.itemRect()
         local hovered = ui.itemHovered() and not CUI.modalDialogCallback
         local id = ui.getLastID()
         local open = CUI.loadStoredBool(id, defaultOpen)
         if hovered and ui.mouseClicked(ui.MouseButton.Right) then clicked = true end
 
-        if active then
-                ui.popStyleColor(1)
+        local color = bold and settings.Appearance.uiColorBackground or settings.Appearance.uiColorBackgroundShade
 
-                if hovered then ui.drawRect(tempCursor, tempCursor + size, settings.Appearance.uiColorAccent) end
+        if hovered then color = settings.Appearance.uiColorSecondary end
+
+        if active then
+                fontColor = settings.Appearance.uiColorBackground
+
+                if hovered then
+                        color = settings.Appearance.uiColorSecondary
+                else
+                        color = settings.Appearance.uiColorAccent
+                end
         end
 
-        ui.popStyleColor(3)
+        ui.drawRectFilled(r1, r2, color, 6 * uiScale)
+
+        if active and hovered then
+                ui.drawRect(r1, r2, settings.Appearance.uiColorAccent, 6 * uiScale, ui.CornerFlags.All, 1)
+        end
 
         ui.sameLine()
 
@@ -608,7 +606,7 @@ function CUI.treeNodeButton(label, size, active, bold, count, defaultOpen)
                         CUI.loadStoredBool(id) and ui.Icons.Minus or ui.Icons.Plus,
                         vec2Temp1:set(size.y / 2, size.y / 2),
                         vec2Temp2:set(0.92, 0.5),
-                        nil
+                        settings.Appearance.uiColorText
                 )
         end
 
@@ -1057,11 +1055,12 @@ function CUI.popWindow(scroll, flags)
         ui.popStyleVar(1)
 end
 
-function CUI.pushContentWindow(id, x, y, width, height, headerFunc, hideBackground, noCorners)
+function CUI.pushContentWindow(id, x, y, width, height, headerFunc, footerFunc, hideBackground, noCorners)
         CUI.pushWindow(id .. "_background", x, y, width, height)
 
         ui.beginGradientShade()
-        ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiColorPrimary, noCorners and 0 or 12)
+        ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiColorPrimary, noCorners and 0 or 16 * uiScale)
+
         ui.endGradientShade(
                 vec2Temp1:set(ui.windowWidth(), 0),
                 ui.windowSize(),
@@ -1071,11 +1070,12 @@ function CUI.pushContentWindow(id, x, y, width, height, headerFunc, hideBackgrou
         )
 
         x = 10 * uiScale
-        y = 12 * uiScale
+        y = 10 * uiScale
         width = width - x * 2
         height = height - y * 2
 
         local headerSize = 50 * uiScale
+        local footerSize = 40 * uiScale
 
         if headerFunc then
                 ui.setCursor(0)
@@ -1088,10 +1088,25 @@ function CUI.pushContentWindow(id, x, y, width, height, headerFunc, hideBackgrou
                 y = y + headerSize
         end
 
+        if footerFunc then
+                height = height - footerSize
+
+                ui.setCursor(0)
+                CUI.pushWindow(id .. "_footer", x, y + height + 10 * uiScale, width, footerSize - 10 * uiScale)
+                ui.setCursor(0)
+                footerFunc()
+                CUI.popWindow()
+        end
+
         CUI.pushWindow(id .. "_content", x, y, width, height)
 
         if not hideBackground then
-                ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiColorBackground, noCorners and 0 or 12)
+                ui.drawRectFilled(
+                        0,
+                        ui.windowSize(),
+                        settings.Appearance.uiColorBackground,
+                        noCorners and 0 or 6 * uiScale
+                )
         end
 end
 

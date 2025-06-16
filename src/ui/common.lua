@@ -22,8 +22,9 @@ local versionString = string.format("%s: %s, CSP: %s (%s)", app.name, app.versio
 function bottomBar(buttons)
         ui.drawRectFilled(
                 vec2(0, ui.windowHeight() - 56 * cui.uiScale()),
-                vec2(ui.windowWidth(), ui.windowHeight()),
-                settings.Appearance.uiColorPrimary / 3
+                ui.windowSize(),
+                settings.Appearance.uiColorPrimary / 3,
+                6 * cui.uiScale()
         )
 
         if settings.General.showVersions then
@@ -111,7 +112,7 @@ function topBar(path)
                 function()
                         ui.drawRectFilled(
                                 vec2(0, 0),
-                                vec2(ui.windowWidth(), ui.windowHeight()),
+                                ui.windowSize(),
                                 settings.Appearance.uiColorBackground * 0.5,
                                 12,
                                 ui.CornerFlags.Bottom
@@ -271,6 +272,7 @@ function bottomWidgetBar()
                 ui.windowHeight() - 240 * cui.uiScale(),
                 ui.windowWidth(),
                 240 * cui.uiScale(),
+                nil,
                 nil,
                 true
         )

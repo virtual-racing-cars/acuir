@@ -91,6 +91,12 @@ local function setupIoWindow()
                         ui.setCursor(0)
                         if cui.menuButton("Car Setup", 40, 0, 0, 0, not setupAppsActive, false, ui.CornerFlags.Top) then
                         end
+                end,
+                function()
+                        if cui.menuButton("Reset All", ui.windowSize(), nil, nil) then
+                                ac.resetSetupToDefault()
+                                cui.menuBanner("Setup reset to default", nil, rgbm.colors.orange)
+                        end
                 end
         )
 
@@ -119,7 +125,6 @@ local function setupIoWindow()
                         then
                                 setupExchangeActive = false
                         end
-
                         ui.sameLine()
 
                         if
@@ -136,7 +141,9 @@ local function setupIoWindow()
                         then
                                 setupExchangeActive = true
                         end
+                        ui.sameLine()
                 end,
+                nil,
                 true
         )
 

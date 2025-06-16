@@ -121,7 +121,7 @@ local function drawSlider(id, name, width, height, value, sliderParams, noScroll
         ui.drawRectFilled(
                 vec2(sliderFill + 1, r1.y - 3),
                 vec2(sliderFill + grabberSize - 1, r2.y + 3),
-                active and settings.Appearance.uiColorSecondary or settings.Appearance.uiColorAccent * 0.8,
+                active and settings.Appearance.uiColorSecondary or settings.Appearance.uiColorAccent,
                 4
         )
         ui.setCursor(vec2(sliderFill, r2.y - barSize))

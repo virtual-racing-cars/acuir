@@ -11,7 +11,7 @@ function page:draw(dt)
                 ui.setCursor(0)
                 if cui.menuButton("Telemetry", 40, 0, 0, 0, false, false, ui.CornerFlags.TopLeft) then
                 end
-        end)
+        end, function() telemetryViewer:drawFooter() end)
 
         telemetryViewer:draw(0, 0, ui.windowWidth(), ui.windowHeight())
 

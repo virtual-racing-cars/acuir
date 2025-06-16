@@ -1,4 +1,5 @@
 local mapWidget = require("ui.widgets.map")
+local settings = require("settings")
 local units = require("units")
 local weather = require("weather")
 local car = ac.getCar(0)
@@ -173,15 +174,16 @@ local function trackMapWindow()
                         ui.setCursor(0)
                         if cui.menuButton("TRACK MAP", 40, 0, 0, 0, false, false, ui.CornerFlags.TopLeft) then
                         end
-                end
+                end,
+                function() mapWidget:drawFooter() end
         )
 
         local track = string.split(ac.getTrackName(), " - ")
 
         cui.offsetCursorY(10)
-
         for _, trackLine in ipairs(track) do
                 cui.offsetCursorX(10)
+                cui.snapCursor()
 
                 ui.dwriteTextAligned(
                         trackLine,
@@ -193,7 +195,7 @@ local function trackMapWindow()
         end
 
         cui.offsetCursorX(10)
-
+        cui.snapCursor()
         ui.dwriteTextAligned(
                 "%s" % getTrackLocation(),
                 fontSize,
@@ -202,55 +204,7 @@ local function trackMapWindow()
                 vec2(ui.windowWidth(), fontSize)
         )
 
-        cui.contentWindow(
-                "info_map_window2",
-                vec2(0, 0),
-                vec2(ui.windowWidth(), ui.windowHeight()),
-                ui.WindowFlags.None,
-                function() mapWidget:draw() end
-        )
-
-        local xStart = 80 * cui.uiScale()
-        local yStart = 50 * cui.uiScale()
-        local size = 50 * cui.uiScale()
-        local row = 0
-        local column = 0
-        local xGap = 100 * cui.uiScale()
-        local yGap = 120 * cui.uiScale()
-        local columnMax = 5
-
-        for i = 0, 24 do
-                column = column + 1
-
-                if i % columnMax == 0 then
-                        row = row + 1
-                        column = 0
-                end
-
-                local x = xStart + column * xGap
-                local y = yStart + row * yGap
-
-                if row % 2 ~= 0 then x = x + xGap end
-
-                ui.beginRotation()
-                ui.drawIcon(ui.Icons.UpAlt, vec2(x, y), vec2(x + size, y + size), rgbm(0.6, 0.7, 0.9, 0.1))
-                ui.endRotation(90 - sim.windDirectionDeg)
-        end
-
-        ui.drawIcon(
-                weather.typeIcon[sim.weatherType],
-                vec2(25 * cui.uiScale(), ui.windowHeight() - 75 * cui.uiScale()),
-                vec2(75 * cui.uiScale(), ui.windowHeight() - 25 * cui.uiScale())
-        )
-
-        ui.drawIcon(
-                ui.Icons.Compass,
-                vec2(ui.windowWidth() - 75 * cui.uiScale(), ui.windowHeight() - 75 * cui.uiScale()),
-                vec2(ui.windowWidth() - 25 * cui.uiScale(), ui.windowHeight() - 25 * cui.uiScale())
-        )
-        ui.setCursorX(ui.windowWidth() - 62 * cui.uiScale())
-        ui.setCursorY(ui.windowHeight() - 125 * cui.uiScale())
-        ui.dwriteText("N", 40 * cui.uiScale())
+        mapWidget:draw()
 
         cui.popContentWindow()
 end
@@ -261,7 +215,7 @@ local function sessionControlWindow()
                 ui.windowWidth() - ui.windowWidth() / 5,
                 0,
                 ui.windowWidth() / 5,
-                210 * cui.uiScale(),
+                220 * cui.uiScale(),
                 function()
                         ui.setCursor(0)
                         if cui.menuButton("Session Control", 40, 0, 0, 0, false, false, ui.CornerFlags.TopLeft) then
@@ -308,14 +262,14 @@ local function sessionControlWindow()
         end
 
         if not ac.canCastVote() and sim.isOnlineRace then
-                ui.setCursorX(0)
-                ui.setCursorY(ui.windowHeight() - 36 * cui.uiScale())
+                ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiColorSecondary * 0.75, 6)
+                ui.setCursor(0)
                 ui.dwriteTextAligned(
-                        "Voting Cooldown %.1f s" % ac.timeToNextVote(),
-                        18 * cui.uiScale(),
+                        "Voting Cooldown %.0f s" % ac.timeToNextVote(),
+                        32 * cui.uiScale(),
                         ui.Alignment.Center,
                         ui.Alignment.Center,
-                        vec2(ui.windowWidth(), 36 * cui.uiScale())
+                        ui.windowSize()
                 )
         end
 
@@ -326,7 +280,7 @@ local function conditionsWindow()
         cui.pushContentWindow(
                 "session_conditions",
                 ui.windowWidth() - ui.windowWidth() / 5,
-                220,
+                235 * cui.uiScale(),
                 ui.windowWidth() / 5,
                 310 * cui.uiScale(),
                 function()
@@ -368,7 +322,7 @@ local function modifiersWindow()
         cui.pushContentWindow(
                 "session_modifiers",
                 ui.windowWidth() - ui.windowWidth() / 5,
-                530,
+                560 * cui.uiScale(),
                 ui.windowWidth() / 5,
                 372 * cui.uiScale(),
                 function()
@@ -450,6 +404,13 @@ function page.draw()
                                 )
                         then
                                 leaderboardActive = false
+                        end
+                end,
+                function()
+                        if leaderboardActive then
+                                leaderboardWidget:drawFooter()
+                        else
+                                timetableWidget:drawFooter()
                         end
                 end
         )

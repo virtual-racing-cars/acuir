@@ -3,7 +3,7 @@ local settings = require("settings")
 local sim = ac.getSim()
 local race = require("race")
 
-local timetable = {}
+local timetable = { isShowingDisconnected = false }
 
 local function drawTimeIndicator(width, height, color)
         if not color then color = rgbm(0, 0.75, 0, 1) end
@@ -85,7 +85,7 @@ local entryLayout = {
                         local delta = car.previousLapDelta
                         local deltaPrefix = ""
 
-                        if math.abs(delta) < 10 or car.status.isInPitlane then return "+0.00" end
+                        if math.abs(delta) < 10 or car.status.isInPitlane then return "+0.000" end
 
                         if delta > 0 then
                                 deltaPrefix = "+"
@@ -200,7 +200,7 @@ local entryLayout = {
                         local delta = car.bestLapDelta
                         local deltaPrefix = ""
 
-                        if math.abs(delta) < 10 or car.status.isInPitlane then return "+0.00" end
+                        if math.abs(delta) < 10 or car.status.isInPitlane then return "+0.000" end
 
                         if delta > 0 then
                                 deltaPrefix = "+"
@@ -358,14 +358,7 @@ function timetable:draw(xPos, yPos, width, height)
         local height = ui.windowHeight() / 22
         timetableBanner(0, height)
 
-        cui.pushWindow(
-                "home_timetable_entrant_window",
-                0,
-                height,
-                ui.windowWidth(),
-                ui.windowHeight() - height * 2,
-                true
-        )
+        cui.pushWindow("home_timetable_entrant_window", 0, height, ui.windowWidth(), ui.windowHeight() - height, true)
         for leaderboardIndex, slot in ipairs(race.leaderboard) do
                 if slot.car.isConnected or isTimetableShowingDisconnected then
                         timetableEntryButton(race.cars[slot.car.index], (leaderboardIndex - 1) * height, height)
@@ -373,20 +366,18 @@ function timetable:draw(xPos, yPos, width, height)
         end
         cui.dummy(height, height)
         cui.popWindow(true)
+end
 
-        ui.setCursorX(0)
+function timetable:drawFooter()
+        if not sim.isOnlineRace then return end
 
-        if
-                cui.menuButton(
-                        isTimetableShowingDisconnected and "Hide Disconnected" or "Show Disconnected",
-                        vec2(ui.windowWidth() * 0.2, height),
-                        0,
-                        0,
-                        ui.ButtonFlags.None
-                )
-        then
-                isTimetableShowingDisconnected = not isTimetableShowingDisconnected
-        end
+        timetable.isShowingDisconnected = drawCheckbox(
+                "##isTimetableShowingDisconnected",
+                "Show Disconnected",
+                ui.windowHeight() * 0.65,
+                false,
+                timetable.isShowingDisconnected
+        )
 end
 
 return timetable

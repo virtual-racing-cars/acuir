@@ -3,8 +3,17 @@
 *Ctrl+Shift+F5 to toggle UI. You can now bind a custom bind for this*
 ### 0.9.2.3 (unreleased)
 
+Features:
+- New "checkbox" UI element
+- Updated car status, will get to adding graphs similar to CSP UI later.
+- New window style
+ - Has spacing for headers/footers
+ - Will lead to the overall "widgets" idea and everything being customizable/moveable
+
 Fixes:
+- Fixed some timings showing 2 decimals instead of 3
 - Fixed fahrenheit/lbs value being shown for metric units
+- Fixed some general spacings
 
 ### 0.9.2.2
 

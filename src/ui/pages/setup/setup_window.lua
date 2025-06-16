@@ -56,9 +56,13 @@ local function linkButton(name, size, linked)
         local hovered = ui.itemHovered() and not cui.modalDialogCallback
         ui.drawRectFilled(r1, r2, settings.Appearance.uiColorPrimary)
 
-        local color = settings.Appearance.uiColorSecondary
+        local color = settings.Appearance.uiColorPrimary * 1.5
 
-        if hovered then color = settings.Appearance.uiColorSecondary end
+        if hovered then
+                color = settings.Appearance.uiColorSecondary * 1.5
+        elseif linked then
+                color = settings.Appearance.uiColorSecondary
+        end
 
         ui.beginRotation()
         ui.addIcon(linked and ui.Icons.Link or ui.Icons.LinkBroken, size.y * 0.4, 0.5, color)
