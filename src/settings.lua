@@ -1,12 +1,19 @@
 local settings = {
         General = {
+
+                { key = "autoStart", label = "Auto-Start new UI", default = true, widget = 1 },
                 {
                         key = "hideOtherTrackSetups",
                         label = "Hide Other Track Setups",
                         default = false,
                         widget = 1,
                 },
-                { key = "autoStart", label = "Auto-Start new UI", default = true, widget = 1 },
+                {
+                        key = "sortTrackSetupsAZ",
+                        label = "Sort Track Setups A-Z",
+                        default = false,
+                        widget = 1,
+                },
                 {
                         key = "scrollDelayTimeMs",
                         label = "Scroll Delay Time",

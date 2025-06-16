@@ -51,8 +51,10 @@ function setup:load()
                 end)
         end)
 
-        for _, setupList in pairs(setup.loaded) do
-                table.sort(setupList, function(a, b) return a.lastWriteTime > b.lastWriteTime end)
+        if not settings.General.sortTrackSetupsAZ then
+                for _, setupList in pairs(setup.loaded) do
+                        table.sort(setupList, function(a, b) return a.lastWriteTime > b.lastWriteTime end)
+                end
         end
 
         for track in pairs(setup.loaded) do
@@ -124,7 +126,16 @@ local isInMainMenuLast = sim.isInMainMenu
 
 function setup:step()
         if isInMainMenuLast ~= sim.isInMainMenu then
-                if isInMainMenuLast then sm:saveSetup(string.format("_%s_last.ini", ac.getTrackID())) end
+                if isInMainMenuLast then
+                        sm:saveSetup(
+                                string.format(
+                                        "%s\\%s\\_%s_last.ini",
+                                        ac.getFolder(ac.FolderID.UserSetups),
+                                        ac.getCarID(0),
+                                        ac.getTrackID()
+                                )
+                        )
+                end
 
                 isInMainMenuLast = sim.isInMainMenu
         end

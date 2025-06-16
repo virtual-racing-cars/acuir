@@ -44,7 +44,7 @@ local function drawTelemetryGraphs()
                         rgbm.colors.white
                 )
 
-                if bestLapChannel.data[0] == nil and lastLapChannel.data[0] == nil then
+                if bestLapChannel.data[2] == nil and lastLapChannel.data[2] == nil then
                         ui.setCursorX(0)
                         cui.snapCursor()
                         ui.dwriteTextAligned(

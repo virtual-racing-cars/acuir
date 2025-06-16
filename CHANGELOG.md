@@ -4,14 +4,17 @@
 ### 0.9.2.3 (unreleased)
 
 Features:
-- New entry point window for when using other UI's, to easily activate ACUIR.
+- New entry point window for when using other UI's, to easily activate ACUIR
+- Updated car status, will get around to adding graphs similar to CSP UI later
 - New "checkbox" UI element
-- Updated car status, will get to adding graphs similar to CSP UI later.
 - New window style
  - Has spacing for headers/footers
  - Will lead to the overall "widgets" idea and everything being customizable/moveable
+- New sort by alphabetical option for Setup I/O
 
 Fixes:
+- Fixed rogue .sp file being saved in AC root
+- Fixed keybinding logic in general
 - Fixed some timings showing 2 decimals instead of 3
 - Fixed fahrenheit/lbs value being shown for metric units
 - Fixed some general spacings

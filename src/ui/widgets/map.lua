@@ -6,7 +6,14 @@ local weather = require("weather")
 local car = ac.getCar(0)
 local sim = ac.getSim()
 
-local map = { isShowingCars = true, isShowingSectors = true, isShowingWeather = true }
+local canvasSize = 1024
+
+local map = {
+        isShowingCars = true,
+        isShowingSectors = true,
+        isShowingWeather = true,
+        canvas = ui.ExtraCanvas(1024):setName("map"),
+}
 
 local aiFolder = ac.getFolder(ac.FolderID.CurrentTrackLayout) .. "/ai"
 local splineFilename ---@type string
@@ -27,8 +34,6 @@ end
 
 rescanSplines()
 
-local canvasSize = 1024
-local mapCanvas = ui.ExtraCanvas(canvasSize):setName("map")
 local mapResolution = 2000
 local strokeMult = 5
 local strokeWidths = {
@@ -169,7 +174,7 @@ local function drawPitlane()
 end
 
 local function drawMapCanvas()
-        mapCanvas:clear(rgbm.colors.transparent):update(function()
+        map.canvas:clear(rgbm.colors.transparent):update(function()
                 if car.drsPresent then drawDrsZones() end
 
                 drawPitlane()
@@ -311,7 +316,7 @@ function map:draw(isWidget)
         local canvasPos = (ui.windowSize() - canvasSizeScaled) / 2
 
         ui.setCursor(canvasPos)
-        ui.image(mapCanvas, canvasSizeScaled, sim.raceFlagType == ac.FlagType.Caution and rgbm.colors.yellow or nil)
+        ui.image(map.canvas, canvasSizeScaled, sim.raceFlagType == ac.FlagType.Caution and rgbm.colors.yellow or nil)
 
         if map.isShowingCars then
                 for _, c in ac.iterateCars.ordered(false) do

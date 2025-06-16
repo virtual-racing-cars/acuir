@@ -143,7 +143,7 @@ function session:step()
 
                 if pos == 1 then
                         session.currentLeader = car.index
-                elseif session.leaderboard[1].laps > 1 then
+                elseif session.leaderboard[1].laps > 0 then
                         if
                                 session.leaderboard[1].laps + session.leaderboard[1].car.splinePosition
                                 > slot.laps + slot.car.splinePosition + 1
@@ -154,12 +154,18 @@ function session:step()
                         end
 
                         if
-                                slot.totalTimeMs + session.averageLapTimeMs * 1.1
-                                < session.leaderboard[pos - 1].totalTimeMs
+                                session.leaderboard[pos - 1].laps
+                                        + session.leaderboard[pos - 1].car.splinePosition
+                                > slot.laps + slot.car.splinePosition + 1
                         then
                                 car.lapsToCarAheadLeaderboard =
                                         math.max(session.leaderboard[pos - 1].laps - slot.laps, 0)
+                        else
+                                car.lapsToCarAheadLeaderboard = 0
                         end
+                else
+                        car.lapsToLeader = 0
+                        car.lapsToCarAheadLeaderboard = 0
                 end
 
                 car.bestLapTimeMs = sim.raceSessionType ~= ac.SessionType.Race and slot.bestLapTimeMs

@@ -310,14 +310,27 @@ function drawSetupIO(sm)
         cui.setCursorX(0)
         local hideChanged = false
         settings.General.hideOtherTrackSetups, hideChanged = drawCheckbox(
-                "##isLeaderboardShowingDisconnected",
+                "##isSetupIOHidingOtherTracks",
                 "Show Other Tracks",
                 20 * cui.uiScale(),
                 false,
                 settings.General.hideOtherTrackSetups
         )
+        ui.sameLine()
 
         if hideChanged then carSetup:load() end
+
+        cui.setCursorX(250)
+        local sortChanged = false
+        settings.General.sortTrackSetupsAZ, sortChanged = drawCheckbox(
+                "##isSetupIOSortingAlpha",
+                "Sort A-Z",
+                20 * cui.uiScale(),
+                false,
+                settings.General.sortTrackSetupsAZ
+        )
+
+        if sortChanged then carSetup:load() end
 
         cui.pushWindow(
                 "load_setups",
