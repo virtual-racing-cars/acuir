@@ -5,6 +5,7 @@
 Features:
 - New right click context menu for Setup I/O
 - New combo box for changing specate camera
+- Updated player card design
 
 Fixes:
 - Fixed scroll in Car Setup
