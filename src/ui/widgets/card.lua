@@ -5,34 +5,6 @@ local sim = ac.getSim()
 
 local card = {}
 
-local spectatedCarInfo = {
-        {
-                label = "Driver",
-                value = function(car)
-                        local driverName = ac.getDriverName(car.index)
-                        driverName = isempty(driverName) and "Driver %s" % car.index or driverName
-                        return driverName
-                end,
-        },
-        {
-                label = "Car",
-                value = function(car) return ac.getCarName(car.index) end,
-        },
-        {
-                label = "Pos",
-                value = function(car) return race:getLeaderboardPosition(car.index) end,
-        },
-        {
-                label = "Laps",
-                value = function(car) return car.lapCount end,
-        },
-
-        {
-                label = "Ping",
-                value = function(car) return string.format("%s ms", car.ping) end,
-        },
-}
-
 local cameraModeString = {
         [ac.CameraMode.Cockpit] = function() return "Cockpit" end,
         [ac.CameraMode.Drivable] = function()
@@ -49,6 +21,8 @@ local cameraModeString = {
 }
 
 local function getDriverTags(carIndex) return ac.DriverTags(ac.getDriverName(carIndex)) end
+
+local comboActive = false
 
 function card:draw(xPos, yPos, width, height)
         local border = 10 * cui.uiScale()
@@ -67,19 +41,44 @@ function card:draw(xPos, yPos, width, height)
                 false
         )
 
-        local fontSize = 18 * cui.uiScale()
+        local fontSize = 24 * cui.uiScale()
+
+        local driverName = ac.getDriverName(sim.focusedCar)
+        driverName = isempty(driverName) and "Driver %s" % sim.focusedCar or driverName
 
         ui.setCursor(0)
-        for _, info in ipairs(spectatedCarInfo) do
-                cui.snapCursor()
-                ui.dwriteText(string.format("%s: %s", info.label, info.value(spectatedCar)), fontSize)
-                if info.sameLine then
-                        ui.sameLine()
-                        ui.setCursorX(ui.windowWidth() * 0.5)
-                else
-                        ui.setCursorX(0)
+        cui.snapCursor()
+        ui.dwriteTextAligned(
+                driverName,
+                fontSize,
+                ui.Alignment.Start,
+                ui.Alignment.Center,
+                vec2(ui.windowWidth(), fontSize * 1.2)
+        )
+
+        cui.setCursorX(0)
+        cui.snapCursor()
+        ui.dwriteTextAligned(
+                ac.getCarName(spectatedCar.index),
+                fontSize,
+                ui.Alignment.Start,
+                ui.Alignment.End,
+                vec2(ui.windowWidth(), fontSize * 1.5)
+        )
+
+        cui.offsetCursorY(15)
+        local size = vec2(ui.windowWidth(), 40 * cui.uiScale())
+        cui.combo(
+                "##comboCurrentCamera",
+                size,
+                string.format("Camera: %s", cameraModeString[sim.cameraMode]()),
+                function()
+                        for k, v in pairs(cameraModeString) do
+                                ui.setCursorX(0)
+                                if cui.menuButton(v(), vec2(ui.windowWidth(), size.y)) then ac.setCurrentCamera(k) end
+                        end
                 end
-        end
+        )
 
         local skin = string.format(
                 "%s\\%s\\skins\\%s\\livery.png",
@@ -87,42 +86,18 @@ function card:draw(xPos, yPos, width, height)
                 ac.getCarID(spectatedCar.index),
                 ac.getCarSkinID(spectatedCar.index)
         )
-        local skinImageSize = 115 * cui.uiScale()
+        local skinImageSize = 64 * cui.uiScale()
 
         ui.setCursorX(ui.windowWidth() - skinImageSize)
         ui.setCursorY(0)
-        ui.image(skin, vec2(skinImageSize, skinImageSize))
-
-        local cameraTextWidth = 200 * cui.uiScale()
-        cui:setCenterCursorAround(
-                cameraTextWidth,
-                fontSize,
-                ui.windowWidth() - skinImageSize * 0.5,
-                ui.windowHeight() - fontSize * 3
-        )
-        ui.dwriteTextAligned(
-                "Camera",
-                fontSize,
-                ui.Alignment.Center,
-                ui.Alignment.Center,
-                vec2(cameraTextWidth, fontSize)
+        ui.drawImageRounded(
+                skin,
+                ui.getCursor(),
+                ui.getCursor() + vec2(skinImageSize, skinImageSize),
+                6 * cui.uiScale()
         )
 
-        cui:setCenterCursorAround(
-                cameraTextWidth,
-                fontSize,
-                ui.windowWidth() - skinImageSize * 0.5,
-                ui.windowHeight() - fontSize
-        )
-        ui.dwriteTextAligned(
-                cameraModeString[sim.cameraMode](),
-                fontSize,
-                ui.Alignment.Center,
-                ui.Alignment.Center,
-                vec2(cameraTextWidth, fontSize)
-        )
-
-        local managePlayerButtonSize = 35 * cui:uiScale()
+        local managePlayerButtonSize = 42 * cui:uiScale()
         ui.setCursorX(0)
         ui.setCursorY(ui.windowHeight() - managePlayerButtonSize * 1.75)
 
@@ -196,6 +171,48 @@ function card:draw(xPos, yPos, width, height)
                 )
         then
                 ac.castVote("kick", true, spectatedCar.index)
+        end
+
+        cui.dummy(30, 3)
+        ui.sameLine()
+
+        cui.snapCursor()
+        ui.dwriteTextAligned(
+                "Ping " .. spectatedCar.ping,
+                fontSize,
+                ui.Alignment.Start,
+                ui.Alignment.End,
+                vec2(ui.windowWidth(), fontSize * 1.5)
+        )
+
+        managePlayerButtonSize = managePlayerButtonSize * 1.2
+
+        cui.offsetCursorY(-20)
+        ui.setCursorX(ui.windowWidth() - managePlayerButtonSize * 1.1)
+        ui.invisibleButton("##pingBox", vec2(managePlayerButtonSize, managePlayerButtonSize))
+        local r1, r2 = ui.itemRect()
+
+        local pingColor = { rgbm.colors.red, rgbm.colors.orange, rgbm.colors.yellow, rgbm.colors.green }
+        local ping = spectatedCar.ping
+        local maxPing = 400
+        local pingRatio = math.clamp(math.floor(maxPing / ping), 1, 4)
+
+        for i = 1, 4 do
+                ui.drawSimpleLine(
+                        vec2(r1.x + (managePlayerButtonSize / 4) * i, r2.y),
+                        vec2(r1.x + (managePlayerButtonSize / 4) * i, r2.y - (managePlayerButtonSize / 4) * i),
+                        rgbm.colors.gray,
+                        8
+                )
+
+                if math.clamp(math.floor(maxPing / ping), 1, 4) >= i then
+                        ui.drawSimpleLine(
+                                vec2(r1.x + (managePlayerButtonSize / 4) * i, r2.y),
+                                vec2(r1.x + (managePlayerButtonSize / 4) * i, r2.y - (managePlayerButtonSize / 4) * i),
+                                pingColor[pingRatio],
+                                8
+                        )
+                end
         end
 
         cui.popWindow()

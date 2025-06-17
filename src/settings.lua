@@ -1,18 +1,23 @@
+local Widgets = {
+        Checkbox = 1,
+        Slider = 2,
+}
+
 local settings = {
         General = {
 
-                { key = "autoStart", label = "Auto-Start new UI", default = true, widget = 1 },
+                { key = "autoStart", label = "Auto-Start new UI", default = true, widget = Widgets.Checkbox },
                 {
                         key = "hideOtherTrackSetups",
                         label = "Hide Other Track Setups",
                         default = false,
-                        widget = 1,
+                        widget = Widgets.Checkbox,
                 },
                 {
                         key = "sortTrackSetupsAZ",
                         label = "Sort Track Setups A-Z",
                         default = false,
-                        widget = 1,
+                        widget = Widgets.Checkbox,
                 },
                 {
                         key = "scrollDelayTimeMs",
@@ -21,18 +26,33 @@ local settings = {
                         min = 10,
                         max = 100,
                         format = "%.0f ms",
-                        widget = 2,
+                        widget = Widgets.Slider,
                 },
-                { key = "showConfirmDialogs", label = "Show Confirmation Dialogs", default = true, widget = 1 },
-                { key = "showVersions", label = "Show App and CSP versions", default = true, widget = 1 },
-                { key = "defaultSetupPage", label = "Open Garage on Startup", default = false, widget = 1 },
+                {
+                        key = "showConfirmDialogs",
+                        label = "Show Confirmation Dialogs",
+                        default = true,
+                        widget = Widgets.Checkbox,
+                },
+                {
+                        key = "showVersions",
+                        label = "Show App and CSP versions",
+                        default = true,
+                        widget = Widgets.Checkbox,
+                },
+                {
+                        key = "defaultSetupPage",
+                        label = "Open Garage on Startup",
+                        default = false,
+                        widget = Widgets.Checkbox,
+                },
                 {
                         key = "autoLoadLastSetup",
                         label = "Load Last Setup on Startup",
                         default = true,
-                        widget = 1,
+                        widget = Widgets.Checkbox,
                 },
-                { key = "developerMode", label = "Developer Mode", default = false, widget = 1 },
+                { key = "developerMode", label = "Developer Mode", default = false, widget = Widgets.Checkbox },
         },
         Appearance = {
                 {

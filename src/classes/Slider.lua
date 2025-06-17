@@ -51,7 +51,7 @@ local function drawSlider(id, name, width, height, value, sliderParams, noScroll
         ui.setCursorY(p1.y + height - height * 0.4)
         ui.invisibleButton("slider" .. id, vec2Temp1:set(width, barSize))
         local r1, r2 = ui.itemRect()
-        ui.drawRectFilled(r1, r2, settings.Appearance.uiColorBackground * 0.2, 5)
+        ui.drawRectFilled(r1, r2, settings.Appearance.uiColorBackground * 0.2, 6 * cui.uiScale())
 
         local active = ui.itemActive() or (itemHeld == id and ui.mouseDown(ui.MouseButton.Left))
         local hovered = ui.rectHovered(r1, r2)
@@ -91,7 +91,7 @@ local function drawSlider(id, name, width, height, value, sliderParams, noScroll
                         r1,
                         vec2Temp1:set(sliderFill, r2.y),
                         settings.Appearance.uiColorSecondary,
-                        5,
+                        6 * cui.uiScale(),
                         ui.CornerFlags.Left
                 )
         end
@@ -113,19 +113,19 @@ local function drawSlider(id, name, width, height, value, sliderParams, noScroll
         )
 
         ui.drawRectFilled(
-                vec2(sliderFill, r1.y - 5),
-                vec2(sliderFill + grabberSize, r2.y + 5),
+                vec2(sliderFill, r1.y),
+                vec2(sliderFill + grabberSize, r2.y),
                 settings.Appearance.uiColorBackground * 0.5,
-                5
+                6 * cui.uiScale()
         )
         ui.drawRectFilled(
-                vec2(sliderFill + 1, r1.y - 3),
-                vec2(sliderFill + grabberSize - 1, r2.y + 3),
+                vec2(sliderFill + 1, r1.y - 1),
+                vec2(sliderFill + grabberSize - 1, r2.y + 1),
                 active and settings.Appearance.uiColorSecondary or settings.Appearance.uiColorAccent,
-                4
+                5 * cui.uiScale()
         )
         ui.setCursor(vec2(sliderFill, r2.y - barSize))
-        ui.icon(ui.Icons.Menu, vec2(grabberSize, barSize), settings.Appearance.uiColorBackground * 0.3, barSize)
+        ui.icon(ui.Icons.Menu, vec2(grabberSize, barSize), settings.Appearance.uiColorBackground * 0.3, barSize * 0.75)
 
         local value = valueStep * step + min
 

@@ -24,6 +24,20 @@ local function initializeControlTab(name, ini)
         return controlTab
 end
 
+ac.onControlSettingsChanged(function()
+        local carSpecificPreset = configs.CONTROLS.ini:get("__LAUNCHER_CM", "PRESET_NAME", "")
+        local carSpecificPresetEnabled = configs.CONTROLS.ini:get("__LAUNCHER_CM", "PRESET_CHANGED", -1) == 0
+
+        if carSpecificPresetEnabled then
+                setTimeout(function()
+                        local carSpecficPresetFile =
+                                io.open(ac.getFolder(ac.FolderID.Cfg) .. "\\controllers\\" .. carSpecificPreset, "w+")
+                        carSpecficPresetFile:write(configs.CONTROLS.ini:serialize())
+                        carSpecficPresetFile:close()
+                end, 0.5, "updateCarSpecificPreset")
+        end
+end)
+
 function controls:initialize()
         io.scanDir(ac.getFolder(ac.FolderID.ACAppsLua), function(fileName, fileAttributes, callbackData)
                 local appDirectory = ac.getFolder(ac.FolderID.ACAppsLua) .. "\\" .. fileName
@@ -58,15 +72,3 @@ function controls:iterate()
 end
 
 return controls
-
--- local carSpecificPreset = controlsINI:get("__LAUNCHER_CM", "PRESET_NAME", "")
--- local carSpecificPresetEnabled = controlsINI:get("__LAUNCHER_CM", "PRESET_CHANGED", -1) == 0
-
--- if carSpecificPresetEnabled then
---         carSpecificPreset =
---                 string.replace(string.replace(carSpecificPreset, "savedSetups\\", ""), ".ini", "")
--- end
-
--- local cfgInputGeneral = MappedConfig(ac.getFolder(ac.FolderID.ExtCfgUser) .. "/general.ini", {
--- 	CONTROL = { NO_MOUSE_STEERING_FOR_INACTIVE = false },
--- })

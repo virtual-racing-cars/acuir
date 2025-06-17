@@ -152,7 +152,12 @@ function page:draw()
         )
 
         cui.pushWindowFitted("settings_view_main_window")
-        ui.drawRectFilled(0, vec2(ui.windowWidth(), 130 * cui.uiScale()), rgbm(0.1, 0.1, 0.1, 0.95))
+        ui.drawRectFilled(
+                0,
+                vec2(ui.windowWidth(), 130 * cui.uiScale()),
+                settings.Appearance.uiColorBackground,
+                12 * cui.uiScale()
+        )
 
         topSubBar("View")
 

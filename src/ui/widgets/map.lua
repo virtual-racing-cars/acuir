@@ -109,7 +109,7 @@ end
 
 local function drawLoopedSegment(startT, endT, color, thickness)
         if endT < startT then
-                drawSegment(startT, 1.0, color, thickness)
+                drawSegment(startT, 1.001, color, thickness)
                 drawSegment(0.0, endT, color, thickness)
         else
                 drawSegment(startT, endT, color, thickness)
@@ -149,8 +149,8 @@ local function drawDrsZones()
 end
 
 local function drawTrack()
-        drawLoopedSegment(0, 1.101, colors.trackMain, strokeWidths.trackMain)
-        drawLoopedSegment(0, 1.01, colors.trackEdge, strokeWidths.trackEdge)
+        drawLoopedSegment(0, 1.001, colors.trackMain, strokeWidths.trackMain)
+        drawLoopedSegment(0, 1.001, colors.trackEdge, strokeWidths.trackEdge)
 end
 
 local function drawPitlane()

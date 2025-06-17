@@ -87,7 +87,7 @@ function topSubBar(path)
 end
 
 function topBar(path)
-        local driveButtonWidth = 500 * cui.uiScale()
+        local driveButtonWidth = 550 * cui.uiScale()
         local driveButtonHeight = 70 * cui.uiScale()
 
         -- ui.drawSimpleLine(
@@ -100,8 +100,7 @@ function topBar(path)
                 0,
                 vec2(ui.windowWidth(), topBarHeight),
                 settings.Appearance.uiColorBackground,
-                12,
-                ui.CornerFlags.Top
+                12 * cui.uiScale()
         )
 
         cui.contentWindow(
@@ -110,13 +109,26 @@ function topBar(path)
                 vec2(ui.windowWidth(), 50 * cui.uiScale()),
                 ui.WindowFlags.None,
                 function()
-                        ui.drawRectFilled(
-                                vec2(0, 0),
-                                ui.windowSize(),
-                                settings.Appearance.uiColorBackground * 0.5,
-                                12,
-                                ui.CornerFlags.Bottom
+                        local width1 = 200 * cui.uiScale()
+                        local width2 = 250 * cui.uiScale()
+                        local height = 50 * cui.uiScale()
+                        local center = ui.windowWidth() * 0.5
+
+                        ui.drawQuadFilled(
+                                vec2(center - width2, 0),
+                                vec2(center - width1, height),
+                                vec2(center + width1, height),
+                                vec2(center + width2, 0),
+                                settings.Appearance.uiColorBackgroundShade
                         )
+
+                        -- ui.drawRectFilled(
+                        --         vec2(0, 0),
+                        --         ui.windowSize(),
+                        --         settings.Appearance.uiColorBackground * 0.5,
+                        --         12,
+                        --         ui.CornerFlags.Bottom
+                        -- )
 
                         ui.setCursorX(ui.windowWidth() * 0.5 - 320 * cui.uiScale())
                         ui.setCursorY(0)
@@ -124,7 +136,7 @@ function topBar(path)
 
                         ui.dwriteTextAligned(
                                 simutils.raceSessionTypeString .. " " .. simutils.sessionTotalTimeString,
-                                28 * cui.uiScale(),
+                                24 * cui.uiScale(),
                                 ui.Alignment.End,
                                 ui.Alignment.Center,
                                 vec2(300 * cui.uiScale(), ui.windowHeight())
@@ -135,7 +147,7 @@ function topBar(path)
 
                         ui.dwriteTextAligned(
                                 simutils.sessionTimeLeftString,
-                                28 * cui.uiScale(),
+                                24 * cui.uiScale(),
                                 ui.Alignment.Start,
                                 ui.Alignment.Center,
                                 vec2(600 * cui.uiScale(), ui.windowHeight())

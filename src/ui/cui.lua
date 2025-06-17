@@ -639,32 +639,52 @@ function CUI.treeNode(label, count, content, defaultOpen)
         return clicked
 end
 
-function CUI.combo(label, size, previewValue, content)
-        local cursorXTemp = ui.getCursorX()
-        local clicked, id = CUI.treeNodeButton(previewValue, size, false, true)
-        local cursorYTemp = ui.getCursorY()
+function CUI.combo(id, size, previewValue, content)
+        local id = "##combo" .. id
+        local sp1 = ui.cursorScreenPos()
+        local clicked = ui.invisibleButton("##comboCurrentCamera", size)
+        local hovered = ui.itemHovered()
+        local r1, r2 = ui.itemRect()
+        local color = settings.Appearance.uiColorText
+        local open = CUI.loadStoredBool(id, false)
 
-        local open = CUI.loadStoredBool(id)
+        if hovered then color = settings.Appearance.uiColorSecondary end
         if clicked then CUI.storeBool(id, not open) end
 
-        local value = previewValue
+        ui.drawRectFilled(r1, r2, settings.Appearance.uiColorPrimary, 6 * CUI.uiScale())
+        ui.addIcon(open and ui.Icons.Down or ui.Icons.Up, vec2(size.y, size.y) * 0.5, vec2(0.98, 0.5), color)
+
+        ui.setCursor(r1)
+        CUI.snapCursor()
+        ui.dwriteTextAligned(previewValue, size.y * 0.65, ui.Alignment.Center, ui.Alignment.Center, size, false, color)
 
         if open then
-                ui.setCursorX(cursorXTemp)
-                ui.setCursorY(cursorYTemp)
+                ui.transparentWindow(id, sp1 - vec2(0, size.y * 8), vec2(size.x, size.y * 8), true, true, function()
+                        ui.bringWindowToFront()
+                        ui.setCursor(0)
 
-                size.y = size.y * 4
+                        CUI.pushWindow(id .. "scroll_window", 0, 0, ui.windowWidth(), ui.windowHeight(), true)
+                        ui.drawRectFilled(
+                                ui.getCursor(),
+                                vec2(ui.windowWidth(), 1000),
+                                settings.Appearance.uiColorBackground,
+                                6 * uiScale
+                        )
 
-                ui.childWindow(label, size, true, ui.WindowFlags.None, function()
-                        clicked, value = content(previewValue)
+                        content()
+
+                        if
+                                not clicked
+                                and open
+                                and ui.mouseReleased(ui.MouseButton.Left)
+                                and not ui.rectHovered(0, vec2(ui.windowWidth(), 10000))
+                        then
+                                CUI.storeBool(id, false)
+                        end
+
+                        CUI.popWindow(true)
                 end)
-
-                if clicked then CUI.storeBool(id, false) end
         end
-
-        ui.setCursorY(cursorYTemp)
-
-        return value
 end
 
 local inputTextBoxDragIndex = 0

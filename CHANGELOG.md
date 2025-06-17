@@ -1,5 +1,13 @@
 ## ACUIR Changelog
 *Requires minimum CSP version 0.2.11 (3465)*
+### 0.9.2.8
+
+Features:
+- New right click context menu for Setup I/O
+
+Fixes:
+- Readded Load Setup button to Setup I/O
+
 ### 0.9.2.7
 
 Features:

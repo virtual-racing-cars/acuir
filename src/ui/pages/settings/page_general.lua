@@ -34,38 +34,22 @@ function page.draw()
                 true
         )
 
+        cui.setCursorY(100)
         for i, v in ipairs(settings.General) do
-                ui.setCursorX(ui.windowWidth() * 0.25)
+                local height = 95 * 0.7 * 0.3 * cui.uiScale()
+
+                ac.log(v)
 
                 if v.widget == 1 then
-                        local value = settings.General[v.key] and 1 or 0
+                        ui.setCursorX(ui.windowWidth() * 0.5 - height * 7)
 
-                        local newValue, changed, active, hovered = drawSpinner(
-                                v.label,
-                                v.label,
-                                ui.windowWidth() * 0.5,
-                                95 * cui.uiScale(),
-                                false,
-                                value,
-                                {
-                                        section = "SETTINGS",
-                                        id = v.label,
-                                        label = v.label,
-                                        min = v.min or 0,
-                                        max = v.max or 1,
-                                        step = 1,
-                                        shiftStep = 1,
-                                        multiplier = 1,
-                                        offset = 0,
-                                        format = settings.General[v.key] and "Enabled" or "Disabled",
-                                        unit = "%",
-                                        help = "",
-                                },
-                                true
-                        )
+                        local newValue, changed = drawCheckbox(v.label, v.label, height, false, settings.General[v.key])
+                        ui.newLine()
+                        ui.newLine()
 
-                        settings.General[v.key] = newValue == 1 and true or false
+                        if changed then settings.General[v.key] = newValue end
                 elseif v.widget == 2 then
+                        ui.setCursorX(ui.windowWidth() * 0.25)
                         settings.General[v.key] = drawSpinner(
                                 v.label,
                                 v.label,
@@ -89,6 +73,8 @@ function page.draw()
                                 },
                                 true
                         )
+                        ui.newLine()
+                        ui.newLine()
                 end
         end
 
