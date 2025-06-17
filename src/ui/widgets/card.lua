@@ -172,48 +172,30 @@ function card:draw(xPos, yPos, width, height)
         then
                 ac.castVote("kick", true, spectatedCar.index)
         end
-
-        cui.dummy(30, 3)
         ui.sameLine()
 
-        cui.snapCursor()
-        ui.dwriteTextAligned(
-                "Ping " .. spectatedCar.ping,
-                fontSize,
-                ui.Alignment.Start,
-                ui.Alignment.End,
-                vec2(ui.windowWidth(), fontSize * 1.5)
-        )
+        local pingColor = rgbm.colors.green
 
-        managePlayerButtonSize = managePlayerButtonSize * 1.2
+        if spectatedCar.ping > 300 then
+                pingColor = rgbm.colors.red
+        elseif spectatedCar.ping > 250 then
+                pingColor = rgbm.colors.orange
+        elseif spectatedCar.ping > 100 then
+                pingColor = rgbm.colors.yellow
+        end
 
         cui.offsetCursorY(-20)
-        ui.setCursorX(ui.windowWidth() - managePlayerButtonSize * 1.1)
-        ui.invisibleButton("##pingBox", vec2(managePlayerButtonSize, managePlayerButtonSize))
-        local r1, r2 = ui.itemRect()
-
-        local pingColor = { rgbm.colors.red, rgbm.colors.orange, rgbm.colors.yellow, rgbm.colors.green }
-        local ping = spectatedCar.ping
-        local maxPing = 400
-        local pingRatio = math.clamp(math.floor(maxPing / ping), 1, 4)
-
-        for i = 1, 4 do
-                ui.drawSimpleLine(
-                        vec2(r1.x + (managePlayerButtonSize / 4) * i, r2.y),
-                        vec2(r1.x + (managePlayerButtonSize / 4) * i, r2.y - (managePlayerButtonSize / 4) * i),
-                        rgbm.colors.gray,
-                        8
-                )
-
-                if math.clamp(math.floor(maxPing / ping), 1, 4) >= i then
-                        ui.drawSimpleLine(
-                                vec2(r1.x + (managePlayerButtonSize / 4) * i, r2.y),
-                                vec2(r1.x + (managePlayerButtonSize / 4) * i, r2.y - (managePlayerButtonSize / 4) * i),
-                                pingColor[pingRatio],
-                                8
-                        )
-                end
-        end
+        cui.offsetCursorX(0)
+        cui.snapCursor()
+        ui.dwriteTextAligned(
+                string.format("Ping %s ms", spectatedCar.ping),
+                22 * cui.uiScale(),
+                ui.Alignment.Start,
+                ui.Alignment.Center,
+                vec2(120 * cui.uiScale(), managePlayerButtonSize),
+                false,
+                pingColor
+        )
 
         cui.popWindow()
 

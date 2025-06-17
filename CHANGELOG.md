@@ -4,9 +4,12 @@
 
 Features:
 - New right click context menu for Setup I/O
+- New combo box for changing specate camera
 
 Fixes:
+- Fixed scroll in Car Setup
 - Readded Load Setup button to Setup I/O
+- Fixed time table Show Disconnected toggle
 
 ### 0.9.2.7
 

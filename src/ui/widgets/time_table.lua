@@ -352,15 +352,13 @@ function timetableEntryButton(car, yPos, height)
         end
 end
 
-local isTimetableShowingDisconnected = false
-
 function timetable:draw(xPos, yPos, width, height)
         local height = ui.windowHeight() / 22
         timetableBanner(0, height)
 
         cui.pushWindow("home_timetable_entrant_window", 0, height, ui.windowWidth(), ui.windowHeight() - height, true)
         for leaderboardIndex, slot in ipairs(race.leaderboard) do
-                if slot.car.isConnected or isTimetableShowingDisconnected then
+                if slot.car.isConnected or timetable.isShowingDisconnected then
                         timetableEntryButton(race.cars[slot.car.index], (leaderboardIndex - 1) * height, height)
                 end
         end

@@ -110,8 +110,8 @@ function topBar(path)
                 ui.WindowFlags.None,
                 function()
                         local width1 = 200 * cui.uiScale()
-                        local width2 = 250 * cui.uiScale()
-                        local height = 50 * cui.uiScale()
+                        local width2 = 270 * cui.uiScale()
+                        local height = 80 * cui.uiScale()
                         local center = ui.windowWidth() * 0.5
 
                         ui.drawQuadFilled(
@@ -136,7 +136,7 @@ function topBar(path)
 
                         ui.dwriteTextAligned(
                                 simutils.raceSessionTypeString .. " " .. simutils.sessionTotalTimeString,
-                                24 * cui.uiScale(),
+                                22 * cui.uiScale(),
                                 ui.Alignment.End,
                                 ui.Alignment.Center,
                                 vec2(300 * cui.uiScale(), ui.windowHeight())
@@ -147,7 +147,7 @@ function topBar(path)
 
                         ui.dwriteTextAligned(
                                 simutils.sessionTimeLeftString,
-                                24 * cui.uiScale(),
+                                22 * cui.uiScale(),
                                 ui.Alignment.Start,
                                 ui.Alignment.Center,
                                 vec2(600 * cui.uiScale(), ui.windowHeight())

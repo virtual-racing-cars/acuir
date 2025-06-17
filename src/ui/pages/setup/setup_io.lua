@@ -125,13 +125,40 @@ local function promptOverwriteSetup()
 end
 
 function drawSetupControls(sm)
-        local iconButtonHeight = ui.windowHeight() * 0.35
+        local iconButtonHeight = ui.windowHeight() * 0.3
         local buttonWidth = ui.windowWidth() * 0.99
         local groupBegin = (ui.windowWidth() / 24)
         local fontSize = 22 * cui.uiScale()
 
+        ui.setCursorY(0)
         ui.setCursorX(ui.windowWidth() * 0.005)
-        cui.setCursorY(15)
+
+        local hideChanged = false
+        settings.General.hideOtherTrackSetups, hideChanged = drawCheckbox(
+                "##isSetupIOHidingOtherTracks",
+                "Show Other Tracks",
+                20 * cui.uiScale(),
+                false,
+                settings.General.hideOtherTrackSetups
+        )
+        ui.sameLine()
+
+        if hideChanged then carSetup:load() end
+
+        cui.setCursorX(250)
+        local sortChanged = false
+        settings.General.sortTrackSetupsAZ, sortChanged = drawCheckbox(
+                "##isSetupIOSortingAlpha",
+                "Sort A-Z",
+                20 * cui.uiScale(),
+                false,
+                settings.General.sortTrackSetupsAZ
+        )
+
+        if sortChanged then carSetup:load() end
+
+        ui.setCursorX(ui.windowWidth() * 0.005)
+        cui.setCursorY(35)
 
         ui.drawRect(
                 ui.getCursor(),
@@ -173,7 +200,7 @@ function drawSetupControls(sm)
                 setupFileExists = io.fileExists(carSetup.input.path)
         end
 
-        cui.offsetCursorY(10)
+        cui.offsetCursorY(5)
         ui.setCursorX(ui.windowWidth() * 0.005)
 
         if
@@ -340,40 +367,7 @@ function drawSetupIO(sm)
                 cui.menuBanner("Deleted Setup", nil, rgbm.colors.red)
         end
 
-        cui.setCursorX(0)
-        local hideChanged = false
-        settings.General.hideOtherTrackSetups, hideChanged = drawCheckbox(
-                "##isSetupIOHidingOtherTracks",
-                "Show Other Tracks",
-                20 * cui.uiScale(),
-                false,
-                settings.General.hideOtherTrackSetups
-        )
-        ui.sameLine()
-
-        if hideChanged then carSetup:load() end
-
-        cui.setCursorX(250)
-        local sortChanged = false
-        settings.General.sortTrackSetupsAZ, sortChanged = drawCheckbox(
-                "##isSetupIOSortingAlpha",
-                "Sort A-Z",
-                20 * cui.uiScale(),
-                false,
-                settings.General.sortTrackSetupsAZ
-        )
-
-        if sortChanged then carSetup:load() end
-
-        cui.pushWindow(
-                "load_setups",
-                0,
-                30 * cui.uiScale(),
-                ui.windowWidth(),
-                ui.windowHeight() * 0.7,
-                true,
-                ui.ButtonFlags.None
-        )
+        cui.pushWindow("load_setups", 0, 0, ui.windowWidth(), ui.windowHeight() * 0.73, true, ui.ButtonFlags.None)
         ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiColorBackground, 6 * cui.uiScale())
         drawSetupList()
         cui.popWindow(true)
