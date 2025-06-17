@@ -89,7 +89,10 @@ local function setupIoWindow()
                 end
         )
 
+        cui.pushWindow("setup_tab_bar_window", 0, 0, ui.windowWidth(), ui.windowHeight(), true)
         app.state.setupTab = setupTabBar(sm.setupTabs)
+        cui.popWindow(false)
+
         cui.popContentWindow()
 
         cui.pushContentWindow(
