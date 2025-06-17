@@ -131,7 +131,7 @@ function drawSetupControls(sm)
         local fontSize = 22 * cui.uiScale()
 
         ui.setCursorX(ui.windowWidth() * 0.005)
-        ui.setCursorY(ui.windowHeight() * 0.1)
+        cui.setCursorY(15)
 
         ui.drawRect(
                 ui.getCursor(),
@@ -144,8 +144,27 @@ function drawSetupControls(sm)
                 carSetup.input.track .. "/",
                 carSetup.input.name,
                 "[%w_ .;,><%-]",
-                vec2Temp1:set(buttonWidth, iconButtonHeight)
+                vec2Temp1:set(buttonWidth - iconButtonHeight * 1.3, iconButtonHeight)
         )
+        ui.sameLine()
+
+        ui.setCursorX(ui.windowWidth() - iconButtonHeight * 1.2)
+
+        if
+                cui.iconButton(
+                        "##chatSetupNameButton",
+                        ui.Icons.Cancel,
+                        iconButtonHeight,
+                        iconButtonHeight,
+                        isempty(carSetup.input.name) and ui.ButtonFlags.Disabled or ui.ButtonFlags.None,
+                        false,
+                        1
+                )
+        then
+                carSetup.input.name = ""
+        end
+        ui.sameLine()
+
         ui.newLine()
 
         local setupFileExists = false
@@ -154,19 +173,26 @@ function drawSetupControls(sm)
                 setupFileExists = io.fileExists(carSetup.input.path)
         end
 
-        -- if
-        --         cui.menuButton(
-        --                 "Load Setup",
-        --                 vec2Temp1:set(buttonWidth, iconButtonHeight),
-        --                 nil,
-        --                 nil,
-        --                 setupFileExists and ui.ButtonFlags.None or ui.ButtonFlags.Disabled
-        --         )
-        -- then
-        --         cui.menuBanner("Loaded Setup", nil, rgbm.colors.green)
-        --         sm:LoadStuff(carSetup.selected.path)
-        --         carSetup.current = carSetup.selected.track .. "/" .. carSetup.selected.name
-        -- end
+        cui.offsetCursorY(10)
+        ui.setCursorX(ui.windowWidth() * 0.005)
+
+        if
+                cui.menuButton(
+                        "Load Setup",
+                        vec2Temp1:set(buttonWidth * 0.49, iconButtonHeight),
+                        nil,
+                        nil,
+                        setupFileExists and ui.ButtonFlags.None or ui.ButtonFlags.Disabled,
+                        false,
+                        false
+                )
+        then
+                cui.menuBanner("Loaded Setup", nil, rgbm.colors.green)
+                sm:LoadStuff(carSetup.selected.path)
+                carSetup.current = carSetup.selected.track .. "/" .. carSetup.selected.name
+        end
+        ui.sameLine()
+        ui.offsetCursorX(buttonWidth * 0.02)
 
         -- if
         --         cui.menuButton(
@@ -181,16 +207,7 @@ function drawSetupControls(sm)
         -- end
         -- ui.sameLine()
 
-        ui.setCursorX(ui.windowWidth() * 0.005)
-        ui.offsetCursorY(ui.windowHeight() * 0.05)
-        ui.drawRectFilled(
-                ui.getCursor(),
-                ui.getCursor() + vec2Temp1:set(buttonWidth, iconButtonHeight),
-                settings.Appearance.uiColorPrimary,
-                6 * cui.uiScale()
-        )
-
-        if cui.menuButton("Save Setup", vec2Temp1:set(buttonWidth, iconButtonHeight)) then
+        if cui.menuButton("Save Setup", vec2Temp1:set(buttonWidth * 0.49, iconButtonHeight)) then
                 if setupFileExists then
                         promptOverwriteSetup(sm)
                 else
@@ -207,12 +224,11 @@ function drawSetupControls(sm)
         -- end
 end
 
-local rightClicked = ""
-
 local function drawSetupNode(setup, track)
         local setupActive = carSetup.selected.path == setup.path
         local name = string.replace(setup.name, ".ini", "")
         local buttonSize = vec2(ui.windowWidth(), 48 * cui.uiScale())
+        local popupButtonSize = vec2(ui.windowWidth() * 0.3, 32 * cui.uiScale())
 
         if cui.treeNodeButton(name, buttonSize, setupActive, false) then
                 carSetup.selected = {
@@ -236,7 +252,51 @@ local function drawSetupNode(setup, track)
                 end
         end
 
-        if ui.itemHovered() and ui.mouseClicked(ui.MouseButton.Right) then rightClicked = setup.path end
+        ui.itemPopup(name .. track, ui.MouseButton.Right, function()
+                carSetup.selected = {
+                        name = name,
+                        track = track,
+                        path = setup.path,
+                        lastWriteTime = setup.lastWriteTime,
+                }
+
+                carSetup.input = {
+                        name = name,
+                        track = track,
+                        path = setup.path,
+                        lastWriteTime = setup.lastWriteTime,
+                }
+
+                ui.setCursorX(0)
+                ui.drawRectFilled(0, popupButtonSize, rgbm(0.2, 0.2, 0.2, 1))
+                if cui.menuButton("Load", popupButtonSize, 0, 0, 0, false, false, ui.CornerFlags.None) then
+                        cui.menuBanner("Loaded Setup", nil, rgbm.colors.green)
+                        sm:LoadStuff(carSetup.selected.path)
+                        carSetup.current = carSetup.selected.track .. "/" .. carSetup.selected.name
+                end
+
+                ui.setCursorX(0)
+                ui.drawRectFilled(ui.getCursor(), ui.getCursor() + popupButtonSize, rgbm(0.2, 0.2, 0.2, 1))
+                if cui.menuButton("View in Explorer", popupButtonSize, 0, 0, 0, false, false, ui.CornerFlags.None) then
+                        os.showInExplorer(carSetup.selected.path)
+                end
+
+                -- ui.setCursorX(0)
+                -- ui.drawRectFilled(ui.getCursor(), ui.getCursor() + popupButtonSize, rgbm(0.2, 0.2, 0.2, 1))
+                -- if cui.menuButton("Rename...", popupButtonSize, 0, 0, 0, false, false, ui.CornerFlags.None) then
+                -- end
+
+                -- ui.setCursorX(0)
+                -- ui.drawRectFilled(ui.getCursor(), ui.getCursor() + popupButtonSize, rgbm(0.2, 0.2, 0.2, 1))
+                -- if cui.menuButton("Move to...", popupButtonSize, 0, 0, 0, false, false, ui.CornerFlags.None) then
+                -- end
+
+                ui.setCursorX(0)
+                ui.drawRectFilled(ui.getCursor(), ui.getCursor() + popupButtonSize, rgbm(0.2, 0.2, 0.2, 1))
+                if cui.menuButton("Delete", popupButtonSize, 0, 0, 0, false, false, ui.CornerFlags.None) then
+                        promptDeleteSetup()
+                end
+        end)
 
         ui.sameLine()
         ui.setCursorX(0)
@@ -249,33 +309,6 @@ local function drawSetupNode(setup, track)
                 false,
                 ui.itemHovered() and rgbm.colors.white or rgbm.colors.gray
         )
-
-        if setup.path == rightClicked then
-                ui.setCursorX(0)
-                ui.drawRectFilled(ui.getCursor(), ui.getCursor() + buttonSize, rgbm(0.2, 0.2, 0.2, 1))
-
-                local popupClicked = false
-                if cui.menuButton("Load", vec2(ui.windowWidth() * 0.5, buttonSize.y), 0, 0) then
-                        cui.menuBanner("Loaded Setup", nil, rgbm.colors.green)
-                        sm:LoadStuff(carSetup.selected.path)
-                        carSetup.current = carSetup.selected.track .. "/" .. carSetup.selected.name
-                        popupClicked = true
-                end
-
-                local popupHovered = ui.itemHovered()
-
-                ui.sameLine()
-
-                if cui.menuButton("Delete", vec2(ui.windowWidth() * 0.5, buttonSize.y), 0, 0) then
-                        promptDeleteSetup()
-                        popupClicked = true
-                end
-
-                if not popupHovered then popupHovered = ui.itemHovered() end
-                if popupHovered or popupClicked then return end
-
-                if ui.mouseReleased(ui.MouseButton.Left) then rightClicked = "" end
-        end
 end
 
 local function drawSetupList()

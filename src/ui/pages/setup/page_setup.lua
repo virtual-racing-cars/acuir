@@ -78,7 +78,7 @@ local function setupIoWindow()
                 ui.windowHeight() * 0.5 - 7.5 * cui.uiScale(),
                 function()
                         ui.setCursor(0)
-                        if cui.menuButton("Car Setup", 40, 0, 0, 0, not setupAppsActive, false, ui.CornerFlags.Top) then
+                        if cui.menuButton("Car Setup", 40, 0, 0, 0, false, false, ui.CornerFlags.Top) then
                         end
                 end,
                 function()
