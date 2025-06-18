@@ -40,7 +40,7 @@ ui.onExclusiveHUD(function(mode)
 
         -- pages:goToSession()
         -- pages:goToLapTimes()
-        -- pages:goToSetup()
+        pages:goToSetup()
         -- pages:goToSettingsControls()
         -- pages:goToSettingsGeneral()
         -- pages:goToSettingsAudio()

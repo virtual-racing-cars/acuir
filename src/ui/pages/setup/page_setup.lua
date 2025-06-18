@@ -7,6 +7,7 @@ require("ui.pages.setup.setup_io")
 require("classes.SetupManager")
 local app = require("app")
 local cui = require("ui.cui")
+local dataLogger = require("data_logger")
 local settings = require("settings")
 
 local carStatusActive = true
@@ -47,13 +48,89 @@ local function helpWindow()
         cui.popContentWindow()
 end
 
+local function dataLoggingWindow()
+        cui.pushContentWindow(
+                "data_logging_window",
+                (ui.windowWidth() / 5) * 4,
+                0,
+                ui.windowWidth() / 5,
+                ui.windowHeight() * 0.15 - 7.5 * cui.uiScale(),
+                function()
+                        ui.setCursor(0)
+                        if cui.menuButton("Data Logging", 40, 0, 0, 0, false, false, ui.CornerFlags.Top) then
+                        end
+                        ui.setCursor(0)
+
+                        if not dataLogger:loggerActive() then return end
+
+                        cui.offsetCursorX(-40)
+                        ui.dwriteTextAligned(
+                                dataLogger:loggerTime(),
+                                18 * cui.uiScale(),
+                                ui.Alignment.End,
+                                ui.Alignment.Center,
+                                ui.windowSize(),
+                                rgbm.colors.white
+                        )
+
+                        ui.drawCircleFilled(
+                                vec2(ui.windowWidth() - 20 * cui.uiScale(), ui.windowHeight() * 0.5),
+                                10 * cui.uiScale(),
+                                rgbm.colors.red
+                        )
+                end
+        )
+
+        ui.setCursorX(ui.windowHeight() * 0.3)
+        ui.setCursorY(0)
+        if
+                cui.iconButton(
+                        dataLogger:loggerActive() and "Stop & Save" or "Start",
+                        dataLogger:loggerActive() and ui.Icons.Save or ui.Icons.Target,
+                        ui.windowHeight(),
+                        ui.windowHeight() * 0.7,
+                        0
+                )
+        then
+                if dataLogger:loggerActive() then
+                        dataLogger:loggerEnd()
+                else
+                        dataLogger:loggerStart()
+                end
+        end
+
+        ui.setCursorX(ui.windowWidth() * 0.5 - ui.windowHeight() * 0.5)
+        ui.setCursorY(0)
+        if
+                cui.iconButton(
+                        "Cancel",
+                        ui.Icons.Cancel,
+                        ui.windowHeight(),
+                        ui.windowHeight() * 0.7,
+                        dataLogger:loggerActive() and ui.ButtonFlags.None or ui.ButtonFlags.Disabled
+                )
+        then
+                dataLogger:loggerDrop()
+        end
+
+        ui.setCursorX(ui.windowWidth() - ui.windowHeight() * 1.3)
+        ui.setCursorY(0)
+        if cui.iconButton("Logs", ui.Icons.Folder, ui.windowHeight(), ui.windowHeight() * 0.7, 0) then
+                local logDirectory = dataLogger:getMotecDirectory(0)
+                if not io.dirExists(logDirectory) then io.createDir(logDirectory) end
+                os.openInExplorer(logDirectory)
+        end
+
+        cui.popContentWindow()
+end
+
 local function carStatusWindow()
         cui.pushContentWindow(
                 "car_status_window",
                 (ui.windowWidth() / 5) * 4,
-                0,
+                ui.windowHeight() * 0.15 + 7.5 * cui.uiScale(),
                 ui.windowWidth() / 5,
-                ui.windowHeight(),
+                ui.windowHeight() * 0.85 - 7.5 * cui.uiScale(),
                 function()
                         ui.setCursor(0)
                         if cui.menuButton("Car Status", 40, 0, 0, 0, carStatusActive, false, ui.CornerFlags.Top) then
@@ -170,6 +247,7 @@ end
 function page:draw()
         setupItemWindow()
         carStatusWindow()
+        dataLoggingWindow()
         setupIoWindow()
         helpWindow()
 
