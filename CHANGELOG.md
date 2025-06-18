@@ -1,5 +1,14 @@
 ## ACUIR Changelog
 *Requires minimum CSP version 0.2.11 (3465)*
+### 0.9.2.9 (unreleased)
+
+Features:
+- CSP Data Logger integration
+
+Fixes:
+- Smaller fonts in general
+- Consistent fonts sizes throughout the app
+
 ### 0.9.2.8
 
 Features:

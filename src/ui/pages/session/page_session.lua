@@ -169,7 +169,7 @@ local function trackMapWindow()
                 ui.windowWidth() * 0.5 + 7.5 * cui.uiScale(),
                 0,
                 730 * cui.uiScale(),
-                930 * cui.uiScale(),
+                ui.windowHeight(),
                 function()
                         ui.setCursor(0)
                         if cui.menuButton("TRACK MAP", 40, 0, 0, 0, false, false, ui.CornerFlags.Top) then
@@ -215,7 +215,7 @@ local function sessionControlWindow()
                 ui.windowWidth() - ui.windowWidth() / 5,
                 0,
                 ui.windowWidth() / 5,
-                220 * cui.uiScale(),
+                ui.windowHeight() * 0.16 - 7.5 * cui.uiScale(),
                 function()
                         ui.setCursor(0)
                         if cui.menuButton("Session Control", 40, 0, 0, 0, false, false, ui.CornerFlags.Top) then
@@ -280,9 +280,9 @@ local function conditionsWindow()
         cui.pushContentWindow(
                 "session_conditions",
                 ui.windowWidth() - ui.windowWidth() / 5,
-                235 * cui.uiScale(),
+                ui.windowHeight() * 0.16 + 7.5 * cui.uiScale(),
                 ui.windowWidth() / 5,
-                310 * cui.uiScale(),
+                ui.windowHeight() * 0.42 - 15 * cui.uiScale(),
                 function()
                         ui.setCursor(0)
                         if cui.menuButton("Conditions", 40, 0, 0, 0, false, false, ui.CornerFlags.Top) then
@@ -293,14 +293,14 @@ local function conditionsWindow()
         cui.offsetCursorY(10)
 
         for _, weatherInfo in ipairs(sessionInfoTable) do
-                ui.setCursorX(ui.windowWidth() * 0.05)
+                cui.setCursorX(15)
                 cui.snapCursor()
                 ui.dwriteTextAligned(
                         weatherInfo.label,
                         fontSize,
                         ui.Alignment.Start,
                         ui.Alignment.Center,
-                        vec2(ui.windowWidth(), fontSize * 1.25)
+                        vec2(ui.windowWidth(), fontSize * 1.5)
                 )
                 ui.sameLine()
                 ui.setCursorX(ui.windowWidth() * 0.5)
@@ -311,7 +311,7 @@ local function conditionsWindow()
                         fontSize,
                         ui.Alignment.Start,
                         ui.Alignment.Center,
-                        vec2(ui.windowWidth(), fontSize * 1.25)
+                        vec2(ui.windowWidth(), fontSize * 1.5)
                 )
         end
 
@@ -322,9 +322,9 @@ local function modifiersWindow()
         cui.pushContentWindow(
                 "session_modifiers",
                 ui.windowWidth() - ui.windowWidth() / 5,
-                560 * cui.uiScale(),
+                ui.windowHeight() * 0.58 + 7.5 * cui.uiScale(),
                 ui.windowWidth() / 5,
-                372 * cui.uiScale(),
+                ui.windowHeight() * 0.42 - 7.5 * cui.uiScale(),
                 function()
                         ui.setCursor(0)
                         if cui.menuButton("Modifiers", 40, 0, 0, 0, false, false, ui.CornerFlags.Top) then
@@ -335,14 +335,14 @@ local function modifiersWindow()
         cui.offsetCursorY(10)
 
         for _, assist in ipairs(assists) do
-                ui.setCursorX(ui.windowWidth() * 0.05)
+                cui.setCursorX(15)
                 cui.snapCursor()
                 ui.dwriteTextAligned(
                         assist.label,
                         fontSize,
                         ui.Alignment.Start,
                         ui.Alignment.Center,
-                        vec2(ui.windowWidth(), fontSize * 1.25)
+                        vec2(ui.windowWidth(), fontSize * 1.5)
                 )
                 ui.sameLine()
                 ui.setCursorX(ui.windowWidth() * 0.5)
@@ -352,7 +352,7 @@ local function modifiersWindow()
                         fontSize,
                         ui.Alignment.Start,
                         ui.Alignment.Center,
-                        vec2(ui.windowWidth(), fontSize * 1.25)
+                        vec2(ui.windowWidth(), fontSize * 1.5)
                 )
         end
         cui.popContentWindow()
@@ -360,7 +360,9 @@ end
 
 function page.draw()
         genericButtonHeight = 40 * cui.uiScale()
-        fontSize = genericButtonHeight * 0.6
+        fontSize = 18 * cui.uiScale()
+
+        cui.pushWindow("session_box_window", 0, 0, ui.windowWidth(), ui.windowHeight() - 255 * cui.uiScale())
 
         trackMapWindow()
         sessionControlWindow()
@@ -372,7 +374,7 @@ function page.draw()
                 0,
                 0,
                 ui.windowWidth() * 0.5 - 7.5 * cui.uiScale(),
-                ui.windowHeight() - 255 * cui.uiScale(),
+                ui.windowHeight(),
                 function()
                         ui.setCursor(0)
                         if cui.menuButton("LEADERBOARD", 40, 0, 0, 0, leaderboardActive, false, ui.CornerFlags.Top) then
@@ -411,6 +413,8 @@ function page.draw()
         end
 
         cui.popContentWindow()
+
+        cui.popWindow()
 
         bottomWidgetBar()
 

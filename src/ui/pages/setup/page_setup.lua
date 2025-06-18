@@ -54,10 +54,10 @@ local function dataLoggingWindow()
                 (ui.windowWidth() / 5) * 4,
                 0,
                 ui.windowWidth() / 5,
-                ui.windowHeight() * 0.15 - 7.5 * cui.uiScale(),
+                ui.windowHeight() * 0.16 - 7.5 * cui.uiScale(),
                 function()
                         ui.setCursor(0)
-                        if cui.menuButton("Data Logging", 40, 0, 0, 0, false, false, ui.CornerFlags.Top) then
+                        if cui.menuButton("CSP Data Logger", 40, 0, 0, 0, false, false, ui.CornerFlags.Top) then
                         end
                         ui.setCursor(0)
 
@@ -130,7 +130,7 @@ local function carStatusWindow()
                 (ui.windowWidth() / 5) * 4,
                 ui.windowHeight() * 0.15 + 7.5 * cui.uiScale(),
                 ui.windowWidth() / 5,
-                ui.windowHeight() * 0.85 - 7.5 * cui.uiScale(),
+                ui.windowHeight() * 0.84 - 7.5 * cui.uiScale(),
                 function()
                         ui.setCursor(0)
                         if cui.menuButton("Car Status", 40, 0, 0, 0, carStatusActive, false, ui.CornerFlags.Top) then

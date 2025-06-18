@@ -230,7 +230,15 @@ function leaderboardEntryButton(car, yPos, height)
                 cui.snapCursor()
                 local x, y = entry.xShare == -1 and height or tempWidth * entry.xShare, height
                 local value, color = entry.value(car, x, y)
-                ui.dwriteTextAligned(value, height * 0.5, entry.align, ui.Alignment.Center, vec2(x, y), false, color)
+                ui.dwriteTextAligned(
+                        value,
+                        18 * cui.uiScale(),
+                        entry.align,
+                        ui.Alignment.Center,
+                        vec2(x, y),
+                        false,
+                        color
+                )
                 ui.sameLine()
         end
 
@@ -242,7 +250,7 @@ end
 local isLeaderboardShowingDisconnected = false
 
 function leaderboard:draw(xPos, yPos, width, height)
-        local height = ui.windowHeight() / 22
+        local height = 18 * cui.uiScale() * 2
         leaderboardBanner(0, height)
 
         cui.pushWindow("home_leaderboard_entrant_window", 0, height, ui.windowWidth(), ui.windowHeight() - height, true)
