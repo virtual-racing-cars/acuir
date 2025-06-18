@@ -9,7 +9,7 @@ function page:draw(dt)
 
         cui.pushContentWindow("telemetry_main_window", 0, 0, ui.windowWidth(), ui.windowHeight(), function()
                 ui.setCursor(0)
-                if cui.menuButton("Telemetry", 40, 0, 0, 0, false, false, ui.CornerFlags.Top) then
+                if cui.windowTabButton("Telemetry", 36, ui.ButtonFlags.None, false) then
                 end
         end, function() telemetryViewer:drawFooter() end)
 

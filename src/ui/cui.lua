@@ -170,6 +170,15 @@ function CUI.dwriteTextAligned(params)
         )
 end
 
+function CUI.bodyTextAligned(text, size, color, horizontalAligment, verticalAlignment)
+        if not color then color = settings.Appearance.uiColorText end
+        if not horizontalAligment then horizontalAligment = ui.Alignment.Center end
+        if not verticalAlignment then verticalAlignment = ui.Alignment.Center end
+
+        CUI.snapCursor()
+        ui.dwriteTextAligned(text, 18 * uiScale, horizontalAligment, verticalAlignment, size, false, color)
+end
+
 function CUI.button(label, sizeX, sizeY, fontSize, horizontalAligment, verticalAlignment, flags, fontColor)
         if not horizontalAligment then horizontalAligment = ui.Alignment.Center end
 
@@ -306,15 +315,15 @@ function CUI.menuButton(label, size, horizontalAligment, verticalAlignment, flag
         if type(size) == "number" then
                 size = size * uiScale
                 sizeY = size
-                fontSize = sizeY * 0.6
+                fontSize = sizeY * 0.45
                 buttonSize = vec2Temp1:set(
-                        math.round(ui.measureDWriteText(string.upper(label), fontSize).x + 50 * CUI.uiScale()),
+                        math.round(ui.measureDWriteText(string.upper(label), fontSize).x + 50 * uiScale),
                         size
                 )
         else
                 sizeX = size.x
                 sizeY = size.y
-                fontSize = sizeY * 0.65
+                fontSize = sizeY * 0.45
                 buttonSize = vec2Temp1(sizeX, sizeY)
         end
 
@@ -349,6 +358,51 @@ function CUI.menuButton(label, size, horizontalAligment, verticalAlignment, flag
                 false,
                 fontColor
         )
+
+        ui.popDWriteFont()
+
+        return clicked and not (flags == ui.ButtonFlags.Disabled)
+end
+
+function CUI.windowTabButton(label, size, flags, active)
+        if not flags then flags = ui.ButtonFlags.None end
+
+        style:pushFontRegular()
+
+        local sizeX, sizeY, buttonSize, fontSize
+
+        size = size * uiScale
+        sizeY = size
+        fontSize = sizeY * 0.5
+        buttonSize =
+                vec2Temp1:set(math.round(ui.measureDWriteText(string.upper(label), fontSize).x + 30 * uiScale), size)
+
+        local tempCursor = ui.getCursor()
+        local clicked = ui.invisibleButton("##" .. label, buttonSize, flags)
+        local r1, r2 = ui.itemRect()
+        local hovered = ui.itemHovered()
+
+        local buttonColor = rgbm.colors.transparent
+        local fontColor = settings.Appearance.uiColorText
+
+        if flags == ui.ButtonFlags.Disabled then
+                fontColor = rgbm(0.6, 0.6, 0.6, 1)
+        elseif hovered then
+                fontColor = settings.Appearance.uiColorSecondary
+        elseif active then
+                buttonColor = settings.Appearance.uiColorSecondary
+                fontColor = settings.Appearance.uiColorText
+        end
+
+        if active then buttonColor = settings.Appearance.uiColorSecondary end
+
+        -- fontColor = settings.Appearance.uiColorSecondary
+
+        ui.drawRectFilled(vec2(r1.x, r1.y + size * 0.9), r2, buttonColor, 6, ui.CornerFlags.Top)
+
+        ui.setCursor(tempCursor)
+        CUI.snapCursor()
+        ui.dwriteTextAligned(string.upper(label), fontSize, 0, 0, buttonSize, false, fontColor)
 
         ui.popDWriteFont()
 
@@ -706,10 +760,16 @@ local function measureUTF8PrefixWidth(charTable, upToIndex, fontSize)
 end
 
 function CUI.inputTextBox(label, stringPrefix, stringInput, size)
-        local fontSize = math.floor(size.y * 0.55)
-        fontSize = (fontSize % 2 ~= 0) and fontSize + 1 or fontSize
+        local fontSize = size.y * 0.5
 
         local tempCursor = ui.getCursor()
+
+        --         ---Similar to `ui.invisibleButton()`, but this one can be activated similar to text input and if it is active, will monitor keyboard state.
+        -- ---@param id string? @Default value: `'nil'`.
+        -- ---@param size vec2? @Default value: `vec2(0, 0)`.
+        -- ---@return ui.CapturedKeyboard?
+        -- ---@return boolean @Set to `true` if area was just activated.
+        -- function ui.interactiveArea(id, size) end
 
         local clicked = ui.invisibleButton("##textinput" .. label, size, ui.ButtonFlags.None)
         local r1, r2 = ui.itemRect()
@@ -1082,8 +1142,18 @@ end
 function CUI.pushContentWindow(id, x, y, width, height, headerFunc, footerFunc, hideBackground, noCorners)
         CUI.pushWindow(id .. "_background", x, y, width, height)
 
+        local headerSize = 36 * uiScale
+        local footerSize = 36 * uiScale
+        local marginSize = 8 * uiScale
+        local innerCurve = 6 * uiScale
+
         ui.beginGradientShade()
-        ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiColorPrimary, noCorners and 0 or 16 * uiScale)
+        ui.drawRectFilled(
+                0,
+                ui.windowSize(),
+                settings.Appearance.uiColorPrimary,
+                noCorners and 0 or marginSize + innerCurve
+        )
         ui.endGradientShade(
                 vec2Temp1:set(ui.windowWidth(), 0),
                 ui.windowSize(),
@@ -1092,13 +1162,10 @@ function CUI.pushContentWindow(id, x, y, width, height, headerFunc, footerFunc, 
                 true
         )
 
-        x = 10 * uiScale
-        y = 10 * uiScale
-        width = width - x * 2
-        height = height - y * 2
-
-        local headerSize = 50 * uiScale
-        local footerSize = 40 * uiScale
+        x = marginSize
+        y = marginSize
+        width = width - marginSize * 2
+        height = height - marginSize * 2
 
         if headerFunc then
                 ui.setCursor(0)
@@ -1115,7 +1182,7 @@ function CUI.pushContentWindow(id, x, y, width, height, headerFunc, footerFunc, 
                 height = height - footerSize
 
                 ui.setCursor(0)
-                CUI.pushWindow(id .. "_footer", x, y + height + 10 * uiScale, width, footerSize - 10 * uiScale)
+                CUI.pushWindow(id .. "_footer", x, y + height + marginSize, width, footerSize - marginSize)
                 ui.setCursor(0)
                 footerFunc()
                 CUI.popWindow()
@@ -1128,7 +1195,8 @@ function CUI.pushContentWindow(id, x, y, width, height, headerFunc, footerFunc, 
                         0,
                         ui.windowSize(),
                         settings.Appearance.uiColorBackground,
-                        noCorners and 0 or 6 * uiScale
+                        noCorners and 0 or 6 * uiScale,
+                        ui.CornerFlags.All
                 )
         end
 end

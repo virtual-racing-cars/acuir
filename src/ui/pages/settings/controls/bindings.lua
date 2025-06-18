@@ -334,7 +334,7 @@ local settingsSearchInput = ""
 local settingsSearchActive = false
 
 function bindings:drawHeader()
-        if cui.menuButton("Bindings", 40, 0, 0, 0, false, false, ui.CornerFlags.Top) then
+        if cui.windowTabButton("Bindings", 36, ui.ButtonFlags.None, false) then
         end
 end
 
@@ -356,7 +356,7 @@ function bindings:draw()
         )
 
         local textInputWidth = ui.windowWidth() * 0.3
-        local r1, r2 = ui.getCursor(), ui.getCursor() + vec2(textInputWidth, ui.windowHeight() / 22)
+        local r1, r2 = ui.getCursor(), ui.getCursor() + vec2(textInputWidth, 36 * cui.uiScale())
         ui.drawRectFilled(r1, r2, settings.Appearance.uiColorBackground * 0.25, 6 * cui.uiScale())
 
         settingsSearchInput, settingsSearchActive = cui.inputText(
@@ -364,7 +364,7 @@ function bindings:draw()
                 "",
                 settingsSearchInput,
                 "",
-                vec2(textInputWidth, ui.windowHeight() / 22)
+                vec2(textInputWidth, 36 * cui.uiScale())
         )
 
         ui.setCursorX(r2.x - ui.windowHeight() / 22)
@@ -373,15 +373,11 @@ function bindings:draw()
 
         ui.setCursor(r1)
         cui.offsetCursorX(10)
-        cui.snapCursor()
-        ui.dwriteTextAligned(
+        cui.bodyTextAligned(
                 isempty(settingsSearchInput) and "Search controls..." or "",
-                (ui.windowHeight() / 22) * 0.55,
-                ui.Alignment.Start,
-                ui.Alignment.Center,
-                vec2(textInputWidth, ui.windowHeight() / 22),
-                false,
-                rgbm.colors.gray
+                vec2(textInputWidth, 36 * cui.uiScale()),
+                settings.Appearance.uiColorTextDim,
+                ui.Alignment.Start
         )
 
         ui.setCursorY(0)

@@ -29,16 +29,12 @@ function page.draw()
 
                         for i = 1, sim.sessionsCount do
                                 if
-                                        cui.menuButton(
+                                        cui.windowTabButton(
                                                 simutils.sessionTypeStrings[ac.getSession(i - 1).type],
-                                                genericButtonHeight,
-                                                0,
-                                                0,
+                                                36,
                                                 sim.currentSessionIndex + 1 >= i and ui.ButtonFlags.None
                                                         or ui.ButtonFlags.Disabled,
-                                                sim.sessionsCount > 1 and lapTimeSession == i - 1,
-                                                false,
-                                                ui.CornerFlags.Top
+                                                sim.sessionsCount > 1 and lapTimeSession == i - 1
                                         )
                                 then
                                         lapTimeSession = i - 1

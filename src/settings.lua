@@ -60,7 +60,7 @@ local settings = {
                 {
                         key = "uiColorBackground",
                         label = "Background Color",
-                        default = rgbm(0.08, 0.08, 0.09, 1),
+                        default = rgbm(0.12, 0.12, 0.14, 1),
                         widget = 1,
                 },
                 {

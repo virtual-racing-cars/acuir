@@ -172,7 +172,7 @@ local function trackMapWindow()
                 ui.windowHeight(),
                 function()
                         ui.setCursor(0)
-                        if cui.menuButton("TRACK MAP", 40, 0, 0, 0, false, false, ui.CornerFlags.Top) then
+                        if cui.windowTabButton("TRACK MAP", 36, ui.ButtonFlags.None, false) then
                         end
                 end,
                 function() mapWidget:drawFooter() end
@@ -215,15 +215,15 @@ local function sessionControlWindow()
                 ui.windowWidth() - ui.windowWidth() / 5,
                 0,
                 ui.windowWidth() / 5,
-                ui.windowHeight() * 0.16 - 7.5 * cui.uiScale(),
+                ui.windowHeight() * 0.2 - 7.5 * cui.uiScale(),
                 function()
                         ui.setCursor(0)
-                        if cui.menuButton("Session Control", 40, 0, 0, 0, false, false, ui.CornerFlags.Top) then
+                        if cui.windowTabButton("Session Control", 36, ui.ButtonFlags.None, false) then
                         end
                 end
         )
 
-        local driveButtonHeight = ui.windowWidth() * 0.2
+        local driveButtonHeight = ui.windowHeight() * 0.7
 
         ui.setCursorX(ui.windowWidth() * 0.2)
         ui.setCursorY(0)
@@ -280,12 +280,12 @@ local function conditionsWindow()
         cui.pushContentWindow(
                 "session_conditions",
                 ui.windowWidth() - ui.windowWidth() / 5,
-                ui.windowHeight() * 0.16 + 7.5 * cui.uiScale(),
+                ui.windowHeight() * 0.2 + 7.5 * cui.uiScale(),
                 ui.windowWidth() / 5,
-                ui.windowHeight() * 0.42 - 15 * cui.uiScale(),
+                ui.windowHeight() * 0.4 - 15 * cui.uiScale(),
                 function()
                         ui.setCursor(0)
-                        if cui.menuButton("Conditions", 40, 0, 0, 0, false, false, ui.CornerFlags.Top) then
+                        if cui.windowTabButton("Conditions", 36, ui.ButtonFlags.None, false) then
                         end
                 end
         )
@@ -322,12 +322,12 @@ local function modifiersWindow()
         cui.pushContentWindow(
                 "session_modifiers",
                 ui.windowWidth() - ui.windowWidth() / 5,
-                ui.windowHeight() * 0.58 + 7.5 * cui.uiScale(),
+                ui.windowHeight() * 0.6 + 7.5 * cui.uiScale(),
                 ui.windowWidth() / 5,
-                ui.windowHeight() * 0.42 - 7.5 * cui.uiScale(),
+                ui.windowHeight() * 0.4 - 7.5 * cui.uiScale(),
                 function()
                         ui.setCursor(0)
-                        if cui.menuButton("Modifiers", 40, 0, 0, 0, false, false, ui.CornerFlags.Top) then
+                        if cui.windowTabButton("Modifiers", 36, ui.ButtonFlags.None, false) then
                         end
                 end
         )
@@ -358,17 +358,7 @@ local function modifiersWindow()
         cui.popContentWindow()
 end
 
-function page.draw()
-        genericButtonHeight = 40 * cui.uiScale()
-        fontSize = 18 * cui.uiScale()
-
-        cui.pushWindow("session_box_window", 0, 0, ui.windowWidth(), ui.windowHeight() - 255 * cui.uiScale())
-
-        trackMapWindow()
-        sessionControlWindow()
-        conditionsWindow()
-        modifiersWindow()
-
+local function leaderboardWindow()
         cui.pushContentWindow(
                 "home_leaderboard_window",
                 0,
@@ -377,23 +367,12 @@ function page.draw()
                 ui.windowHeight(),
                 function()
                         ui.setCursor(0)
-                        if cui.menuButton("LEADERBOARD", 40, 0, 0, 0, leaderboardActive, false, ui.CornerFlags.Top) then
+                        if cui.windowTabButton("LEADERBOARD", 36, ui.ButtonFlags.None, leaderboardActive) then
                                 leaderboardActive = true
                         end
                         ui.sameLine()
 
-                        if
-                                cui.menuButton(
-                                        "TIME TABLE",
-                                        40,
-                                        0,
-                                        0,
-                                        ui.ButtonFlags.None,
-                                        not leaderboardActive,
-                                        false,
-                                        ui.CornerFlags.Top
-                                )
-                        then
+                        if cui.windowTabButton("TIME TABLE", 36, ui.ButtonFlags.None, not leaderboardActive) then
                                 leaderboardActive = false
                         end
                 end,
@@ -413,6 +392,19 @@ function page.draw()
         end
 
         cui.popContentWindow()
+end
+
+function page.draw()
+        genericButtonHeight = 40 * cui.uiScale()
+        fontSize = 18 * cui.uiScale()
+
+        cui.pushWindow("session_box_window", 0, 0, ui.windowWidth(), ui.windowHeight() - 255 * cui.uiScale())
+
+        leaderboardWindow()
+        trackMapWindow()
+        sessionControlWindow()
+        conditionsWindow()
+        modifiersWindow()
 
         cui.popWindow()
 

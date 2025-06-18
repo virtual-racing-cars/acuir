@@ -16,6 +16,8 @@ local style = {
                         bodySize = { size = 18, space = 34 },
                         smallSize = { size = 14, space = 30 },
                 },
+                corners = { innerSize = 6, outerSize = 16 },
+                margins = { innerSize = 10, outerSize = 15 },
         },
 }
 

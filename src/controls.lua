@@ -42,11 +42,12 @@ function controls:initialize()
         io.scanDir(ac.getFolder(ac.FolderID.ACAppsLua), function(fileName, fileAttributes, callbackData)
                 local appDirectory = ac.getFolder(ac.FolderID.ACAppsLua) .. "\\" .. fileName
                 local appControlsFile = appDirectory .. "\\ext_app_controls.ini"
+                local appManifest = ac.INIConfig.load(appDirectory .. "\\manifest.ini", ac.INIFormat.Extended)
 
                 if not io.fileExists(appControlsFile) then return end
 
                 local appCfg = MappedConfig(appControlsFile, { TAB_ORDER = { TAB_1 = "Generic" } })
-                local appName = appCfg.ini:get("ABOUT", "NAME", fileName)
+                local appName = appManifest:get("ABOUT", "NAME", "")
 
                 table.insert(controls.tabs, initializeControlTab(appName, ac.INIConfig.load(appControlsFile)))
         end)

@@ -57,7 +57,7 @@ local function dataLoggingWindow()
                 ui.windowHeight() * 0.16 - 7.5 * cui.uiScale(),
                 function()
                         ui.setCursor(0)
-                        if cui.menuButton("CSP Data Logger", 40, 0, 0, 0, false, false, ui.CornerFlags.Top) then
+                        if cui.windowTabButton("CSP Data Logger", 36, ui.ButtonFlags.None, false) then
                         end
                         ui.setCursor(0)
 
@@ -133,23 +133,12 @@ local function carStatusWindow()
                 ui.windowHeight() * 0.84 - 7.5 * cui.uiScale(),
                 function()
                         ui.setCursor(0)
-                        if cui.menuButton("Car Status", 40, 0, 0, 0, carStatusActive, false, ui.CornerFlags.Top) then
+                        if cui.windowTabButton("Car Status", 36, ui.ButtonFlags.None, carStatusActive) then
                         end
 
                         ui.sameLine()
 
-                        if
-                                cui.menuButton(
-                                        "Last Outing",
-                                        40,
-                                        0,
-                                        0,
-                                        ui.ButtonFlags.Disabled,
-                                        not carStatusActive,
-                                        false,
-                                        ui.CornerFlags.Top
-                                )
-                        then
+                        if cui.windowTabButton("Last Outing", 36, ui.ButtonFlags.Disabled, not carStatusActive) then
                         end
                 end
         )
@@ -174,7 +163,7 @@ local function setupIoWindow()
                 ui.windowHeight() * 0.5 - 7.5 * cui.uiScale(),
                 function()
                         ui.setCursor(0)
-                        if cui.menuButton("Car Setup", 40, 0, 0, 0, false, false, ui.CornerFlags.Top) then
+                        if cui.windowTabButton("Car Setup", 36, ui.ButtonFlags.None, false) then
                         end
                 end,
                 function()
@@ -199,34 +188,12 @@ local function setupIoWindow()
                 ui.windowHeight() * 0.5 - 7.5 * cui.uiScale(),
                 function()
                         ui.setCursor(0)
-                        if
-                                cui.menuButton(
-                                        "Local Setups",
-                                        40,
-                                        0,
-                                        0,
-                                        0,
-                                        not setupExchangeActive,
-                                        false,
-                                        ui.CornerFlags.Top
-                                )
-                        then
+                        if cui.windowTabButton("Local Setups", 36, ui.ButtonFlags.None, not setupExchangeActive) then
                                 setupExchangeActive = false
                         end
                         ui.sameLine()
 
-                        if
-                                cui.menuButton(
-                                        "Setup Exchange",
-                                        40,
-                                        0,
-                                        0,
-                                        0,
-                                        setupExchangeActive,
-                                        false,
-                                        ui.CornerFlags.Top
-                                )
-                        then
+                        if cui.windowTabButton("Setup Exchange", 36, ui.ButtonFlags.None, setupExchangeActive) then
                                 setupExchangeActive = true
                         end
                         ui.sameLine()

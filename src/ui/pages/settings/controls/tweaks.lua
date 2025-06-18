@@ -104,18 +104,7 @@ local currentSection = 1
 function tweaks:drawHeader()
         local deviceTabs = controllerTweaks[configs.CONTROLS.ini:get("HEADER", "INPUT_METHOD", "WHEEL")]
         for i, tab in ipairs(deviceTabs) do
-                if
-                        cui.menuButton(
-                                tab.label,
-                                40,
-                                0,
-                                0,
-                                0,
-                                currentSection == i and #deviceTabs > 1,
-                                false,
-                                ui.CornerFlags.Top
-                        )
-                then
+                if cui.windowTabButton(tab.label, 36, ui.ButtonFlags.None, currentSection == i and #deviceTabs > 1) then
                         currentSection = i
                 end
                 ui.sameLine()
