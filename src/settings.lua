@@ -20,6 +20,21 @@ local settings = {
                         widget = Widgets.Checkbox,
                 },
                 {
+                        key = "defaultSetupPage",
+                        label = "Open Garage on Startup",
+                        default = false,
+                        widget = Widgets.Checkbox,
+                },
+                {
+                        key = "autoLoadLastSetup",
+                        label = "Load Last Setup on Startup",
+                        default = true,
+                        widget = Widgets.Checkbox,
+                },
+                { key = "developerMode", label = "Developer Mode", default = false, widget = Widgets.Checkbox },
+        },
+        UI = {
+                {
                         key = "scrollDelayTimeMs",
                         label = "Scroll Delay Time",
                         default = 25,
@@ -40,19 +55,6 @@ local settings = {
                         default = true,
                         widget = Widgets.Checkbox,
                 },
-                {
-                        key = "defaultSetupPage",
-                        label = "Open Garage on Startup",
-                        default = false,
-                        widget = Widgets.Checkbox,
-                },
-                {
-                        key = "autoLoadLastSetup",
-                        label = "Load Last Setup on Startup",
-                        default = true,
-                        widget = Widgets.Checkbox,
-                },
-                { key = "developerMode", label = "Developer Mode", default = false, widget = Widgets.Checkbox },
         },
         Appearance = {
                 {

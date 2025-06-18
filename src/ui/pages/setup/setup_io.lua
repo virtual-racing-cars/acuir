@@ -125,10 +125,10 @@ local function promptOverwriteSetup()
 end
 
 function drawSetupControls(sm)
-        local iconButtonHeight = ui.windowHeight() * 0.3
+        local iconButtonHeight = 36 * cui.uiScale()
         local buttonWidth = ui.windowWidth() * 0.99
         local groupBegin = (ui.windowWidth() / 24)
-        local fontSize = 22 * cui.uiScale()
+        local fontSize = 18 * cui.uiScale()
 
         ui.setCursorY(0)
         ui.setCursorX(ui.windowWidth() * 0.005)
@@ -254,7 +254,7 @@ end
 local function drawSetupNode(setup, track)
         local setupActive = carSetup.selected.path == setup.path
         local name = string.replace(setup.name, ".ini", "")
-        local buttonSize = vec2(ui.windowWidth(), 48 * cui.uiScale())
+        local buttonSize = vec2(ui.windowWidth(), 36 * cui.uiScale())
         local popupButtonSize = vec2(ui.windowWidth() * 0.3, 32 * cui.uiScale())
 
         if cui.treeNodeButton(name, buttonSize, setupActive, false) then

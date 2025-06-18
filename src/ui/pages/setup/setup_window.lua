@@ -11,7 +11,7 @@ local currentApp = app.state.setupTab - 1
 local tabBarPosition = 0
 
 local function tabItem(index, title)
-        if cui.treeNodeButton(title, vec2(ui.windowWidth(), ui.windowHeight() / 10), currentApp == index, true) then
+        if cui.treeNodeButton(title, vec2(ui.windowWidth(), 36 * cui.uiScale()), currentApp == index, true) then
                 currentApp = index
         end
 
@@ -29,11 +29,11 @@ function setupTabBar(tabs)
                 if ui.mouseWheel() > 0 then
                         currentApp = currentApp == 0 and #tabs - 1 or currentApp - 1
                         audio:trigger()
-                        scrollDelayTimer = os.clock() + settings.General.scrollDelayTimeMs / 1000
+                        scrollDelayTimer = os.clock() + settings.UI.scrollDelayTimeMs / 1000
                 elseif ui.mouseWheel() < 0 then
                         currentApp = currentApp >= #tabs - 1 and 0 or currentApp + 1
                         audio:trigger()
-                        scrollDelayTimer = os.clock() + settings.General.scrollDelayTimeMs / 1000
+                        scrollDelayTimer = os.clock() + settings.UI.scrollDelayTimeMs / 1000
                 end
         end
 

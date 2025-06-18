@@ -286,7 +286,7 @@ function CUI.modalButton(label, sizeX, sizeY, flags)
         ui.popDWriteFont()
 
         return (clicked and not (flags == ui.ButtonFlags.Disabled))
-                or (label == "Confirm" and not settings.General.showConfirmDialogs)
+                or (label == "Confirm" and not settings.UI.showConfirmDialogs)
 end
 
 function CUI.menuButton(label, size, horizontalAligment, verticalAlignment, flags, active, bold, cornerFlags)
@@ -616,7 +616,7 @@ end
 function CUI.treeNode(label, count, content, defaultOpen)
         local clicked, open, id = CUI.treeNodeButton(
                 label,
-                vec2Temp1:set(ui.availableSpaceX(), 48 * CUI.uiScale()),
+                vec2Temp1:set(ui.availableSpaceX(), 36 * CUI.uiScale()),
                 false,
                 true,
                 count,

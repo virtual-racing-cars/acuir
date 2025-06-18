@@ -15,11 +15,11 @@ function TabBar:draw(tabs)
                 if ui.mouseWheel() > 0 then
                         self.currentTab = self.currentTab == 1 and #tabs or self.currentTab - 1
                         audio:trigger()
-                        self.scrollDelayTimer = os.clock() + settings.General.scrollDelayTimeMs / 1000
+                        self.scrollDelayTimer = os.clock() + settings.UI.scrollDelayTimeMs / 1000
                 elseif ui.mouseWheel() < 0 then
                         self.currentTab = self.currentTab >= #tabs and 1 or self.currentTab + 1
                         audio:trigger()
-                        self.scrollDelayTimer = os.clock() + settings.General.scrollDelayTimeMs / 1000
+                        self.scrollDelayTimer = os.clock() + settings.UI.scrollDelayTimeMs / 1000
                 end
         end
 

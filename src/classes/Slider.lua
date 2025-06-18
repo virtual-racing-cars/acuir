@@ -71,7 +71,7 @@ local function drawSlider(id, name, width, height, value, sliderParams, noScroll
         if scrolling then
                 local scrollChange = (ui.keyboardButtonDown(ui.KeyIndex.Shift) and shiftStep or 1)
                 valueStep = ui.mouseWheel() < 0 and (valueStep - scrollChange) or (valueStep + scrollChange)
-                scrollDelayTimer = os.clock() + settings.General.scrollDelayTimeMs * 0.001
+                scrollDelayTimer = os.clock() + settings.UI.scrollDelayTimeMs * 0.001
                 changed = true
         elseif dragging then
                 valueStep = ((ui.mouseLocalPos().x - grabberSize * 0.5 - r1.x) / (width - grabberSize)) * steps
@@ -79,7 +79,7 @@ local function drawSlider(id, name, width, height, value, sliderParams, noScroll
                 changed = true
         elseif sticking ~= 0 and scrollDelayTimer < os.clock() then
                 valueStep = valueStep + math.round(math.abs(sticking)) * math.sign(sticking)
-                scrollDelayTimer = os.clock() + settings.General.scrollDelayTimeMs * 0.001
+                scrollDelayTimer = os.clock() + settings.UI.scrollDelayTimeMs * 0.001
                 changed = true
         end
 

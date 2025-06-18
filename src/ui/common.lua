@@ -27,7 +27,7 @@ function bottomBar(buttons)
                 6 * cui.uiScale()
         )
 
-        if settings.General.showVersions then
+        if settings.UI.showVersions then
                 ui.setCursorX(0)
                 ui.setCursorY(10)
                 ui.dwriteTextAligned(

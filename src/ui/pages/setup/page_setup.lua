@@ -31,9 +31,9 @@ end
 local function carStatusWindow()
         cui.pushContentWindow(
                 "car_status_window",
-                (ui.windowWidth() / 4) * 3,
+                (ui.windowWidth() / 5) * 4,
                 0,
-                ui.windowWidth() / 4,
+                ui.windowWidth() / 5,
                 ui.windowHeight(),
                 function()
                         ui.setCursor(0)
@@ -74,7 +74,7 @@ local function setupIoWindow()
                 "setup_left_window",
                 0,
                 0,
-                ui.windowWidth() / 4,
+                ui.windowWidth() / 5,
                 ui.windowHeight() * 0.5 - 7.5 * cui.uiScale(),
                 function()
                         ui.setCursor(0)
@@ -99,7 +99,7 @@ local function setupIoWindow()
                 "setup_io_main_window",
                 0,
                 ui.windowHeight() * 0.5 + 7.5 * cui.uiScale(),
-                ui.windowWidth() / 4,
+                ui.windowWidth() / 5,
                 ui.windowHeight() * 0.5 - 7.5 * cui.uiScale(),
                 function()
                         ui.setCursor(0)

@@ -1,4 +1,4 @@
-local page = {}
+local page = { tab = 1 }
 
 local cui = require("ui.cui")
 local pages = require("ui.pages.pages")
@@ -12,33 +12,10 @@ local bottomBarButtons = {
         },
 }
 
-function page.draw()
-        ui.drawRectFilled(vec2(0, 0), ui.windowSize(), settings.Appearance.uiColorBackgroundShade * 0.75)
-
-        cui.pushWindowFitted("general_page_window")
-
-        topSubBar("ACUIR")
-
-        cui.pushContentWindow(
-                "settings_general_window",
-                ui.windowWidth() * 0.25,
-                180 * cui.uiScale(),
-                ui.windowWidth() * 0.5,
-                ui.windowHeight() - 303 * cui.uiScale(),
-                function()
-                        if cui.menuButton("General", 40, 0, 0, 0, false, false, ui.CornerFlags.Top) then
-                        end
-                        ui.sameLine()
-                end,
-                nil,
-                true
-        )
-
+local function generalSettings()
         cui.setCursorY(100)
         for i, v in ipairs(settings.General) do
                 local height = 95 * 0.7 * 0.3 * cui.uiScale()
-
-                ac.log(v)
 
                 if v.widget == 1 then
                         ui.setCursorX(ui.windowWidth() * 0.5 - height * 7)
@@ -76,6 +53,85 @@ function page.draw()
                         ui.newLine()
                         ui.newLine()
                 end
+        end
+end
+
+local function uiSettings()
+        cui.setCursorY(100)
+        for i, v in ipairs(settings.UI) do
+                local height = 95 * 0.7 * 0.3 * cui.uiScale()
+
+                if v.widget == 1 then
+                        ui.setCursorX(ui.windowWidth() * 0.5 - height * 7)
+
+                        local newValue, changed = drawCheckbox(v.label, v.label, height, false, settings.UI[v.key])
+                        ui.newLine()
+                        ui.newLine()
+
+                        if changed then settings.UI[v.key] = newValue end
+                elseif v.widget == 2 then
+                        ui.setCursorX(ui.windowWidth() * 0.25)
+                        settings.UI[v.key] = drawSpinner(
+                                v.label,
+                                v.label,
+                                ui.windowWidth() * 0.5,
+                                95 * cui.uiScale(),
+                                false,
+                                settings.UI[v.key],
+                                {
+                                        section = "SETTINGS",
+                                        id = v.label,
+                                        label = v.label,
+                                        min = v.min or 0,
+                                        max = v.max or 1,
+                                        step = 1,
+                                        shiftStep = 1,
+                                        multiplier = 1,
+                                        offset = 0,
+                                        format = v.format,
+                                        unit = "%",
+                                        help = "",
+                                },
+                                true
+                        )
+                        ui.newLine()
+                        ui.newLine()
+                end
+        end
+end
+
+function page.draw()
+        ui.drawRectFilled(vec2(0, 0), ui.windowSize(), settings.Appearance.uiColorBackgroundShade * 0.75)
+
+        cui.pushWindowFitted("general_page_window")
+
+        topSubBar("ACUIR")
+
+        cui.pushContentWindow(
+                "settings_general_window",
+                ui.windowWidth() * 0.25,
+                180 * cui.uiScale(),
+                ui.windowWidth() * 0.5,
+                ui.windowHeight() - 303 * cui.uiScale(),
+                function()
+                        if cui.menuButton("General", 40, 0, 0, 0, page.tab == 1, false, ui.CornerFlags.Top) then
+                                page.tab = 1
+                        end
+                        ui.sameLine()
+
+                        if cui.menuButton("UI", 40, 0, 0, 0, page.tab == 2, false, ui.CornerFlags.Top) then
+                                page.tab = 2
+                        end
+                        ui.sameLine()
+                end,
+                nil,
+                true
+        )
+
+        if page.tab == 1 then
+                generalSettings()
+        elseif page.tab == 2 then
+                uiSettings()
         end
 
         cui.popContentWindow()
