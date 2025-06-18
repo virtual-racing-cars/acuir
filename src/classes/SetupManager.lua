@@ -428,6 +428,8 @@ function SetupManager:initialize()
         self._history = {}
         self._history_pos = 0
 
+        self.activeHelpString = ""
+
         self:makeUndo()
 end
 

@@ -152,9 +152,6 @@ local function drawSlider(id, name, width, height, value, sliderParams, noScroll
         return value, changed, active
 end
 
-local hoveredId = nil
-local hoveredTimer = 0
-
 function drawSpinner(id, name, width, height, locked, value, sliderParams, noScroll)
         local p1 = ui.getCursor()
         local p2 = p1 + vec2(width, height)
@@ -164,40 +161,6 @@ function drawSpinner(id, name, width, height, locked, value, sliderParams, noScr
         -- ui.drawRectFilled(p1, p2, rgbm.colors.aqua)
 
         local hovered = ui.rectHovered(p1, vec2Temp1:set(p2.x, p1.y + height)) and not cui.modalDialogCallback
-        local helpHovered = hovered
-                and ui.rectHovered(p1, vec2Temp1:set(p2.x, p1.y + height * 0.3))
-                and not cui.modalDialogCallback
-
-        if helpHovered and sliderParams.help and sliderParams.help ~= "NULL" and sliderParams.help ~= "" then
-                if hoveredId ~= id then
-                        hoveredTimer = os.clock() + 0.4
-                        hoveredId = id
-                end
-
-                if hoveredTimer < os.clock() then
-                        ui.tooltip(vec2(10, 20) * cui.uiScale(), function()
-                                ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiColorBackground)
-                                ui.pushTextWrapPosition(400 * cui.uiScale())
-                                cui.snapCursor()
-                                ui.dwriteText(sliderParams.help:gsub("\\n", "\n"), 20 * cui.uiScale())
-
-                                if sliderParams.default and sliderParams.default ~= value then
-                                        ui.newLine()
-                                        ui.dwriteText(
-                                                string.format(
-                                                        "Default: %.2f. Right click to reset.",
-                                                        sliderParams.default * sliderParams.multiplier
-                                                ),
-                                                20 * cui.uiScale()
-                                        )
-                                end
-
-                                ui.popTextWrapPosition()
-                        end)
-                end
-        elseif hoveredId == id then
-                hoveredId = nil
-        end
 
         ui.setCursorX(p1.x + width * 0.04)
         ui.setCursorY(p1.y + height * 0.1)

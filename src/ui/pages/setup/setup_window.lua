@@ -154,6 +154,10 @@ local function drawSetupSpinner(si)
         local value, changed, active, hovered =
                 drawSpinner(si.id, si.name, spinnerWidth, spinnerHeight, si.fixed, si.value, si, false)
 
+        if hovered and si.help and si.help ~= "NULL" and si.help ~= "" then sm.activeHelpString = si.help end
+
+        -- sm.activeHelpString = sm.activeHelpString == "" and si.help or sm.activeHelpString
+
         if si.mirrorAvailable and not si.fixed then
                 ui.setCursorX(xPos + spinnerWidth)
                 ui.setCursorY(yPos - spinnerHeight * 0.18)
@@ -187,6 +191,8 @@ end
 
 local currentQuickPitPreset = 0
 function car_setup(sm)
+        sm.activeHelpString = ""
+
         local changed = false
         local tab = sm.setupTabs[tonumber(app.state.setupTab)]
 

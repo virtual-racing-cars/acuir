@@ -28,6 +28,25 @@ local function setupItemWindow()
         cui.popWindow()
 end
 
+local function helpWindow()
+        if sm.activeHelpString == "" then return end
+
+        cui.pushContentWindow("help_window", 0, 0, ui.windowWidth() / 5, ui.windowHeight(), function()
+                ui.setCursor(0)
+                if cui.menuButton("Help", 40, 0, 0, 0, carStatusActive, false, ui.CornerFlags.Top) then
+                end
+        end)
+
+        cui.setCursorX(15)
+        ui.pushTextWrapPosition(ui.windowWidth() - 15 * cui.uiScale())
+        cui.snapCursor()
+        ui.dwriteText(sm.activeHelpString, 18 * cui.uiScale())
+
+        ui.popTextWrapPosition()
+
+        cui.popContentWindow()
+end
+
 local function carStatusWindow()
         cui.pushContentWindow(
                 "car_status_window",
@@ -152,6 +171,7 @@ function page:draw()
         setupItemWindow()
         carStatusWindow()
         setupIoWindow()
+        helpWindow()
 
         return app.state.setupTab > 1 and "" or "apps"
 end

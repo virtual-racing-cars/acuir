@@ -57,6 +57,16 @@ function SetupItem:initialize(
 
         if string.startsWith(self.help, "HELP") then self.help = acHelpTags[self.help] or "" end
 
+        if self.help == "NULL" or self.help == "" then
+                self.help = ""
+        else
+                self.help = self.name .. "\n\n" .. self.help
+                self.help = self.help:gsub("\n\n", "TEMPNEWLINE")
+                self.help = self.help:gsub("\\n\\n", "TEMPNEWLINE")
+                self.help = self.help:gsub("\n", " ")
+                self.help = self.help:gsub("TEMPNEWLINE", "\n\n")
+        end
+
         self.uid = uid
         self.idPairs = { self.id }
         self.child = false
