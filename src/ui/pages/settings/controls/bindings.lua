@@ -97,12 +97,12 @@ local function bindingInUseDialog(button, name, inputMode, inUseBinds)
         end)
 end
 
-local function bindingDialog(button, name, inputMode)
+local function bindingDialog(button, name)
         cui.modalDialog(function()
                 ui.pushStyleVar(ui.StyleVar.ItemSpacing, 0)
                 local textBoxHeight = ui.windowHeight() / 5
 
-                local inputPromptString = inputMode < 3 and "Press a Button" or "Press a Key"
+                local inputPromptString = "Press a Button or Key"
                 ui.setCursor(0)
                 cui.snapCursor()
                 ui.dwriteTextAligned(
@@ -151,8 +151,8 @@ local function bindingDialog(button, name, inputMode)
                         return true
                 end
 
-                local assigned, assignedJoy, assignedButton, assignedJoyModificator, assignedModificator =
-                        button:assignBind(inputMode)
+                local assigned, assignedInputMode, assignedJoy, assignedButton, assignedJoyModificator, assignedModificator =
+                        button:assignBind()
 
                 if not assigned then
                         ui.popStyleVar(1)
@@ -162,7 +162,7 @@ local function bindingDialog(button, name, inputMode)
 
                 local inUseList = {}
 
-                if inputMode == 1 then
+                if assignedInputMode == 1 then
                         for bindButton in controls:iterate() do
                                 local controlBind = bindButton.bind
                                 local boundJoy = configs.CONTROLS.ini:get(controlBind, "JOY", -1)
@@ -170,59 +170,55 @@ local function bindingDialog(button, name, inputMode)
                                 local boundJoyModificator = configs.CONTROLS.ini:get(controlBind, "JOY_MODIFICATOR", -1)
                                 local boundModificator = configs.CONTROLS.ini:get(controlBind, "BUTTON_MODIFICATOR", {})
 
-                                if tonumber(boundModificator[1]) == -1 then boundModificator[1] = nil end
+                                if tonumber(boundModificator[1]) == -1 or boundModificator[1] == "" then
+                                        boundModificator[1] = nil
+                                end
 
                                 if
                                         controlBind ~= button.bind
                                         and tonumber(assignedJoy) == tonumber(boundJoy)
                                         and tonumber(assignedButton) == tonumber(boundButton)
                                         and tonumber(assignedJoyModificator) == tonumber(boundJoyModificator)
-                                        and (
-                                                #assignedModificator > 0
-                                                        and tonumber(assignedModificator[1]) == tonumber(
-                                                                boundModificator[1]
-                                                        )
-                                                or true
-                                        )
+                                        and table.same(assignedModificator, boundModificator)
                                 then
                                         table.insert(inUseList, bindButton)
                                 end
                         end
-                elseif inputMode == 2 then
+                elseif assignedInputMode == 2 then
                         for bindButton in controls:iterate() do
                                 local controlBind = bindButton.bind
                                 local boundButton = configs.CONTROLS.ini:get(controlBind, "XBOXBUTTON", "")
 
-                                if controlBind ~= button.bind and tonumber(assignedButton) == tonumber(boundButton) then
+                                if controlBind ~= button.bind and assignedButton == boundButton then
                                         table.insert(inUseList, bindButton)
                                 end
                         end
-                elseif inputMode == 3 then
+                elseif assignedInputMode == 3 then
                         for bindButton in controls:iterate() do
                                 local controlBind = bindButton.bind
                                 local boundButton = configs.CONTROLS.ini:get(controlBind, "KEY", -1)
                                 local boundModificator = configs.CONTROLS.ini:get(controlBind, "KEY_MODIFICATOR", {})
 
+                                if tonumber(boundModificator[1]) == -1 or boundModificator[1] == "" then
+                                        boundModificator[1] = nil
+                                end
+
                                 if
                                         controlBind ~= button.bind
                                         and tonumber(keys.hexIndexList[assignedButton]) == tonumber(boundButton)
-                                        and (
-                                                #assignedModificator > 0
-                                                        and tonumber(assignedModificator[1]) == tonumber(
-                                                                boundModificator[1]
-                                                        )
-                                                or true
-                                        )
+                                        and table.same(assignedModificator, boundModificator)
                                 then
+                                        ac.log(assignedModificator, boundModificator)
+
                                         table.insert(inUseList, bindButton)
                                 end
                         end
                 end
 
                 if #inUseList > 0 then
-                        bindingInUseDialog(button, name, inputMode, inUseList)
+                        bindingInUseDialog(button, name, assignedInputMode, inUseList)
                 else
-                        button:saveBind(inputMode)
+                        button:saveBind(assignedInputMode)
 
                         ui.popStyleVar(1)
                         return true
@@ -233,47 +229,16 @@ local function bindingDialog(button, name, inputMode)
 end
 
 local function bindingBoxes(binding, name, label, button, bind, yOffset)
-        ui.drawRectFilled(
-                ui.getCursor(),
-                ui.getCursor() + vec2(ui.windowWidth() - 15 * cui.uiScale(), ui.windowHeight() / 22),
-                settings.Appearance.uiColorBackgroundShade,
-                6 * cui.uiScale()
-        )
-
-        ui.setCursorX(20 * cui.uiScale())
-        cui.snapCursor()
-        ui.dwriteTextAligned(
-                name .. " " .. label,
-                24 * cui.uiScale(),
-                ui.Alignment.Start,
-                ui.Alignment.Center,
-                vec2(ui.windowWidth() * 0.4, ui.windowHeight() / 22)
-        )
-        ui.sameLine()
-
-        ui.setCursorX(ui.windowWidth() * 0.4)
-
-        local bindingWidth = (ui.windowWidth() * 0.2)
-
-        for i = 3, 1, -1 do
-                local boundDeviceID, buttonID = button:boundTo(i)
-                local disabled = (sim.inputMode + 1 == 3 and i ~= 3)
-
-                if
-                        cui.bindingButton(
-                                button,
-                                i,
-                                boundDeviceID,
-                                buttonID,
-                                vec2(bindingWidth, ui.windowHeight() / 22),
-                                disabled and ui.ButtonFlags.Disabled or ui.ButtonFlags.None
-                        )
-                then
-                        bindingDialog(button, name .. " " .. label, i)
-                end
-                if ui.itemHovered() and ui.mouseClicked(ui.MouseButton.Right) then button:unbind(i) end
-
-                ui.sameLine()
+        if
+                cui.bindingButton(
+                        name,
+                        label,
+                        button,
+                        vec2(ui.windowWidth() - 15 * cui.uiScale(), 64 * cui.uiScale()),
+                        ui.ButtonFlags.None or ui.ButtonFlags.None
+                )
+        then
+                bindingDialog(button, name .. " " .. label)
         end
 
         cui.offsetCursorY(5)
@@ -361,24 +326,16 @@ function bindings:draw()
 
         settingsSearchInput, settingsSearchActive = cui.inputText(
                 "##controlsSearcher",
+                vec2(textInputWidth, 36 * cui.uiScale()),
                 "",
                 settingsSearchInput,
-                "",
-                vec2(textInputWidth, 36 * cui.uiScale())
+                "Search Controls...",
+                ""
         )
 
         ui.setCursorX(r2.x - ui.windowHeight() / 22)
         ui.setCursorY(0)
-        ui.icon(ui.Icons.ZoomIn, ui.windowHeight() / 22, rgbm.colors.gray, (ui.windowHeight() / 22) * 0.5)
-
-        ui.setCursor(r1)
-        cui.offsetCursorX(10)
-        cui.bodyTextAligned(
-                isempty(settingsSearchInput) and "Search controls..." or "",
-                vec2(textInputWidth, 36 * cui.uiScale()),
-                settings.Appearance.uiColorTextDim,
-                ui.Alignment.Start
-        )
+        ui.icon(ui.Icons.ZoomIn, 36 * cui.uiScale(), rgbm.colors.gray, 36 * cui.uiScale() * 0.5)
 
         ui.setCursorY(0)
         ui.setCursorX(ui.windowWidth() * 0.4)
@@ -433,10 +390,10 @@ function bindings:draw()
                         cui.snapCursor()
                         ui.dwriteTextAligned(
                                 string.upper(group.name),
-                                24 * cui.uiScale(),
+                                18 * cui.uiScale(),
                                 ui.Alignment.Start,
                                 ui.Alignment.Center,
-                                vec2(ui.windowWidth(), ui.windowHeight() / 22)
+                                vec2(ui.windowWidth(), 32 * cui.uiScale())
                         )
                 end
 

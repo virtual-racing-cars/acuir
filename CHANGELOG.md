@@ -4,10 +4,13 @@
 
 Features:
 - CSP Data Logger integration
+- Visualization for gamepad deadzone, steering speed, and steer position based on gamma in Controls->Gamepad Tweaks
 
 Fixes:
 - Smaller fonts in general
 - Consistent fonts sizes throughout the app
+- App control tabs now show proper name, instead of app dir name
+- Text input improvements
 
 ### 0.9.2.8
 

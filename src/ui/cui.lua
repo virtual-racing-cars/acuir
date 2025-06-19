@@ -409,50 +409,129 @@ function CUI.windowTabButton(label, size, flags, active)
         return clicked and not (flags == ui.ButtonFlags.Disabled)
 end
 
-function CUI.bindingButton(button, inputMode, device, buttonLabel, size, flags)
-        if not flags then flags = ui.ButtonFlags.None end
-
+function CUI.bindingButton(name, label, button, size, flags)
         local sizeX = size.x
         local sizeY = size.y
         local fontSize = math.floor(sizeY * 0.4)
-        fontSize = (fontSize % 2 ~= 0) and fontSize + 1 or fontSize
-        local fontColor = rgbm.colors.white
 
-        if flags == ui.ButtonFlags.Disabled then fontColor = settings.Appearance.uiColorTextDim end
+        if not flags then flags = ui.ButtonFlags.None end
+        -- if flags == ui.ButtonFlags.Disabled then fontColor = settings.Appearance.uiColorTextDim end
 
-        local tempCursor = ui.getCursor()
-        local clicked = ui.invisibleButton("##" .. inputMode .. button.bind, vec2Temp1(sizeX, sizeY), flags)
+        local clicked = ui.invisibleButton("##" .. button.bind, size, flags)
+        local r1, r2 = ui.itemRect()
         local hovered = ui.itemHovered()
 
-        if flags == ui.ButtonFlags.Disabled then
-        elseif not hovered and device == "" then
-                fontColor = settings.Appearance.uiColorTextDim
+        local buttonColor = settings.Appearance.uiColorBackgroundShade
+        local textColor = settings.Appearance.uiColorText
+
+        if hovered then
+                buttonColor = settings.Appearance.uiColorAccent
+                textColor = settings.Appearance.uiColorBackground
         end
 
-        ui.setCursor(tempCursor)
-        CUI.offsetCursorY(device == "" and 0 or -sizeY * 0.15)
-        CUI.snapCursor()
-        ui.dwriteTextAligned(
-                buttonLabel,
-                fontSize,
-                ui.Alignment.Center,
-                ui.Alignment.Center,
-                vec2Temp1(sizeX, sizeY),
-                false,
-                fontColor
-        )
+        -- if hovered and ui.mouseClicked(ui.MouseButton.Right) then button:unbind(i) end
+        ui.drawRectFilled(r1, r2, buttonColor, 6 * CUI.uiScale())
+        ui.setCursor(r1)
 
-        ui.setCursor(tempCursor)
+        ui.itemPopup("##unbinding" .. button.bind, ui.MouseButton.Right, function()
+                local popupButtonSize = vec2(200, 30) * uiScale
+
+                ui.drawRectFilled(0, vec2(200, 30 * 3), rgbm(0.2, 0.2, 0.2, 1))
+
+                ui.setCursor(0)
+
+                if
+                        CUI.menuButton(
+                                "Unbind Keyboard",
+                                popupButtonSize,
+                                0,
+                                0,
+                                button.inputModeBound[3] and ui.ButtonFlags.None or ui.ButtonFlags.Disabled,
+                                false,
+                                false,
+                                ui.CornerFlags.None
+                        )
+                then
+                        button:unbind(3)
+                end
+
+                ui.setCursorX(0)
+                if
+                        CUI.menuButton(
+                                "Unbind Gamepad",
+                                popupButtonSize,
+                                0,
+                                0,
+                                button.inputModeBound[2] and ui.ButtonFlags.None or ui.ButtonFlags.Disabled,
+                                false,
+                                false,
+                                ui.CornerFlags.None
+                        )
+                then
+                        button:unbind(2)
+                end
+
+                ui.setCursorX(0)
+                if
+                        CUI.menuButton(
+                                "Unbind Controller",
+                                popupButtonSize,
+                                0,
+                                0,
+                                button.inputModeBound[1] and ui.ButtonFlags.None or ui.ButtonFlags.Disabled,
+                                false,
+                                false,
+                                ui.CornerFlags.None
+                        )
+                then
+                        button:unbind(1)
+                end
+        end)
+
+        CUI.offsetCursorX(30)
         CUI.snapCursor()
         ui.dwriteTextAligned(
-                device,
-                fontSize * 0.75,
+                name .. " " .. label,
+                24 * CUI.uiScale(),
+                ui.Alignment.Start,
                 ui.Alignment.Center,
-                ui.Alignment.End,
-                vec2Temp1(sizeX, sizeY),
+                vec2(sizeX * 0.4 - 30 * CUI.uiScale(), sizeY),
                 false,
-                fontColor
+                textColor
         )
+        ui.sameLine()
+
+        for i = 3, 1, -1 do
+                local boundDeviceID, buttonID = button:boundTo(i)
+                local disabled = (sim.inputMode + 1 == 3 and i ~= 3)
+                local tempCursor = ui.getCursor()
+
+                CUI.offsetCursorY(boundDeviceID == "" and 0 or -size.y * 0.1)
+                CUI.snapCursor()
+                ui.dwriteTextAligned(
+                        buttonID,
+                        fontSize,
+                        ui.Alignment.Center,
+                        ui.Alignment.Center,
+                        vec2(sizeX * 0.2, sizeY),
+                        false,
+                        textColor
+                )
+
+                ui.setCursor(tempCursor)
+                CUI.snapCursor()
+                ui.dwriteTextAligned(
+                        boundDeviceID,
+                        fontSize * 0.5,
+                        ui.Alignment.Center,
+                        ui.Alignment.End,
+                        vec2(sizeX * 0.2, sizeY),
+                        false,
+                        textColor
+                )
+
+                ui.sameLine()
+        end
 
         return clicked and not (flags == ui.ButtonFlags.Disabled)
 end
@@ -759,108 +838,92 @@ local function measureUTF8PrefixWidth(charTable, upToIndex, fontSize)
         return width
 end
 
-function CUI.inputTextBox(label, stringPrefix, stringInput, size)
+function CUI.inputText(label, size, stringPrefix, stringInput, stringDefault, filter)
+        size.x = size.x - 20 * uiScale
+        CUI.offsetCursorX(10)
+
         local fontSize = size.y * 0.5
-
         local tempCursor = ui.getCursor()
-
-        --         ---Similar to `ui.invisibleButton()`, but this one can be activated similar to text input and if it is active, will monitor keyboard state.
-        -- ---@param id string? @Default value: `'nil'`.
-        -- ---@param size vec2? @Default value: `vec2(0, 0)`.
-        -- ---@return ui.CapturedKeyboard?
-        -- ---@return boolean @Set to `true` if area was just activated.
-        -- function ui.interactiveArea(id, size) end
-
-        local clicked = ui.invisibleButton("##textinput" .. label, size, ui.ButtonFlags.None)
+        local captured, clicked = ui.interactiveArea("##textinput" .. label, size)
         local r1, r2 = ui.itemRect()
         local hovered = ui.itemHovered()
-        local id = ui.getLastID()
-        local itemActive = CUI.loadStoredBool(id)
-
+        local itemActive = ui.itemActive()
+        ui.setCursor(tempCursor)
         ui.pushClipRect(r1, r2)
 
-        ui.setCursor(tempCursor)
-        local textOffset = size.x / 60
-        ui.offsetCursorX(textOffset)
-        ui.offsetCursorY(1)
-
-        if clicked then CUI.storeBool(id, clicked) end
-
-        if hovered then
-                ui.setMouseCursor(ui.MouseCursor.TextInput)
-        elseif ui.mouseClicked(ui.MouseButton.Left) then
-                CUI.storeBool(id, false)
-        end
+        if itemActive and hovered then ui.setMouseCursor(ui.MouseCursor.TextInput) end
 
         local charSizes = {}
         local charPositions = {}
         local utf8Chars = {}
-        do
-                local i = 1
-                local xOffset = 0
-                while i <= #stringInput do
-                        local cp, len = stringInput:codePointAt(i)
-                        if not cp then break end
-                        local char = stringInput:sub(i, i + len - 1)
-                        utf8Chars[#utf8Chars + 1] = char
-                        local displayChar = (char == " ") and "." or char
-                        local w = ui.measureDWriteText(displayChar, fontSize).x
-                        charSizes[#charSizes + 1] = w
-                        charPositions[#charPositions + 1] = xOffset
-                        xOffset = xOffset + w
-                        i = i + len
-                end
+        local i = 1
+        local xOffset = 0
+        while i <= #stringInput do
+                local cp, len = stringInput:codePointAt(i)
+                if not cp then break end
+                local char = stringInput:sub(i, i + len - 1)
+                utf8Chars[#utf8Chars + 1] = char
+                local displayChar = (char == " ") and "." or char
+                local w = ui.measureDWriteText(displayChar, fontSize).x
+                charSizes[#charSizes + 1] = w
+                charPositions[#charPositions + 1] = xOffset
+                xOffset = xOffset + w
+                i = i + len
         end
 
-        CUI.snapCursor()
-        ui.dwriteTextAligned(
-                stringPrefix,
-                fontSize,
-                ui.Alignment.Start,
-                ui.Alignment.Center,
-                vec2Temp1:set(ui.measureDWriteText(stringPrefix, fontSize).x, size.y),
-                false,
-                rgbm.colors.white
-        )
-        ui.sameLine()
-
-        tempCursor = ui.getCursor()
-
         local cursorOffset = measureUTF8PrefixWidth(utf8Chars, inputTextBoxCursorIndex, fontSize)
+        local chunkSize = size.x * 0.7
+        local cursorX = r1.x + cursorOffset
 
-        local boxPadding = 6
-        local chunkSize = size.x * 0.5
-        local boxLeft = tempCursor.x
-        local boxRight = tempCursor.x + size.x
-        local cursorX = boxLeft + cursorOffset
-
-        if cursorX - scrollOffsetX > boxRight - boxPadding then
+        if cursorX - scrollOffsetX > r2.x then
                 scrollOffsetX = scrollOffsetX + chunkSize
-        elseif cursorX - scrollOffsetX < boxLeft + boxPadding then
+        elseif cursorX - scrollOffsetX < r1.x then
                 scrollOffsetX = math.max(scrollOffsetX - chunkSize, 0)
         end
 
-        local totalTextWidth = charPositions[#charPositions] and (charPositions[#charPositions] + charSizes[#charSizes])
-                or 0
-        if totalTextWidth <= size.x - textOffset * 2 then scrollOffsetX = 0 end
+        if charPositions[#charPositions] and charPositions[#charPositions] <= size.x then scrollOffsetX = 0 end
 
-        ui.sameLine()
-        tempCursor = ui.getCursor()
-
-        CUI.snapCursor()
-        for i, char in ipairs(utf8Chars) do
-                local posX = tempCursor.x + charPositions[i] - scrollOffsetX
-                ui.setCursorX(posX)
+        if stringPrefix ~= "" then
+                CUI.snapCursor()
                 ui.dwriteTextAligned(
-                        char,
+                        stringPrefix,
                         fontSize,
                         ui.Alignment.Start,
                         ui.Alignment.Center,
-                        vec2Temp1:set(charSizes[i], size.y),
+                        vec2Temp1:set(ui.measureDWriteText(stringPrefix, fontSize).x, size.y),
                         false,
                         rgbm.colors.white
                 )
                 ui.sameLine()
+        end
+
+        if #utf8Chars > 0 then
+                CUI.snapCursor()
+                for i, char in ipairs(utf8Chars) do
+                        local posX = tempCursor.x + charPositions[i] - scrollOffsetX
+                        ui.setCursorX(posX)
+                        ui.dwriteTextAligned(
+                                char,
+                                fontSize,
+                                ui.Alignment.Start,
+                                ui.Alignment.Center,
+                                vec2Temp1:set(charSizes[i], size.y),
+                                false,
+                                rgbm.colors.white
+                        )
+                        ui.sameLine()
+                end
+        else
+                CUI.snapCursor()
+                ui.dwriteTextAligned(
+                        stringDefault,
+                        fontSize,
+                        ui.Alignment.Start,
+                        ui.Alignment.Center,
+                        size,
+                        false,
+                        settings.Appearance.uiColorTextDim
+                )
         end
 
         if hovered and ui.mouseClicked(ui.MouseButton.Left) then
@@ -873,10 +936,11 @@ function CUI.inputTextBox(label, stringPrefix, stringInput, size)
         end
 
         if itemActive and math.abs(ui.mouseDragDelta(ui.MouseButton.Left).x) > 0 then
-                local mouseX = ui.mouseLocalPos().x
                 inputTextBoxDragIndex = 0
                 for i = 1, #utf8Chars do
-                        if mouseX > tempCursor.x + charPositions[i] - scrollOffsetX then inputTextBoxDragIndex = i end
+                        if ui.mouseLocalPos().x > tempCursor.x + charPositions[i] - scrollOffsetX then
+                                inputTextBoxDragIndex = i
+                        end
                 end
         end
 
@@ -890,7 +954,7 @@ function CUI.inputTextBox(label, stringPrefix, stringInput, size)
                 if left ~= right then
                         ui.drawRectFilled(
                                 vec2(right, ui.getCursorY()),
-                                vec2(left, ui.getCursorY() + size.y - 2),
+                                vec2(left, ui.getCursorY() + size.y),
                                 rgbm.colors.red / 2
                         )
                 end
@@ -905,22 +969,17 @@ function CUI.inputTextBox(label, stringPrefix, stringInput, size)
         if drawCursor then
                 local pos = tempCursor.x + cursorOffset - scrollOffsetX
                 ui.drawSimpleLine(
-                        vec2(pos, r1.y + 10 * CUI.uiScale()),
-                        vec2(pos, r1.y - 10 * CUI.uiScale()) + vec2(0, size.y),
-                        rgbm.colors.white / 1.25,
+                        vec2(pos, r1.y + 7 * uiScale),
+                        vec2(pos, r2.y - 7 * uiScale),
+                        settings.Appearance.uiColorText * 0.75,
                         2 * CUI.uiScale()
                 )
         end
 
         ui.popClipRect()
 
-        return itemActive
-end
+        if not itemActive then return stringInput, false end
 
-function CUI.inputText(label, stringPrefix, stringInput, filter, size)
-        if not CUI.inputTextBox(label, stringPrefix, stringInput, size) then return stringInput, false end
-
-        local captured = ui.captureKeyboard(true, true, true)
         local charToAdd = nil
         local skip = false
 
@@ -937,23 +996,32 @@ function CUI.inputText(label, stringPrefix, stringInput, filter, size)
 
         local numChars = #utf8Chars
 
-        if ui.mouseDoubleClicked(ui.MouseButton.Left) then
+        if
+                ui.mouseDoubleClicked(ui.MouseButton.Left)
+                or (ui.keyboardButtonDown(ui.KeyIndex.A) and ui.keyboardButtonDown(ui.KeyIndex.Control))
+        then
                 inputTextBoxDragIndex = 0
                 inputTextBoxCursorIndex = numChars
+
+                skip = true
         end
 
-        if ui.keyPressed(ui.Key.A) and ui.keyboardButtonDown(ui.KeyIndex.Control) then
-                inputTextBoxDragIndex = 0
-                inputTextBoxCursorIndex = numChars
+        if ui.keyboardButtonDown(ui.KeyIndex.D) and ui.keyboardButtonDown(ui.KeyIndex.Control) then
+                inputTextBoxDragIndex = inputTextBoxCursorIndex
         end
 
         if ui.keyPressed(ui.Key.C) and ui.keyboardButtonDown(ui.KeyIndex.Control) then
                 if inputTextBoxCursorIndex ~= inputTextBoxDragIndex then
-                        local i1 = math.min(inputTextBoxCursorIndex, inputTextBoxDragIndex) + 1
-                        local i2 = math.max(inputTextBoxCursorIndex, inputTextBoxDragIndex)
-                        local selectedText = table.concat(utf8Chars, "", i1, i2)
+                        local selectedText = table.concat(
+                                utf8Chars,
+                                "",
+                                math.min(inputTextBoxCursorIndex, inputTextBoxDragIndex) + 1,
+                                math.max(inputTextBoxCursorIndex, inputTextBoxDragIndex)
+                        )
                         ac.setClipboardText(selectedText)
                 end
+
+                skip = true
         end
 
         if ui.keyPressed(ui.Key.V) and ui.keyboardButtonDown(ui.KeyIndex.Control) then
@@ -982,16 +1050,22 @@ function CUI.inputText(label, stringPrefix, stringInput, filter, size)
                                 i = i + len
                         end
                 end
+
+                skip = true
         end
 
         if ui.keyPressed(ui.Key.Left) then
                 inputTextBoxCursorIndex = math.max(inputTextBoxCursorIndex - 1, 0)
                 if not ui.keyboardButtonDown(ui.KeyIndex.Shift) then inputTextBoxDragIndex = inputTextBoxCursorIndex end
+
+                skip = true
         end
 
         if ui.keyPressed(ui.Key.Right) then
                 inputTextBoxCursorIndex = math.min(inputTextBoxCursorIndex + 1, numChars)
                 if not ui.keyboardButtonDown(ui.KeyIndex.Shift) then inputTextBoxDragIndex = inputTextBoxCursorIndex end
+
+                skip = true
         end
 
         if ac.isKeyDown(ui.KeyIndex.Back) or ac.isKeyDown(ui.KeyIndex.Delete) or ac.isKeyDown(ui.KeyIndex.Return) then
@@ -999,7 +1073,7 @@ function CUI.inputText(label, stringPrefix, stringInput, filter, size)
         end
 
         if
-                (ac.isKeyDown(ui.KeyIndex.Back) or ui.keyPressed(ui.Key.Delete))
+                (ac.isKeyDown(ui.KeyIndex.Back) or ac.isKeyDown(ui.KeyIndex.Delete))
                 and inputTextBoxCursorIndex ~= inputTextBoxDragIndex
         then
                 local startIndex = math.min(inputTextBoxCursorIndex, inputTextBoxDragIndex)
@@ -1027,6 +1101,14 @@ function CUI.inputText(label, stringPrefix, stringInput, filter, size)
         if #captured > 0 and not skip then
                 charToAdd = captured:queue()
                 if #charToAdd > 0 and charToAdd:match(filter) then
+                        local startIndex = math.min(inputTextBoxCursorIndex, inputTextBoxDragIndex)
+                        local endIndex = math.max(inputTextBoxCursorIndex, inputTextBoxDragIndex)
+                        for i = endIndex, startIndex + 1, -1 do
+                                table.remove(utf8Chars, i)
+                        end
+                        inputTextBoxCursorIndex = startIndex
+                        inputTextBoxDragIndex = startIndex
+
                         table.insert(utf8Chars, inputTextBoxCursorIndex + 1, charToAdd)
                         inputTextBoxCursorIndex = inputTextBoxCursorIndex + 1
                         inputTextBoxDragIndex = inputTextBoxCursorIndex

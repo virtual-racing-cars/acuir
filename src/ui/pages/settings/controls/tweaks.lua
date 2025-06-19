@@ -6,6 +6,8 @@ local sim = ac.getSim()
 
 local tweaks = {}
 
+local carControls = physics.getCarInputControls()
+
 -- The following curve based stuff was written originally by Ilja for Controller Tweaks
 local function drawCurveBase(size)
         cui.offsetCursorY(10)
@@ -27,7 +29,15 @@ local function drawGammaCurve(value, label)
         ui.pathStroke(settings.Appearance.uiColorSecondary, false, 3 * cui.uiScale())
 end
 
+local steer = 0
+
 local function drawGamepadGammaCurve()
+        local gamma = configs.CONTROLS.data.X360.STEER_GAMMA
+        local deadzone = configs.CONTROLS.data.X360.STEER_DEADZONE
+        local speed = configs.CONTROLS.data.X360.STEER_SPEED
+
+        if gamma == 0 then gamma = 1 end
+
         ui.setCursorX(ui.windowWidth() * 0.1)
         local f, s = drawCurveBase(vec2(ui.windowWidth() * 0.8, ui.windowWidth() * 0.2))
         local b = ac.getGamepadAxisValue(
@@ -35,13 +45,30 @@ local function drawGamepadGammaCurve()
                 configs.CONTROLS.data.X360.STEER_THUMB == "LEFT" and ac.GamepadAxis.LeftThumbX
                         or ac.GamepadAxis.RightThumbX
         )
-        local relSteer = ac.getCar(0).steer / 396
+
+        local ax = math.abs(b)
+
+        local norm = (ax - deadzone) / (1 - deadzone)
+        local curved = norm ^ gamma
+        local relSteer = math.clamp(math.sign(b) * curved, -1, 1)
+
+        if ax < deadzone then relSteer = 0 end
+
+        local normalSpeed = 100
+        local maxSpeed = math.clamp(normalSpeed * (speed + 0.05) / 2.05, 0, normalSpeed * 2)
+        local maxDelta = maxSpeed * ac.getScriptDeltaT()
+
+        local delta = relSteer - steer
+        local clampedDelta = math.clamp(delta, -maxDelta, maxDelta)
+        steer = steer + clampedDelta
+
         ui.drawLine(
-                f + vec2(0, (0.5 + 0.5 * relSteer) * s.y),
-                f + vec2(s.x, (0.5 + 0.5 * relSteer) * s.y),
+                f + vec2(0, (0.5 + 0.5 * steer) * s.y),
+                f + vec2(s.x, (0.5 + 0.5 * steer) * s.y),
                 rgbm.colors.gray,
                 2 * cui.uiScale()
         )
+
         ui.drawLine(
                 f + vec2((0.5 + 0.5 * b) * s.x, 0),
                 f + vec2((0.5 + 0.5 * b) * s.x, s.y),
@@ -49,19 +76,41 @@ local function drawGamepadGammaCurve()
                 2 * cui.uiScale()
         )
 
-        local v = configs.CONTROLS.data.X360.STEER_GAMMA
-        if v == 0 then v = 1 end
+        ui.drawLine(
+                f + vec2((0.5 + 0.5 * b) * s.x, 0),
+                f + vec2((0.5 + 0.5 * b) * s.x, s.y),
+                rgbm.colors.gray,
+                2 * cui.uiScale()
+        )
+
         for i0 = 0, 1 do
-                for i = 0, 30 do
-                        local x = (i / 30) ^ 2
-                        if i0 == 1 then
-                                ui.pathLineTo(f + vec2(0.5 + 0.5 * x, 0.5 + 0.5 * x ^ v) * s)
+                for i = 0, 100 do
+                        local g = gamma
+                        local x = (i / 100) ^ 2
+                        local norm = (x - deadzone) / (1 - deadzone)
+
+                        if x >= deadzone then
+                                if i0 == 1 then
+                                        ui.pathLineTo(f + vec2(0.5 + 0.5 * x, 0.5 + 0.5 * norm ^ g) * s)
+                                else
+                                        ui.pathLineTo(f + vec2(0.5 - 0.5 * x, 0.5 - 0.5 * norm ^ g) * s)
+                                end
                         else
-                                ui.pathLineTo(f + vec2(0.5 - 0.5 * x, 0.5 - 0.5 * x ^ v) * s)
+                                if i0 == 1 then
+                                        ui.pathLineTo(f + vec2(0.5 + 0.5 * x, 0.5 + 0.5 * 0) * s)
+                                else
+                                        ui.pathLineTo(f + vec2(0.5 - 0.5 * x, 0.5 - 0.5 * 0) * s)
+                                end
                         end
                 end
                 ui.pathStroke(settings.Appearance.uiColorSecondary, false, 3 * cui.uiScale())
         end
+
+        ui.drawRectFilled(
+                f + vec2(s.x * 0.5 - s.x * deadzone * 0.5, 0),
+                f + vec2(s.x * 0.5 + s.x * deadzone * 0.5, s.y),
+                rgbm.colors.black * 0.25
+        )
 end
 
 local curves = {}

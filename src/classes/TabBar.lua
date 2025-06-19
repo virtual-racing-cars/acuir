@@ -31,7 +31,7 @@ function TabBar:draw(tabs)
                 if
                         cui.treeNodeButton(
                                 toCapitalCase(tabs[i].name),
-                                vec2(ui.windowWidth(), ui.windowHeight() / 22),
+                                vec2(ui.windowWidth(), 32 * cui.uiScale()),
                                 self.currentTab == i,
                                 true
                         )

@@ -41,6 +41,7 @@ local app = require("app")
 local callback = require("callback")
 local camera = require("camera")
 local carSetup = require("car_setup")
+local configs = require("configs")
 local controls = require("controls")
 local pitstop = require("pitstop")
 local race = require("race")
@@ -83,10 +84,3 @@ function script.update(dt)
                 if callback.sim() then callback.sim = nil end
         end
 end
-
--- ---Similar to `ui.invisibleButton()`, but this one can be activated similar to text input and if it is active, will monitor keyboard state.
--- ---@param id string? @Default value: `'nil'`.
--- ---@param size vec2? @Default value: `vec2(0, 0)`.
--- ---@return ui.CapturedKeyboard?
--- ---@return boolean @Set to `true` if area was just activated.
--- function ui.interactiveArea(id, size) end
