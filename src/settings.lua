@@ -31,9 +31,31 @@ local settings = {
                         default = true,
                         widget = Widgets.Checkbox,
                 },
+                {
+                        key = "showMPSBinds",
+                        label = "Show MPS Bindings",
+                        default = false,
+                        widget = Widgets.Checkbox,
+                },
+
                 { key = "developerMode", label = "Developer Mode", default = false, widget = Widgets.Checkbox },
         },
         UI = {
+                {
+                        key = "mainMenuScale",
+                        label = "Main Menu Scale",
+                        default = 1,
+                        min = 0.5,
+                        max = 1,
+                        step = 0.01,
+                        multiplier = 100,
+                        format = "%.0f %%",
+                        onChanged = function(value)
+                                ac.INIConfig.cspModule(ac.CSPModuleID.GUI):setAndSave("ACUIR", "MENU_SCALE", value)
+                        end,
+                        widget = Widgets.Slider,
+                },
+
                 {
                         key = "scrollDelayTimeMs",
                         label = "Scroll Delay Time",

@@ -16,6 +16,12 @@ local bindings = {}
 
 local margin = 20
 
+local applicationControlsTabBar = TabBar()
+local appsTabBars = {}
+
+local settingsSearchInput = ""
+local settingsSearchActive = false
+
 local function bindingInUseDialog(button, name, inputMode, inUseBinds)
         cui.modalDialog(function()
                 ui.pushStyleVar(ui.StyleVar.ItemSpacing, 0)
@@ -274,7 +280,10 @@ local function buttonBinder(controlBinding)
                 )
         end
 
-        if controlBinding.isMultiPositionSwitchBind then
+        if
+                controlBinding.isMultiPositionSwitchBind
+                and (settings.General.showMPSBinds or not isempty(settingsSearchInput))
+        then
                 for index, button in ipairs(controlBinding.buttonPosition) do
                         ui.newLine()
 
@@ -291,12 +300,6 @@ local function buttonBinder(controlBinding)
                 end
         end
 end
-
-local applicationControlsTabBar = TabBar()
-local appsTabBars = {}
-
-local settingsSearchInput = ""
-local settingsSearchActive = false
 
 function bindings:drawHeader()
         if cui.windowTabButton("Bindings", 36, ui.ButtonFlags.None, false) then
@@ -320,7 +323,7 @@ function bindings:draw()
                 false
         )
 
-        local textInputWidth = ui.windowWidth() * 0.3
+        local textInputWidth = ui.windowWidth() * 0.25
         local r1, r2 = ui.getCursor(), ui.getCursor() + vec2(textInputWidth, 36 * cui.uiScale())
         ui.drawRectFilled(r1, r2, settings.Appearance.uiColorBackground * 0.25, 6 * cui.uiScale())
 
@@ -337,33 +340,15 @@ function bindings:draw()
         ui.setCursorY(0)
         ui.icon(ui.Icons.ZoomIn, 36 * cui.uiScale(), rgbm.colors.gray, 36 * cui.uiScale() * 0.5)
 
-        ui.setCursorY(0)
-        ui.setCursorX(ui.windowWidth() * 0.4)
-        cui.snapCursor()
-        ui.dwriteTextAligned(
-                "Keyboard",
-                24 * cui.uiScale(),
-                ui.Alignment.Center,
-                ui.Alignment.Center,
-                vec2(ui.windowWidth() * 0.2, ui.windowHeight() / 22)
-        )
         ui.sameLine()
-        cui.snapCursor()
-        ui.dwriteTextAligned(
-                "Gamepad",
-                24 * cui.uiScale(),
-                ui.Alignment.Center,
-                ui.Alignment.Center,
-                vec2(ui.windowWidth() * 0.2, ui.windowHeight() / 22)
-        )
-        ui.sameLine()
-        cui.snapCursor()
-        ui.dwriteTextAligned(
-                "Wheel",
-                24 * cui.uiScale(),
-                ui.Alignment.Center,
-                ui.Alignment.Center,
-                vec2(ui.windowWidth() * 0.2, ui.windowHeight() / 22)
+        cui.offsetCursorX(30)
+        cui.offsetCursorY(9)
+        settings.General.showMPSBinds = drawCheckbox(
+                "##mapisShowingWeather",
+                "Show MPS Binds",
+                18 * cui.uiScale(),
+                false,
+                settings.General.showMPSBinds
         )
 
         cui.pushWindow(

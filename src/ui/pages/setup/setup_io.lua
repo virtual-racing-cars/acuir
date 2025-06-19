@@ -168,10 +168,11 @@ function drawSetupControls(sm)
         )
         carSetup.input.name = cui.inputText(
                 "##SetupName",
+                vec2Temp1:set(buttonWidth - iconButtonHeight * 1.3, iconButtonHeight),
                 carSetup.input.track .. "/",
                 carSetup.input.name,
-                "[%w_ .;,><%-]",
-                vec2Temp1:set(buttonWidth - iconButtonHeight * 1.3, iconButtonHeight)
+                "",
+                "[%w_ .;,><%-]"
         )
         ui.sameLine()
 

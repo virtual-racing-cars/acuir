@@ -102,8 +102,14 @@ local function chatInput(height)
         cui.setCursorX(0)
         ui.setCursorY(ui.windowHeight() - height)
 
-        messages.input, chatActive =
-                cui.inputText("##chatInput", "", messages.input, "", vec2(ui.windowWidth() * 0.75, height))
+        messages.input, chatActive = cui.inputText(
+                "##chatInput",
+                vec2(ui.windowWidth() * 0.75, height),
+                "",
+                messages.input,
+                "",
+                "Type message..."
+        )
         ui.drawRect(
                 vec2(3, ui.windowHeight() - height),
                 ui.windowSize() - vec2(3, 0),
@@ -226,19 +232,6 @@ local function chatInput(height)
                 ac.sendChatMessage(messages.input)
                 messages.input = ""
         end
-
-        ui.setCursorX(ui.windowWidth() * 0.01)
-        ui.setCursorY(ui.windowHeight() - height)
-        cui.snapCursor()
-        ui.dwriteTextAligned(
-                isempty(messages.input) and "Type message..." or "",
-                math.floor(height * 0.55),
-                ui.Alignment.Start,
-                ui.Alignment.Center,
-                vec2(ui.windowWidth() * 0.75, height),
-                false,
-                rgbm.colors.gray
-        )
 end
 
 function chat:draw(xPos, yPos, width, height)

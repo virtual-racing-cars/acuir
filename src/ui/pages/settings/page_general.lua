@@ -26,8 +26,9 @@ local function generalSettings()
 
                         if changed then settings.General[v.key] = newValue end
                 elseif v.widget == 2 then
+                        local changed = false
                         ui.setCursorX(ui.windowWidth() * 0.25)
-                        settings.General[v.key] = drawSpinner(
+                        settings.General[v.key], changed = drawSpinner(
                                 v.label,
                                 v.label,
                                 ui.windowWidth() * 0.5,
@@ -40,9 +41,9 @@ local function generalSettings()
                                         label = v.label,
                                         min = v.min or 0,
                                         max = v.max or 1,
-                                        step = 1,
-                                        shiftStep = 1,
-                                        multiplier = 1,
+                                        step = v.step or 1,
+                                        shiftStep = v.shiftStep or 1,
+                                        multiplier = v.multiplier or 1,
                                         offset = 0,
                                         format = v.format,
                                         unit = "%",
@@ -50,6 +51,9 @@ local function generalSettings()
                                 },
                                 true
                         )
+
+                        if changed and v.onChanged then v.onChanged(settings.General[v.key]) end
+
                         ui.newLine()
                         ui.newLine()
                 end
@@ -70,8 +74,10 @@ local function uiSettings()
 
                         if changed then settings.UI[v.key] = newValue end
                 elseif v.widget == 2 then
+                        local changed = false
+
                         ui.setCursorX(ui.windowWidth() * 0.25)
-                        settings.UI[v.key] = drawSpinner(
+                        settings.UI[v.key], changed = drawSpinner(
                                 v.label,
                                 v.label,
                                 ui.windowWidth() * 0.5,
@@ -84,9 +90,9 @@ local function uiSettings()
                                         label = v.label,
                                         min = v.min or 0,
                                         max = v.max or 1,
-                                        step = 1,
-                                        shiftStep = 1,
-                                        multiplier = 1,
+                                        step = v.step or 1,
+                                        shiftStep = v.shiftStep or 1,
+                                        multiplier = v.multiplier or 1,
                                         offset = 0,
                                         format = v.format,
                                         unit = "%",
@@ -94,6 +100,9 @@ local function uiSettings()
                                 },
                                 true
                         )
+
+                        if changed and v.onChanged then v.onChanged(settings.UI[v.key]) end
+
                         ui.newLine()
                         ui.newLine()
                 end

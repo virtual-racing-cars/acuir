@@ -34,10 +34,11 @@ local function helpWindow()
 
         cui.pushContentWindow("help_window", 0, 0, ui.windowWidth() / 5, ui.windowHeight(), function()
                 ui.setCursor(0)
-                if cui.menuButton("Help", 40, 0, 0, 0, carStatusActive, false, ui.CornerFlags.Top) then
+                if cui.windowTabButton("Help", 36, ui.ButtonFlags.None, false) then
                 end
         end)
 
+        cui.setCursorY(10)
         cui.setCursorX(15)
         ui.pushTextWrapPosition(ui.windowWidth() - 15 * cui.uiScale())
         cui.snapCursor()
@@ -128,7 +129,7 @@ local function carStatusWindow()
         cui.pushContentWindow(
                 "car_status_window",
                 (ui.windowWidth() / 5) * 4,
-                ui.windowHeight() * 0.15 + 7.5 * cui.uiScale(),
+                ui.windowHeight() * 0.16 + 7.5 * cui.uiScale(),
                 ui.windowWidth() / 5,
                 ui.windowHeight() * 0.84 - 7.5 * cui.uiScale(),
                 function()

@@ -4,6 +4,7 @@
 
 Features:
 - CSP Data Logger integration
+- New help window, instead of the tooltip popup
 - Visualization for gamepad deadzone, steering speed, and steer position based on gamma in Controls->Gamepad Tweaks
 
 Fixes:

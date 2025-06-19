@@ -11,6 +11,8 @@ local controls = {
 }
 
 local function initializeControlTab(name, ini)
+        if table.same(ini.sections, {}) then return nil end
+
         local controlTab = ControlTab(name)
 
         for _, key in ini:iterateValues("TAB_ORDER", "TAB", true) do
@@ -21,7 +23,7 @@ local function initializeControlTab(name, ini)
                 if bind ~= "TAB_ORDER" then controlTab:addControl(ControlBinding(bind, ini, controls)) end
         end
 
-        return controlTab
+        table.insert(controls.tabs, 1, controlTab)
 end
 
 ac.onControlSettingsChanged(function()
@@ -49,13 +51,14 @@ function controls:initialize()
                 local appCfg = MappedConfig(appControlsFile, { TAB_ORDER = { TAB_1 = "Generic" } })
                 local appName = appManifest:get("ABOUT", "NAME", "")
 
-                table.insert(controls.tabs, initializeControlTab(appName, ac.INIConfig.load(appControlsFile)))
+                initializeControlTab(appName, ac.INIConfig.load(appControlsFile))
         end)
 
         controls.input = sim.inputMode > 1 and 1 or 0
 
-        table.insert(controls.tabs, 1, initializeControlTab("General", configs.CM))
-        table.insert(controls.tabs, 1, initializeControlTab("Car", configs.CAR_DEFAULT))
+        initializeControlTab("General", configs.CM)
+        initializeControlTab("Car Controls", configs.CAR_DEFAULT)
+        initializeControlTab(ac.getCarName(0), configs.CAR)
 end
 
 function controls:iterate()

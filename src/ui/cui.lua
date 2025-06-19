@@ -18,19 +18,31 @@ local windowMaxHeight = 0
 
 local uiScale = math.min(sim.windowHeight / defaultHeight, sim.windowWidth / defaultWidth)
         / guiINI:get("NEW_UI", "UI_SCALE", 1)
+        * settings.UI.mainMenuScale
+
+function refreshScale()
+        uiScale = math.min(sim.windowHeight / defaultHeight, sim.windowWidth / defaultWidth)
+                / guiINI:get("NEW_UI", "UI_SCALE", 1)
+                * settings.UI.mainMenuScale
+
+        ac.log(uiScale)
+end
 
 ac.onResolutionChange(
         function(newSize, makingScreenshot)
                 uiScale = math.min(newSize.y / defaultHeight, newSize.x / defaultWidth)
                         / guiINI:get("NEW_UI", "UI_SCALE", 1)
+                        * settings.UI.mainMenuScale
         end
 )
 
 ac.onCSPConfigChanged(ac.CSPModuleID.GUI, function()
+        ac.log("hi")
         guiINI = ac.INIConfig.cspModule(ac.CSPModuleID.GUI)
 
         uiScale = math.min(sim.windowHeight / defaultHeight, sim.windowWidth / defaultWidth)
                 / guiINI:get("NEW_UI", "UI_SCALE", 1)
+                * settings.UI.mainMenuScale
 end)
 
 function CUI.loadStoredBool(id, defaultTrue)
@@ -453,6 +465,7 @@ function CUI.bindingButton(name, label, button, size, flags)
                         )
                 then
                         button:unbind(3)
+                        ui.closePopup()
                 end
 
                 ui.setCursorX(0)
@@ -469,6 +482,7 @@ function CUI.bindingButton(name, label, button, size, flags)
                         )
                 then
                         button:unbind(2)
+                        ui.closePopup()
                 end
 
                 ui.setCursorX(0)
@@ -485,6 +499,7 @@ function CUI.bindingButton(name, label, button, size, flags)
                         )
                 then
                         button:unbind(1)
+                        ui.closePopup()
                 end
         end)
 
