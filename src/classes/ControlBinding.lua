@@ -1,5 +1,6 @@
 local ControlAxis = require("src.classes.ControlAxis")
 local ControlButton = require("src.classes.ControlButton")
+local configs = require("configs")
 local settings = require("settings")
 
 local ControlBinding = class("ControlBinding")
@@ -24,6 +25,9 @@ local bindSectionKeyDefaults = {
         HOLD_MODE = -1,
         EXT_PHYSICS = -1,
         LUA = -1,
+        WHEEL = 1,
+        X360 = 1,
+        KEYBOARD = 1,
         HELP = "",
 }
 
@@ -40,6 +44,8 @@ function ControlBinding:initialize(bind, ini)
         end
 
         local bindSection = ini.sections[bind]
+
+        if tonumber(bindSection[configs.CONTROLS.data.HEADER.INPUT_METHOD]) < 1 then return nil end
 
         self.bind = bind
         self.name = bindSection.NAME ~= "" and bindSection.NAME or self.bind

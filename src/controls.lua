@@ -26,6 +26,12 @@ local function initializeControlTab(name, ini)
                 if bind ~= "TAB_ORDER" then controlTab:addControl(ControlBinding(bind, ini, controls)) end
         end
 
+        -- for _, group in ipairs(controlTab.groups) do
+        --         for _, tab in ipairs(group.content) do
+        --                 tab.buttons = table.flatten(tab.buttons, 1)
+        --         end
+        -- end
+
         table.insert(controls.tabs, controlTab)
 end
 

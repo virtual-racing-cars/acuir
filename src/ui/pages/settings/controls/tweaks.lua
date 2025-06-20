@@ -6,8 +6,6 @@ local sim = ac.getSim()
 
 local tweaks = {}
 
-local carControls = physics.getCarInputControls()
-
 -- The following curve based stuff was written originally by Ilja for Controller Tweaks
 local function drawCurveBase(size)
         cui.offsetCursorY(10)

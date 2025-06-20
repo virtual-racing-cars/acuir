@@ -24,8 +24,6 @@ function refreshScale()
         uiScale = math.min(sim.windowHeight / defaultHeight, sim.windowWidth / defaultWidth)
                 / guiINI:get("NEW_UI", "UI_SCALE", 1)
                 * settings.UI.mainMenuScale
-
-        ac.log(uiScale)
 end
 
 ac.onResolutionChange(
@@ -37,7 +35,6 @@ ac.onResolutionChange(
 )
 
 ac.onCSPConfigChanged(ac.CSPModuleID.GUI, function()
-        ac.log("hi")
         guiINI = ac.INIConfig.cspModule(ac.CSPModuleID.GUI)
 
         uiScale = math.min(sim.windowHeight / defaultHeight, sim.windowWidth / defaultWidth)
@@ -441,6 +438,8 @@ function CUI.bindingButton(name, label, button, size, flags)
                 textColor = settings.Appearance.uiColorBackground
         end
 
+        if button._button:down() then buttonColor = settings.Appearance.uiColorSecondary end
+
         -- if hovered and ui.mouseClicked(ui.MouseButton.Right) then button:unbind(i) end
         ui.drawRectFilled(r1, r2, buttonColor, 6 * CUI.uiScale())
         ui.setCursor(r1)
@@ -518,7 +517,7 @@ function CUI.bindingButton(name, label, button, size, flags)
 
         for i = 3, 1, -1 do
                 local boundDeviceID, buttonID = button:boundTo(i)
-                local disabled = (sim.inputMode + 1 == 3 and i ~= 3)
+                local disabled = (sim.inputMode + 1 == 3 and i ~= 3) or (sim.inputMode + 1 == 1 and i == 2)
                 local tempCursor = ui.getCursor()
 
                 CUI.offsetCursorY(boundDeviceID == "" and 0 or -size.y * 0.1)
@@ -530,7 +529,7 @@ function CUI.bindingButton(name, label, button, size, flags)
                         ui.Alignment.Center,
                         vec2(sizeX * 0.2, sizeY),
                         false,
-                        textColor
+                        disabled and settings.Appearance.uiColorTextDim or textColor
                 )
 
                 ui.setCursor(tempCursor)
@@ -542,7 +541,7 @@ function CUI.bindingButton(name, label, button, size, flags)
                         ui.Alignment.End,
                         vec2(sizeX * 0.2, sizeY),
                         false,
-                        textColor
+                        disabled and settings.Appearance.uiColorTextDim or textColor
                 )
 
                 ui.sameLine()
@@ -574,7 +573,7 @@ function CUI.bindingAxleButton(name, label, button, size, flags)
         -- if hovered and ui.mouseClicked(ui.MouseButton.Right) then button:unbind(i) end
         ui.drawRectFilled(r1, r2, buttonColor, 6 * CUI.uiScale())
 
-        if button.isCentered then
+        if button.isCentered and button.inputModeBound then
                 local axisValue = button:getValue()
 
                 ui.drawRectFilled(
@@ -592,7 +591,7 @@ function CUI.bindingAxleButton(name, label, button, size, flags)
                         6 * CUI.uiScale(),
                         ui.CornerFlags.Right
                 )
-        else
+        elseif button.inputModeBound then
                 local axisValue = math.clamp((button:getValue() - button.min) / (button.max - button.min), -1, 1)
 
                 ui.drawRectFilled(
@@ -619,7 +618,7 @@ function CUI.bindingAxleButton(name, label, button, size, flags)
                                 popupButtonSize,
                                 0,
                                 0,
-                                button.inputModeBound[3] and ui.ButtonFlags.None or ui.ButtonFlags.Disabled,
+                                button.inputModeBound and ui.ButtonFlags.None or ui.ButtonFlags.Disabled,
                                 false,
                                 false,
                                 ui.CornerFlags.None
@@ -643,7 +642,7 @@ function CUI.bindingAxleButton(name, label, button, size, flags)
         )
         ui.sameLine()
 
-        local boundDeviceID, buttonID = button:boundTo()
+        local boundDeviceID, buttonID = button:boundTo(sim.inputMode + 1)
         local tempCursor = ui.getCursor()
 
         CUI.offsetCursorY(boundDeviceID == "" and 0 or -size.y * 0.1)

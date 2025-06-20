@@ -21,6 +21,21 @@ local gamepad = {
                 [ac.GamepadButton.Pad] = { string = "Pad", code = "PAD" },
                 [ac.GamepadButton.Extra] = { string = "Extra", code = "EXTRA" },
         },
+        axisList = {
+
+                [0] = { string = "L2", axis = ac.GamepadAxis.LeftTrigger, min = 0, max = 1 },
+                [1] = { string = "R2", axis = ac.GamepadAxis.RightTrigger, min = 0, max = 1 },
+                [2] = { string = "Left stick (Y+)", axis = ac.GamepadAxis.LeftThumbY, min = 0, max = 1 },
+                [3] = { string = "Left stick (Y−)", axis = ac.GamepadAxis.LeftThumbY, min = 0, max = -1 },
+                [4] = { string = "Right stick (Y+)", axis = ac.GamepadAxis.RightThumbY, min = 0, max = 1 },
+                [5] = { string = "Right stick (Y−)", axis = ac.GamepadAxis.RightThumbY, min = 0, max = -1 },
+                [6] = { string = "Left stick (X+)", axis = ac.GamepadAxis.LeftThumbX, min = 0, max = 1 },
+                [7] = { string = "Left stick (X−)", axis = ac.GamepadAxis.LeftThumbX, min = 0, max = -1 },
+                [8] = { string = "Right stick (X+)", axis = ac.GamepadAxis.RightThumbX, min = 0, max = 1 },
+                [9] = { string = "Right stick (X−)", axis = ac.GamepadAxis.RightThumbX, min = 0, max = -1 },
+                [10] = { string = "LEFT", axis = ac.GamepadAxis.LeftThumbX, min = -1, max = 1 },
+                [11] = { string = "RIGHT", axis = ac.GamepadAxis.RightThumbX, min = -1, max = 1 },
+        },
 
         indexStringList = {},
         indexCodeList = {},

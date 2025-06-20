@@ -3,6 +3,8 @@ local controllers = require("controllers")
 local gamepad = require("gamepad")
 local keys = require("keys")
 
+local sim = ac.getSim()
+
 local ControlButton = class("ControlButton")
 
 local inputModeStringKeys = {
@@ -15,12 +17,13 @@ function ControlButton:initialize(bind, defaults)
         self.bind = bind
         self.defaults = defaults
         self._button = ac.ControlButton(self.bind, self.defaults)
+
         self.listenerButton = -1
         self.listenerModificators = {}
         self.listenerController = -1
         self.listenerControllerModificator = -1
         self.listenerInputMode = -1
-        self.inputModeBound = { false, false, false }
+        self.inputModeBound = { [0] = false, false, false, false }
 end
 
 function ControlButton:disabled() return self._button:disabled() end
@@ -63,8 +66,14 @@ function ControlButton:boundToGamepad()
 end
 
 function ControlButton:boundToKey()
-        local primaryKey = configs.CONTROLS.ini:get(self.bind, "KEY", -1)
-        local modifierKeys = configs.CONTROLS.ini:get(self.bind, "KEY_MODIFICATOR", {})
+        local primaryKey, modifierKeys = -1, {}
+
+        if string.startsWith(self.bind, "KEYBOARD_") then
+                primaryKey = configs.CONTROLS.ini:get("KEYBOARD", self.bind:gsub("KEYBOARD_", ""), -1)
+        else
+                primaryKey = configs.CONTROLS.ini:get(self.bind, "KEY", -1)
+                modifierKeys = configs.CONTROLS.ini:get(self.bind, "KEY_MODIFICATOR", {})
+        end
 
         if type(modifierKeys[1]) == "table" then modifierKeys = modifierKeys[1] end
 
@@ -182,8 +191,16 @@ function ControlButton:listenKeyboardInputs()
         return (self.listenerButton ~= -1)
 end
 
-function ControlButton:assign(inputMode)
-        local released = { self:listenControllerInputs(), self:listenGamepadInputs(), self:listenKeyboardInputs() }
+function ControlButton:assign()
+        local released = {}
+
+        if sim.inputMode == 0 then
+                released = { self:listenControllerInputs(), false, self:listenKeyboardInputs() }
+        elseif sim.inputMode == 1 then
+                released = { self:listenControllerInputs(), self:listenGamepadInputs(), self:listenKeyboardInputs() }
+        else
+                released = { false, false, self:listenKeyboardInputs() }
+        end
 
         if self.listenerInputMode == -1 or not released[self.listenerInputMode] then
                 return false, self.listenerButton, self.listenerModificators

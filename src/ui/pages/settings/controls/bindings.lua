@@ -105,6 +105,8 @@ end
 
 local function bindingDialog(button, name)
         cui.modalDialog(function()
+                ui.setMouseCursor(ui.MouseCursor.None)
+
                 ui.pushStyleVar(ui.StyleVar.ItemSpacing, 0)
                 local textBoxHeight = ui.windowHeight() / 5
 
@@ -168,7 +170,21 @@ local function bindingDialog(button, name)
 
                 local inUseList = {}
 
-                if assignedInputMode == 1 then
+                if assignedInputMode == 0 then
+                        for bindButton in controls:iterate() do
+                                local controlBind = bindButton.bind
+                                local boundJoy = configs.CONTROLS.ini:get(controlBind, "JOY", -1)
+                                local boundButton = configs.CONTROLS.ini:get(controlBind, "AXLE", -1)
+
+                                if
+                                        controlBind ~= button.bind
+                                        and tonumber(assignedJoy) == tonumber(boundJoy)
+                                        and tonumber(assignedButton) == tonumber(boundButton)
+                                then
+                                        table.insert(inUseList, bindButton)
+                                end
+                        end
+                elseif assignedInputMode == 1 then
                         for bindButton in controls:iterate() do
                                 local controlBind = bindButton.bind
                                 local boundJoy = configs.CONTROLS.ini:get(controlBind, "JOY", -1)
@@ -221,6 +237,8 @@ local function bindingDialog(button, name)
                         end
                 end
 
+                -- ac.setMousePosition(vec2(ui.windowWidth() * 0.5, ui.windowHeight() * 0.5))
+
                 if #inUseList > 0 then
                         bindingInUseDialog(button, name, assignedInputMode, inUseList)
                 else
@@ -260,6 +278,7 @@ local function axisBoxes(binding, name, label, button, bind, yOffset)
                         ui.ButtonFlags.None or ui.ButtonFlags.None
                 )
         then
+                button:clearAssign()
                 bindingDialog(button, name .. " " .. label)
         end
 
@@ -391,30 +410,32 @@ function bindings:draw()
         for _, group in ipairs(app.groups) do
                 ui.setCursorX(0)
 
-                if isempty(settingsSearchInput) then
-                        cui.setCursorX(20)
-                        cui.snapCursor()
-                        ui.dwriteTextAligned(
-                                string.upper(group.name),
-                                18 * cui.uiScale(),
-                                ui.Alignment.Start,
-                                ui.Alignment.Center,
-                                vec2(ui.windowWidth(), 32 * cui.uiScale())
-                        )
-                end
+                if #group.content > 0 then
+                        if isempty(settingsSearchInput) then
+                                cui.setCursorX(20)
+                                cui.snapCursor()
+                                ui.dwriteTextAligned(
+                                        string.upper(group.name),
+                                        18 * cui.uiScale(),
+                                        ui.Alignment.Start,
+                                        ui.Alignment.Center,
+                                        vec2(ui.windowWidth(), 32 * cui.uiScale())
+                                )
+                        end
 
-                for _, controlBinding in pairs(group.content) do
-                        local startIndex, endIndex = string.find(
-                                string.upper(controlBinding.name),
-                                string.upper(settingsSearchInput),
-                                1,
-                                true
-                        )
+                        for _, controlBinding in pairs(group.content) do
+                                local startIndex, endIndex = string.find(
+                                        string.upper(controlBinding.name),
+                                        string.upper(settingsSearchInput),
+                                        1,
+                                        true
+                                )
 
-                        if settingsSearchInput == "" or startIndex or endIndex then
-                                buttonBinder(controlBinding)
+                                if settingsSearchInput == "" or startIndex or endIndex then
+                                        buttonBinder(controlBinding)
 
-                                ui.newLine()
+                                        ui.newLine()
+                                end
                         end
                 end
         end
