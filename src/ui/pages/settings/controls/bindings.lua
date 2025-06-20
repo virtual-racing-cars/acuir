@@ -79,7 +79,7 @@ local function bindingInUseDialog(button, name, inputMode, inUseBinds)
                 ui.offsetCursorX(5 * cui.uiScale())
 
                 if cui.modalButton("KEEP ALL", buttonWidth, 50 * cui.uiScale(), ui.ButtonFlags.None) then
-                        button:saveBind(inputMode)
+                        button:save(inputMode)
 
                         ui.popStyleVar(1)
                         return true
@@ -88,7 +88,7 @@ local function bindingInUseDialog(button, name, inputMode, inUseBinds)
                 ui.offsetCursorX(5 * cui.uiScale())
 
                 if cui.modalButton("REPLACE OLD", buttonWidth, 50 * cui.uiScale(), ui.ButtonFlags.None) then
-                        button:saveBind(inputMode)
+                        button:save(inputMode)
 
                         for _, bind in ipairs(inUseBinds) do
                                 bind:unbind(inputMode)
@@ -158,7 +158,7 @@ local function bindingDialog(button, name)
                 end
 
                 local assigned, assignedInputMode, assignedJoy, assignedButton, assignedJoyModificator, assignedModificator =
-                        button:assignBind()
+                        button:assign()
 
                 if not assigned then
                         ui.popStyleVar(1)
@@ -224,7 +224,7 @@ local function bindingDialog(button, name)
                 if #inUseList > 0 then
                         bindingInUseDialog(button, name, assignedInputMode, inUseList)
                 else
-                        button:saveBind(assignedInputMode)
+                        button:save(assignedInputMode)
 
                         ui.popStyleVar(1)
                         return true
@@ -250,8 +250,29 @@ local function bindingBoxes(binding, name, label, button, bind, yOffset)
         cui.offsetCursorY(5)
 end
 
+local function axisBoxes(binding, name, label, button, bind, yOffset)
+        if
+                cui.bindingAxleButton(
+                        name,
+                        label,
+                        button,
+                        vec2(ui.windowWidth() - 15 * cui.uiScale(), 64 * cui.uiScale()),
+                        ui.ButtonFlags.None or ui.ButtonFlags.None
+                )
+        then
+                bindingDialog(button, name .. " " .. label)
+        end
+
+        cui.offsetCursorY(5)
+end
+
 local function buttonBinder(controlBinding)
         -- helpInfoButton(controlBinding)
+
+        if controlBinding.isAxis then
+                axisBoxes(controlBinding, controlBinding.name, "", controlBinding.button, controlBinding.bind)
+                return
+        end
 
         if controlBinding.isActivationBind then
                 bindingBoxes(controlBinding, controlBinding.name, "", controlBinding.button, controlBinding.bind)

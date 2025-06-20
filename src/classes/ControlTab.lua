@@ -14,13 +14,14 @@ end
 
 function ControlTab:addControl(controlBinding)
         if controlBinding ~= nil then
-                local tab = controlBinding.tab
-                local tabIndex = table.indexOf(self.tabOrder, tab)
+                local tabIndex = table.indexOf(self.tabOrder, controlBinding.tab)
 
-                if controlBinding.order ~= 0 then
-                        self.groups[tabIndex].content[controlBinding.order] = controlBinding
-                else
+                if not tabIndex then return end
+
+                if controlBinding.order == 0 then
                         table.insert(self.groups[tabIndex].content, controlBinding)
+                elseif tabIndex then
+                        self.groups[tabIndex].content[controlBinding.order] = controlBinding
                 end
         end
 end

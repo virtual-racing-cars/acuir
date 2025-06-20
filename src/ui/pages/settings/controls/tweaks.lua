@@ -19,14 +19,50 @@ local function drawCurveBase(size)
         return from, range
 end
 
-local function drawGammaCurve(value, label)
+local function drawGammaCurve(gamma, joy, axle, min, max, isSteering)
+        local b = ac.getJoystickAxisValue(joy, axle)
+
+        if not isSteering then b = math.abs(math.lerpInvSat(b, min, max)) end
+
+        local ax = math.abs(b)
+
         ui.setCursorX(ui.windowWidth() * 0.1)
         local f, s = drawCurveBase(vec2(ui.windowWidth() * 0.8, ui.windowWidth() * 0.2))
-        for i = 0, 30 do
-                local x = (i / 30) ^ 2
-                ui.pathLineTo(f + vec2(x, x ^ value) * s)
+
+        if not isSteering then
+                local ped = ax ^ gamma
+
+                ui.drawLine(f + vec2(0, ped * s.y), f + vec2(s.x, ped * s.y), rgbm.colors.gray)
+                ui.drawLine(f + vec2(b * s.x, 0), f + vec2(b * s.x, s.y), rgbm.colors.gray)
+
+                for i = 0, 30 do
+                        local x = (i / 30) ^ 2
+                        ui.pathLineTo(f + vec2(x, x ^ gamma) * s)
+                end
+                ui.pathStroke(settings.Appearance.uiColorSecondary, false, 3 * cui.uiScale())
+        else
+                local relSteer = math.clamp(math.sign(b) * (ax ^ gamma), -1, 1)
+
+                ui.drawLine(
+                        f + vec2(0, (0.5 + 0.5 * relSteer) * s.y),
+                        f + vec2(s.x, (0.5 + 0.5 * relSteer) * s.y),
+                        rgbm.colors.gray
+                )
+                ui.drawLine(f + vec2((0.5 + 0.5 * b) * s.x, 0), f + vec2((0.5 + 0.5 * b) * s.x, s.y), rgbm.colors.gray)
+
+                for i0 = 0, 1 do
+                        for i = 0, 100 do
+                                local x = (i / 100) ^ 2
+
+                                if i0 == 1 then
+                                        ui.pathLineTo(f + vec2(0.5 + 0.5 * x, 0.5 + 0.5 * x ^ gamma) * s)
+                                else
+                                        ui.pathLineTo(f + vec2(0.5 - 0.5 * x, 0.5 - 0.5 * x ^ gamma) * s)
+                                end
+                        end
+                        ui.pathStroke(settings.Appearance.uiColorSecondary, false, 3 * cui.uiScale())
+                end
         end
-        ui.pathStroke(settings.Appearance.uiColorSecondary, false, 3 * cui.uiScale())
 end
 
 local steer = 0
@@ -230,7 +266,14 @@ function tweaks:draw()
                                 if sim.inputMode == ac.UserInputMode.Gamepad then
                                         drawGamepadGammaCurve()
                                 else
-                                        drawGammaCurve(value)
+                                        drawGammaCurve(
+                                                value,
+                                                tweak.cfg:get(tweak.section, "JOY"),
+                                                tweak.cfg:get(tweak.section, "AXLE"),
+                                                tweak.cfg:get(tweak.section, "MIN"),
+                                                tweak.cfg:get(tweak.section, "MAX"),
+                                                tweak.section == "STEER"
+                                        )
                                 end
                         end
                 end

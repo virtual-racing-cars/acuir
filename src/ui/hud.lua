@@ -8,6 +8,8 @@ local audio = require("audio")
 local camera = require("camera")
 local pages = require("ui.pages.pages")
 
+ac.reloadControlSettings()
+
 local hudModes = {
         game = function(dt) pages:setParentMainMenu() end,
         menu = function(dt)
@@ -41,7 +43,7 @@ ui.onExclusiveHUD(function(mode)
         -- pages:goToSession()
         -- pages:goToLapTimes()
         -- pages:goToSetup()
-        -- pages:goToSettingsControls()
+        pages:goToSettingsControls()
         -- pages:goToSettingsGeneral()
         -- pages:goToSettingsAudio()
         -- pages:goToSettingsView()

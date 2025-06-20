@@ -1,3 +1,4 @@
+local ControlAxis = require("src.classes.ControlAxis")
 local ControlButton = require("src.classes.ControlButton")
 local settings = require("settings")
 
@@ -6,110 +7,92 @@ local ControlBinding = class("ControlBinding")
 local bindSectionKeyDefaults = {
         NAME = "",
         TAB = "Generic",
-        ORDER = 0,
-        REQUIRED = 0,
-        ACTIVATION = 0,
-        POS = 0,
-        DN = 0,
-        UP = 0,
+        ORDER = -1,
+        REQUIRED = -1,
+        ACTIVATION = -1,
+        AXIS = -1,
+        AXIS_LABEL = "",
+        AXIS_CENTERED = -1,
+        POS = -1,
+        DN = "",
+        UP = "",
         DN_LABEL = "Decrease",
         UP_LABEL = "Increase",
         POS_LABEL_OFFSET = 0,
         POS_LABEL = "Position",
         POS_UNIT = "",
-        HOLD_MODE = 0,
-        EXT_PHYSICS = 0,
-        LUA = 0,
+        HOLD_MODE = -1,
+        EXT_PHYSICS = -1,
+        LUA = -1,
         HELP = "",
 }
 
-local function controlsINIDefaults(bind, bindSection, key, default, isCMBind)
-        if not bindSection[key] or bindSection[key][1] == "" or bindSection[key][1] == nil then
-                local initialValue = bindSection[key] and bindSection[key][1] or nil
-
-                if key == "NAME" then default = bind end
-
-                bindSection[key] = { default }
-
-                if initialValue ~= "" and not isCMBind and settings.General.developerMode then
-                        ac.log("[" .. bind .. "] Section is missing " .. key .. " key: Default value: " .. default)
-                end
-        end
-
-        bindSection[key] = bindSection[key][1]
+local function controlsINIDefaults(ini, bind, key, default)
+        if not ini.sections[bind][key] then ini.sections[bind][key] = ini:get(bind, key, default) end
+        if type(ini.sections[bind][key]) == "table" then ini.sections[bind][key] = ini.sections[bind][key][1] end
 end
 
-function ControlBinding:initialize(bind, ini, controls)
-        local bindSection = ini.sections[bind]
+function ControlBinding:initialize(bind, ini)
+        if bind == nil or bind == "" then return nil end
 
         for key, value in pairs(bindSectionKeyDefaults) do
-                controlsINIDefaults(bind, bindSection, key, value)
+                controlsINIDefaults(ini, bind, key, value)
         end
 
-        local name = bindSection.NAME
-        local tab = bindSection.TAB
-        local order = tonumber(bindSection.ORDER)
-        local isLuaControlled = tonumber(bindSection.LUA) == 1
-        local isExtendedPhysics = tonumber(bindSection.EXT_PHYSICS) == 1
-        local helpString = bindSection.HELP
-        local isActivationBind = tonumber(bindSection.ACTIVATION) == 1
-        local activationLabel = bindSection.ACTIVATION_LABEL
-        local activationHoldMode = tonumber(bindSection.HOLD_MODE) == 1
-        local isSequentialBind = tonumber(bindSection.DN) ~= 0 and tonumber(bindSection.UP) ~= 0
-        local sequentialDownBind = bindSection.DN
-        local sequentialDownLabel = bindSection.DN_LABEL
-        local sequentialUpBind = bindSection.UP
-        local sequentialUpLabel = bindSection.UP_LABEL
-        local isMultiPositionSwitchBind = tonumber(bindSection.POS) > 0
-        local multiPositionSwitchIndexOffset = tonumber(bindSection.POS_LABEL_OFFSET)
-        local multiPositionSwitchLabel = bindSection.POS_LABEL
-        local multiPositionSwitchLabelUnit = bindSection.POS_UNIT
-        local multiPositionSwitchCount = tonumber(bindSection.POS)
+        local bindSection = ini.sections[bind]
 
         self.bind = bind
+        self.name = bindSection.NAME ~= "" and bindSection.NAME or self.bind
+        self.tab = bindSection.TAB
+        self.order = tonumber(bindSection.ORDER)
+        self.help = bindSection.HELP or ""
 
-        if self.bind == nil or self.bind == "" then return nil end
-
-        self.name = name and name or self.bind
-        self.tab = tab and tab or -1
-        self.order = order and order or -1
-        self.isActivationBind = isActivationBind and isActivationBind or false
-        self.isSequentialBind = isSequentialBind and isSequentialBind or false
-        self.isMultiPositionSwitchBind = isMultiPositionSwitchBind and isMultiPositionSwitchBind or false
-        self.isLuaControlled = isLuaControlled and isLuaControlled or false
-        self.isExtendedPhysics = isExtendedPhysics and isExtendedPhysics or false
-        self.help = helpString and helpString or ""
+        self.isLuaControlled = tonumber(bindSection.LUA) > 0
+        self.isExtendedPhysics = tonumber(bindSection.EXT_PHYSICS) > 0
+        self.isAxis = tonumber(bindSection.AXIS) > 0
+        self.isActivationBind = tonumber(bindSection.ACTIVATION) > 0
+        self.isSequentialBind = bindSection.DN ~= "" and bindSection.UP ~= ""
+        self.isMultiPositionSwitchBind = tonumber(bindSection.POS) > 0
         self.buttons = {}
 
+        if self.isAxis then
+                self:bindAxis(bindSection.AXIS_LABEL, tonumber(bindSection.AXIS_CENTERED) > 0)
+                return
+        end
+
         if self.isActivationBind then
-                self:bindActivation(controls, activationLabel, activationHoldMode)
+                self:bindActivation(bindSection.ACTIVATION_LABEL, tonumber(bindSection.HOLD_MODE) > 0)
                 return self
         end
 
         if self.isSequentialBind then
-                self:bindSequential(
-                        controls,
-                        bind,
-                        sequentialDownBind,
-                        sequentialDownLabel,
-                        sequentialUpBind,
-                        sequentialUpLabel
-                )
+                self:bindSequential(bind, bindSection.DN, bindSection.DN_LABEL, bindSection.UP, bindSection.UP_LABEL)
         end
 
         if self.isMultiPositionSwitchBind then
                 self:bindMultiPositionSwitch(
-                        controls,
+
                         bind,
-                        multiPositionSwitchCount,
-                        multiPositionSwitchIndexOffset,
-                        multiPositionSwitchLabel,
-                        multiPositionSwitchLabelUnit
+                        tonumber(bindSection.POS),
+                        tonumber(bindSection.POS_LABEL_OFFSET),
+                        bindSection.POS_LABEL,
+                        bindSection.POS_UNIT
                 )
         end
 end
 
-function ControlBinding:bindActivation(controls, label, holdMode)
+function ControlBinding:bindAxis(label, centered)
+        if not string.startsWith(self.bind, "__EXT_LIGHT_") and self.isLuaControlled then
+                self.bind = "__EXT_CAR_" .. self.bind
+        end
+
+        self.axisLabel = label and label or "Axis"
+        self.button = ControlAxis(self.bind, centered)
+
+        table.insert(self.buttons, self.button)
+end
+
+function ControlBinding:bindActivation(label, holdMode)
         if not string.startsWith(self.bind, "__EXT_LIGHT_") and self.isLuaControlled then
                 self.bind = "__EXT_CAR_" .. self.bind
         end
@@ -120,7 +103,7 @@ function ControlBinding:bindActivation(controls, label, holdMode)
         table.insert(self.buttons, self.button)
 end
 
-function ControlBinding:bindSequential(controls, bind, downBind, downLabel, upBind, upLabel)
+function ControlBinding:bindSequential(bind, downBind, downLabel, upBind, upLabel)
         if string.startsWith(bind, "__EXT_LIGHT_") then
                 self.bindDown = "__EXT_LIGHT_" .. downBind
                 self.bindUp = "__EXT_LIGHT_" .. upBind
@@ -142,15 +125,8 @@ function ControlBinding:bindSequential(controls, bind, downBind, downLabel, upBi
         self.buttonUpLabel = not isempty(upLabel) and upLabel or "Increase"
 end
 
-function ControlBinding:bindMultiPositionSwitch(
-        controls,
-        bind,
-        switchCount,
-        switchIndexOffset,
-        switchLabel,
-        switchLabelUnit
-)
-        self.multiPositionSwitchCount = switchCount and switchCount or 0
+function ControlBinding:bindMultiPositionSwitch(bind, switchCount, switchIndexOffset, switchLabel, switchLabelUnit)
+        self.multiPositionSwitchCount = switchCount
         self.multiPositionSwitchIndex = switchIndexOffset
 
         self.buttonPosition = {}

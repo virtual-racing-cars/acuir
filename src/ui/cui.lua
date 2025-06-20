@@ -551,6 +551,129 @@ function CUI.bindingButton(name, label, button, size, flags)
         return clicked and not (flags == ui.ButtonFlags.Disabled)
 end
 
+function CUI.bindingAxleButton(name, label, button, size, flags)
+        local sizeX = size.x
+        local sizeY = size.y
+        local fontSize = math.floor(sizeY * 0.4)
+
+        if not flags then flags = ui.ButtonFlags.None end
+        -- if flags == ui.ButtonFlags.Disabled then fontColor = settings.Appearance.uiColorTextDim end
+
+        local clicked = ui.invisibleButton("##" .. button.bind, size, flags)
+        local r1, r2 = ui.itemRect()
+        local hovered = ui.itemHovered()
+
+        local buttonColor = settings.Appearance.uiColorBackgroundShade
+        local textColor = settings.Appearance.uiColorText
+
+        if hovered then
+                buttonColor = settings.Appearance.uiColorAccent
+                textColor = settings.Appearance.uiColorBackground
+        end
+
+        -- if hovered and ui.mouseClicked(ui.MouseButton.Right) then button:unbind(i) end
+        ui.drawRectFilled(r1, r2, buttonColor, 6 * CUI.uiScale())
+
+        if button.isCentered then
+                local axisValue = button:getValue()
+
+                ui.drawRectFilled(
+                        vec2(r1.x + size.x * 0.5 + size.x * 0.5 * math.min(axisValue, 0), r1.y),
+                        vec2(r1.x + size.x * 0.5, r2.y),
+                        settings.Appearance.uiColorSecondary,
+                        6 * CUI.uiScale(),
+                        ui.CornerFlags.Left
+                )
+
+                ui.drawRectFilled(
+                        vec2(r1.x + size.x * 0.5, r1.y),
+                        vec2(r1.x + size.x * 0.5 + size.x * 0.5 * math.max(axisValue, 0), r2.y),
+                        settings.Appearance.uiColorSecondary,
+                        6 * CUI.uiScale(),
+                        ui.CornerFlags.Right
+                )
+        else
+                local axisValue = math.clamp((button:getValue() - button.min) / (button.max - button.min), -1, 1)
+
+                ui.drawRectFilled(
+                        r1,
+                        vec2(r1.x + size.x * math.max(axisValue, 0), r2.y),
+                        settings.Appearance.uiColorSecondary,
+                        6 * CUI.uiScale(),
+                        ui.CornerFlags.All
+                )
+        end
+
+        ui.setCursor(r1)
+
+        ui.itemPopup("##unbinding" .. button.bind, ui.MouseButton.Right, function()
+                local popupButtonSize = vec2(200, 30) * uiScale
+
+                ui.drawRectFilled(0, vec2(200, 30), rgbm(0.2, 0.2, 0.2, 1))
+
+                ui.setCursor(0)
+
+                if
+                        CUI.menuButton(
+                                "Unbind Axle",
+                                popupButtonSize,
+                                0,
+                                0,
+                                button.inputModeBound[3] and ui.ButtonFlags.None or ui.ButtonFlags.Disabled,
+                                false,
+                                false,
+                                ui.CornerFlags.None
+                        )
+                then
+                        button:unbind()
+                        ui.closePopup()
+                end
+        end)
+
+        CUI.offsetCursorX(30)
+        CUI.snapCursor()
+        ui.dwriteTextAligned(
+                name .. " " .. label,
+                24 * CUI.uiScale(),
+                ui.Alignment.Start,
+                ui.Alignment.Center,
+                vec2(sizeX * 0.4 - 30 * CUI.uiScale(), sizeY),
+                false,
+                textColor
+        )
+        ui.sameLine()
+
+        local boundDeviceID, buttonID = button:boundTo()
+        local tempCursor = ui.getCursor()
+
+        CUI.offsetCursorY(boundDeviceID == "" and 0 or -size.y * 0.1)
+        CUI.snapCursor()
+        ui.dwriteTextAligned(
+                buttonID,
+                fontSize,
+                ui.Alignment.Center,
+                ui.Alignment.Center,
+                vec2(sizeX * 0.2, sizeY),
+                false,
+                textColor
+        )
+
+        ui.setCursor(tempCursor)
+        CUI.snapCursor()
+        ui.dwriteTextAligned(
+                boundDeviceID,
+                fontSize * 0.5,
+                ui.Alignment.Center,
+                ui.Alignment.End,
+                vec2(sizeX * 0.2, sizeY),
+                false,
+                textColor
+        )
+        ui.sameLine()
+
+        return clicked and not (flags == ui.ButtonFlags.Disabled)
+end
+
 function CUI.specialButton(label, size, horizontalAligment, verticalAlignment, color, locked, reason)
         style:pushFontBold()
 

@@ -11,39 +11,6 @@ local inputModeStringKeys = {
         "KEY",
 }
 
-local function buttonString(button, buttonMod)
-        if button == 0 then return "" end
-        if buttonMod == 0 then return string.format("Button %s", button) end
-
-        return string.format("Button %s + Button %s", buttonMod, button)
-end
-
-local function gamepadString(button, buttonMod)
-        if not button or button == -1 or button == "" then return "" end
-        if not buttonMod or buttonMod == -1 or buttonMod == "" then return string.format("%s", button) end
-
-        return string.format("%s + %s", button, buttonMod)
-end
-
-local function keybindString(modifierKeys, primaryKey)
-        local deviceString, bindingString = "", ""
-
-        for _, modKey in ipairs(modifierKeys) do
-                if modKey ~= nil and modKey ~= -1 and modKey ~= "-1" and modKey ~= "" then
-                        bindingString = bindingString .. keys.indexStringList[tonumber(modKey)] .. "+"
-                end
-        end
-
-        if primaryKey ~= nil and primaryKey ~= -1 and primaryKey ~= "-1" and primaryKey ~= "" then
-                bindingString = bindingString .. keys:indexToString(primaryKey)
-                deviceString = "Keyboard"
-        else
-                bindingString = ""
-        end
-
-        return deviceString, bindingString
-end
-
 function ControlButton:initialize(bind, defaults)
         self.bind = bind
         self.defaults = defaults
@@ -72,7 +39,7 @@ function ControlButton:boundToController()
 
                 self.inputModeBound[1] = true
 
-                if buttonMod == 0 then return controllerString, string.format("Button %s", button + 1) end
+                if buttonMod == -1 then return controllerString, string.format("Button %s", button + 1) end
 
                 return controllerString, string.format("Button %s + Button %s", buttonMod + 1, button + 1)
         else
@@ -215,7 +182,7 @@ function ControlButton:listenKeyboardInputs()
         return (self.listenerButton ~= -1)
 end
 
-function ControlButton:assignBind(inputMode)
+function ControlButton:assign(inputMode)
         local released = { self:listenControllerInputs(), self:listenGamepadInputs(), self:listenKeyboardInputs() }
 
         if self.listenerInputMode == -1 or not released[self.listenerInputMode] then
@@ -234,7 +201,7 @@ function ControlButton:clearAssign()
         self.listenerInputMode, self.listenerButton, self.listenerModificators, self.listenerController = -1, -1, {}, -1
 end
 
-function ControlButton:saveBind(inputMode)
+function ControlButton:save(inputMode)
         if self.listenerButton and self.listenerButton ~= -1 and self.listenerButton ~= "" then
                 configs.CONTROLS.ini:setAndSave(self.bind, inputModeStringKeys[inputMode], self.listenerButton)
 

@@ -3,6 +3,7 @@ local MappedConfig = require("src.classes.MappedConfig")
 local configs = {
         CM = ac.INIConfig.load(ac.dirname() .. "\\cfg\\cm_controls.ini"),
         CAR_DEFAULT = ac.INIConfig.load(ac.dirname() .. "\\cfg\\car_controls.ini"),
+        CAR_DRIVING = ac.INIConfig.load(ac.dirname() .. "\\cfg\\axis_controls.ini"),
         CAR = ac.INIConfig.load(
                 ac.getFolder(ac.FolderID.ContentCars) .. "\\" .. ac.getCarID(0) .. "\\extension\\ext_car_controls.ini"
         ),

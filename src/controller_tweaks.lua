@@ -267,7 +267,7 @@ local controlTweaks = {
                                                 newSetting({
                                                         section = "STEER",
                                                         id = "SPEED_SENSITIVITY",
-                                                        label = "Steer Sensitivity",
+                                                        label = "Speed Sensitivity",
                                                 }),
                                                 newSetting({
                                                         section = "STEER",
@@ -281,49 +281,110 @@ local controlTweaks = {
                                         },
                                 },
                                 {
-                                        group = "Others",
+                                        group = "Throttle",
                                         tweaks = {
 
                                                 newSetting({
                                                         section = "THROTTLE",
+                                                        id = "MIN",
+                                                        label = "From",
+                                                        min = 0,
+                                                        max = 1,
+                                                        step = 0.01,
+                                                        multiplier = 100,
+                                                }),
+                                                newSetting({
+                                                        section = "THROTTLE",
+                                                        id = "MAX",
+                                                        label = "To",
+                                                        min = 0,
+                                                        max = 1,
+                                                        step = 0.01,
+                                                        multiplier = 100,
+                                                }),
+                                                newSetting({
+                                                        section = "THROTTLE",
                                                         id = "GAMMA",
-                                                        label = "Throttle Gamma",
+                                                        label = "Gamma",
                                                         min = 0.01,
                                                         max = 5,
                                                         step = 0.01,
                                                         multiplier = 100,
                                                         graph = true,
+                                                }),
+                                        },
+                                },
+                                {
+                                        group = "Brakes",
+                                        tweaks = {
+
+                                                newSetting({
+                                                        section = "BRAKES",
+                                                        id = "MIN",
+                                                        label = "From",
+                                                        min = 0,
+                                                        max = 1,
+                                                        step = 0.01,
+                                                        multiplier = 100,
+                                                }),
+                                                newSetting({
+                                                        section = "BRAKES",
+                                                        id = "MAX",
+                                                        label = "To",
+                                                        min = 0,
+                                                        max = 1,
+                                                        step = 0.01,
+                                                        multiplier = 100,
                                                 }),
                                                 newSetting({
                                                         section = "BRAKES",
                                                         id = "GAMMA",
-                                                        label = "Brake Gamma",
+                                                        label = "Gamma",
                                                         min = 0.01,
                                                         max = 5,
                                                         step = 0.01,
                                                         multiplier = 100,
                                                         graph = true,
+                                                }),
+                                        },
+                                },
+                                {
+                                        group = "Clutch",
+                                        tweaks = {
+
+                                                newSetting({
+                                                        section = "CLUTCH",
+                                                        id = "MIN",
+                                                        label = "From",
+                                                        min = 0,
+                                                        max = 1,
+                                                        step = 0.01,
+                                                        multiplier = 100,
+                                                }),
+                                                newSetting({
+                                                        section = "CLUTCH",
+                                                        id = "MAX",
+                                                        label = "To",
+                                                        min = 0,
+                                                        max = 1,
+                                                        step = 0.01,
+                                                        multiplier = 100,
                                                 }),
                                                 newSetting({
                                                         section = "CLUTCH",
                                                         id = "GAMMA",
-                                                        label = "Clutch Gamma",
+                                                        label = "Gamma",
                                                         min = 0.01,
                                                         max = 5,
                                                         step = 0.01,
                                                         multiplier = 100,
                                                         graph = true,
                                                 }),
-                                                newSetting({
-                                                        section = "HANDBRAKE",
-                                                        id = "GAMMA",
-                                                        label = "Handbrake Gamma",
-                                                        min = 0.01,
-                                                        max = 5,
-                                                        step = 0.01,
-                                                        multiplier = 100,
-                                                        graph = true,
-                                                }),
+                                        },
+                                },
+                                {
+                                        group = "Others",
+                                        tweaks = {
 
                                                 newSetting({
                                                         section = "STEER",

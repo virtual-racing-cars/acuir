@@ -11,7 +11,10 @@ local controls = {
 }
 
 local function initializeControlTab(name, ini)
-        if table.same(ini.sections, {}) then return nil end
+        if table.same(ini.sections, {}) then
+                ac.log("Invalid control config: %s" % name)
+                return nil
+        end
 
         local controlTab = ControlTab(name)
 
@@ -23,7 +26,7 @@ local function initializeControlTab(name, ini)
                 if bind ~= "TAB_ORDER" then controlTab:addControl(ControlBinding(bind, ini, controls)) end
         end
 
-        table.insert(controls.tabs, 1, controlTab)
+        table.insert(controls.tabs, controlTab)
 end
 
 ac.onControlSettingsChanged(function()
@@ -41,24 +44,24 @@ ac.onControlSettingsChanged(function()
 end)
 
 function controls:initialize()
+        initializeControlTab("Driving Controls", configs.CAR_DRIVING)
+        initializeControlTab("Cockpit Controls", configs.CAR_DEFAULT)
+        initializeControlTab("General", configs.CM)
+        initializeControlTab(ac.getCarName(0), configs.CAR)
+
         io.scanDir(ac.getFolder(ac.FolderID.ACAppsLua), function(fileName, fileAttributes, callbackData)
                 local appDirectory = ac.getFolder(ac.FolderID.ACAppsLua) .. "\\" .. fileName
                 local appControlsFile = appDirectory .. "\\ext_app_controls.ini"
-                local appManifest = ac.INIConfig.load(appDirectory .. "\\manifest.ini", ac.INIFormat.Extended)
+                local appManifestFile = appDirectory .. "\\manifest.ini"
 
-                if not io.fileExists(appControlsFile) then return end
+                if not io.fileExists(appControlsFile) or not io.fileExists(appControlsFile) then return end
 
+                local appManifest = ac.INIConfig.load(appManifestFile, ac.INIFormat.Extended)
                 local appCfg = MappedConfig(appControlsFile, { TAB_ORDER = { TAB_1 = "Generic" } })
                 local appName = appManifest:get("ABOUT", "NAME", "")
 
                 initializeControlTab(appName, ac.INIConfig.load(appControlsFile))
         end)
-
-        controls.input = sim.inputMode > 1 and 1 or 0
-
-        initializeControlTab("General", configs.CM)
-        initializeControlTab("Car Controls", configs.CAR_DEFAULT)
-        initializeControlTab(ac.getCarName(0), configs.CAR)
 end
 
 function controls:iterate()

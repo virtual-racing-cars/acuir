@@ -27,15 +27,15 @@ while configs.CONTROLS.ini:get("CONTROLLERS", "CON%s" % conIndex, nil) do
         conIndex = conIndex + 1
 end
 
-for k, v in ipairs(controllers.boundDevices) do
-        for i in ipairs(inputDeviceKeys) do
-                local conIndex = configs.CONTROLS.ini:get(string.upper(v[1]), inputDeviceKeys[i], -1)
-                if conIndex ~= -1 then
-                        local device = configs.CONTROLS.ini:get("CONTROLLERS", "CON%s" % conIndex, "")
+-- for k, v in ipairs(controllers.boundDevices) do
+--         for i in ipairs(inputDeviceKeys) do
+--                 local conIndex = configs.CONTROLS.ini:get(string.upper(v[1]), inputDeviceKeys[i], -1)
+--                 if conIndex ~= -1 then
+--                         local device = configs.CONTROLS.ini:get("CONTROLLERS", "CON%s" % conIndex, "")
 
-                        controllers.boundDevices[k][2] = device
-                end
-        end
-end
+--                         controllers.boundDevices[k][2] = device
+--                 end
+--         end
+-- end
 
 return controllers
