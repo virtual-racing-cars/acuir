@@ -13,6 +13,13 @@ local inputModeStringKeys = {
         "KEY",
 }
 
+local povStrings = {
+        [0] = "Left",
+        "Up",
+        "Right",
+        "Down",
+}
+
 function ControlButton:initialize(bind, defaults)
         self.bind = bind
         self.defaults = defaults
@@ -24,6 +31,10 @@ function ControlButton:initialize(bind, defaults)
         self.listenerControllerModificator = -1
         self.listenerInputMode = -1
         self.inputModeBound = { [0] = false, false, false, false }
+        self.listenerIsDpad = false
+        self.listenerDpadStartValues = {}
+
+        self:clearAssign()
 end
 
 function ControlButton:disabled() return self._button:disabled() end
@@ -34,8 +45,20 @@ function ControlButton:boundToController()
         local con = configs.CONTROLS.ini:get(self.bind, "JOY", -1)
         local button = configs.CONTROLS.ini:get(self.bind, "BUTTON", -1)
         local buttonMod = configs.CONTROLS.ini:get(self.bind, "BUTTON_MODIFICATOR", -1)
+        local cmPov = configs.CONTROLS.ini:get(self.bind, "__CM_POV", -1) >= 0
+        local cmPovDir = configs.CONTROLS.ini:get(self.bind, "__CM_POV_DIR", -1)
 
-        if con >= 0 and button ~= "" and tonumber(button) ~= -1 then
+        if con >= 0 and cmPov then
+                local controllerString = "Joy %s" % con
+
+                if controllers[con] then controllerString = controllers[con].CON end
+
+                self.inputModeBound[1] = true
+
+                if buttonMod == -1 then return controllerString, string.format("POV %s", povStrings[cmPovDir]) end
+
+                return controllerString, string.format("Button %s + POV %s", buttonMod + 1, povStrings[cmPovDir])
+        elseif con >= 0 and button ~= "" and tonumber(button) ~= -1 then
                 local controllerString = "Joy %s" % con
 
                 if controllers[con] then controllerString = controllers[con].CON end
@@ -111,11 +134,32 @@ function ControlButton:listenControllerInputs()
         local anyButtonDown = false
 
         for con = 0, ac.getJoystickCount() - 1 do
+                for dpad = 0, ac.getJoystickDpadsCount(con) - 1 do
+                        local dpadValue = ac.getJoystickDpadValue(con, dpad)
+                        if
+                                dpadValue ~= -1
+                                and dpadValue ~= self.listenerDpadStartValues[con][dpad]
+                                and dpadValue % 9000 == 0
+                        then
+                                self.listenerController = con
+                                self.listenerButton = dpadValue / 9000
+                                self.listenerButton = self.listenerButton < 3 and self.listenerButton + 1 or 0
+
+                                self.listenerIsDpad = true
+                                self.listenerInputMode = 1
+
+                                anyButtonDown = true
+                        end
+                end
+
                 for button = 0, ac.getJoystickButtonsCount(con) - 1 do
                         if ac.isJoystickButtonPressed(con, button) then
-                                if
+                                if self.listenerIsDpad then
+                                        self.listenerModificators = { button }
+                                        self.listenerControllerModificator = self.listenerController
+                                elseif
                                         self.listenerButton ~= -1
-                                        and button ~= self.listenerButton
+                                        and (button ~= self.listenerButton)
                                         and button ~= self.listenerModificators[1]
                                 then
                                         self.listenerModificators = { self.listenerButton }
@@ -134,6 +178,8 @@ function ControlButton:listenControllerInputs()
                         end
                 end
         end
+
+        ac.debug("list", anyButtonDown)
 
         if not anyButtonDown or #self.listenerModificators > 0 then return true end
 end
@@ -215,14 +261,33 @@ function ControlButton:assign()
 end
 
 function ControlButton:clearAssign()
-        self.listenerInputMode, self.listenerButton, self.listenerModificators, self.listenerController = -1, -1, {}, -1
+        for con = 0, ac.getJoystickCount() - 1 do
+                self.listenerDpadStartValues[con] = {}
+                for dpad = 0, ac.getJoystickDpadsCount(con) - 1 do
+                        self.listenerDpadStartValues[con][dpad] = ac.getJoystickDpadValue(con, dpad)
+                end
+        end
+
+        self.listenerInputMode, self.listenerButton, self.listenerModificators, self.listenerController, self.listenerIsDpad =
+                -1, -1, {}, -1, false
 end
 
 function ControlButton:save(inputMode)
         if self.listenerButton and self.listenerButton ~= -1 and self.listenerButton ~= "" then
-                configs.CONTROLS.ini:setAndSave(self.bind, inputModeStringKeys[inputMode], self.listenerButton)
+                if self.listenerIsDpad then
+                        configs.CONTROLS.ini:setAndSave(self.bind, "__CM_POV", 0)
+                        configs.CONTROLS.ini:setAndSave(self.bind, "__CM_POV_DIR", self.listenerButton)
+                        configs.CONTROLS.ini:setAndSave(self.bind, "BUTTON", -1)
+                        configs.CONTROLS.ini:setAndSave(self.bind, "JOY", self.listenerController)
+                else
+                        configs.CONTROLS.ini:setAndSave(self.bind, inputModeStringKeys[inputMode], self.listenerButton)
+                end
 
-                if inputMode == 1 then configs.CONTROLS.ini:setAndSave(self.bind, "JOY", self.listenerController) end
+                if inputMode == 1 then
+                        configs.CONTROLS.ini:setAndSave(self.bind, "JOY", self.listenerController)
+
+                        if not self.listenerIsDpad then configs.CONTROLS.ini:setAndSave(self.bind, "__CM_POV", -1) end
+                end
 
                 if #self.listenerModificators > 0 then
                         configs.CONTROLS.ini:setAndSave(
@@ -257,6 +322,8 @@ function ControlButton:unbind(inputMode)
         if inputMode == 1 then
                 configs.CONTROLS.ini:setAndSave(self.bind, "JOY", -1)
                 configs.CONTROLS.ini:setAndSave(self.bind, "JOY_MODIFICATOR", -1)
+                configs.CONTROLS.ini:setAndSave(self.bind, "__CM_POV", -1)
+                configs.CONTROLS.ini:setAndSave(self.bind, "__CM_POV_DIR", -1)
         elseif inputMode == 2 then
                 return
         end

@@ -6,12 +6,15 @@ Features:
 - CSP Data Logger integration
 - New help window, instead of the tooltip popup
 - Visualization for gamepad deadzone, steering speed, and steer position based on gamma in Controls->Gamepad Tweaks
+- New Driving Controls tab in Settings->Controls. Allows for axis to be bound for gamepad and wheels.
+- Continued working on fleshing out the binding system. POV buttons should now be bindable, however, I am not sure why AC doesn't register them to be used in game.
 
 Fixes:
 - Smaller fonts in general
 - Consistent fonts sizes throughout the app
 - App control tabs now show proper name, instead of app dir name
 - Text input improvements
+
 
 ### 0.9.2.8
 

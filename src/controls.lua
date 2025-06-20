@@ -37,12 +37,15 @@ end
 
 ac.onControlSettingsChanged(function()
         local carSpecificPreset = configs.CONTROLS.ini:get("__LAUNCHER_CM", "PRESET_NAME", "")
-        local carSpecificPresetEnabled = configs.CONTROLS.ini:get("__LAUNCHER_CM", "PRESET_CHANGED", -1) == 0
+        local carSpecificPresetEnabled = configs.CONTROLS.ini:get("__LAUNCHER_CM", "PRESET_CHANGED", 1) == 0
 
-        if carSpecificPresetEnabled then
+        if carSpecificPresetEnabled and carSpecificPreset ~= "" then
                 setTimeout(function()
-                        local carSpecficPresetFile =
-                                io.open(ac.getFolder(ac.FolderID.Cfg) .. "\\controllers\\" .. carSpecificPreset, "w+")
+                        local carSpecficPresetFilename = ac.getFolder(ac.FolderID.Cfg)
+                                .. "\\controllers\\"
+                                .. carSpecificPreset
+
+                        local carSpecficPresetFile = io.open(carSpecficPresetFilename, "w+")
                         carSpecficPresetFile:write(configs.CONTROLS.ini:serialize())
                         carSpecficPresetFile:close()
                 end, 0.5, "updateCarSpecificPreset")
