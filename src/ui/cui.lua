@@ -980,12 +980,30 @@ function CUI.inputText(label, size, stringPrefix, stringInput, stringDefault, fi
         CUI.offsetCursorX(10)
 
         local fontSize = size.y * 0.5
-        local tempCursor = ui.getCursor()
         local captured, clicked = ui.interactiveArea("##textinput" .. label, size)
         local r1, r2 = ui.itemRect()
+
         local hovered = ui.itemHovered()
         local itemActive = ui.itemActive()
-        ui.setCursor(tempCursor)
+
+        if stringPrefix ~= "" then
+                ui.setCursor(r1)
+                CUI.snapCursor()
+                ui.dwriteTextAligned(
+                        stringPrefix,
+                        fontSize,
+                        ui.Alignment.Start,
+                        ui.Alignment.Center,
+                        vec2Temp1:set(ui.measureDWriteText(stringPrefix, fontSize).x, size.y),
+                        false,
+                        rgbm.colors.white
+                )
+                ui.sameLine()
+
+                r1.x = ui.getCursorX()
+        end
+
+        ui.setCursor(r1)
         ui.pushClipRect(r1, r2)
 
         if itemActive and hovered then ui.setMouseCursor(ui.MouseCursor.TextInput) end
@@ -1020,24 +1038,10 @@ function CUI.inputText(label, size, stringPrefix, stringInput, stringDefault, fi
 
         if charPositions[#charPositions] and charPositions[#charPositions] <= size.x then scrollOffsetX = 0 end
 
-        if stringPrefix ~= "" then
-                CUI.snapCursor()
-                ui.dwriteTextAligned(
-                        stringPrefix,
-                        fontSize,
-                        ui.Alignment.Start,
-                        ui.Alignment.Center,
-                        vec2Temp1:set(ui.measureDWriteText(stringPrefix, fontSize).x, size.y),
-                        false,
-                        rgbm.colors.white
-                )
-                ui.sameLine()
-        end
-
         if #utf8Chars > 0 then
                 CUI.snapCursor()
                 for i, char in ipairs(utf8Chars) do
-                        local posX = tempCursor.x + charPositions[i] - scrollOffsetX
+                        local posX = r1.x + charPositions[i] - scrollOffsetX
                         ui.setCursorX(posX)
                         ui.dwriteTextAligned(
                                 char,
@@ -1067,7 +1071,7 @@ function CUI.inputText(label, size, stringPrefix, stringInput, stringDefault, fi
                 local mouseX = ui.mouseLocalPos().x
                 inputTextBoxCursorIndex = 0
                 for i = 1, #utf8Chars do
-                        if mouseX > tempCursor.x + charPositions[i] - scrollOffsetX then inputTextBoxCursorIndex = i end
+                        if mouseX > r1.x + charPositions[i] - scrollOffsetX then inputTextBoxCursorIndex = i end
                 end
                 inputTextBoxDragIndex = inputTextBoxCursorIndex
         end
@@ -1075,17 +1079,15 @@ function CUI.inputText(label, size, stringPrefix, stringInput, stringDefault, fi
         if itemActive and math.abs(ui.mouseDragDelta(ui.MouseButton.Left).x) > 0 then
                 inputTextBoxDragIndex = 0
                 for i = 1, #utf8Chars do
-                        if ui.mouseLocalPos().x > tempCursor.x + charPositions[i] - scrollOffsetX then
+                        if ui.mouseLocalPos().x > r1.x + charPositions[i] - scrollOffsetX then
                                 inputTextBoxDragIndex = i
                         end
                 end
         end
 
         if itemActive then
-                local left = tempCursor.x
-                        + measureUTF8PrefixWidth(utf8Chars, inputTextBoxDragIndex, fontSize)
-                        - scrollOffsetX
-                local right = tempCursor.x
+                local left = r1.x + measureUTF8PrefixWidth(utf8Chars, inputTextBoxDragIndex, fontSize) - scrollOffsetX
+                local right = r1.x
                         + measureUTF8PrefixWidth(utf8Chars, inputTextBoxCursorIndex, fontSize)
                         - scrollOffsetX
                 if left ~= right then
@@ -1104,7 +1106,7 @@ function CUI.inputText(label, size, stringPrefix, stringInput, stringDefault, fi
         ) or (hovered and ui.mouseClicked(ui.MouseButton.Left))
 
         if drawCursor then
-                local pos = tempCursor.x + cursorOffset - scrollOffsetX
+                local pos = r1.x + cursorOffset - scrollOffsetX
                 ui.drawSimpleLine(
                         vec2(pos, r1.y + 7 * uiScale),
                         vec2(pos, r2.y - 7 * uiScale),

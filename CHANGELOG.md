@@ -8,6 +8,7 @@ Features:
 - Visualization for gamepad deadzone, steering speed, and steer position based on gamma in Controls->Gamepad Tweaks
 - New Driving Controls tab in Settings->Controls. Allows for axis to be bound for gamepad and wheels.
 - Continued working on fleshing out the binding system. POV buttons should now be bindable, however, I am not sure why AC doesn't register them to be used in game.
+- Gamepad tweaks got a bit more fleshed out as well, can now see the deadzone on the graph.
 
 Fixes:
 - Smaller fonts in general
