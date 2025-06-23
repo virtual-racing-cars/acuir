@@ -42,7 +42,7 @@ function script.entryWindow(dt)
         ui.setCursor(0)
 
         if csp.versionAllowed then
-                if cui.menuButton("Enable HUD", ui.windowSize()) then
+                if cui.menuButton(app.state.appOpen and "Disable HUD" or "Enable HUD", ui.windowSize()) then
                         settings.General.autoStart = not app.state.appOpen
                         app.state.appOpen = not app.state.appOpen
                 end

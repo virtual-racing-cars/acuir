@@ -194,7 +194,14 @@ local function setupIoWindow()
                         end
                         ui.sameLine()
 
-                        if cui.windowTabButton("Setup Exchange", 36, ui.ButtonFlags.None, setupExchangeActive) then
+                        if
+                                cui.windowTabButton(
+                                        "Setup Exchange",
+                                        36,
+                                        sm._apps["Setup Exchange"] and ui.ButtonFlags.None or ui.ButtonFlags.Disabled,
+                                        setupExchangeActive
+                                )
+                        then
                                 setupExchangeActive = true
                         end
                         ui.sameLine()

@@ -25,6 +25,8 @@ end
 
 local luaAppsDir = ac.getFolder(ac.FolderID.ACAppsLua)
 
+-- ac.onFolderChanged(luaAppsDir)
+
 local function scanApp(appName, appDirectory)
         local appManifest = appDirectory .. "\\manifest.ini"
 

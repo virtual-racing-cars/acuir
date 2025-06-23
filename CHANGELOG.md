@@ -1,10 +1,10 @@
 ## ACUIR Changelog
 *Requires minimum CSP version 0.2.11 (3465)*
-### 0.9.2.9 (unreleased)
+### 0.9.3.3 (unreleased)
 
 Features:
-- CSP Data Logger integration
-- New help window, instead of the tooltip popup
+- CSP Data Logger integration (settings pending)
+- New help window, instead of the tooltip popup in Car Setup
 - Visualization for gamepad deadzone, steering speed, and steer position based on gamma in Controls->Gamepad Tweaks
 - New Driving Controls tab in Settings->Controls. Allows for axis to be bound for gamepad and wheels.
 - Continued working on fleshing out the binding system. POV buttons should now be bindable, however, I am not sure why AC doesn't register them to be used in game.

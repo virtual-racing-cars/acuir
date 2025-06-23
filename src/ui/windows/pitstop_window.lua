@@ -9,27 +9,30 @@ local activeItemIndex = 0
 
 local navControlRightButton = ac.ControlButton(
         "ACUIR_COCKPIT_X_R",
-        { keyboard = ac.KeyIndex.Left, gamepad = ac.GamepadButton.DPadLeft, period = 0.1 }
-)
+        { keyboard = { key = ui.KeyIndex.Right }, gamepad = ac.GamepadButton.DPadRight, period = 0.1 }
+):setAlwaysActive(true)
+
 local navControlLeftButton = ac.ControlButton(
         "ACUIR_COCKPIT_X_L",
-        { keyboard = ac.KeyIndex.Right, gamepad = ac.GamepadButton.DPadRight, period = 0.1 }
-)
+        { keyboard = { key = ui.KeyIndex.Left }, gamepad = ac.GamepadButton.DPadLeft, period = 0.1 }
+):setAlwaysActive(true)
+
 local navControlDownButton = ac.ControlButton(
         "ACUIR_COCKPIT_Y_DN",
-        { keyboard = ac.KeyIndex.Down, gamepad = ac.GamepadButton.DPadDown, period = 0.1 }
-)
+        { keyboard = { key = ui.KeyIndex.Down }, gamepad = ac.GamepadButton.DPadDown, period = 0.1 }
+):setAlwaysActive(true)
+
 local navControlUpButton = ac.ControlButton(
         "ACUIR_COCKPIT_Y_UP",
-        { keyboard = ac.KeyIndex.Up, gamepad = ac.GamepadButton.DPadUp, period = 0.1 }
-)
+        { keyboard = { key = ui.KeyIndex.Up }, gamepad = ac.GamepadButton.DPadUp, period = 0.1 }
+):setAlwaysActive(true)
 
 local delayTimer = 0
 
-navControlLeftButton:onPressed(function()
-        if not app.state.appOpen then return end
+local function isPitMenuNavAvailable() return app.state.appOpen and sim.isLive and not sim.isInMainMenu end
 
-        if sim.isInMainMenu or sim.isPaused or not sim.isLive then return end
+navControlLeftButton:onPressed(function()
+        if not isPitMenuNavAvailable() then return end
         pitstop:setWindowOpen(true)
 end)
 navControlLeftButton:onReleased(function()
@@ -38,9 +41,7 @@ navControlLeftButton:onReleased(function()
 end)
 
 navControlRightButton:onPressed(function()
-        if not app.state.appOpen then return end
-
-        if sim.isInMainMenu or sim.isPaused or not sim.isLive then return end
+        if not isPitMenuNavAvailable() then return end
         pitstop:setWindowOpen(true)
 end)
 navControlRightButton:onReleased(function()
@@ -49,9 +50,7 @@ navControlRightButton:onReleased(function()
 end)
 
 navControlDownButton:onPressed(function()
-        if not app.state.appOpen then return end
-
-        if sim.isInMainMenu or sim.isPaused or not sim.isLive then return end
+        if not isPitMenuNavAvailable() then return end
 
         pitstop:setWindowOpen(true)
 
@@ -72,9 +71,7 @@ navControlDownButton:onReleased(function()
 end)
 
 navControlUpButton:onPressed(function()
-        if not app.state.appOpen then return end
-
-        if sim.isInMainMenu or sim.isPaused or not sim.isLive then return end
+        if not isPitMenuNavAvailable() then return end
 
         pitstop:setWindowOpen(true)
 

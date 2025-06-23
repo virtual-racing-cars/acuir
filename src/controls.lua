@@ -53,10 +53,10 @@ ac.onControlSettingsChanged(function()
 end)
 
 function controls:initialize()
+        initializeControlTab(ac.getCarName(0), configs.CAR)
         initializeControlTab("Driving Controls", configs.CAR_DRIVING)
         initializeControlTab("Cockpit Controls", configs.CAR_DEFAULT)
         initializeControlTab("General", configs.CM)
-        initializeControlTab(ac.getCarName(0), configs.CAR)
 
         io.scanDir(ac.getFolder(ac.FolderID.ACAppsLua), function(fileName, fileAttributes, callbackData)
                 local appDirectory = ac.getFolder(ac.FolderID.ACAppsLua) .. "\\" .. fileName

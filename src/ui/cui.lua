@@ -101,6 +101,8 @@ CUI.modalDialogCallback = nil
 
 function CUI.modalDialog(callback) CUI.modalDialogCallback = callback end
 
+function CUI.globalDisable() return CUI.modalDialogCallback ~= nil end
+
 function CUI.menuBanner(label, time, bannerColor, rightSide, callbackType)
         if not callbackType then callbackType = "info" end
 
