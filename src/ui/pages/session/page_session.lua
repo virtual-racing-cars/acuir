@@ -1,5 +1,10 @@
-local mapWidget = require("ui.widgets.map")
+local leaderboardWidget = require("ui.widgets.leaderboard")
+local sessionControlWidget = require("ui.widgets.session_control")
+local sessionModifiersWidget = require("ui.widgets.session_modifiers")
 local settings = require("settings")
+local timetableWidget = require("ui.widgets.time_table")
+local trackMapWidget = require("ui.widgets.track_map")
+
 local units = require("units")
 local weather = require("weather")
 local car = ac.getCar(0)
@@ -10,18 +15,10 @@ local page = {}
 
 local cui = require("ui.cui")
 local simutils = require("simutils")
-local assistsINI = ac.INIConfig.load(ac.getFolder(ac.FolderID.Cfg) .. "\\assists.ini")
-local raceINI = ac.INIConfig.raceConfig()
 local personalBestINI = ac.INIConfig.load(ac.getFolder(ac.FolderID.ACDocuments) .. "\\personalbest.ini")
 local trackBestLapTime = ac.lapTimeToString(
         personalBestINI:get(string.upper(string.format("%s@%s", ac.getCarID(0), ac.getTrackFullID("-"))), "TIME", 0)
 )
-local leaderboardWidget = require("ui.widgets.leaderboard")
-local timetableWidget = require("ui.widgets.time_table")
-
-local electronicsState = { [0] = "Off", [1] = "Factory", [2] = "On" }
-local assistState = { [0] = "Not Allowed", [1] = "Allowed" }
-local jumpStartState = { [0] = "No Penalty", [1] = "Pits", [2] = "Drive-Through" }
 
 local genericButtonHeight = 40
 local fontSize = genericButtonHeight
@@ -29,39 +26,6 @@ local fontSize = genericButtonHeight
 local vec2Temp1 = vec2()
 
 local leaderboardActive = true
-
-local assists = {
-        { label = "Traction Control", value = electronicsState[assistsINI:get("ASSISTS", "TRACTION_CONTROL", 0)] },
-        { label = "ABS", value = electronicsState[assistsINI:get("ASSISTS", "ABS", 0)] },
-        {
-                label = "Stability Control",
-                value = assistState[math.clamp(assistsINI:get("ASSISTS", "STABILITY_CONTROL", 0), 0, 1)],
-        },
-        {
-                label = "Auto Clutch",
-                value = assistState[math.clamp(assistsINI:get("ASSISTS", "AUTO_CLUTCH", 0), 0, 1)],
-        },
-        {
-                label = "Damage",
-                value = assistsINI:get("ASSISTS", "DAMAGE", 0) .. " %",
-        },
-        {
-                label = "Fuel Rate",
-                value = assistsINI:get("ASSISTS", "FUEL_RATE", 0) * 100 .. " %",
-        },
-        {
-                label = "Tyre Wear Rate",
-                value = assistsINI:get("ASSISTS", "TYRE_WEAR", 0) * 100 .. " %",
-        },
-        {
-                label = "Tyre Blankets",
-                value = assistsINI:get("ASSISTS", "TYRE_BLANKETS", 0) == 1 and "Yes" or "No",
-        },
-        {
-                label = "Jump-Start",
-                value = jumpStartState[raceINI:get("RACE", "JUMP_START_PENALTY", 0)],
-        },
-}
 
 local sessionInfoTable = {
         {
@@ -145,135 +109,18 @@ local carInfoTable = {
         },
 }
 
-local trackLocation
-local function getTrackLocation()
-        if not trackLocation then
-                if ac.getTrackID() == "" then return nil end
-                local path = ac.getFolder(ac.FolderID.ContentTracks) .. "/" .. ac.getTrackID() .. "/ui/"
-                if ac.getTrackLayout() ~= "" then path = path .. ac.getTrackLayout() .. "/" end
-                print(path .. "ui_track.json")
-                local city = JSON.parse(io.load(path .. "ui_track.json")).city
-                local country = JSON.parse(io.load(path .. "ui_track.json")).country
-                trackLocation = string.reggsub(city, [[\t|</?br\s*/?\s*>]], "")
-                        .. ", "
-                        .. string.reggsub(country, [[\t|</?br\s*/?\s*>]], "")
-        end
-        return trackLocation
-end
-
 function page.update() end
 
 local function trackMapWindow()
-        cui.pushContentWindow(
-                "info_map_window",
-                ui.windowWidth() * 0.5 + 7.5 * cui.uiScale(),
-                0,
-                730 * cui.uiScale(),
-                ui.windowHeight(),
-                function()
-                        ui.setCursor(0)
-                        if cui.windowTabButton("TRACK MAP", 36, ui.ButtonFlags.None, false) then
-                        end
-                end,
-                function() mapWidget:drawFooter() end
-        )
-
-        local track = string.split(ac.getTrackName(), " - ")
-
-        cui.offsetCursorY(10)
-        for _, trackLine in ipairs(track) do
-                cui.offsetCursorX(10)
-                cui.snapCursor()
-
-                ui.dwriteTextAligned(
-                        trackLine,
-                        fontSize,
-                        ui.Alignment.Start,
-                        ui.Alignment.Center,
-                        vec2(ui.windowWidth(), fontSize * 1.2)
-                )
-        end
-
-        cui.offsetCursorX(10)
-        cui.snapCursor()
-        ui.dwriteTextAligned(
-                "%s" % getTrackLocation(),
-                fontSize,
-                ui.Alignment.Start,
-                ui.Alignment.Center,
-                vec2(ui.windowWidth(), fontSize)
-        )
-
-        mapWidget:draw()
-
-        cui.popContentWindow()
+        trackMapWidget:setPosition(ui.windowWidth() * 0.5 + 7.5 * cui.uiScale(), 0)
+        trackMapWidget:setSize(730 * cui.uiScale(), ui.windowHeight())
+        trackMapWidget:draw()
 end
 
 local function sessionControlWindow()
-        cui.pushContentWindow(
-                "session_control",
-                ui.windowWidth() - ui.windowWidth() / 5,
-                0,
-                ui.windowWidth() / 5,
-                ui.windowHeight() * 0.2 - 7.5 * cui.uiScale(),
-                function()
-                        ui.setCursor(0)
-                        if cui.windowTabButton("Session Control", 36, ui.ButtonFlags.None, false) then
-                        end
-                end
-        )
-
-        local driveButtonHeight = ui.windowHeight() * 0.7
-
-        ui.setCursorX(ui.windowWidth() * 0.2)
-        ui.setCursorY(0)
-        if
-                cui.iconButton(
-                        sim.isOnlineRace and "Vote Restart" or "Restart",
-                        ui.Icons.Reset,
-                        driveButtonHeight,
-                        driveButtonHeight,
-                        simutils.sessionRestartable and ui.ButtonFlags.None or ui.ButtonFlags.Disabled
-                )
-        then
-                if sim.isOnlineRace then
-                        ac.castVote("restart", true)
-                else
-                        ac.tryToRestartSession()
-                end
-        end
-
-        ui.setCursorX(ui.windowWidth() * 0.6)
-
-        if
-                cui.iconButton(
-                        sim.isOnlineRace and "Vote Skip Session" or "Skip",
-                        ui.Icons.Skip,
-                        driveButtonHeight,
-                        driveButtonHeight,
-                        simutils.sessionSkippable and ui.ButtonFlags.None or ui.ButtonFlags.Disabled
-                )
-        then
-                if sim.isOnlineRace then
-                        ac.castVote("skip", true)
-                else
-                        ac.tryToSkipSession()
-                end
-        end
-
-        if not ac.canCastVote() and sim.isOnlineRace then
-                ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiColorSecondary * 0.75, 6)
-                ui.setCursor(0)
-                ui.dwriteTextAligned(
-                        "Voting Cooldown %.0f s" % ac.timeToNextVote(),
-                        32 * cui.uiScale(),
-                        ui.Alignment.Center,
-                        ui.Alignment.Center,
-                        ui.windowSize()
-                )
-        end
-
-        cui.popContentWindow()
+        sessionControlWidget:setPosition(ui.windowWidth() - ui.windowWidth() / 5, 0)
+        sessionControlWidget:setSize(ui.windowWidth() / 5, ui.windowHeight() * 0.2 - 7.5 * cui.uiScale())
+        sessionControlWidget:draw()
 end
 
 local function conditionsWindow()
@@ -319,43 +166,12 @@ local function conditionsWindow()
 end
 
 local function modifiersWindow()
-        cui.pushContentWindow(
-                "session_modifiers",
+        sessionModifiersWidget:setPosition(
                 ui.windowWidth() - ui.windowWidth() / 5,
-                ui.windowHeight() * 0.6 + 7.5 * cui.uiScale(),
-                ui.windowWidth() / 5,
-                ui.windowHeight() * 0.4 - 7.5 * cui.uiScale(),
-                function()
-                        ui.setCursor(0)
-                        if cui.windowTabButton("Modifiers", 36, ui.ButtonFlags.None, false) then
-                        end
-                end
+                ui.windowHeight() * 0.6 + 7.5 * cui.uiScale()
         )
-
-        cui.offsetCursorY(10)
-
-        for _, assist in ipairs(assists) do
-                cui.setCursorX(15)
-                cui.snapCursor()
-                ui.dwriteTextAligned(
-                        assist.label,
-                        fontSize,
-                        ui.Alignment.Start,
-                        ui.Alignment.Center,
-                        vec2(ui.windowWidth(), fontSize * 1.5)
-                )
-                ui.sameLine()
-                ui.setCursorX(ui.windowWidth() * 0.5)
-                cui.snapCursor()
-                ui.dwriteTextAligned(
-                        assist.value,
-                        fontSize,
-                        ui.Alignment.Start,
-                        ui.Alignment.Center,
-                        vec2(ui.windowWidth(), fontSize * 1.5)
-                )
-        end
-        cui.popContentWindow()
+        sessionModifiersWidget:setSize(ui.windowWidth() / 5, ui.windowHeight() * 0.4 - 7.5 * cui.uiScale())
+        sessionModifiersWidget:draw()
 end
 
 local function leaderboardWindow()

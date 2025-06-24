@@ -1429,6 +1429,62 @@ function CUI.popContentWindow()
         CUI.popWindow()
 end
 
+function CUI.pushWidgetWindow(id, x, y, width, height, headerFunc, footerFunc)
+        local id = "WIDGET_" .. id
+
+        CUI.pushWindow(id .. "_WINDOW", x, y, width, height)
+
+        local headerSize = 36 * uiScale
+        local footerSize = 36 * uiScale
+        local marginSize = 8 * uiScale
+        local innerCurve = 6 * uiScale
+
+        ui.beginGradientShade()
+        ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiColorPrimary, marginSize + innerCurve)
+        ui.endGradientShade(
+                vec2Temp1:set(ui.windowWidth(), 0),
+                ui.windowSize(),
+                settings.Appearance.uiColorPrimary,
+                settings.Appearance.uiColorBackgroundShade,
+                true
+        )
+
+        x = marginSize
+        y = marginSize
+        width = width - marginSize * 2
+        height = height - marginSize * 2
+
+        if headerFunc then
+                ui.setCursor(0)
+                CUI.pushWindow(id .. "_HEADER", x, y, width, headerSize)
+                ui.setCursor(0)
+                headerFunc()
+                CUI.popWindow()
+
+                height = height - headerSize
+                y = y + headerSize
+        end
+
+        if footerFunc then
+                height = height - footerSize
+
+                ui.setCursor(0)
+                CUI.pushWindow(id .. "_FOOTER", x, y + height + marginSize, width, footerSize - marginSize)
+                ui.setCursor(0)
+                footerFunc()
+                CUI.popWindow()
+        end
+
+        CUI.pushWindow(id .. "_BODY", x, y, width, height)
+
+        ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiColorBackground, 6 * uiScale, ui.CornerFlags.All)
+end
+
+function CUI.popWidgetWindow()
+        CUI.popWindow()
+        CUI.popWindow()
+end
+
 function CUI.pushWindowFitted(id, flags, scroll)
         local childWindowWith = (2560 - 60) * uiScale
         local childWindowHeight = (1440 - 60) * uiScale

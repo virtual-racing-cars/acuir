@@ -1,4 +1,5 @@
 local AISpline = require("ai_spline")
+local Widget = require("src.classes.Widget")
 local cui = require("ui.cui")
 local race = require("race")
 local settings = require("settings")
@@ -7,6 +8,8 @@ local car = ac.getCar(0)
 local sim = ac.getSim()
 
 local canvasSize = 1024
+
+local trackMapWidget = Widget("Track Map")
 
 local map = {
         isShowingCars = true,
@@ -309,7 +312,23 @@ end
 
 drawMapCanvas()
 
-function map:draw(isWidget)
+local trackLocation
+local function getTrackLocation()
+        if not trackLocation then
+                if ac.getTrackID() == "" then return nil end
+                local path = ac.getFolder(ac.FolderID.ContentTracks) .. "/" .. ac.getTrackID() .. "/ui/"
+                if ac.getTrackLayout() ~= "" then path = path .. ac.getTrackLayout() .. "/" end
+                print(path .. "ui_track.json")
+                local city = JSON.parse(io.load(path .. "ui_track.json")).city
+                local country = JSON.parse(io.load(path .. "ui_track.json")).country
+                trackLocation = string.reggsub(city, [[\t|</?br\s*/?\s*>]], "")
+                        .. ", "
+                        .. string.reggsub(country, [[\t|</?br\s*/?\s*>]], "")
+        end
+        return trackLocation
+end
+
+function trackMapWidget:body()
         local spectatedCar = ac.getCar(sim.focusedCar)
         local canvasSizeScaled = vec2(canvasSize, canvasSize) * cui.uiScale()
 
@@ -329,13 +348,35 @@ function map:draw(isWidget)
 
         if map.isShowingWeather then drawWeather() end
 
-        -- if isWidget then
-        --         ui.endToolWindow()
-        --         ui.setCursor(vec2(500, 500))
-        -- end
+        local track = string.split(ac.getTrackName(), " - ")
+
+        ui.setCursor(0)
+        cui.offsetCursorY(10)
+        for _, trackLine in ipairs(track) do
+                cui.offsetCursorX(10)
+                cui.snapCursor()
+
+                ui.dwriteTextAligned(
+                        trackLine,
+                        18 * cui.uiScale(),
+                        ui.Alignment.Start,
+                        ui.Alignment.Center,
+                        vec2(ui.windowWidth(), 18 * cui.uiScale() * 1.2)
+                )
+        end
+
+        cui.offsetCursorX(10)
+        cui.snapCursor()
+        ui.dwriteTextAligned(
+                "%s" % getTrackLocation(),
+                18 * cui.uiScale(),
+                ui.Alignment.Start,
+                ui.Alignment.Center,
+                vec2(ui.windowWidth(), 18 * cui.uiScale())
+        )
 end
 
-function map:drawFooter()
+function trackMapWidget:footer()
         local changed = false
         local height = ui.windowHeight() * 0.65
 
@@ -350,4 +391,4 @@ function map:drawFooter()
         if changed then drawMapCanvas() end
 end
 
-return map
+return trackMapWidget
