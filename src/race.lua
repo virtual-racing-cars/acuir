@@ -77,7 +77,7 @@ ac.onClientDisconnected(function(connectedCarIndex, connectedSessionID)
         setTimeout(
                 function() session.cars[connectedCarIndex].isDisconnected = true end,
                 30,
-                "acuir_disconnect_car_%s" % connectedCarIndex
+                "disconnect_car_%s" % connectedCarIndex
         )
 end)
 

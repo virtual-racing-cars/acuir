@@ -26,19 +26,20 @@ function MainMenuWindow(dt)
         style:pushStyleMain()
         ui.pushAllowKeyboardFocus(false)
 
-        local mainWindowFlags = ui.WindowFlags.NoScrollbar + ui.WindowFlags.NoScrollWithMouse
+        local mainWindowFlags = bit.bor(ui.WindowFlags.NoScrollbar, ui.WindowFlags.NoScrollWithMouse)
         if cui.modalDialogCallback then
-                mainWindowFlags = mainWindowFlags
-                        + ui.WindowFlags.NoInputs
-                        + ui.WindowFlags.NoMouseInputs
-                        + ui.WindowFlags.NoFocusOnAppearing
+                mainWindowFlags = bit.bor(
+                        mainWindowFlags,
+                        ui.WindowFlags.NoInputs,
+                        ui.WindowFlags.NoMouseInputs,
+                        ui.WindowFlags.NoFocusOnAppearing
+                )
         end
 
         updateCommon()
 
         cui.pushWindowFitted()
         topBar()
-
         cui.pushWindow(
                 "main_menu_window_sub",
                 0,
@@ -48,7 +49,6 @@ function MainMenuWindow(dt)
         )
         exclusiveHudMode = pages.manager:draw()
         cui.popWindow(false)
-
         cui.popWindow(false)
 
         if cui.modalDialogCallback then
@@ -90,7 +90,6 @@ function MainMenuWindow(dt)
         ui.setCursor(0)
         ui.childWindow("##Panner", vec2(10, 10), false, ui.WindowFlags.None, function()
                 if cui.menuPanAvailable then ui.passthroughIMGUI() end
-
                 ui.drawRectFilled(vec2(0, 0), ui.windowSize(), rgbm.colors.transparent)
         end)
 

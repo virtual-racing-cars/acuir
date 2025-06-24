@@ -270,7 +270,6 @@ function leaderboard:drawFooter()
                 "##isLeaderboardShowingDisconnected",
                 "Show Disconnected",
                 ui.windowHeight() * 0.65,
-                false,
                 leaderboard.isShowingDisconnected
         )
 end

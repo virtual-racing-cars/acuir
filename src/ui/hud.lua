@@ -6,9 +6,10 @@ require("ui.windows.settings_window")
 local app = require("app")
 local audio = require("audio")
 local camera = require("camera")
+local cui = require("src.ui.cui")
 local pages = require("ui.pages.pages")
-
-ac.reloadControlSettings()
+local settings = require("settings")
+local style = require("style")
 
 local hudModes = {
         game = function(dt) pages:setParentMainMenu() end,
@@ -42,7 +43,7 @@ ui.onExclusiveHUD(function(mode)
 
         -- pages:goToSession()
         -- pages:goToLapTimes()
-        pages:goToSetup()
+        -- pages:goToSetup()
         -- pages:goToSettingsControls()
         -- pages:goToSettingsGeneral()
         -- pages:goToSettingsAudio()
@@ -52,11 +53,14 @@ ui.onExclusiveHUD(function(mode)
 
         camera.windowHovered = ui.getHoveredID() ~= 0
 
+        local hudReturn = ""
         for hud, hudMode in pairs(hudModes) do
                 if mode == hud then
                         local dt = ac.getScriptDeltaT()
                         audio:driver(dt)
-                        return hudMode(dt)
+                        hudReturn = hudMode(dt)
                 end
         end
+
+        return hudReturn
 end)

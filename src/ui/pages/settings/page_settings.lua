@@ -1,5 +1,6 @@
 local page = {}
 
+local app = require("app")
 local cui = require("ui.cui")
 local pages = require("ui.pages.pages")
 local settings = require("settings")
@@ -31,7 +32,7 @@ local settingsPages = {
                 func = function() pages:goToSettingsAppearance() end,
         },
         {
-                label = "ACUIR",
+                label = app.name,
                 icon = ui.Icons.AppWindow,
                 enabled = true,
                 func = function() pages:goToSettingsGeneral() end,

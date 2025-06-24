@@ -381,7 +381,6 @@ function timetable:drawFooter()
                 "##isTimetableShowingDisconnected",
                 "Show Disconnected",
                 ui.windowHeight() * 0.65,
-                false,
                 timetable.isShowingDisconnected
         )
 end

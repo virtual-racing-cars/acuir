@@ -1,6 +1,6 @@
 ## ACUIR Changelog
 *Requires minimum CSP version 0.2.11 (3465)*
-### 0.9.3.3 (unreleased)
+### 0.9.3.4 (unreleased)
 
 Features:
 - CSP Data Logger integration (settings pending)
@@ -15,7 +15,7 @@ Fixes:
 - Consistent fonts sizes throughout the app
 - App control tabs now show proper name, instead of app dir name
 - Text input improvements
-
+- Fixed background elements highlighting when a modal popup is active
 
 ### 0.9.2.8
 

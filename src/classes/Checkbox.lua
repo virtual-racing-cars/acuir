@@ -4,7 +4,11 @@ local settings = require("settings")
 local vec2Temp1 = vec2()
 local vec2Temp2 = vec2()
 
-function drawCheckbox(id, name, height, locked, value)
+function drawCheckbox(id, name, height, value, flags)
+        local disabled = false
+
+        if flags == ui.ButtonFlags.Disabled then disabled = true end
+
         local width = height * 4
 
         local p1 = ui.getCursor()
@@ -21,13 +25,18 @@ function drawCheckbox(id, name, height, locked, value)
 
         ui.setCursorX(p1.x)
         ui.setCursorY(p1.y)
-        ui.invisibleButton("checkbox" .. id, vec2Temp1:set(barWidth, barHeight))
+        ui.invisibleButton("checkbox" .. id, vec2Temp1:set(barWidth, barHeight), flags)
         local r1, r2 = ui.itemRect()
         ui.drawRectFilled(r1, r2, settings.Appearance.uiColorBackground * 0.2, 6 * cui.uiScale())
-
         local hovered = ui.rectHovered(r1, r2)
 
-        if ui.itemClicked() then
+        local fillColor = settings.Appearance.uiColorSecondary
+        local grabberColor = settings.Appearance.uiColorText
+
+        if disabled then
+                fillColor = settings.Appearance.uiColorTextDim
+                grabberColor = settings.Appearance.uiColorTextDim
+        elseif ui.itemClicked() then
                 value = value >= 1 and 0 or 1
                 changed = true
         end
@@ -35,19 +44,14 @@ function drawCheckbox(id, name, height, locked, value)
         ui.setCursorX(r1.x + barWidth + 10 * cui.uiScale())
         ui.setCursorY(r1.y)
         cui.snapCursor()
-        ui.dwriteText(name, fontSize, rgbm.colors.white)
-
-        if ui.itemClicked() then
-                value = value >= 1 and 0 or 1
-                changed = true
-        end
+        ui.dwriteText(name, fontSize, grabberColor)
 
         local sliderFill = r1.x + (value * (barWidth - grabberSize))
         if sliderFill > r1.x then
                 ui.drawRectFilled(
                         r1,
                         vec2Temp1:set(sliderFill, r2.y),
-                        settings.Appearance.uiColorSecondary,
+                        fillColor,
                         6 * cui.uiScale(),
                         ui.CornerFlags.Left
                 )
@@ -78,7 +82,7 @@ function drawCheckbox(id, name, height, locked, value)
         ui.drawRectFilled(
                 vec2(sliderFill + 1, r1.y - 1),
                 vec2(sliderFill + grabberSize - 1, r2.y + 1),
-                settings.Appearance.uiColorAccent,
+                grabberColor,
                 5 * cui.uiScale()
         )
         ui.setCursor(vec2(sliderFill, r2.y - barHeight))

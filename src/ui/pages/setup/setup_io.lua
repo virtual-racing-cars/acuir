@@ -138,7 +138,6 @@ function drawSetupControls(sm)
                 "##isSetupIOHidingOtherTracks",
                 "Show Other Tracks",
                 20 * cui.uiScale(),
-                false,
                 settings.General.hideOtherTrackSetups
         )
         ui.sameLine()
@@ -151,7 +150,6 @@ function drawSetupControls(sm)
                 "##isSetupIOSortingAlpha",
                 "Sort A-Z",
                 20 * cui.uiScale(),
-                false,
                 settings.General.sortTrackSetupsAZ
         )
 

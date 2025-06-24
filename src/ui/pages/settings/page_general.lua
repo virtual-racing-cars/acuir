@@ -1,5 +1,6 @@
 local page = { tab = 1 }
 
+local app = require("app")
 local cui = require("ui.cui")
 local pages = require("ui.pages.pages")
 local settings = require("settings")
@@ -20,7 +21,7 @@ local function generalSettings()
                 if v.widget == 1 then
                         ui.setCursorX(ui.windowWidth() * 0.5 - height * 7)
 
-                        local newValue, changed = drawCheckbox(v.label, v.label, height, false, settings.General[v.key])
+                        local newValue, changed = drawCheckbox(v.label, v.label, height, settings.General[v.key])
                         ui.newLine()
                         ui.newLine()
 
@@ -68,7 +69,7 @@ local function uiSettings()
                 if v.widget == 1 then
                         ui.setCursorX(ui.windowWidth() * 0.5 - height * 7)
 
-                        local newValue, changed = drawCheckbox(v.label, v.label, height, false, settings.UI[v.key])
+                        local newValue, changed = drawCheckbox(v.label, v.label, height, settings.UI[v.key])
                         ui.newLine()
                         ui.newLine()
 
@@ -114,7 +115,7 @@ function page.draw()
 
         cui.pushWindowFitted("general_page_window")
 
-        topSubBar("ACUIR")
+        topSubBar(app.name)
 
         cui.pushContentWindow(
                 "settings_general_window",

@@ -339,14 +339,13 @@ function map:drawFooter()
         local changed = false
         local height = ui.windowHeight() * 0.65
 
-        map.isShowingCars = drawCheckbox("##mapisShowingCars", "Cars", height, false, map.isShowingCars)
+        map.isShowingCars = drawCheckbox("##mapisShowingCars", "Cars", height, map.isShowingCars)
         ui.sameLine(ui.windowWidth() * 0.5 - height * 4)
 
-        map.isShowingSectors, changed =
-                drawCheckbox("##mapisShowingSectors", "Sectors", height, false, map.isShowingSectors)
+        map.isShowingSectors, changed = drawCheckbox("##mapisShowingSectors", "Sectors", height, map.isShowingSectors)
         ui.sameLine(ui.windowWidth() * 0.75)
 
-        map.isShowingWeather = drawCheckbox("##mapisShowingWeather", "Weather", height, false, map.isShowingWeather)
+        map.isShowingWeather = drawCheckbox("##mapisShowingWeather", "Weather", height, map.isShowingWeather)
 
         if changed then drawMapCanvas() end
 end

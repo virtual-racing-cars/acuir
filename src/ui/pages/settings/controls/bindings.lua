@@ -383,13 +383,8 @@ function bindings:draw()
         ui.sameLine()
         cui.offsetCursorX(30)
         cui.offsetCursorY(9)
-        settings.General.showMPSBinds = drawCheckbox(
-                "##mapisShowingWeather",
-                "Show MPS Binds",
-                18 * cui.uiScale(),
-                false,
-                settings.General.showMPSBinds
-        )
+        settings.General.showMPSBinds =
+                drawCheckbox("##mapisShowingWeather", "Show MPS Binds", 18 * cui.uiScale(), settings.General.showMPSBinds)
 
         cui.pushWindow(
                 "settings_button_binds_window3",

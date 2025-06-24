@@ -207,7 +207,7 @@ function CUI.button(label, sizeX, sizeY, fontSize, horizontalAligment, verticalA
 
         local tempCursor = ui.getCursor()
         local clicked = ui.button("##" .. label, vec2Temp1:set(textWidth + 30 * uiScale, sizeY * uiScale), flags)
-        local hovered = ui.itemHovered()
+        local hovered = ui.itemHovered() and not CUI.modalDialogCallback
 
         if flags == ui.ButtonFlags.Disabled then ui.popStyleColor(1) end
 
@@ -234,7 +234,7 @@ function CUI.settingsButton(label, sizeX, sizeY, flags, icon)
         local disabled = flags == ui.ButtonFlags.Disabled
         local tempCursor = ui.getCursor()
         local clicked = ui.invisibleButton("##" .. label, vec2Temp1:set(sizeX, sizeY), flags)
-        local hovered = ui.itemHovered()
+        local hovered = ui.itemHovered() and not CUI.modalDialogCallback
         local r1, r2 = ui.itemRect()
 
         local buttonColor = settings.Appearance.uiColorPrimary
@@ -279,7 +279,7 @@ function CUI.modalButton(label, sizeX, sizeY, flags)
 
         local tempCursor = ui.getCursor()
         local clicked = ui.button("##" .. label, vec2Temp1:set(sizeX, sizeY), flags)
-        local hovered = ui.itemHovered()
+        local hovered = ui.itemHovered() and not CUI.modalDialogCallback
         local r1, r2 = ui.itemRect()
 
         if not ui.itemHovered() or disabled then
@@ -341,7 +341,7 @@ function CUI.menuButton(label, size, horizontalAligment, verticalAlignment, flag
         local tempCursor = ui.getCursor()
         local clicked = ui.invisibleButton("##" .. label, buttonSize, flags)
         local r1, r2 = ui.itemRect()
-        local hovered = ui.itemHovered()
+        local hovered = ui.itemHovered() and not CUI.modalDialogCallback
 
         local buttonColor = rgbm.colors.transparent
         local fontColor = settings.Appearance.uiColorText
@@ -391,7 +391,7 @@ function CUI.windowTabButton(label, size, flags, active)
         local tempCursor = ui.getCursor()
         local clicked = ui.invisibleButton("##" .. label, buttonSize, flags)
         local r1, r2 = ui.itemRect()
-        local hovered = ui.itemHovered()
+        local hovered = ui.itemHovered() and not CUI.modalDialogCallback
 
         local buttonColor = rgbm.colors.transparent
         local fontColor = settings.Appearance.uiColorText
@@ -430,7 +430,7 @@ function CUI.bindingButton(name, label, button, size, flags)
 
         local clicked = ui.invisibleButton("##" .. button.bind, size, flags)
         local r1, r2 = ui.itemRect()
-        local hovered = ui.itemHovered()
+        local hovered = ui.itemHovered() and not CUI.modalDialogCallback
 
         local buttonColor = settings.Appearance.uiColorBackgroundShade
         local textColor = settings.Appearance.uiColorText
@@ -562,7 +562,7 @@ function CUI.bindingAxleButton(name, label, button, size, flags)
 
         local clicked = ui.invisibleButton("##" .. button.bind, size, flags)
         local r1, r2 = ui.itemRect()
-        local hovered = ui.itemHovered()
+        local hovered = ui.itemHovered() and not CUI.modalDialogCallback
 
         local buttonColor = settings.Appearance.uiColorBackgroundShade
         local textColor = settings.Appearance.uiColorText
@@ -692,7 +692,7 @@ function CUI.specialButton(label, size, horizontalAligment, verticalAlignment, c
 
         local tempCursor = ui.getCursor()
         local clicked = ui.invisibleButton("##" .. label, buttonSize, flags)
-        local hovered = ui.itemHovered()
+        local hovered = ui.itemHovered() and not CUI.modalDialogCallback
         local r1, r2 = ui.itemRect()
 
         local buttonColor = color
@@ -747,7 +747,7 @@ end
 
 function CUI.modernButton(label, sizeX, sizeY, flags, icon)
         local clicked = ui.modernButton(label, vec2(sizeX, sizeY) * uiScale, flags, icon, 16 * uiScale)
-        local hovered = ui.itemHovered()
+        local hovered = ui.itemHovered() and not CUI.modalDialogCallback
         return clicked and not (flags == ui.ButtonFlags.Disabled)
 end
 
@@ -759,7 +759,7 @@ function CUI.iconButton(label, icon, sizeX, sizeY, flags, flipped, iconScale, ac
 
         local tempCursor = ui.getCursor()
         local clicked = ui.invisibleButton("##" .. label, vec2(sizeX, sizeY))
-        local hovered = ui.itemHovered()
+        local hovered = ui.itemHovered() and not CUI.modalDialogCallback
 
         local iconColor = settings.Appearance.uiColorAccent
 
@@ -805,7 +805,7 @@ function CUI.emojiButton(label, emoji, sizeX, sizeY, flags, active)
         if bit.band(flags, ui.ButtonFlags.Disabled) ~= 0 then disabled = true end
 
         local clicked = ui.invisibleButton("##" .. label, vec2(sizeX, sizeY))
-        local hovered = ui.itemHovered()
+        local hovered = ui.itemHovered() and not CUI.modalDialogCallback
         local r1, r2 = ui.itemRect()
 
         if hovered then ui.drawRectFilled(r1, r2, rgbm(0.2, 0.2, 0.2, 1)) end
@@ -919,7 +919,7 @@ function CUI.combo(id, size, previewValue, content)
         local id = "##combo" .. id
         local sp1 = ui.cursorScreenPos()
         local clicked = ui.invisibleButton("##comboCurrentCamera", size)
-        local hovered = ui.itemHovered()
+        local hovered = ui.itemHovered() and not CUI.modalDialogCallback
         local r1, r2 = ui.itemRect()
         local color = settings.Appearance.uiColorText
         local open = CUI.loadStoredBool(id, false)
@@ -985,7 +985,7 @@ function CUI.inputText(label, size, stringPrefix, stringInput, stringDefault, fi
         local captured, clicked = ui.interactiveArea("##textinput" .. label, size)
         local r1, r2 = ui.itemRect()
 
-        local hovered = ui.itemHovered()
+        local hovered = ui.itemHovered() and not CUI.modalDialogCallback
         local itemActive = ui.itemActive()
 
         if stringPrefix ~= "" then

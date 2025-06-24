@@ -1,9 +1,18 @@
+local app = require("app")
+
 local Widgets = {
         Checkbox = 1,
         Slider = 2,
 }
 
 local settings = {
+        Modules = {
+                { key = "newMainMenu", label = "New Main Menu", default = true, widget = Widgets.Checkbox },
+                { key = "newPauseMenu", label = "New Pause Menu", default = true, widget = Widgets.Checkbox },
+                { key = "newQuickPitMenu", label = "New Quick Pit Menu", default = true, widget = Widgets.Checkbox },
+                { key = "newResultsMenu", label = "New Results Menu", default = true, widget = Widgets.Checkbox },
+                { key = "newReplayMenu", label = "New Replay Menu", default = true, widget = Widgets.Checkbox },
+        },
         General = {
 
                 { key = "autoStart", label = "Auto-Start new UI", default = true, widget = Widgets.Checkbox },
@@ -51,7 +60,7 @@ local settings = {
                         multiplier = 100,
                         format = "%.0f %%",
                         onChanged = function(value)
-                                ac.INIConfig.cspModule(ac.CSPModuleID.GUI):setAndSave("ACUIR", "MENU_SCALE", value)
+                                ac.INIConfig.cspModule(ac.CSPModuleID.GUI):setAndSave(app.name, "MENU_SCALE", value)
                         end,
                         widget = Widgets.Slider,
                 },
