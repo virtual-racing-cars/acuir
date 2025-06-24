@@ -31,6 +31,7 @@ app.state = {
         setupTab = 2,
         debug = appDebugMode,
         blockEscapeButton = false,
+        screenTransition = 0,
 }
 
 local proxy = {}

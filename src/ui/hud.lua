@@ -3,17 +3,30 @@ require("ui.windows.pause_window")
 require("ui.windows.pitstop_window")
 require("ui.windows.results_window")
 require("ui.windows.settings_window")
+require("ui.windows.onboarding_window")
 local app = require("app")
 local audio = require("audio")
 local camera = require("camera")
+local csp = require("csp")
 local cui = require("src.ui.cui")
 local pages = require("ui.pages.pages")
 local settings = require("settings")
 local style = require("style")
 
+local fadingTimer = ui.FadingElement(function()
+        cui.pushWindowFull("overlay_window_full")
+        ui.drawRectFilled(0, ui.windowSize(), rgbm.colors.black)
+
+        cui.popWindow()
+end)
+
 local hudModes = {
         game = function(dt) pages:setParentMainMenu() end,
         menu = function(dt)
+                if not settings.AppData.shownOnboarding then return OnboardingWindow(dt) end
+
+                if not settings.Modules.newMainMenu then return end
+
                 if pages.manager.currentPageName and string.find(pages.manager.currentPageName, "Setting") then
                         return SettingsWindow(dt)
                 end
@@ -24,6 +37,8 @@ local hudModes = {
                 return MainMenuWindow(dt)
         end,
         pause = function(dt)
+                if not settings.Modules.newPauseMenu and csp.versionAllowed then return end
+
                 if pages.manager.currentPageName and string.find(pages.manager.currentPageName, "Setting") then
                         return SettingsWindow(dt)
                 end
@@ -33,6 +48,8 @@ local hudModes = {
                 return PauseMenuWindow()
         end,
         results = function(dt)
+                if not settings.Modules.newResultsMenu then return end
+
                 pages:setParentResultsMenu()
                 return ResultsMenuWindow()
         end,
@@ -41,7 +58,7 @@ local hudModes = {
 ui.onExclusiveHUD(function(mode)
         if ac.getLastError() or not app.state.appOpen then return end
 
-        pages:goToSession()
+        -- pages:goToSession()
         -- pages:goToLapTimes()
         -- pages:goToSetup()
         -- pages:goToSettingsControls()
@@ -61,6 +78,8 @@ ui.onExclusiveHUD(function(mode)
                         hudReturn = hudMode(dt)
                 end
         end
+
+        fadingTimer(os.clock() < app.state.screenTransition)
 
         return hudReturn
 end)

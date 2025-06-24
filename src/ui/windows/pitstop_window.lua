@@ -29,7 +29,9 @@ local navControlUpButton = ac.ControlButton(
 
 local delayTimer = 0
 
-local function isPitMenuNavAvailable() return app.state.appOpen and sim.isLive and not sim.isInMainMenu end
+local function isPitMenuNavAvailable()
+        return app.state.appOpen and sim.isLive and not sim.isInMainMenu and settings.Modules.newQuickPitMenu
+end
 
 navControlLeftButton:onPressed(function()
         if not isPitMenuNavAvailable() then return end
@@ -170,7 +172,7 @@ local function mfdWidgetSpinner(name, height, index, value, format, min, max, it
 end
 
 function script.pitstopWindow(dt)
-        if not app.state.appOpen then
+        if not app.state.appOpen or not settings.Modules.newQuickPitMenu then
                 pitstop:setWindowOpen(false)
                 ac.disableQuickMenuPitstop(false)
                 return
