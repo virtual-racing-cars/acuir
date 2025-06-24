@@ -133,7 +133,7 @@ setInterval(function()
         for _, channel in ipairs(telemetry.currentLap.channels) do
                 channel.data[telemIndex] = car[channel.key]
         end
-end, 1 / 100, "telemetryCollector")
+end, 1 / 100, "telemetryCollector100Hz")
 
 ac.onLapCompleted(0, function(carIndex, lapTime, valid, cuts, lapCount)
         ac.debug(tostring(lapCount), ac.lapTimeToString(lapTime))

@@ -9,7 +9,7 @@ ac.setWindowOpen("entryWindow", true)
 function script.entryWindow(dt)
         style:pushFontRegular()
 
-        local windowSize = vec2(300, 450) * cui.uiScale()
+        local windowSize = vec2(300, 350) * cui.uiScale()
 
         cui.pushContentWindow(
                 "entry_point_window",

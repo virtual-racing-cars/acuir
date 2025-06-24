@@ -1,8 +1,8 @@
-require("src.ui.pages.setup.gear_window")
 require("src.classes.Slider")
 local app = require("app")
 local audio = require("audio")
 local cui = require("ui.cui")
+local gearSpeedsWidget = require("src.ui.widgets.gear_speeds")
 local settings = require("settings")
 
 local vec2Temp1 = vec2()
@@ -196,7 +196,21 @@ function car_setup(sm)
         local changed = false
         local tab = sm.setupTabs[tonumber(app.state.setupTab)]
 
-        if tab.name == "GEARS" then gearWindow(#tab.setupSpinners) end
+        if tab.name == "GEARS" then
+                if #tab.setupSpinners <= 1 then
+                        gearSpeedsWidget:setPosition(
+                                ui.windowWidth() * 0.25,
+                                ui.windowHeight() * 0.2 + 7.5 * cui.uiScale()
+                        )
+                else
+                        gearSpeedsWidget:setPosition(ui.windowWidth() * 0.5, 125 * cui.uiScale())
+                end
+
+                gearSpeedsWidget:setSize(ui.windowWidth() * 0.5, ui.windowWidth() * 0.5)
+                gearSpeedsWidget:draw()
+
+                -- gearWindow(#tab.setupSpinners) end
+        end
 
         if tab.name == "PITSTOP STRATEGY" then
                 for _, spinner in ipairs(sm._pitSpinners) do

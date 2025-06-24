@@ -1,8 +1,14 @@
-local cui = require("ui.cui")
+local Widget = require("src.classes.Widget")
+local cui = require("src.ui.cui")
 local settings = require("settings")
+local simutils = require("simutils")
 local units = require("units")
-local car = ac.getCar(0)
+local weather = require("weather")
+local sim = ac.getSim()
 local uis = ac.getUI()
+local car = ac.getCar(0)
+
+local gearSpeedsWidget = Widget("Max Gear Speeds")
 
 local function getGearMaxSpeed(gear) return math.round(units:speed(ac.getCarMaxSpeedWithGear(0, gear))) end
 
@@ -12,26 +18,19 @@ local maxSpeedWithGear = {
 
 local maxSpeed = nil
 
-function gearWindow(spinnerCount)
-        local xMin = ui.windowWidth() * 0.5 + 50 * cui.uiScale()
-        local xMax = ui.windowWidth() - 30 * cui.uiScale()
+local gearSpeedWarning = false
+
+function gearSpeedsWidget:body()
+        local xMin = 85 * cui.uiScale()
+        local xMax = ui.windowWidth() - 20 * cui.uiScale()
         local width = xMax - xMin
 
-        local yMin = 110 * cui.uiScale()
-        local yMax = 110 + width
+        local yMin = 20 * cui.uiScale()
+        local yMax = ui.windowHeight() - 50 * cui.uiScale()
         local height = yMax - yMin
+        if not maxSpeed or maxSpeed == 0 then maxSpeed = getGearMaxSpeed(car.gearCount) end
 
-        if spinnerCount <= 1 then
-                xMin = ui.windowWidth() / 2 - width / 2
-                xMax = ui.windowWidth() / 2 + width / 2
-                ui.setCursor(vec2(ui.windowWidth() / 2 - width / 2, yMin * 0.7))
-        else
-                ui.setCursor(vec2(xMin, yMin * 0.7))
-        end
-
-        ui.drawRectFilled(vec2(xMin, yMin), vec2(xMax, yMax), rgbm(0, 0, 0, 0.75))
-
-        if not maxSpeed or maxSpeed == 0 then maxSpeed = getGearMaxSpeed(car.gearCount) * 1.25 end
+        ui.drawRectFilled(vec2(xMin, yMin), vec2(xMax, yMax), rgbm(0, 0, 0, 0.5))
 
         ui.pathLineTo(vec2(xMin, yMax))
         ui.pathLineTo(vec2(xMin + width, yMax))
@@ -45,23 +44,23 @@ function gearWindow(spinnerCount)
                 cui.snapCursor()
                 ui.dwriteTextAligned(
                         math.round(i / 10 * maxSpeed),
-                        24 * cui.uiScale(),
+                        18 * cui.uiScale(),
                         ui.Alignment.Center,
                         ui.Alignment.Center,
-                        vec2(65, 20) * cui.uiScale()
+                        vec2(65, 24) * cui.uiScale()
                 )
                 ui.pathLineTo(vec2(xMin + width / 10 * i, yMax))
                 ui.pathLineTo(vec2(xMin + width / 10 * i, yMax - height / 50))
                 ui.pathStroke(rgbm(0.4, 0.4, 0.4, 1), false, 3)
 
-                ui.setCursor(vec2(xMin - 70, yMin + (yMax - yMin) / 10 * i) - 10)
+                ui.setCursor(vec2(xMin - 70 * cui.uiScale(), yMin + (yMax - yMin) / 10 * i) - 10 * cui.uiScale())
                 cui.snapCursor()
                 ui.dwriteTextAligned(
                         math.round(car.rpmLimiter - (car.rpmLimiter / 10) * i),
-                        24 * cui.uiScale(),
+                        18 * cui.uiScale(),
                         ui.Alignment.End,
                         ui.Alignment.Center,
-                        vec2(65, 20) * cui.uiScale()
+                        vec2(65, 24) * cui.uiScale()
                 )
 
                 ui.pathLineTo(vec2(xMin, yMin + (yMax - yMin) / 10 * i))
@@ -69,16 +68,20 @@ function gearWindow(spinnerCount)
                 ui.pathStroke(rgbm(0.4, 0.4, 0.4, 1), false, 3)
         end
 
+        gearSpeedWarning = false
+
         for i = 1, car.gearCount do
                 local maxGearSpeed = getGearMaxSpeed(i)
-
-                if maxGearSpeed > 0 and maxGearSpeed <= maxSpeed then
-                        maxSpeedWithGear[i] = maxGearSpeed
-                else
-                        maxGearSpeed = maxSpeedWithGear[i]
-                end
-
                 local prevGearSpeed = maxSpeedWithGear[i - 1]
+                local nextGearSpeed = maxSpeedWithGear[math.min(i + 1, car.gearCount)] or maxGearSpeed
+                maxSpeedWithGear[i] = maxGearSpeed
+
+                if maxGearSpeed > maxSpeed then maxSpeed = maxGearSpeed end
+
+                ac.debug(i, nextGearSpeed)
+
+                local warning = (maxGearSpeed >= nextGearSpeed or maxGearSpeed >= maxSpeed) and i ~= car.gearCount
+                if not gearSpeedWarning then gearSpeedWarning = warning end
 
                 local x1 = xMin + width * (prevGearSpeed / maxSpeed)
                 local p1 = vec2(x1, math.max(yMin + (yMax - yMin) * (1 - (prevGearSpeed / maxGearSpeed)), yMin))
@@ -86,9 +89,7 @@ function gearWindow(spinnerCount)
 
                 local labelWidth = 125 * cui.uiScale()
                 local labelHeight = 24 * cui.uiScale()
-                local labelPadding = 4 * cui.uiScale()
-                local fontSize = math.floor(24 * cui.uiScale())
-                fontSize = (fontSize % 2 == 0) and fontSize + 1 or fontSize
+                local fontSize = 18 * cui.uiScale()
 
                 ui.pathLineTo(p1)
                 ui.pathLineTo(p2)
@@ -99,23 +100,42 @@ function gearWindow(spinnerCount)
                 ui.pathStroke(rgbm(1, 1, 1, 0.1), false, 3)
 
                 ui.setCursor(vec2(p2.x - labelWidth, yMax - (height / car.gearCount / 2) * i))
-                cui.snapCursor()
                 ui.drawRectFilled(
-                        ui.getCursor() - vec2(labelPadding, labelPadding),
-                        ui.getCursor() + vec2(labelWidth + labelPadding, labelHeight + labelPadding),
-                        rgbm.colors.white
+                        ui.getCursor(),
+                        ui.getCursor() + vec2(labelWidth, labelHeight),
+                        warning and settings.Appearance.uiColorSecondary or settings.Appearance.uiColorText,
+                        6 * cui.uiScale()
                 )
-                ui.offsetCursorX(-labelPadding)
+
+                cui.snapCursor()
                 ui.dwriteTextAligned(
                         string.format("%s - %s %s", i, maxGearSpeed, uis.useImperialUnits and "mph" or "kmh"),
                         fontSize,
                         0,
                         0,
-                        vec2(labelWidth + (labelPadding * 2), labelHeight),
+                        vec2(labelWidth, labelHeight),
                         false,
                         settings.Appearance.uiColorBackground
                 )
 
                 prevGearSpeed = maxGearSpeed
         end
+
+        maxSpeed = getGearMaxSpeed(car.gearCount)
 end
+
+function gearSpeedsWidget:footer()
+        if not gearSpeedWarning then return end
+
+        ui.dwriteTextAligned(
+                "*Warning! Some gear max speeds exceed the next gear's max speed.",
+                18 * cui.uiScale(),
+                0,
+                0,
+                ui.windowSize(),
+                false,
+                settings.Appearance.uiColorSecondary
+        )
+end
+
+return gearSpeedsWidget

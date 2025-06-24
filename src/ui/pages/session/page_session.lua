@@ -1,6 +1,6 @@
 local leaderboardWidget = require("ui.widgets.leaderboard")
 local sessionControlWidget = require("ui.widgets.session_control")
-local sessionModifiersWidget = require("ui.widgets.session_modifiers")
+local sessionInfoWidget = require("ui.widgets.session_info")
 local settings = require("settings")
 local timetableWidget = require("ui.widgets.time_table")
 local trackMapWidget = require("ui.widgets.track_map")
@@ -26,57 +26,6 @@ local fontSize = genericButtonHeight
 local vec2Temp1 = vec2()
 
 local leaderboardActive = true
-
-local sessionInfoTable = {
-        {
-                label = "Track Temp",
-                value = function()
-                        return string.format(
-                                "%.1f %s",
-                                units:temperature(sim.roadTemperature),
-                                uis.useImperialUnits and "°F" or "°C"
-                        )
-                end,
-        },
-        {
-                label = "Grip",
-                value = function() return string.format("%s - %.1f %%", simutils.trackGripString, sim.roadGrip * 100) end,
-        },
-        {
-                label = "Air Temp",
-                value = function()
-                        return string.format(
-                                "%.1f %s",
-                                units:temperature(sim.ambientTemperature),
-                                uis.useImperialUnits and "°F" or "°C"
-                        )
-                end,
-        },
-        {
-                label = "Humidity",
-                value = function() return string.format("%.0f %%", ac.getAirHumidity(vec3(0, 0, 0)) * 100) end,
-        },
-        {
-                label = "Wind Speed",
-                value = function()
-                        return string.format(
-                                "%.1f %s",
-                                units:speed(sim.windSpeedKmh),
-                                uis.useImperialUnits and "mph" or "kmh"
-                        )
-                end,
-        },
-        {
-                label = "Wind Direction",
-                value = function()
-                        return string.format("%s - %.1f°", simutils.windDirectionString, sim.windDirectionDeg + 180)
-                end,
-        },
-        {
-                label = "Weather",
-                value = function() return string.format("%s", weather.typeString[sim.weatherType]) end,
-        },
-}
 
 local carInfoTable = {
         {
@@ -123,55 +72,13 @@ local function sessionControlWindow()
         sessionControlWidget:draw()
 end
 
-local function conditionsWindow()
-        cui.pushContentWindow(
-                "session_conditions",
-                ui.windowWidth() - ui.windowWidth() / 5,
-                ui.windowHeight() * 0.2 + 7.5 * cui.uiScale(),
-                ui.windowWidth() / 5,
-                ui.windowHeight() * 0.4 - 15 * cui.uiScale(),
-                function()
-                        ui.setCursor(0)
-                        if cui.windowTabButton("Conditions", 36, ui.ButtonFlags.None, false) then
-                        end
-                end
-        )
-
-        cui.offsetCursorY(10)
-
-        for _, weatherInfo in ipairs(sessionInfoTable) do
-                cui.setCursorX(15)
-                cui.snapCursor()
-                ui.dwriteTextAligned(
-                        weatherInfo.label,
-                        fontSize,
-                        ui.Alignment.Start,
-                        ui.Alignment.Center,
-                        vec2(ui.windowWidth(), fontSize * 1.5)
-                )
-                ui.sameLine()
-                ui.setCursorX(ui.windowWidth() * 0.5)
-
-                cui.snapCursor()
-                ui.dwriteTextAligned(
-                        weatherInfo.value(),
-                        fontSize,
-                        ui.Alignment.Start,
-                        ui.Alignment.Center,
-                        vec2(ui.windowWidth(), fontSize * 1.5)
-                )
-        end
-
-        cui.popContentWindow()
-end
-
 local function modifiersWindow()
-        sessionModifiersWidget:setPosition(
+        sessionInfoWidget:setPosition(
                 ui.windowWidth() - ui.windowWidth() / 5,
-                ui.windowHeight() * 0.6 + 7.5 * cui.uiScale()
+                ui.windowHeight() * 0.2 + 7.5 * cui.uiScale()
         )
-        sessionModifiersWidget:setSize(ui.windowWidth() / 5, ui.windowHeight() * 0.4 - 7.5 * cui.uiScale())
-        sessionModifiersWidget:draw()
+        sessionInfoWidget:setSize(ui.windowWidth() / 5, ui.windowHeight() * 0.8 - 7.5 * cui.uiScale())
+        sessionInfoWidget:draw()
 end
 
 local function leaderboardWindow()
@@ -219,7 +126,6 @@ function page.draw()
         leaderboardWindow()
         trackMapWindow()
         sessionControlWindow()
-        conditionsWindow()
         modifiersWindow()
 
         cui.popWindow()

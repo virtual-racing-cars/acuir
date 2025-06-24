@@ -1,5 +1,17 @@
 ## ACUIR Changelog
 *Requires minimum CSP version 0.2.11 (3465)*
+### 0.9.3.5 (unreleased)
+
+Features:
+- Added basic onboarding
+
+Fixes:
+- Cleaned up gear max speeds window, as well as put it in a container
+- Fixed quick pit bindings potentially not working
+- Fixed crash for Extended Controls
+- General backend work
+- Fixed background elements highlighting when a modal popup is active
+
 ### 0.9.3.4 (unreleased)
 
 Features:
