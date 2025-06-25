@@ -16,7 +16,6 @@ local style = require("style")
 local fadingTimer = ui.FadingElement(function()
         cui.pushWindowFull("overlay_window_full")
         ui.drawRectFilled(0, ui.windowSize(), rgbm.colors.black)
-
         cui.popWindow()
 end)
 
@@ -46,6 +45,11 @@ local hudModes = {
                 pages:setParentPauseMenu()
 
                 return PauseMenuWindow()
+        end,
+        replay = function(dt)
+                if not settings.Modules.newPauseMenu and csp.versionAllowed then return end
+
+                return
         end,
         results = function(dt)
                 if not settings.Modules.newResultsMenu then return end
