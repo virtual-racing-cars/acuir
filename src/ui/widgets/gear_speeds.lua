@@ -132,6 +132,7 @@ function gearSpeedsWidget:footer()
 
         ui.setCursorX(ui.windowWidth() * 0.5)
         ui.setCursorY(0)
+        cui.snapCursor()
         ui.dwriteTextAligned(
                 "*Warning! Some gear max speeds exceed the next gear's max speed.",
                 18 * cui.uiScale(),

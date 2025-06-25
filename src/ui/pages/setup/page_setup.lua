@@ -10,9 +10,10 @@ local cui = require("ui.cui")
 local dataLogger = require("data_logger")
 local settings = require("settings")
 local setupExchange = require("setup_exchange")
+local car = ac.getCar(0)
 
 local carStatusActive = true
-local setupExchangeActive = true
+local setupExchangeActive = false
 local setupAppsActive = false
 
 local vec2Temp1 = vec2()
@@ -61,27 +62,62 @@ local function dataLoggingWindow()
                         ui.setCursor(0)
                         if cui.windowTabButton("CSP Data Logger", 36, ui.ButtonFlags.None, false) then
                         end
-                        ui.setCursor(0)
+                        ui.sameLine()
 
                         if not dataLogger:loggerActive() then return end
 
-                        cui.offsetCursorX(-40)
+                        cui.offsetCursorY(8)
+                        local tempCursor = ui.getCursor()
+                        ui.icon(
+                                ui.Icons.LoadingSpinner,
+                                vec2(ui.windowHeight() * 0.5, ui.windowHeight() * 0.5),
+                                settings.Appearance.uiColorSecondary
+                        )
+                        ui.setCursor(tempCursor)
+                        ui.icon(
+                                ui.Icons.Target,
+                                vec2(ui.windowHeight() * 0.5, ui.windowHeight() * 0.5),
+                                settings.Appearance.uiColorSecondary,
+                                ui.windowHeight() * 0.25
+                        )
+                        ui.sameLine()
+                        cui.offsetCursorY(-8)
+
+                        cui.offsetCursorX(8)
+                        cui.snapCursor()
                         ui.dwriteTextAligned(
                                 dataLogger:loggerTime(),
                                 18 * cui.uiScale(),
-                                ui.Alignment.End,
+                                ui.Alignment.Start,
                                 ui.Alignment.Center,
                                 ui.windowSize(),
                                 rgbm.colors.white
                         )
-
-                        ui.drawCircleFilled(
-                                vec2(ui.windowWidth() - 20 * cui.uiScale(), ui.windowHeight() * 0.5),
-                                10 * cui.uiScale(),
-                                rgbm.colors.red
+                end,
+                function()
+                        settings.DataLogger.autoStartLogging = drawCheckbox(
+                                "##dataLoggerAutoStart",
+                                "Auto-Start",
+                                18 * cui.uiScale(),
+                                settings.DataLogger.autoStartLogging
                         )
                 end
         )
+
+        if not car.extendedPhysics then
+                ui.setCursor(0)
+                ui.dwriteTextAligned(
+                        "Requires a Car with Extended Physics",
+                        18 * cui.uiScale(),
+                        ui.Alignment.Center,
+                        ui.Alignment.Center,
+                        ui.windowSize(),
+                        false,
+                        settings.Appearance.uiColorTextDim
+                )
+                cui.popContentWindow()
+                return
+        end
 
         ui.setCursorX(ui.windowHeight() * 0.3)
         ui.setCursorY(0)

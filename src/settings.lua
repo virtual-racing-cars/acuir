@@ -14,6 +14,9 @@ local settings = {
                 { key = "newPauseMenu", label = "New Pause Menu", default = true, widget = Widgets.Checkbox },
                 { key = "newQuickPitMenu", label = "New Quick Pit Menu", default = true, widget = Widgets.Checkbox },
         },
+        DataLogger = {
+                { key = "autoStartLogging", label = "Auto-Log", default = false, widget = Widgets.Checkbox },
+        },
         General = {
 
                 { key = "autoStart", label = "Auto-Start new UI", default = true, widget = Widgets.Checkbox },

@@ -1,4 +1,8 @@
+local cui = require("src.ui.cui")
 local motec = require("shared\\sim\\motec")
+local settings = require("settings")
+local validCar = ac.getCar(0).extendedPhysics
+
 local toggleLogButton = ac.ControlButton("__APP_CSP_DATA_LOGGER_TOGGLE")
 local vec2Temp1 = vec2()
 
@@ -57,7 +61,8 @@ function dataLogger:loggerEnd()
                 and dataLogger:loggerTime() < dataLogger.settings.dropShortLogTime
         then
                 dataCollector:drop()
-                ui.toast(ui.Icons.CarFront, "Insufficient Motec log time, recorded data dropped")
+                cui.menuBanner("Insufficient Motec log time, recorded data dropped", nil, rgbm.colors.red, true)
+                -- ui.toast(ui.Icons.CarFront, "Insufficient Motec log time, recorded data dropped")
                 ac.log("Insufficient Motec log time, recorded data dropped")
                 return
         end
@@ -86,18 +91,15 @@ toggleLogButton:onPressed(function()
         end
 end)
 
-if dataLogger.settings.autoLog then
-        ac.log("Auto-Log Active")
-        dataLogger:loggerStart()
-end
+if settings.DataLogger.autoStartLogging and validCar then dataLogger:loggerStart() end
 
 function script.windowSettings(dt)
         ui.text("Toggle Logging:")
         ui.sameLine()
         toggleLogButton:control(vec2Temp1:set(161, 0))
 
-        if ui.checkbox("Auto-Log", dataLogger.settings.autoLog) then
-                dataLogger.settings.autoLog = not dataLogger.settings.autoLog
+        if ui.checkbox("Auto-Log", settings.DataLogger.autoStartLogging) then
+                settings.DataLogger.autoStartLogging = not settings.DataLogger.autoStartLogging
         end
         if ui.itemHovered() then ui.setTooltip("Automatically begin logging after launching AC.") end
 
@@ -167,7 +169,7 @@ function script.windowMain(dt)
         end
 
         if ui.button("Open Log Folder", vec2Temp1:set(140, 24), ui.ButtonFlags.None) then
-                local logDirectory = getMotecDirectory(0)
+                local logDirectory = dataLogger:getMotecDirectory(0)
                 os.openInExplorer(logDirectory)
         end
         ui.endGroup()

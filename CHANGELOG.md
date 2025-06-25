@@ -1,9 +1,10 @@
 ## ACUIR Changelog
 *Requires minimum CSP version 0.2.11 (3465)*
-### 0.9.3.5 (unreleased)
+### 0.9.3.6 (unreleased)
 
 Features:
 - Added basic onboarding
+- V0 rewrite of Setup Exchange frontend
 
 Fixes:
 - Cleaned up gear max speeds window, as well as put it in a container

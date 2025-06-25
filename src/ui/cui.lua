@@ -126,7 +126,7 @@ function CUI.menuBanner(label, time, bannerColor, rightSide, callbackType)
 
                 ui.dwriteTextAligned(
                         label,
-                        28 * uiScale,
+                        22 * uiScale,
                         alignment,
                         ui.Alignment.Center,
                         vec2(ui.windowWidth() * 0.2, ui.windowHeight()),
@@ -138,7 +138,7 @@ function CUI.menuBanner(label, time, bannerColor, rightSide, callbackType)
                         ui.sameLine()
                         ui.dwriteTextAligned(
                                 string.format("%.1f", time),
-                                28 * uiScale,
+                                22 * uiScale,
                                 ui.Alignment.End,
                                 ui.Alignment.Center,
                                 vec2(ui.windowWidth() * 0.05, ui.windowHeight()),
