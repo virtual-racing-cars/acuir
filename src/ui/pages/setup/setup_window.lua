@@ -197,16 +197,9 @@ function car_setup(sm)
         local tab = sm.setupTabs[tonumber(app.state.setupTab)]
 
         if tab.name == "GEARS" then
-                if #tab.setupSpinners <= 1 then
-                        gearSpeedsWidget:setPosition(
-                                ui.windowWidth() * 0.25,
-                                ui.windowHeight() * 0.2 + 7.5 * cui.uiScale()
-                        )
-                else
-                        gearSpeedsWidget:setPosition(ui.windowWidth() * 0.5, 125 * cui.uiScale())
-                end
+                gearSpeedsWidget:setPosition(ui.windowWidth() * 0.05, 0)
 
-                gearSpeedsWidget:setSize(ui.windowWidth() * 0.5, ui.windowWidth() * 0.5)
+                gearSpeedsWidget:setSize(ui.windowWidth() * 0.9, ui.windowWidth() * 0.3)
                 gearSpeedsWidget:draw()
 
                 -- gearWindow(#tab.setupSpinners) end
@@ -227,7 +220,7 @@ function car_setup(sm)
                 if v.yPos > -2 then
                         if v.tab == "GEARS" and #tab.setupSpinners == 1 then
                                 v.xPos = 0.5
-                                v.yPos = 7
+                                v.yPos = 3
                         end
 
                         if drawSetupSpinner(v) then changed = true end

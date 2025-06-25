@@ -19,10 +19,11 @@ local maxSpeedWithGear = {
 local maxSpeed = nil
 
 local gearSpeedWarning = false
+local showLabels = true
 
 function gearSpeedsWidget:body()
         local xMin = 85 * cui.uiScale()
-        local xMax = ui.windowWidth() - 20 * cui.uiScale()
+        local xMax = ui.windowWidth() - 30 * cui.uiScale()
         local width = xMax - xMin
 
         local yMin = 20 * cui.uiScale()
@@ -78,8 +79,6 @@ function gearSpeedsWidget:body()
 
                 if maxGearSpeed > maxSpeed then maxSpeed = maxGearSpeed end
 
-                ac.debug(i, nextGearSpeed)
-
                 local warning = (maxGearSpeed >= nextGearSpeed or maxGearSpeed >= maxSpeed) and i ~= car.gearCount
                 if not gearSpeedWarning then gearSpeedWarning = warning end
 
@@ -88,35 +87,37 @@ function gearSpeedsWidget:body()
                 local p2 = vec2(math.max(xMin + width * (maxGearSpeed / maxSpeed), x1), yMin)
 
                 local labelWidth = 125 * cui.uiScale()
-                local labelHeight = 24 * cui.uiScale()
-                local fontSize = 18 * cui.uiScale()
+                local labelHeight = 18 * cui.uiScale()
+                local fontSize = 14 * cui.uiScale()
 
                 ui.pathLineTo(p1)
                 ui.pathLineTo(p2)
                 ui.pathStroke(settings.Appearance.uiColorSecondary, false, 4)
 
-                ui.pathLineTo(p2)
-                ui.pathLineTo(vec2(p2.x, yMax - (height / car.gearCount / 2) * i + labelHeight))
-                ui.pathStroke(rgbm(1, 1, 1, 0.1), false, 3)
+                if showLabels then
+                        ui.pathLineTo(p2)
+                        ui.pathLineTo(vec2(p2.x, yMax - (height / car.gearCount * 0.75) * i + labelHeight))
+                        ui.pathStroke(rgbm(1, 1, 1, 0.1), false, 3)
 
-                ui.setCursor(vec2(p2.x - labelWidth, yMax - (height / car.gearCount / 2) * i))
-                ui.drawRectFilled(
-                        ui.getCursor(),
-                        ui.getCursor() + vec2(labelWidth, labelHeight),
-                        warning and settings.Appearance.uiColorSecondary or settings.Appearance.uiColorText,
-                        6 * cui.uiScale()
-                )
+                        ui.setCursor(vec2(p2.x - labelWidth, yMax - (height / car.gearCount * 0.75) * i))
+                        ui.drawRectFilled(
+                                ui.getCursor(),
+                                ui.getCursor() + vec2(labelWidth, labelHeight),
+                                warning and settings.Appearance.uiColorSecondary or settings.Appearance.uiColorText,
+                                6 * cui.uiScale()
+                        )
 
-                cui.snapCursor()
-                ui.dwriteTextAligned(
-                        string.format("%s - %s %s", i, maxGearSpeed, uis.useImperialUnits and "mph" or "kmh"),
-                        fontSize,
-                        0,
-                        0,
-                        vec2(labelWidth, labelHeight),
-                        false,
-                        settings.Appearance.uiColorBackground
-                )
+                        cui.snapCursor()
+                        ui.dwriteTextAligned(
+                                string.format("%s - %s %s", i, maxGearSpeed, uis.useImperialUnits and "mph" or "kmh"),
+                                fontSize,
+                                0,
+                                0,
+                                vec2(labelWidth, labelHeight),
+                                false,
+                                settings.Appearance.uiColorBackground
+                        )
+                end
 
                 prevGearSpeed = maxGearSpeed
         end
@@ -125,12 +126,16 @@ function gearSpeedsWidget:body()
 end
 
 function gearSpeedsWidget:footer()
+        showLabels = drawCheckbox("GEARSPEED.labels", "Show Labels", 18 * cui.uiScale(), showLabels)
+
         if not gearSpeedWarning then return end
 
+        ui.setCursorX(ui.windowWidth() * 0.5)
+        ui.setCursorY(0)
         ui.dwriteTextAligned(
                 "*Warning! Some gear max speeds exceed the next gear's max speed.",
                 18 * cui.uiScale(),
-                0,
+                ui.Alignment.Start,
                 0,
                 ui.windowSize(),
                 false,

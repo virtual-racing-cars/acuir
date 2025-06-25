@@ -9,9 +9,10 @@ local app = require("app")
 local cui = require("ui.cui")
 local dataLogger = require("data_logger")
 local settings = require("settings")
+local setupExchange = require("setup_exchange")
 
 local carStatusActive = true
-local setupExchangeActive = false
+local setupExchangeActive = true
 local setupAppsActive = false
 
 local vec2Temp1 = vec2()
@@ -194,14 +195,7 @@ local function setupIoWindow()
                         end
                         ui.sameLine()
 
-                        if
-                                cui.windowTabButton(
-                                        "Setup Exchange",
-                                        36,
-                                        sm._apps["Setup Exchange"] and ui.ButtonFlags.None or ui.ButtonFlags.Disabled,
-                                        setupExchangeActive
-                                )
-                        then
+                        if cui.windowTabButton("Setup Exchange", 36, ui.ButtonFlags.None, setupExchangeActive) then
                                 setupExchangeActive = true
                         end
                         ui.sameLine()
@@ -211,7 +205,7 @@ local function setupIoWindow()
         )
 
         if setupExchangeActive then
-                sm._apps["Setup Exchange"].script[sm._apps["Setup Exchange"].setupWindow]()
+                setupExchange:draw()
         else
                 drawSetupIO(sm)
         end

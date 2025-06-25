@@ -40,14 +40,16 @@ local function scanApp(appName, appDirectory)
                         package.add("..\\%s" % appName)
                         local name = appManifestINI:get(section, "NAME", appName)
 
-                        setupapps[name] = {
-                                inline = name ~= "Setup Exchange",
-                                script = sandboxedRequire(
-                                        appDirectory,
-                                        string.format("%s\\%s.lua", appDirectory, appName)
-                                ),
-                                setupWindow = appManifestINI:get(section, "FUNCTION_MAIN", "windowMain"),
-                        }
+                        if name ~= "SetupExchange" then
+                                setupapps[name] = {
+                                        inline = true,
+                                        script = sandboxedRequire(
+                                                appDirectory,
+                                                string.format("%s\\%s.lua", appDirectory, appName)
+                                        ),
+                                        setupWindow = appManifestINI:get(section, "FUNCTION_MAIN", "windowMain"),
+                                }
+                        end
                 elseif table.contains(windowFlags, "SETUP") or table.contains(windowFlags, "SETUP_HIDDEN") then
                 end
         end

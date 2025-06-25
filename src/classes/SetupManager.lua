@@ -14,9 +14,9 @@ local setupFixed = io.lastWriteTime(setupFixedFile) > os.time() - 10
 local gearSetupSpinners = {}
 local function createGearDefaults()
         for i = 1, ac.getCar(0).gearCount do
-                gearSetupSpinners["INTERNAL_GEAR_" .. i] = { xPos = 0.5, yPos = i - 1, zeroDefault = false }
+                gearSetupSpinners["INTERNAL_GEAR_" .. i] = { xPos = 0.5, yPos = 3 + i - 1, zeroDefault = false }
         end
-        gearSetupSpinners["FINAL_RATIO"] = { xPos = 0.5, yPos = ac.getCar(0).gearCount, zeroDefault = false }
+        gearSetupSpinners["FINAL_RATIO"] = { xPos = 0.5, yPos = 3 + ac.getCar(0).gearCount, zeroDefault = false }
 end
 
 local electronicsDefaults = {}
@@ -302,8 +302,6 @@ local function loadSetupSpinners()
                 end
 
                 if id == "FUEL" then tab = "FUEL" end
-
-                if tab == "GEARS" then xPos = 0 end
 
                 local fixed = setupFixed and sim.isOnlineRace and setupFixedINI:get(id, "VALUE", -12345) ~= -12345
 
