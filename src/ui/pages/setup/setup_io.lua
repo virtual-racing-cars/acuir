@@ -375,5 +375,5 @@ function drawSetupIO(sm)
         drawSetupControls(sm)
         cui.popWindow()
 
-        return ""
+        return "finalize"
 end

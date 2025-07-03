@@ -87,8 +87,8 @@ function gearSpeedsWidget:body()
                 local p2 = vec2(math.max(xMin + width * (maxGearSpeed / maxSpeed), x1), yMin)
 
                 local labelWidth = 125 * cui.uiScale()
-                local labelHeight = 18 * cui.uiScale()
-                local fontSize = 14 * cui.uiScale()
+                local labelHeight = 20 * cui.uiScale()
+                local fontSize = 16 * cui.uiScale()
 
                 ui.pathLineTo(p1)
                 ui.pathLineTo(p2)
@@ -96,10 +96,10 @@ function gearSpeedsWidget:body()
 
                 if showLabels then
                         ui.pathLineTo(p2)
-                        ui.pathLineTo(vec2(p2.x, yMax - (height / car.gearCount * 0.75) * i + labelHeight))
+                        ui.pathLineTo(vec2(p2.x, yMax - (height / car.gearCount * 0.8) * i + labelHeight))
                         ui.pathStroke(rgbm(1, 1, 1, 0.1), false, 3)
 
-                        ui.setCursor(vec2(p2.x - labelWidth, yMax - (height / car.gearCount * 0.75) * i))
+                        ui.setCursor(vec2(p2.x - labelWidth, yMax - (height / car.gearCount * 0.8) * i))
                         ui.drawRectFilled(
                                 ui.getCursor(),
                                 ui.getCursor() + vec2(labelWidth, labelHeight),

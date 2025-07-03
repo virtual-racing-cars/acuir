@@ -915,7 +915,7 @@ function CUI.treeNode(label, count, content, defaultOpen)
         return clicked
 end
 
-function CUI.combo(id, size, previewValue, content)
+function CUI.combo(id, size, previewValue, previewAlignment, openDown, contentSize, content)
         local id = "##combo" .. id
         local sp1 = ui.cursorScreenPos()
         local clicked = ui.invisibleButton("##comboCurrentCamera", size)
@@ -923,19 +923,35 @@ function CUI.combo(id, size, previewValue, content)
         local r1, r2 = ui.itemRect()
         local color = settings.Appearance.uiColorText
         local open = CUI.loadStoredBool(id, false)
+        local closedIcon = openDown and ui.Icons.Down or ui.Icons.Up
+        local openIcon = openDown and ui.Icons.Up or ui.Icons.Down
+        local iconAlignemnt = 0.98
+
+        if previewAlignment == ui.Alignment.End then iconAlignemnt = 0.02 end
 
         if hovered then color = settings.Appearance.uiColorSecondary end
         if clicked then CUI.storeBool(id, not open) end
 
         ui.drawRectFilled(r1, r2, settings.Appearance.uiColorPrimary, 6 * CUI.uiScale())
-        ui.addIcon(open and ui.Icons.Down or ui.Icons.Up, vec2(size.y, size.y) * 0.5, vec2(0.98, 0.5), color)
+        ui.addIcon(open and openIcon or closedIcon, vec2(size.y, size.y) * 0.35, vec2(iconAlignemnt, 0.5), color)
 
         ui.setCursor(r1)
+        ui.offsetCursorX(size.x * 0.1)
         CUI.snapCursor()
-        ui.dwriteTextAligned(previewValue, size.y * 0.65, ui.Alignment.Center, ui.Alignment.Center, size, false, color)
+        ui.dwriteTextAligned(
+                previewValue,
+                size.y * 0.65,
+                previewAlignment,
+                ui.Alignment.Center,
+                vec2(size.x * 0.8, size.y),
+                false,
+                color
+        )
+
+        local comboOpenPosition = openDown and sp1 + vec2(0, size.y) or sp1 - vec2(0, contentSize.y)
 
         if open then
-                ui.transparentWindow(id, sp1 - vec2(0, size.y * 8), vec2(size.x, size.y * 8), true, true, function()
+                ui.transparentWindow(id, comboOpenPosition, contentSize, true, true, function()
                         ui.bringWindowToFront()
                         ui.setCursor(0)
 

@@ -17,7 +17,7 @@ function page:draw(dt)
 
         cui.popContentWindow()
 
-        return ""
+        return "finalize"
 end
 
 return page

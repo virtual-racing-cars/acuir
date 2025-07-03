@@ -5,7 +5,7 @@
 local cui = require("src.ui.cui")
 local settings = require("settings")
 
-if settings.General.autoStart then ac.uninstallApp("SetupExchange") end
+-- if settings.General.autoStart then ac.uninstallApp("SetupExchange") end
 
 local setupExchange = {}
 
@@ -721,12 +721,13 @@ local function commentsBlock()
 end
 
 local function searchFilterControls()
-        ui.alignTextToFramePadding()
+        ui.sameLine()
+        cui.offsetCursorX(10)
         if authorUsernameFilter ~= "" then
                 if
                         cui.menuButton(
-                                "    Back",
-                                vec2(40, 20) * cui.uiScale(),
+                                string.format("by: %s ", authorUsernameFilter),
+                                32,
                                 ui.Alignment.Center,
                                 ui.Alignment.Center
                         )
@@ -735,19 +736,7 @@ local function searchFilterControls()
                         listOfSetups = nil
                         return
                 end
-                ui.addIcon(ui.Icons.ArrowLeft, iconSize, iconAlign, rgbm.colors.white)
-                ui.sameLine()
-                local n = string.format(
-                        "%d setup%s by %s:",
-                        setupsTotalCount,
-                        setupsTotalCount == 1 and "" or "s",
-                        authorUsernameFilter
-                )
-                if v2 and authorUsernameFilter == stored.userName then
-                        local f = string.find(n, authorUsernameFilter)
-                        if f then ui.setNextTextSpanStyle(f, f + #authorUsernameFilter, ownColor) end
-                end
-                ui.header(n)
+                ui.addIcon(ui.Icons.Cancel, iconSize, vec2(0, 0.5), rgbm.colors.white)
         elseif searchFilter ~= "" then
                 if
                         cui.menuButton(
@@ -762,51 +751,24 @@ local function searchFilterControls()
                         return
                 end
                 ui.addIcon(ui.Icons.ArrowLeft, iconSize, iconAlign, rgbm.colors.white)
-                ui.sameLine()
-                ui.header(
-                        string.format(
-                                "%d setup%s matching “%s”:",
-                                setupsTotalCount,
-                                setupsTotalCount == 1 and "" or "s",
-                                searchFilter
-                        )
-                )
-        else
-                ui.header(string.format("%d fitting setup%s:", setupsTotalCount, setupsTotalCount == 1 and "" or "s"))
         end
 end
 
 local function sortControls()
-        ui.sameLine(0, 0)
-        ui.offsetCursorX(ui.availableSpaceX() - 144)
-        if ui.availableSpaceX() < 144 then ui.newLine(0) end
-        ui.setNextItemWidth(120)
-        ui.combo("##sort", setupsOrder[stored.setupsOrder][1], ui.ComboFlags.HeightLarge, function()
-                if ui.checkbox("Show setups for current track only", stored.setupsFilterTrack) then
-                        stored.setupsFilterTrack = not stored.setupsFilterTrack
-                        listOfSetups = nil
-                end
-                ui.offsetCursorY(12)
-                ui.header("Sort:")
-                ui.offsetCursorY(4)
-                for i, v in ipairs(setupsOrder) do
-                        if ui.selectable(v[1], i == stored.setupsOrder) then
-                                stored.setupsOrder = i
-                                listOfSetups = nil
-                        end
-                end
-                ui.offsetCursorY(12)
-                ui.header("Search:")
-                local updated, _, enter = ui.inputText(
-                        "Name or author",
-                        searchFilter,
-                        bit.bor(ui.InputTextFlags.Placeholder, ui.InputTextFlags.CtrlEnterForNewLine)
-                )
-                if enter then
-                        searchFilter = updated
-                        listOfSetups = nil
-                end
-        end)
+        cui.setCursorX(5)
+        cui.setCursorY(5)
+
+        -- local updated, _, enter = ui.inputText(
+        --         "Name or author",
+        --         searchFilter,
+        --         bit.bor(ui.InputTextFlags.Placeholder, ui.InputTextFlags.CtrlEnterForNewLine)
+        -- )
+        -- if enter then
+        --         searchFilter = updated
+        --         listOfSetups = nil
+        -- end
+
+        ui.newLine()
 end
 
 local function userControls()
@@ -872,14 +834,14 @@ end
 local function drawSetupItem(i, v)
         local setupItemHeight = 64 * cui.uiScale()
         ui.setCursorX(0)
-        ui.setCursorY(setupItemHeight * (i - 1) + 8 * cui.uiScale())
+        ui.setCursorY(setupItemHeight * (i - 1) + 18 * cui.uiScale())
         ui.pushID(v.setupID)
 
         local p = ui.getCursor()
         cui.setCursorX(40)
         local clicked = ui.invisibleButton(
                 "##setup_exchange_" .. v.setupID,
-                vec2(ui.windowWidth() - 40 * cui.uiScale(), setupItemHeight)
+                vec2(ui.windowWidth() - 80 * cui.uiScale(), setupItemHeight)
         )
         local r1, r2 = ui.itemRect()
         local buttonColor = rgbm.colors.transparent
@@ -887,19 +849,20 @@ local function drawSetupItem(i, v)
         local subFontColor = settings.Appearance.uiColorTextDim
 
         if clicked then selectedSetup = v end
+        local active = selectedSetup and v.setupID == selectedSetup.setupID
 
         if ui.itemHovered() then
                 buttonColor = settings.Appearance.uiColorSecondary
                 fontColor = settings.Appearance.uiColorText
                 subFontColor = settings.Appearance.uiColorText
-        elseif selectedSetup and v.setupID == selectedSetup.setupID then
+        elseif active then
                 buttonColor = settings.Appearance.uiColorAccent
                 fontColor = settings.Appearance.uiColorTextDim
                 subFontColor = settings.Appearance.uiColorTextDim
         end
 
-        ui.drawRect(p, r2, buttonColor, 6 * cui.uiScale(), ui.CornerFlags.All)
-        ui.drawRectFilled(r1, r2, buttonColor, 6 * cui.uiScale(), ui.CornerFlags.Right)
+        ui.drawRect(p, vec2(ui.availableSpaceX(), r2.y), buttonColor, 6 * cui.uiScale(), ui.CornerFlags.All)
+        ui.drawRectFilled(r1, r2, buttonColor)
 
         local likeDelta = v.statLikes - v.statDislikes
 
@@ -978,12 +941,75 @@ local function drawSetupItem(i, v)
                 end
         end
 
+        ui.setCursor(vec2(r2.x, r1.y))
+        local hasComments = v.statComments > 0
+        local commentsClicked = ui.invisibleButton(
+                "##setup_exchange_comments_" .. v.setupID,
+                vec2(40 * cui.uiScale(), setupItemHeight * 0.5)
+        )
+        local commentsColor = rgbm.colors.gray * 0.7
+
+        if ui.itemHovered() then
+                commentsColor = settings.Appearance.uiColorSecondary
+        elseif hasComments then
+                commentsColor = settings.Appearance.uiColorText
+        end
+
+        ui.addIcon(
+                ui.Icons.Notifications,
+                vec2(60 * cui.uiScale(), setupItemHeight) * 0.35,
+                vec2(0.5, 1),
+                commentsColor,
+                0
+        )
+
+        if commentsClicked then
+                if discussingItem == v then
+                        discussingItem = nil
+                else
+                        discussingItem = v
+                        listOfComments = nil
+                        listOfCommentsPrev = nil
+                        local closeCounter = 0
+
+                        ui.popup(function()
+                                if discussingItem ~= v or closeCounter > 1 then
+                                        ui.closePopup()
+                                        return
+                                end
+                                commentsBlock()
+                        end, {
+                                size = { initial = vec2(400, ui.windowHeight()) },
+                                position = ui.windowPos() + vec2(ui.windowWidth() + 20),
+                                padding = vec2(12, 0),
+                                title = "Comments (" .. v.name:trim() .. " by " .. v.userName .. ")",
+                                backgroundColor = settings.Appearance.uiColorBackgroundShade,
+                                flags = bit.bor(ui.WindowFlags.NoCollapse, ui.WindowFlags.NoResize),
+                                onClose = function()
+                                        if discussingItem == v then discussingItem = nil end
+                                end,
+                        })
+                end
+        end
+
+        ui.setCursorX(r2.x)
+        cui.snapCursor()
+        ui.dwriteTextAligned(
+                formatNumber(v.statComments),
+                14 * cui.uiScale(),
+                ui.Alignment.Center,
+                ui.Alignment.Start,
+                vec2(38 * cui.uiScale(), setupItemHeight * 0.5),
+                false,
+                hasComments and settings.Appearance.uiColorText or settings.Appearance.uiColorTextDim
+        )
+
         ui.setCursor(r1)
         cui.setCursorX(45)
         cui.snapCursor()
         ui.dwriteTextAligned(
                 v.name:trim(),
-                16 * cui.uiScale(),
+                14 * cui.uiScale(),
                 ui.Alignment.Start,
                 ui.Alignment.Center,
                 vec2(ui.windowWidth(), setupItemHeight / 3),
@@ -991,23 +1017,38 @@ local function drawSetupItem(i, v)
                 fontColor
         )
 
-        -- if v.userID == ownUserID then ui.pushStyleColor(ui.StyleColor.Text, ownColor) end
         cui.setCursorX(45)
         cui.snapCursor()
+        if v.userID == ownUserID then
+                ui.drawRectFilled(
+                        ui.getCursor(),
+                        ui.getCursor()
+                                + vec2(
+                                        ui.measureDWriteText(
+                                                string.format("by %s.....", v.userName),
+                                                14 * cui.uiScale()
+                                        ).x,
+                                        setupItemHeight / 3
+                                ),
+                        settings.Appearance.uiColorYellow,
+                        6 * cui.uiScale()
+                )
+        end
+
         ui.dwriteTextAligned(
-                v.userName,
+                string.format("  by %s ", v.userName),
                 14 * cui.uiScale(),
                 ui.Alignment.Start,
                 ui.Alignment.Center,
                 vec2(ui.windowWidth(), setupItemHeight / 3),
                 false,
-                v.userID == ownUserID and settings.Appearance.uiColorYellow or fontColor
+                v.userID == ownUserID and settings.Appearance.uiColorBackground or fontColor
         )
 
         cui.setCursorX(45)
         cui.snapCursor()
         ui.dwriteTextAligned(
-                string.format("Downloads: %s", formatNumber(v.statDownloads)),
+                "  " .. v.trackID,
                 14 * cui.uiScale(),
                 ui.Alignment.Start,
                 ui.Alignment.Center,
@@ -1015,12 +1056,26 @@ local function drawSetupItem(i, v)
                 false,
                 subFontColor
         )
+        ui.sameLine()
 
-        ui.setCursor(r1)
-        cui.offsetCursorX(-50)
+        ui.setCursorX(r1.x)
+        cui.offsetCursorX(-90)
         cui.snapCursor()
         ui.dwriteTextAligned(
-                os.date("%Y-%m-%d %H:%M", v.createdDate),
+                os.date("  %Y-%m-%d %H:%M", v.createdDate),
+                14 * cui.uiScale(),
+                ui.Alignment.End,
+                ui.Alignment.End,
+                vec2(ui.windowWidth(), setupItemHeight / 3),
+                false,
+                subFontColor
+        )
+
+        ui.setCursor(r1)
+        cui.offsetCursorX(-90)
+        cui.snapCursor()
+        ui.dwriteTextAligned(
+                string.format("%s Downloads", formatNumber(v.statDownloads)),
                 14 * cui.uiScale(),
                 ui.Alignment.End,
                 ui.Alignment.Center,
@@ -1033,9 +1088,21 @@ local function drawSetupItem(i, v)
 end
 
 local function setupsListWindow(setups)
+        ui.setCursor(0)
         ui.childWindow("scroll_setup_exchange", ui.windowSize(), function()
                 if #setups == 0 then
-                        ui.textDisabled("No fitting setups available yet.")
+                        cui.offsetCursorX(15)
+                        cui.snapCursor()
+                        ui.dwriteTextAligned(
+                                "No fitting setups available yet.",
+                                18 * cui.uiScale(),
+                                ui.Alignment.Start,
+                                ui.Alignment.Center,
+                                vec2(ui.windowWidth(), 28 * cui.uiScale()),
+                                false,
+                                settings.Appearance.uiColorTextDim
+                        )
+
                         return
                 end
 
@@ -1051,52 +1118,75 @@ local function setupsListWindow(setups)
                         if v then drawSetupItem(i, v) end
                 end
 
-                ui.setMaxCursorY(8 * cui.uiScale() + math.max(setupsTotalCount, #setups) * setupItemHeight)
+                ui.setMaxCursorY(16 * cui.uiScale() + math.max(setupsTotalCount, #setups) * setupItemHeight)
         end)
 end
 
 local function shareSetupButton()
-        local iconButtonHeight = 36 * cui.uiScale()
+        local iconButtonHeight = 32 * cui.uiScale()
         local buttonWidth = ui.windowWidth() * 0.99
         local groupBegin = (ui.windowWidth() / 24)
         local fontSize = 18 * cui.uiScale()
+        local comboSize = vec2(100, 24) * cui.uiScale()
 
-        local likes = selectedSetup and selectedSetup.statLikes or 0
-        local dislikes = selectedSetup and selectedSetup.statDislikes or 0
-        local comments = selectedSetup and selectedSetup.statComments or 0
+        cui.combo(
+                "##sort_setup_exchange",
+                comboSize,
+                setupsOrder[stored.setupsOrder][1],
+                ui.Alignment.Start,
+                false,
+                vec2(comboSize.x, comboSize.y * #setupsOrder + 1),
+                function()
+                        cui.offsetCursorY(4)
+                        for i, v in ipairs(setupsOrder) do
+                                ui.setCursorX(0)
+                                if cui.menuButton(v[1], vec2(ui.windowWidth(), comboSize.y)) then
+                                        stored.setupsOrder = i
+                                        listOfSetups = nil
+                                end
+                        end
+                end
+        )
+        ui.sameLine()
+        cui.offsetCursorX(15)
 
-        -- cui.snapCursor()
-        -- ui.dwriteTextAligned(
-        --         os.date("%Y-%m-%d %H:%M", v.createdDate),
-        --         18 * cui.uiScale(),
-        --         ui.Alignment.End,
-        --         ui.Alignment.Center,
-        --         vec2(ui.windowWidth(), 24 * cui.uiScale())
-        -- )
+        cui.offsetCursorY(5)
+        local showTracksChanged = false
+        local showTracksValue = not stored.setupsFilterTrack
+        showTracksValue, showTracksChanged = drawCheckbox(
+                "##setup_exchange_show_current_track",
+                "Show Other Tracks",
+                16 * cui.uiScale(),
+                showTracksValue
+        )
+
+        if showTracksChanged then
+                stored.setupsFilterTrack = not showTracksValue
+                listOfSetups = nil
+        end
+
+        cui.offsetCursorY(15)
 
         ui.setCursorX(ui.windowWidth() * 0.005)
         cui.snapCursor()
-        ui.drawRectFilled(
-                ui.getCursor(),
-                ui.getCursor() + vec2(buttonWidth, 40 * cui.uiScale()),
-                settings.Appearance.uiColorBackground,
-                6 * cui.uiScale()
-        )
+
         ui.drawRect(
                 ui.getCursor(),
-                ui.getCursor() + vec2(buttonWidth, 40 * cui.uiScale()),
+                ui.getCursor() + vec2(buttonWidth, iconButtonHeight),
                 settings.Appearance.uiColorAccent * 0.75,
                 6 * cui.uiScale(),
                 ui.CornerFlags.All,
                 1 * cui.uiScale()
         )
 
+        cui.setCursorX(10)
+        cui.snapCursor()
         ui.dwriteTextAligned(
-                selectedSetup and selectedSetup.name or "Select a Setup",
-                18 * cui.uiScale(),
+                selectedSetup and string.format("%s/%s", selectedSetup.trackID, selectedSetup.name) or "Select a Setup",
+                16 * cui.uiScale(),
+                ui.Alignment.Start,
                 ui.Alignment.Center,
-                ui.Alignment.Center,
-                vec2(buttonWidth, 40),
+                vec2(buttonWidth, iconButtonHeight),
                 false,
                 settings.Appearance.uiColorText
         )
@@ -1164,7 +1254,6 @@ local function shareSetupButton()
         end
 
         ui.setCursorX(ui.windowWidth() * 0.005)
-        cui.offsetCursorY(15)
         if
                 cui.menuButton(
                         "Share Current Setup",
@@ -1213,9 +1302,10 @@ local function windowGeneric(paddingDown)
                 ui.ButtonFlags.None
         )
         ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiColorBackground, 6 * cui.uiScale())
-        -- searchFilterControls()
-        -- sortControls()
+        sortControls()
+        searchFilterControls()
         -- userControls()
+        -- commentsBlock()
 
         setupsListWindow(setups)
         cui.popWindow()

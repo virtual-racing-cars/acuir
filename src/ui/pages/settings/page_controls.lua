@@ -51,7 +51,8 @@ function page.draw()
 
         bottomBar(bottomBarButtons)
         cui.popWindow()
-        return ""
+
+        return "finalize"
 end
 
 return page

@@ -41,7 +41,7 @@ function card:draw(xPos, yPos, width, height)
                 false
         )
 
-        local fontSize = 24 * cui.uiScale()
+        local fontSize = 18 * cui.uiScale()
 
         local driverName = ac.getDriverName(sim.focusedCar)
         driverName = isempty(driverName) and "Driver %s" % sim.focusedCar or driverName
@@ -67,11 +67,13 @@ function card:draw(xPos, yPos, width, height)
         )
 
         cui.offsetCursorY(15)
-        local size = vec2(ui.windowWidth(), 40 * cui.uiScale())
+        local size = vec2(ui.windowWidth(), 36 * cui.uiScale())
         cui.combo(
                 "##comboCurrentCamera",
                 size,
                 string.format("Camera: %s", cameraModeString[sim.cameraMode]()),
+                false,
+                vec2(ui.windowWidth(), size.y * 10),
                 function()
                         for k, v in pairs(cameraModeString) do
                                 ui.setCursorX(0)
@@ -86,7 +88,7 @@ function card:draw(xPos, yPos, width, height)
                 ac.getCarID(spectatedCar.index),
                 ac.getCarSkinID(spectatedCar.index)
         )
-        local skinImageSize = 64 * cui.uiScale()
+        local skinImageSize = fontSize * 3
 
         ui.setCursorX(ui.windowWidth() - skinImageSize)
         ui.setCursorY(0)

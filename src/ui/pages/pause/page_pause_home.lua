@@ -137,7 +137,7 @@ function page.draw(dt)
                 end
         )
 
-        return ""
+        return "finalize"
 end
 
 return page

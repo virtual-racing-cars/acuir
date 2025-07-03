@@ -13,7 +13,7 @@ local setupExchange = require("setup_exchange")
 local car = ac.getCar(0)
 
 local carStatusActive = true
-local setupExchangeActive = false
+local setupExchangeActive = true
 local setupAppsActive = false
 
 local vec2Temp1 = vec2()
@@ -256,7 +256,7 @@ function page:draw()
         setupIoWindow()
         helpWindow()
 
-        return app.state.setupTab > 1 and "" or "apps"
+        return app.state.setupTab > 1 and "finalize" or "apps"
 end
 
 return page
