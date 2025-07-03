@@ -76,8 +76,6 @@ function script.update(dt)
         race:step()
         pitstop:step(dt)
 
-        -- ac.log(telemetry)
-
         -- replay:step(dt)
 
         if callback.sim then

@@ -1,21 +1,10 @@
 ## ACUIR Changelog
 *Requires minimum CSP version 0.2.11 (3465)*
-### 0.9.3.6 (unreleased)
+### 0.9.3.7 (unreleased)
 
 Features:
 - Added basic onboarding
 - V0 rewrite of Setup Exchange frontend
-
-Fixes:
-- Cleaned up gear max speeds window, as well as put it in a container
-- Fixed quick pit bindings potentially not working
-- Fixed crash for Extended Controls
-- General backend work
-- Fixed background elements highlighting when a modal popup is active
-
-### 0.9.3.4 (unreleased)
-
-Features:
 - CSP Data Logger integration (settings pending)
 - New help window, instead of the tooltip popup in Car Setup
 - Visualization for gamepad deadzone, steering speed, and steer position based on gamma in Controls->Gamepad Tweaks
@@ -24,6 +13,11 @@ Features:
 - Gamepad tweaks got a bit more fleshed out as well, can now see the deadzone on the graph.
 
 Fixes:
+- Cleaned up gear max speeds window, as well as put it in a container
+- Fixed quick pit bindings potentially not working
+- Fixed crash for Extended Controls
+- General backend work
+- Fixed background elements highlighting when a modal popup is active
 - Smaller fonts in general
 - Consistent fonts sizes throughout the app
 - App control tabs now show proper name, instead of app dir name
