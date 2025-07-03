@@ -72,6 +72,7 @@ function card:draw(xPos, yPos, width, height)
                 "##comboCurrentCamera",
                 size,
                 string.format("Camera: %s", cameraModeString[sim.cameraMode]()),
+                ui.Alignment.Center,
                 false,
                 vec2(ui.windowWidth(), size.y * 10),
                 function()

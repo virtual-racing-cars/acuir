@@ -93,7 +93,5 @@ function MainMenuWindow(dt)
                 ui.drawRectFilled(vec2(0, 0), ui.windowSize(), rgbm.colors.transparent)
         end)
 
-        ac.log(exclusiveHudMode)
-
         return app.state.debug and "debug" or exclusiveHudMode
 end
