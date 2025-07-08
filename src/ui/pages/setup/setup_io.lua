@@ -2,6 +2,7 @@ local cui = require("ui.cui")
 
 local carSetup = require("src.car_setup")
 local settings = require("settings")
+local style = require("style")
 
 local vec2Temp1 = vec2()
 
@@ -124,15 +125,9 @@ local function promptOverwriteSetup()
         end, false)
 end
 
-function drawSetupControls(sm)
-        local iconButtonHeight = 36 * cui.uiScale()
-        local buttonWidth = ui.windowWidth() * 0.99
-        local groupBegin = (ui.windowWidth() / 24)
-        local fontSize = 18 * cui.uiScale()
-
-        ui.setCursorY(0)
-        ui.setCursorX(ui.windowWidth() * 0.005)
-
+function drawLocalSetupFilters()
+        cui.offsetCursorX(10)
+        cui.offsetCursorY(10)
         local hideChanged = false
         settings.General.hideOtherTrackSetups, hideChanged = drawCheckbox(
                 "##isSetupIOHidingOtherTracks",
@@ -154,22 +149,50 @@ function drawSetupControls(sm)
         )
 
         if sortChanged then carSetup:load() end
+end
+
+function drawSetupControls(sm)
+        local iconButtonHeight = 36 * cui.uiScale()
+        local buttonWidth = ui.windowWidth() * 0.99
+        local groupBegin = (ui.windowWidth() / 24)
+        local fontSize = style.main.font.bodyLarge.size
 
         ui.setCursorX(ui.windowWidth() * 0.005)
-        cui.setCursorY(35)
+        cui.offsetCursorY(15)
+        cui.combo(
+                "##save_setup_track",
+                vec2(buttonWidth, iconButtonHeight),
+                "Track: " .. carSetup.input.track,
+                ui.Alignment.Start,
+                false,
+                vec2(buttonWidth, 200),
+                function()
+                        cui.offsetCursorY(4)
+                        for i, v in ipairs(carSetup.trackListAll) do
+                                ac.log(v)
+                                ui.setCursorX(0)
+                                if cui.menuButton(v, vec2(ui.windowWidth(), iconButtonHeight)) then
+                                        carSetup.input.track = v
+                                end
+                        end
+                end
+        )
+
+        ui.setCursorX(ui.windowWidth() * 0.005)
+        cui.offsetCursorY(5)
 
         ui.drawRect(
                 ui.getCursor(),
                 ui.getCursor() + vec2Temp1:set(buttonWidth, iconButtonHeight),
-                rgbm.colors.white * 0.65,
+                settings.Appearance.uiColorText * 0.75,
                 6 * cui.uiScale()
         )
         carSetup.input.name = cui.inputText(
                 "##SetupName",
                 vec2Temp1:set(buttonWidth - iconButtonHeight * 1.3, iconButtonHeight),
-                carSetup.input.track .. "/",
-                carSetup.input.name,
                 "",
+                carSetup.input.name,
+                " Setup Name",
                 "[%w_ .;,><%-]"
         )
         ui.sameLine()
@@ -190,8 +213,9 @@ function drawSetupControls(sm)
                 carSetup.input.name = ""
         end
         ui.sameLine()
-
         ui.newLine()
+
+        cui.offsetCursorY(5)
 
         local setupFileExists = false
         if carSetup.input.name ~= "" then
@@ -366,14 +390,13 @@ function drawSetupIO(sm)
                 cui.menuBanner("Deleted Setup", nil, rgbm.colors.red)
         end
 
-        cui.pushWindow("load_setups", 0, 0, ui.windowWidth(), ui.windowHeight() * 0.73, true, ui.ButtonFlags.None)
+        ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiColorBackgroundShade, 6 * cui.uiScale())
+        drawLocalSetupFilters()
+
+        cui.pushWindow("load_setups", 0, 40, ui.windowWidth(), ui.windowHeight() - 40, true, ui.ButtonFlags.None)
         ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiColorBackground, 6 * cui.uiScale())
         drawSetupList()
         cui.popWindow(true)
-
-        cui.pushWindow("setup_io_saved_setups", 0, ui.windowHeight() * 0.75, ui.windowWidth(), ui.windowHeight() * 0.25)
-        drawSetupControls(sm)
-        cui.popWindow()
 
         return "finalize"
 end

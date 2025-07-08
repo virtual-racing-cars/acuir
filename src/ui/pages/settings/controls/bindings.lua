@@ -4,6 +4,7 @@ local controls = require("controls")
 local cui = require("ui.cui")
 local keys = require("keys")
 local settings = require("settings")
+local style = require("style")
 local sim = ac.getSim()
 
 local inputModeStringKeys = {
@@ -383,8 +384,12 @@ function bindings:draw()
         ui.sameLine()
         cui.offsetCursorX(30)
         cui.offsetCursorY(9)
-        settings.General.showMPSBinds =
-                drawCheckbox("##mapisShowingWeather", "Show MPS Binds", 18 * cui.uiScale(), settings.General.showMPSBinds)
+        settings.General.showMPSBinds = drawCheckbox(
+                "##mapisShowingWeather",
+                "Show MPS Binds",
+                style.main.font.bodyLarge.size,
+                settings.General.showMPSBinds
+        )
 
         cui.pushWindow(
                 "settings_button_binds_window3",
@@ -411,7 +416,7 @@ function bindings:draw()
                                 cui.snapCursor()
                                 ui.dwriteTextAligned(
                                         string.upper(group.name),
-                                        18 * cui.uiScale(),
+                                        style.main.font.bodyLarge.size,
                                         ui.Alignment.Start,
                                         ui.Alignment.Center,
                                         vec2(ui.windowWidth(), 32 * cui.uiScale())

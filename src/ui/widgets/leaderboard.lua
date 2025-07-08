@@ -1,8 +1,9 @@
 require("src.classes.Checkbox")
 local cui = require("ui.cui")
-local settings = require("settings")
-local sim = ac.getSim()
 local race = require("race")
+local settings = require("settings")
+local style = require("style")
+local sim = ac.getSim()
 
 local function drawTimeIndicator(width, height, color)
         if not color then color = rgbm(0, 0.75, 0, 1) end
@@ -232,7 +233,7 @@ function leaderboardEntryButton(car, yPos, height)
                 local value, color = entry.value(car, x, y)
                 ui.dwriteTextAligned(
                         value,
-                        18 * cui.uiScale(),
+                        style.main.font.bodyLarge.size,
                         entry.align,
                         ui.Alignment.Center,
                         vec2(x, y),
@@ -250,7 +251,7 @@ end
 local isLeaderboardShowingDisconnected = false
 
 function leaderboard:draw(xPos, yPos, width, height)
-        local height = 18 * cui.uiScale() * 2
+        local height = style.main.font.bodyLarge.size * 2
         leaderboardBanner(0, height)
 
         cui.pushWindow("home_leaderboard_entrant_window", 0, height, ui.windowWidth(), ui.windowHeight() - height, true)

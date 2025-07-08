@@ -2,6 +2,7 @@ local Widget = require("src.classes.Widget")
 local cui = require("src.ui.cui")
 local settings = require("settings")
 local simutils = require("simutils")
+local style = require("style")
 local units = require("units")
 local weather = require("weather")
 local sim = ac.getSim()
@@ -45,7 +46,7 @@ function gearSpeedsWidget:body()
                 cui.snapCursor()
                 ui.dwriteTextAligned(
                         math.round(i / 10 * maxSpeed),
-                        18 * cui.uiScale(),
+                        style.main.font.bodyLarge.size,
                         ui.Alignment.Center,
                         ui.Alignment.Center,
                         vec2(65, 24) * cui.uiScale()
@@ -58,7 +59,7 @@ function gearSpeedsWidget:body()
                 cui.snapCursor()
                 ui.dwriteTextAligned(
                         math.round(car.rpmLimiter - (car.rpmLimiter / 10) * i),
-                        18 * cui.uiScale(),
+                        style.main.font.bodyLarge.size,
                         ui.Alignment.End,
                         ui.Alignment.Center,
                         vec2(65, 24) * cui.uiScale()
@@ -126,7 +127,7 @@ function gearSpeedsWidget:body()
 end
 
 function gearSpeedsWidget:footer()
-        showLabels = drawCheckbox("GEARSPEED.labels", "Show Labels", 18 * cui.uiScale(), showLabels)
+        showLabels = drawCheckbox("GEARSPEED.labels", "Show Labels", style.main.font.bodyLarge.size, showLabels)
 
         if not gearSpeedWarning then return end
 
@@ -135,7 +136,7 @@ function gearSpeedsWidget:footer()
         cui.snapCursor()
         ui.dwriteTextAligned(
                 "*Warning! Some gear max speeds exceed the next gear's max speed.",
-                18 * cui.uiScale(),
+                style.main.font.bodyLarge.size,
                 ui.Alignment.Start,
                 0,
                 ui.windowSize(),

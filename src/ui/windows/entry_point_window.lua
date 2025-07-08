@@ -29,7 +29,7 @@ function script.entryWindow(dt)
                 function()
                         ui.dwriteTextAligned(
                                 app.fullInfo,
-                                18 * cui.uiScale(),
+                                style.main.font.bodyLarge.size,
                                 ui.Alignment.Center,
                                 ui.Alignment.Center,
                                 ui.windowSize(),
@@ -44,7 +44,7 @@ function script.entryWindow(dt)
         if csp.versionAllowed then
                 ui.newLine()
                 for i, v in ipairs(settings.Modules) do
-                        local height = 18 * cui.uiScale()
+                        local height = style.main.font.bodyLarge.size
 
                         ui.setCursorX(ui.windowWidth() * 0.5 - height * 7)
 
@@ -73,7 +73,7 @@ function script.entryWindow(dt)
         else
                 ui.dwriteTextAligned(
                         string.format("Below minimum CSP version!\nMin: %s", csp.minVersionString),
-                        18 * cui.uiScale(),
+                        style.main.font.bodyLarge.size,
                         ui.Alignment.Center,
                         ui.Alignment.Center,
                         ui.windowSize(),

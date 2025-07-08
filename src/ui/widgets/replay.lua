@@ -142,7 +142,7 @@ function replayWidget:draw(xPos, yPos, width, height)
         cui.snapCursor()
         ui.dwriteTextAligned(
                 "LAP",
-                18 * cui.uiScale(),
+                style.main.font.bodyLarge.size,
                 ui.Alignment.Center,
                 ui.Alignment.Center,
                 vec2(ui.windowWidth() / 3, 36)
@@ -152,7 +152,7 @@ function replayWidget:draw(xPos, yPos, width, height)
         cui.snapCursor()
         ui.dwriteTextAligned(
                 "PLAYBACK",
-                18 * cui.uiScale(),
+                style.main.font.bodyLarge.size,
                 ui.Alignment.Center,
                 ui.Alignment.Center,
                 vec2(ui.windowWidth() / 3, 36)
@@ -162,7 +162,7 @@ function replayWidget:draw(xPos, yPos, width, height)
         cui.snapCursor()
         ui.dwriteTextAligned(
                 "CAMERA",
-                18 * cui.uiScale(),
+                style.main.font.bodyLarge.size,
                 ui.Alignment.Center,
                 ui.Alignment.Center,
                 vec2(ui.windowWidth() / 3, 36)

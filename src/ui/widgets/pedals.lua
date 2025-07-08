@@ -1,6 +1,7 @@
 local cui = require("ui.cui")
 local race = require("race")
 local settings = require("settings")
+local style = require("style")
 local units = require("units")
 local sim = ac.getSim()
 
@@ -23,7 +24,7 @@ function card:draw(xPos, yPos, width, height)
         cui.snapCursor()
         ui.dwriteTextAligned(
                 "SPEED",
-                18 * cui.uiScale(),
+                style.main.font.bodyLarge.size,
                 ui.Alignment.Start,
                 ui.Alignment.Center,
                 vec2(ui.windowWidth() / 3, 32 * cui.uiScale())
@@ -33,7 +34,7 @@ function card:draw(xPos, yPos, width, height)
         cui.snapCursor()
         ui.dwriteTextAligned(
                 "POSITION",
-                18 * cui.uiScale(),
+                style.main.font.bodyLarge.size,
                 ui.Alignment.Start,
                 ui.Alignment.Center,
                 vec2(ui.windowWidth() / 3, 32 * cui.uiScale())
@@ -43,7 +44,7 @@ function card:draw(xPos, yPos, width, height)
         cui.snapCursor()
         ui.dwriteTextAligned(
                 "LAST LAP",
-                18 * cui.uiScale(),
+                style.main.font.bodyLarge.size,
                 ui.Alignment.Start,
                 ui.Alignment.Center,
                 vec2(ui.windowWidth() / 3, 32 * cui.uiScale())

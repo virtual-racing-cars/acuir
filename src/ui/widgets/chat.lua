@@ -1,6 +1,7 @@
 local cui = require("ui.cui")
 local messages = require("messages")
 local settings = require("settings")
+local style = require("style")
 local sim = ac.getSim()
 
 local chat = {
@@ -12,7 +13,7 @@ local function logWindow(height)
         cui.pushWindow("chat_log_window", 0, 0, ui.windowWidth(), height, true)
         ui.pushTextWrapPosition(ui.windowWidth() * 0.93)
 
-        local fontSize = 18 * cui.uiScale()
+        local fontSize = style.main.font.bodyLarge.size
         local chatLineSize = 24 * cui.uiScale()
 
         ui.setCursorY(5 * cui.uiScale())

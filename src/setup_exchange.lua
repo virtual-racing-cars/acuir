@@ -4,6 +4,7 @@
 
 local cui = require("src.ui.cui")
 local settings = require("settings")
+local style = require("style")
 
 -- if settings.General.autoStart then ac.uninstallApp("SetupExchange") end
 
@@ -526,18 +527,13 @@ local function removeSetup(id, withUndo)
 end
 
 local function removeComment(id, withUndo)
-        rest("DELETE", "comments/" .. id, nil, function()
-                ui.toast(ui.Icons.Warning, "Comment removed", withUndo and function()
-                        rest(
-                                "POST",
-                                "comments-restore/" .. id,
-                                nil,
-                                function() listOfComments = nil end,
-                                function(err) ui.toast(ui.Icons.Warning, "Failed to restore comment: " .. err) end
-                        )
-                end or nil)
-                listOfComments = nil
-        end, function(err) ui.toast(ui.Icons.Warning, "Failed to remove comment: " .. err) end)
+        rest(
+                "DELETE",
+                "comments/" .. id,
+                nil,
+                function() listOfComments = nil end,
+                function(err) ui.toast(ui.Icons.Warning, "Failed to remove comment: " .. err) end
+        )
 end
 
 local icons = ui.atlasIcons("res/icons.png", 4, 1, {
@@ -567,47 +563,118 @@ local function shareSetup(name)
 end
 
 local function likeButtons(path, item, likedList, dislikedList, itemID, contextTable)
-        local liked = table.contains(likedList, itemID)
-        local disliked = table.contains(dislikedList, itemID)
-        if ui.button(string.format("     %d##likes", item.statLikes)) then
+        local fontSize = style.main.font.bodySmall.size
+        local fontSpace = style.main.font.bodySmall.space
+        local actionBlockSize = vec2(ui.availableSpaceX() / 4 - 10 * cui.uiScale(), fontSpace)
+        cui.offsetCursorY(fontSpace / 6)
+        local voteZoneButton =
+                ui.invisibleButton("##vote_zone_setup_exchange", actionBlockSize, ui.ButtonFlags.Disabled)
+        local r1, r2 = ui.itemRect()
+
+        ui.drawRectFilled(r1, r2, settings.Appearance.uiColorBackgroundShade, 6 * cui.uiScale())
+
+        local likeDelta = item.statLikes - item.statDislikes
+        -- ui.setCursor(p)
+
+        local liked = table.contains(likedSetups, itemID)
+        local disliked = table.contains(dislikedSetups, itemID)
+
+        ui.setCursor(r1)
+        local likeClicked =
+                ui.invisibleButton("##setup_exchange_like_" .. itemID, vec2(actionBlockSize.x / 3, fontSpace))
+        local likeSize = ui.itemRectSize()
+        local likeColor = rgbm.colors.gray * 0.7
+
+        if ui.itemHovered() or liked then likeColor = rgbm.colors.green end
+        ui.addIcon(ui.Icons.Up, likeSize * 0.5, vec2(0.5, 0.5), likeColor, 0)
+
+        if likeClicked then
                 if liked then
                         item.statLikes = item.statLikes - 1
-                        table.removeItem(likedList, itemID)
+                        table.removeItem(likedSetups, itemID)
                         rest("PATCH", path .. "/" .. itemID, contextTable)
                 else
                         item.statLikes = item.statLikes + 1
-                        table.insert(likedList, itemID)
+                        table.insert(likedSetups, itemID)
                         rest("PATCH", path .. "/" .. itemID, table.chain(contextTable, { direction = 1 }))
                         if disliked then
                                 item.statDislikes = item.statDislikes - 1
-                                table.removeItem(dislikedList, itemID)
+                                table.removeItem(dislikedSetups, itemID)
                         end
                 end
         end
-        ui.addIcon(icons.Like, iconSize, iconLikeAlign, liked and rgbm.colors.lime or rgbm.colors.white)
-        if ui.itemHovered() then ui.setTooltip(string.format("Likes: %d", item.statLikes)) end
 
-        ui.sameLine(0, 4)
-        if ui.button(string.format("     %d##dislikes", item.statDislikes)) then
+        ui.sameLine()
+        cui.snapCursor()
+        ui.dwriteTextAligned(
+                formatNumber(likeDelta),
+                style.main.font.bodySmall.size,
+                ui.Alignment.Center,
+                ui.Alignment.Center,
+                vec2(actionBlockSize.x / 3, fontSpace),
+                false,
+                settings.Appearance.uiColorText
+        )
+        ui.sameLine()
+
+        local dislikeClicked =
+                ui.invisibleButton("##setup_exchange_dislike_" .. itemID, vec2(actionBlockSize.x / 3, fontSpace))
+        local dislikeSize = ui.itemRectSize()
+        local dislikeColor = rgbm.colors.gray * 0.7
+
+        if ui.itemHovered() or disliked then dislikeColor = rgbm.colors.red end
+        ui.addIcon(ui.Icons.Down, dislikeSize * 0.5, vec2(0.5, 0.5), dislikeColor, 0)
+
+        if dislikeClicked then
                 if disliked then
                         item.statDislikes = item.statDislikes - 1
-                        table.removeItem(dislikedList, itemID)
+                        table.removeItem(dislikedSetups, itemID)
                         rest("PATCH", path .. "/" .. itemID, contextTable)
                 else
                         item.statDislikes = item.statDislikes + 1
-                        table.insert(dislikedList, itemID)
+                        table.insert(dislikedSetups, itemID)
                         rest("PATCH", path .. "/" .. itemID, table.chain(contextTable, { direction = -1 }))
                         if liked then
                                 item.statLikes = item.statLikes - 1
-                                table.removeItem(likedList, itemID)
+                                table.removeItem(likedSetups, itemID)
                         end
                 end
         end
-        ui.addIcon(icons.Dislike, iconSize, iconDislikeAlign, disliked and rgbm.colors.red or rgbm.colors.white)
-        if ui.itemHovered() then ui.setTooltip(string.format("Dislikes: %d", item.statDislikes)) end
+end
+
+local function timeAgo(timestamp)
+        local now = os.time()
+        local diff = now - timestamp
+        local timeNum = diff
+        local timeUnit = "second"
+
+        if diff < 60 then
+        elseif diff < 3600 then
+                timeNum = math.floor(diff / 60)
+                timeUnit = "minute"
+        elseif diff < 86400 then
+                timeNum = math.floor(diff / 3600)
+                timeUnit = "hour"
+        elseif diff < 604800 then
+                timeNum = math.floor(diff / 86400)
+                timeUnit = "day"
+        elseif diff < 2629746 then -- ~1 month
+                timeNum = math.floor(diff / 604800)
+                timeUnit = "week"
+        elseif diff < 31556952 then -- ~1 year
+                timeNum = math.floor(diff / 2629746)
+                timeUnit = "month"
+        else
+                timeNum = math.floor(diff / 31556952)
+                timeUnit = "year"
+        end
+
+        return string.format("%s %s%s ago", timeNum, timeUnit, timeNum > 1 and "s" or "")
 end
 
 local function commentsBlock()
+        ui.setCursorX(0)
+        cui.offsetCursorY(15)
         local item = discussingItem
         local comment = discussingComments[item.setupID] or ""
         local comments = refreshComments()
@@ -623,35 +690,62 @@ local function commentsBlock()
                 return
         end
 
-        ui.childWindow("commentsScroll", ui.availableSpace():sub(vec2(0, 40)), function()
-                ui.offsetCursorY(8)
-                if #comments == 0 then ui.textDisabled("No comments yet") end
+        ui.childWindow("commentsScroll", ui.availableSpace(), function()
+                local fontSize = style.main.font.bodySmall.size
+                local fontSpace = style.main.font.bodySmall.space
+                local setupItemWidth = ui.windowWidth() - 10 * cui.uiScale()
+                local actionBlockSize = vec2(ui.availableSpaceX() / 4 - 10 * cui.uiScale(), fontSpace)
+
+                cui.offsetCursorY(15)
+                if #comments == 0 then
+                        cui.snapCursor()
+                        cui.offsetCursorX(15)
+                        ui.dwriteTextAligned(
+                                "No comments yet",
+                                fontSize,
+                                ui.Alignment.Start,
+                                ui.Alignment.Center,
+                                vec2(setupItemWidth, fontSpace),
+                                false,
+                                settings.Appearance.uiColorTextDim
+                        )
+                end
                 for _, v in ipairs(comments) do
                         if ui.areaVisible(commentSize) then
                                 if _ == #comments then loadMoreComments() end
                                 local y = ui.getCursorY()
                                 ui.pushID(v.commentID)
                                 local disliked = v.statDislikes > v.statLikes + 1
-                                if disliked then ui.pushStyleVarAlpha(0.5) end
-                                if v.userID == ownUserID then ui.pushStyleColor(ui.StyleColor.Text, ownColor) end
-                                ui.text(v.userName)
-                                if v.userID == ownUserID then ui.popStyleColor() end
-                                ui.sameLine(0, 0)
-                                ui.text(string.format(" • %s", os.date("%Y/%m/%d %H:%M", v.createdDate)))
-                                ui.offsetCursorY(-2)
 
-                                if v2 then
-                                        local i = string.find(v.data, "@" .. stored.userName, 1, true)
-                                        if i then
-                                                ui.setNextTextSpanStyle(i, i + 1 + #stored.userName, ownColor, true)
-                                        end
-                                end
-                                ui.textWrapped(v.data)
+                                cui.offsetCursorX(30)
+                                cui.snapCursor()
+                                ui.dwriteTextAligned(
+                                        string.format("%s • %s", v.userName, timeAgo(v.createdDate)),
+                                        fontSize,
+                                        ui.Alignment.Start,
+                                        ui.Alignment.Center,
+                                        vec2(setupItemWidth, fontSpace),
+                                        false,
+                                        v.userID == ownUserID and settings.Appearance.uiColorYellow
+                                                or settings.Appearance.uiColorText
+                                )
 
-                                if ui.button("     Reply") then comment = "@" .. v.userName .. " " .. comment end
-                                ui.addIcon(ui.Icons.Undo, iconSize, iconAlign)
+                                cui.offsetCursorX(30)
+                                cui.snapCursor()
+                                ui.dwriteTextAligned(
+                                        v.data,
+                                        fontSize,
+                                        ui.Alignment.Start,
+                                        ui.Alignment.Start,
+                                        vec2(setupItemWidth, fontSpace),
+                                        true
+                                )
 
-                                ui.sameLine(0, 4)
+                                -- local i = string.find(v.data, "@" .. stored.userName, 1, true)
+                                -- if i then ui.setNextTextSpanStyle(i, i + 1 + #stored.userName, ownColor, true) end
+                                -- ui.textWrapped(v.data)
+
+                                cui.setCursorX(30)
                                 likeButtons(
                                         "comment-likes",
                                         v,
@@ -661,16 +755,68 @@ local function commentsBlock()
                                         { setupID = item.setupID }
                                 )
 
+                                ui.sameLine()
+                                cui.offsetCursorX(5)
+
+                                if
+                                        ui.invisibleButton(
+                                                "##reply_setup_exchange_" .. (v.commmentID or ""),
+                                                vec2(actionBlockSize.x * 0.75, actionBlockSize.y)
+                                        )
+                                then
+                                        comment = "@" .. v.userName .. " " .. comment
+                                end
+                                local r1, r2 = ui.itemRect()
+
+                                ui.drawRectFilled(r1, r2, settings.Appearance.uiColorBackgroundShade, 6 * cui.uiScale())
+                                ui.addIcon(ui.Icons.Chat, iconSize, iconAlign)
+
+                                ui.setCursor(r1)
+                                cui.snapCursor()
+                                ui.dwriteTextAligned(
+                                        "Reply",
+                                        fontSize,
+                                        ui.Alignment.Center,
+                                        ui.Alignment.Center,
+                                        vec2(actionBlockSize.x * 0.75, actionBlockSize.y),
+                                        true
+                                )
+
                                 if v.userID == ownUserID then
-                                        ui.sameLine(0, 4)
-                                        if ui.button("     Delete") then
+                                        ui.sameLine()
+                                        cui.offsetCursorX(5)
+
+                                        if
+                                                ui.invisibleButton(
+                                                        "##delete_setup_exchange_" .. (v.commmentID or ""),
+                                                        vec2(actionBlockSize.x * 0.75, actionBlockSize.y)
+                                                )
+                                        then
                                                 removeComment(v.commentID, true)
                                                 item.statComments = item.statComments - 1
                                         end
+                                        local r1, r2 = ui.itemRect()
+
+                                        ui.drawRectFilled(
+                                                r1,
+                                                r2,
+                                                settings.Appearance.uiColorBackgroundShade,
+                                                6 * cui.uiScale()
+                                        )
                                         ui.addIcon(ui.Icons.Delete, iconSize, iconAlign)
+
+                                        ui.setCursor(r1)
+                                        cui.snapCursor()
+                                        ui.dwriteTextAligned(
+                                                "Delete",
+                                                fontSize,
+                                                ui.Alignment.Center,
+                                                ui.Alignment.Center,
+                                                vec2(actionBlockSize.x * 0.75, actionBlockSize.y),
+                                                true
+                                        )
                                 end
 
-                                if disliked then ui.popStyleVar() end
                                 ui.popID()
                                 ui.offsetCursorY(12)
                                 itemSize.y = ui.getCursorY() - y
@@ -832,136 +978,147 @@ function formatNumber(n)
 end
 
 local function drawSetupItem(i, v)
-        local setupItemHeight = 64 * cui.uiScale()
+        local fontSize = style.main.font.bodySmall.size
+        local fontSpace = style.main.font.bodySmall.space
+        local setupItemWidth = ui.windowWidth() - 10 * cui.uiScale()
+        local setupItemHeight = fontSpace * 4
         ui.setCursorX(0)
-        ui.setCursorY(setupItemHeight * (i - 1) + 18 * cui.uiScale())
+        ui.setCursorY((setupItemHeight + 5 * cui.uiScale()) * (i - 1))
         ui.pushID(v.setupID)
 
         local p = ui.getCursor()
-        cui.setCursorX(40)
-        local clicked = ui.invisibleButton(
-                "##setup_exchange_" .. v.setupID,
-                vec2(ui.windowWidth() - 80 * cui.uiScale(), setupItemHeight)
-        )
+        ui.dummy(vec2(setupItemWidth, setupItemHeight))
+        local clicked = ui.itemClicked()
+        local hovered = ui.itemHovered()
         local r1, r2 = ui.itemRect()
-        local buttonColor = rgbm.colors.transparent
+        local buttonColor = settings.Appearance.uiColorTextDim
         local fontColor = settings.Appearance.uiColorText
         local subFontColor = settings.Appearance.uiColorTextDim
+        local borderThickness = 1 * cui.uiScale()
 
         if clicked then selectedSetup = v end
         local active = selectedSetup and v.setupID == selectedSetup.setupID
 
-        if ui.itemHovered() then
-                buttonColor = settings.Appearance.uiColorSecondary
-                fontColor = settings.Appearance.uiColorText
-                subFontColor = settings.Appearance.uiColorText
-        elseif active then
-                buttonColor = settings.Appearance.uiColorAccent
-                fontColor = settings.Appearance.uiColorTextDim
-                subFontColor = settings.Appearance.uiColorTextDim
+        if hovered and ui.mouseDoubleClicked(ui.MouseButton.Left) then
+                selectedSetup = v
+
+                currentlyApplying = true
+                getSetupData(selectedSetup, true, function(err, data)
+                        currentlyApplying = false
+                        if err then
+                                cui.menuBanner("Failed to load setup", nil, rgbm.colors.red)
+                        else
+                                ac.saveCurrentSetup(temporaryBackupName)
+
+                                io.save(temporaryName, data)
+                                ac.loadSetup(temporaryName)
+
+                                cui.menuBanner("Setup applied", nil, rgbm.colors.green)
+                        end
+                end)
         end
 
-        ui.drawRect(p, vec2(ui.availableSpaceX(), r2.y), buttonColor, 6 * cui.uiScale(), ui.CornerFlags.All)
-        ui.drawRectFilled(r1, r2, buttonColor)
+        -- active = true
 
-        local likeDelta = v.statLikes - v.statDislikes
+        if active then
+                borderThickness = 5 * cui.uiScale()
+                buttonColor = settings.Appearance.uiColorAccent
+        elseif hovered then
+                borderThickness = 5 * cui.uiScale()
+                buttonColor = settings.Appearance.uiColorSecondary
+        end
 
-        ui.setCursor(p)
+        ui.drawRect(r1, r2, buttonColor, 6 * cui.uiScale(), ui.CornerFlags.All, borderThickness)
+
+        ui.setCursor(r1)
+        cui.offsetCursorY(fontSpace / 6)
+        cui.setCursorX(15)
+        cui.snapCursor()
+        style:pushFontBold()
+        ui.dwriteTextAligned(
+                v.trackID .. " / " .. v.name:trim(),
+                fontSize,
+                ui.Alignment.Start,
+                ui.Alignment.Center,
+                vec2(setupItemWidth, fontSpace),
+                false,
+                fontColor
+        )
+        ui.popDWriteFont()
+
+        cui.offsetCursorY(fontSpace / 6)
+        cui.setCursorX(15)
+        local usernameButtonSize =
+                vec2(ui.measureDWriteText(string.format("%s....", v.userName), fontSize).x, fontSpace)
+
+        local usernameClicked = ui.invisibleButton("##username_button_" .. v.userName, usernameButtonSize)
+        local r1, r2 = ui.itemRect()
+        ui.drawRectFilled(
+                r1,
+                r2,
+                v.userID == ownUserID and settings.Appearance.uiColorYellow
+                        or settings.Appearance.uiColorBackgroundShade,
+                6 * cui.uiScale()
+        )
+
+        ui.setCursor(r1)
         cui.snapCursor()
         ui.dwriteTextAligned(
-                formatNumber(likeDelta),
-                14 * cui.uiScale(),
+                v.userName,
+                style.main.font.bodySmall.size,
                 ui.Alignment.Center,
                 ui.Alignment.Center,
-                vec2(42 * cui.uiScale(), setupItemHeight),
+                usernameButtonSize,
                 false,
-                settings.Appearance.uiColorText
+                v.userID == ownUserID and settings.Appearance.uiColorTextDim or settings.Appearance.uiColorText
+        )
+        ui.sameLine()
+
+        cui.offsetCursorX(10)
+        cui.snapCursor()
+        ui.dwriteTextAligned(
+                timeAgo(v.createdDate),
+                style.main.font.bodySmall.size,
+                ui.Alignment.Start,
+                ui.Alignment.Center,
+                vec2(ui.availableSpaceX() - 10 * cui.uiScale(), fontSpace),
+                false,
+                subFontColor
+        )
+        ui.sameLine()
+        ui.setCursorX(0)
+
+        cui.offsetCursorX(-10)
+        cui.snapCursor()
+        ui.dwriteTextAligned(
+                string.format("%s Downloads", formatNumber(v.statDownloads)),
+                style.main.font.bodySmall.size,
+                ui.Alignment.End,
+                ui.Alignment.Center,
+                vec2(setupItemWidth, fontSpace),
+                false,
+                subFontColor
         )
 
-        local liked = table.contains(likedSetups, v.setupID)
-        local disliked = table.contains(dislikedSetups, v.setupID)
+        local actionBlockSize = vec2(ui.availableSpaceX() / 4 - 10 * cui.uiScale(), fontSpace)
+        cui.setCursorX(15)
 
-        ui.setCursor(p)
-        local likeClicked = ui.invisibleButton(
-                "##setup_exchange_like_" .. v.setupID,
-                vec2(42 * cui.uiScale(), setupItemHeight * 0.5)
-        )
-        local likeSize = ui.itemRectSize()
-        local likeColor = rgbm.colors.gray * 0.7
+        likeButtons("likes", v, likedSetups, dislikedSetups, v.setupID, { carID = v.carID })
 
-        if ui.itemHovered() or liked then likeColor = rgbm.colors.green end
+        ui.sameLine()
+        cui.offsetCursorX(5)
 
-        ui.setCursor(p)
-        ui.icon(ui.Icons.Up, likeSize, likeColor, 18 * cui.uiScale())
-
-        if likeClicked then
-                if liked then
-                        v.statLikes = v.statLikes - 1
-                        table.removeItem(likedSetups, v.setupID)
-                        rest("PATCH", "likes/" .. v.setupID, { carID = v.carID })
-                else
-                        v.statLikes = v.statLikes + 1
-                        table.insert(likedSetups, v.setupID)
-                        rest("PATCH", "likes/" .. v.setupID, table.chain({ carID = v.carID }, { direction = 1 }))
-                        if disliked then
-                                v.statDislikes = v.statDislikes - 1
-                                table.removeItem(dislikedSetups, v.setupID)
-                        end
-                end
-        end
-
-        ui.setCursor(p)
-        ui.offsetCursorY(setupItemHeight * 0.5)
-        local dislikeClicked = ui.invisibleButton(
-                "##setup_exchange_dislike_" .. v.setupID,
-                vec2(42 * cui.uiScale(), setupItemHeight * 0.5)
-        )
-        local dislikeSize = ui.itemRectSize()
-        local dislikeColor = rgbm.colors.gray * 0.7
-
-        if ui.itemHovered() or disliked then dislikeColor = rgbm.colors.red end
-
-        ui.setCursor(p)
-        ui.offsetCursorY(setupItemHeight * 0.525)
-        ui.icon(ui.Icons.Down, dislikeSize, dislikeColor, 18 * cui.uiScale())
-
-        if dislikeClicked then
-                if disliked then
-                        v.statDislikes = v.statDislikes - 1
-                        table.removeItem(dislikedSetups, v.setupID)
-                        rest("PATCH", "likes/" .. v.setupID, { carID = v.carID })
-                else
-                        v.statDislikes = v.statDislikes + 1
-                        table.insert(dislikedSetups, v.setupID)
-                        rest("PATCH", "likes/" .. v.setupID, table.chain({ carID = v.carID }, { direction = -1 }))
-                        if liked then
-                                v.statLikes = v.statLikes - 1
-                                table.removeItem(likedSetups, v.setupID)
-                        end
-                end
-        end
-
-        ui.setCursor(vec2(r2.x, r1.y))
         local hasComments = v.statComments > 0
-        local commentsClicked = ui.invisibleButton(
-                "##setup_exchange_comments_" .. v.setupID,
-                vec2(40 * cui.uiScale(), setupItemHeight * 0.5)
-        )
+        local commentsClicked = ui.invisibleButton("##setup_exchange_comments_" .. v.setupID, actionBlockSize)
         local commentsColor = rgbm.colors.gray * 0.7
+        local r1, r2 = ui.itemRect()
+        ui.drawRectFilled(r1, r2, settings.Appearance.uiColorBackgroundShade, 6 * cui.uiScale())
 
         if ui.itemHovered() then
                 commentsColor = settings.Appearance.uiColorSecondary
         elseif hasComments then
                 commentsColor = settings.Appearance.uiColorText
         end
-
-        ui.addIcon(
-                ui.Icons.Notifications,
-                vec2(60 * cui.uiScale(), setupItemHeight) * 0.35,
-                vec2(0.5, 1),
-                commentsColor,
-                0
-        )
 
         if commentsClicked then
                 if discussingItem == v then
@@ -972,255 +1129,66 @@ local function drawSetupItem(i, v)
                         listOfCommentsPrev = nil
                         local closeCounter = 0
 
-                        ui.popup(function()
-                                if discussingItem ~= v or closeCounter > 1 then
-                                        ui.closePopup()
-                                        return
-                                end
-                                commentsBlock()
-                        end, {
-                                size = { initial = vec2(400, ui.windowHeight()) },
-                                position = ui.windowPos() + vec2(ui.windowWidth() + 20),
-                                padding = vec2(12, 0),
-                                title = "Comments (" .. v.name:trim() .. " by " .. v.userName .. ")",
-                                backgroundColor = settings.Appearance.uiColorBackgroundShade,
-                                flags = bit.bor(ui.WindowFlags.NoCollapse, ui.WindowFlags.NoResize),
-                                onClose = function()
-                                        if discussingItem == v then discussingItem = nil end
-                                end,
-                        })
+                        -- ui.popup(function()
+                        --         if discussingItem ~= v or closeCounter > 1 then
+                        --                 ui.closePopup()
+                        --                 return
+                        --         end
+                        --         commentsBlock()
+                        -- end, {
+                        --         size = { initial = vec2(400, ui.windowHeight()) },
+                        --         position = ui.windowPos() + vec2(ui.windowWidth() + 20),
+                        --         padding = vec2(12, 0),
+                        --         title = "Comments (" .. v.name:trim() .. " by " .. v.userName .. ")",
+                        --         backgroundColor = settings.Appearance.uiColorBackgroundShade,
+                        --         flags = bit.bor(ui.WindowFlags.NoCollapse, ui.WindowFlags.NoResize),
+                        --         onClose = function()
+                        --                 if discussingItem == v then discussingItem = nil end
+                        --         end,
+                        -- })
                 end
         end
 
-        ui.setCursorX(r2.x)
+        ui.setCursor(r1)
         cui.snapCursor()
         ui.dwriteTextAligned(
-                formatNumber(v.statComments),
-                14 * cui.uiScale(),
+                formatNumber(v.statComments) .. " Comments",
+                style.main.font.bodySmall.size,
                 ui.Alignment.Center,
-                ui.Alignment.Start,
-                vec2(38 * cui.uiScale(), setupItemHeight * 0.5),
+                ui.Alignment.Center,
+                actionBlockSize,
                 false,
                 hasComments and settings.Appearance.uiColorText or settings.Appearance.uiColorTextDim
         )
+        ui.sameLine()
+        ui.offsetCursorX(actionBlockSize.x)
+        cui.offsetCursorX(5)
 
-        ui.setCursor(r1)
-        cui.setCursorX(45)
-        cui.snapCursor()
-        ui.dwriteTextAligned(
-                v.name:trim(),
-                14 * cui.uiScale(),
-                ui.Alignment.Start,
-                ui.Alignment.Center,
-                vec2(ui.windowWidth(), setupItemHeight / 3),
-                false,
-                fontColor
-        )
-
-        cui.setCursorX(45)
-        cui.snapCursor()
-        if v.userID == ownUserID then
-                ui.drawRectFilled(
-                        ui.getCursor(),
-                        ui.getCursor()
-                                + vec2(
-                                        ui.measureDWriteText(
-                                                string.format("by %s.....", v.userName),
-                                                14 * cui.uiScale()
-                                        ).x,
-                                        setupItemHeight / 3
-                                ),
-                        settings.Appearance.uiColorYellow,
-                        6 * cui.uiScale()
+        if active then
+                local applyAvailable = ac.isSetupAvailableToEdit() and v.carID == mainCarID and not currentlyApplying
+                local applyClicked = ui.invisibleButton(
+                        "##download_setup_" .. v.setupID,
+                        actionBlockSize,
+                        applyAvailable and 0 or ui.ButtonFlags.Disabled
                 )
-        end
+                local r1, r2 = ui.itemRect()
+                ui.drawRectFilled(r1, r2, settings.Appearance.uiColorBackgroundShade, 6 * cui.uiScale())
 
-        ui.dwriteTextAligned(
-                string.format("  by %s ", v.userName),
-                14 * cui.uiScale(),
-                ui.Alignment.Start,
-                ui.Alignment.Center,
-                vec2(ui.windowWidth(), setupItemHeight / 3),
-                false,
-                v.userID == ownUserID and settings.Appearance.uiColorBackground or fontColor
-        )
+                ui.setCursor(r1)
+                cui.snapCursor()
+                ui.dwriteTextAligned(
+                        "Apply Setup",
+                        style.main.font.bodySmall.size,
+                        ui.Alignment.Center,
+                        ui.Alignment.Center,
+                        actionBlockSize,
+                        false,
+                        applyAvailable and settings.Appearance.uiColorText or settings.Appearance.uiColorTextDim
+                )
 
-        cui.setCursorX(45)
-        cui.snapCursor()
-        ui.dwriteTextAligned(
-                "  " .. v.trackID,
-                14 * cui.uiScale(),
-                ui.Alignment.Start,
-                ui.Alignment.Center,
-                vec2(ui.windowWidth(), setupItemHeight / 3),
-                false,
-                subFontColor
-        )
-        ui.sameLine()
+                if applyClicked then
+                        selectedSetup = v
 
-        ui.setCursorX(r1.x)
-        cui.offsetCursorX(-90)
-        cui.snapCursor()
-        ui.dwriteTextAligned(
-                os.date("  %Y-%m-%d %H:%M", v.createdDate),
-                14 * cui.uiScale(),
-                ui.Alignment.End,
-                ui.Alignment.End,
-                vec2(ui.windowWidth(), setupItemHeight / 3),
-                false,
-                subFontColor
-        )
-
-        ui.setCursor(r1)
-        cui.offsetCursorX(-90)
-        cui.snapCursor()
-        ui.dwriteTextAligned(
-                string.format("%s Downloads", formatNumber(v.statDownloads)),
-                14 * cui.uiScale(),
-                ui.Alignment.End,
-                ui.Alignment.Center,
-                vec2(ui.windowWidth(), setupItemHeight),
-                false,
-                subFontColor
-        )
-
-        ui.popID()
-end
-
-local function setupsListWindow(setups)
-        ui.setCursor(0)
-        ui.childWindow("scroll_setup_exchange", ui.windowSize(), function()
-                if #setups == 0 then
-                        cui.offsetCursorX(15)
-                        cui.snapCursor()
-                        ui.dwriteTextAligned(
-                                "No fitting setups available yet.",
-                                18 * cui.uiScale(),
-                                ui.Alignment.Start,
-                                ui.Alignment.Center,
-                                vec2(ui.windowWidth(), 28 * cui.uiScale()),
-                                false,
-                                settings.Appearance.uiColorTextDim
-                        )
-
-                        return
-                end
-
-                local setupItemHeight = 64 * cui.uiScale()
-
-                local f = 1 + math.floor(ui.getScrollY() / setupItemHeight)
-                local t = 2 + math.floor((ui.getScrollY() + ui.windowHeight()) / setupItemHeight)
-
-                if t > #setups then loadMoreSetups() end
-                for i = f, math.min(t, #setups) do
-                        local v = setups[i]
-
-                        if v then drawSetupItem(i, v) end
-                end
-
-                ui.setMaxCursorY(16 * cui.uiScale() + math.max(setupsTotalCount, #setups) * setupItemHeight)
-        end)
-end
-
-local function shareSetupButton()
-        local iconButtonHeight = 32 * cui.uiScale()
-        local buttonWidth = ui.windowWidth() * 0.99
-        local groupBegin = (ui.windowWidth() / 24)
-        local fontSize = 18 * cui.uiScale()
-        local comboSize = vec2(100, 24) * cui.uiScale()
-
-        cui.combo(
-                "##sort_setup_exchange",
-                comboSize,
-                setupsOrder[stored.setupsOrder][1],
-                ui.Alignment.Start,
-                false,
-                vec2(comboSize.x, comboSize.y * #setupsOrder + 1),
-                function()
-                        cui.offsetCursorY(4)
-                        for i, v in ipairs(setupsOrder) do
-                                ui.setCursorX(0)
-                                if cui.menuButton(v[1], vec2(ui.windowWidth(), comboSize.y)) then
-                                        stored.setupsOrder = i
-                                        listOfSetups = nil
-                                end
-                        end
-                end
-        )
-        ui.sameLine()
-        cui.offsetCursorX(15)
-
-        cui.offsetCursorY(5)
-        local showTracksChanged = false
-        local showTracksValue = not stored.setupsFilterTrack
-        showTracksValue, showTracksChanged = drawCheckbox(
-                "##setup_exchange_show_current_track",
-                "Show Other Tracks",
-                16 * cui.uiScale(),
-                showTracksValue
-        )
-
-        if showTracksChanged then
-                stored.setupsFilterTrack = not showTracksValue
-                listOfSetups = nil
-        end
-
-        cui.offsetCursorY(15)
-
-        ui.setCursorX(ui.windowWidth() * 0.005)
-        cui.snapCursor()
-
-        ui.drawRect(
-                ui.getCursor(),
-                ui.getCursor() + vec2(buttonWidth, iconButtonHeight),
-                settings.Appearance.uiColorAccent * 0.75,
-                6 * cui.uiScale(),
-                ui.CornerFlags.All,
-                1 * cui.uiScale()
-        )
-
-        cui.setCursorX(10)
-        cui.snapCursor()
-        ui.dwriteTextAligned(
-                selectedSetup and string.format("%s/%s", selectedSetup.trackID, selectedSetup.name) or "Select a Setup",
-                16 * cui.uiScale(),
-                ui.Alignment.Start,
-                ui.Alignment.Center,
-                vec2(buttonWidth, iconButtonHeight),
-                false,
-                settings.Appearance.uiColorText
-        )
-
-        if ac.isSetupAvailableToEdit() and selectedSetup and selectedSetup.carID == mainCarID then
-                ui.setCursorX(ui.windowWidth() * 0.005)
-                if
-                        cui.menuButton(
-                                "Download Setup",
-                                vec2(buttonWidth * 0.49, iconButtonHeight),
-                                nil,
-                                nil,
-                                (selectedSetup and downloadedAsFiles[selectedSetup.setupID]) and ui.ButtonFlags.Active
-                                        or not currentlyApplying and 0
-                                        or ui.ButtonFlags.Disabled,
-                                false,
-                                false
-                        )
-                then
-                        downloadSetupAsFile(selectedSetup)
-                end
-
-                ui.sameLine()
-                ui.offsetCursorX(buttonWidth * 0.02)
-
-                if
-                        cui.menuButton(
-                                "Apply Setup",
-                                vec2(buttonWidth * 0.49, iconButtonHeight),
-                                0,
-                                0,
-                                not currentlyApplying and 0 or ui.ButtonFlags.Disabled
-                        )
-                then
                         currentlyApplying = true
                         getSetupData(selectedSetup, true, function(err, data)
                                 currentlyApplying = false
@@ -1237,21 +1205,112 @@ local function shareSetupButton()
                         end)
                 end
         else
-                ui.setCursorX(ui.windowWidth() * 0.005)
-                if
-                        cui.menuButton(
-                                "Download Setup",
-                                vec2(buttonWidth, iconButtonHeight),
-                                nil,
-                                nil,
-                                (selectedSetup and currentlyApplying) and 0 or ui.ButtonFlags.Disabled,
-                                false,
-                                false
-                        )
-                then
-                        downloadSetupAsFile(selectedSetup)
-                end
+                ui.dummy(actionBlockSize)
         end
+
+        if discussingItem == v then commentsBlock() end
+
+        ui.popID()
+end
+
+-- discussingItem = {
+--         createdDate = 1654857628,
+--         name = "FROM AL1qx",
+--         userName = "STZ",
+--         statLikes = 327,
+--         statDislikes = 13,
+--         carID = "lotus_exos_125_s1",
+--         trackID = "monza",
+--         statComments = 8,
+--         setupID = 23,
+--         statDownloads = 26788,
+--         userID = "DEUHXI9dgCmo1GTVCWnAozlsU6SaObI+0NprxiUvyxU=",
+-- }
+
+local function setupsListWindow(setups)
+        ui.setCursor(0)
+
+        if discussingItem then
+                drawSetupItem(1, discussingItem)
+                return
+        end
+
+        ui.childWindow("scroll_setup_exchange", ui.windowSize(), function()
+                if #setups == 0 then
+                        cui.offsetCursorX(15)
+                        cui.snapCursor()
+                        ui.dwriteTextAligned(
+                                "No fitting setups available yet.",
+                                style.main.font.bodyLarge.size,
+                                ui.Alignment.Start,
+                                ui.Alignment.Center,
+                                vec2(ui.windowWidth(), 28 * cui.uiScale()),
+                                false,
+                                settings.Appearance.uiColorTextDim
+                        )
+
+                        return
+                end
+
+                local fontSpace = style.main.font.bodySmall.space
+                local setupItemHeight = fontSpace * 4 + 5 * cui.uiScale()
+
+                local f = 1 + math.floor(ui.getScrollY() / setupItemHeight)
+                local t = 2 + math.floor((ui.getScrollY() + ui.windowHeight()) / setupItemHeight)
+
+                if t > #setups then loadMoreSetups() end
+                for i = f, math.min(t, #setups) do
+                        local v = setups[i]
+
+                        if v then drawSetupItem(i, v) end
+                end
+
+                ui.setMaxCursorY(math.max(setupsTotalCount, #setups) * setupItemHeight)
+        end)
+end
+
+local function shareSetupButton()
+        local iconButtonHeight = 32 * cui.uiScale()
+        local buttonWidth = ui.windowWidth() * 0.99
+        local groupBegin = (ui.windowWidth() / 24)
+        local fontSize = style.main.font.bodyLarge.size
+
+        cui.offsetCursorY(100)
+
+        -- if ac.isSetupAvailableToEdit() and selectedSetup and selectedSetup.carID == mainCarID then
+        --         ui.setCursorX(ui.windowWidth() * 0.005)
+        --         if
+        --                 cui.menuButton(
+        --                         "Download Setup",
+        --                         vec2(buttonWidth * 0.49, iconButtonHeight),
+        --                         nil,
+        --                         nil,
+        --                         (selectedSetup and downloadedAsFiles[selectedSetup.setupID]) and ui.ButtonFlags.Active
+        --                                 or not currentlyApplying and 0
+        --                                 or ui.ButtonFlags.Disabled,
+        --                         false,
+        --                         false
+        --                 )
+        --         then
+        --                 downloadSetupAsFile(selectedSetup)
+        --         end
+
+        -- else
+        --         ui.setCursorX(ui.windowWidth() * 0.005)
+        --         if
+        --                 cui.menuButton(
+        --                         "Download Setup",
+        --                         vec2(buttonWidth, iconButtonHeight),
+        --                         nil,
+        --                         nil,
+        --                         (selectedSetup and currentlyApplying) and 0 or ui.ButtonFlags.Disabled,
+        --                         false,
+        --                         false
+        --                 )
+        --         then
+        --                 downloadSetupAsFile(selectedSetup)
+        --         end
+        -- end
 
         ui.setCursorX(ui.windowWidth() * 0.005)
         if
@@ -1279,6 +1338,92 @@ local function failureBlock(setups)
         ui.popAlignment()
 end
 
+local newSearchFilter = ""
+
+local function searchFilters()
+        local iconButtonHeight = 32 * cui.uiScale()
+        local buttonWidth = ui.windowWidth() * 0.99
+        local groupBegin = (ui.windowWidth() / 24)
+        local fontSize = style.main.font.bodyLarge.size
+        local comboSize = vec2((ui.windowWidth() - 20 * cui.uiScale()) * 0.5, 32 * cui.uiScale())
+
+        ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiColorBackgroundShade, 6 * cui.uiScale())
+
+        cui.offsetCursorX(10)
+        cui.setCursorY(10)
+        local textInputWidth = ui.windowWidth() * 0.25
+        ui.drawRectFilled(
+                ui.getCursor(),
+                ui.getCursor() + comboSize,
+                settings.Appearance.uiColorBackground * 0.25,
+                6 * cui.uiScale()
+        )
+        ui.drawRect(
+                ui.getCursor(),
+                ui.getCursor() + comboSize,
+                settings.Appearance.uiColorText * 0.75,
+                6 * cui.uiScale()
+        )
+
+        newSearchFilter = cui.inputText("##controlsSearcher", comboSize, "", newSearchFilter, "Search setups...", "")
+
+        if searchFilter ~= newSearchFilter then
+                searchFilter = newSearchFilter
+                listOfSetups = nil
+        end
+
+        ui.sameLine()
+        ui.setCursorX(comboSize.x)
+        ui.icon(ui.Icons.ZoomIn, 32 * cui.uiScale(), rgbm.colors.gray, 32 * cui.uiScale() * 0.5)
+
+        ui.sameLine()
+        ui.setCursorX(ui.windowWidth() * 0.5 + 10 * cui.uiScale())
+
+        cui.combo(
+                "##sort_setup_exchange",
+                comboSize,
+                setupsOrder[stored.setupsOrder][1],
+                ui.Alignment.Start,
+                true,
+                vec2(comboSize.x, comboSize.y * (#setupsOrder + 2)),
+                function()
+                        cui.offsetCursorX(25)
+                        cui.offsetCursorY(15)
+                        local showTracksChanged = false
+                        local showTracksValue = not stored.setupsFilterTrack
+                        showTracksValue, showTracksChanged = drawCheckbox(
+                                "##setup_exchange_show_current_track",
+                                "Show All Tracks",
+                                style.main.font.bodySmall.size,
+                                showTracksValue
+                        )
+
+                        if showTracksChanged then
+                                stored.setupsFilterTrack = not showTracksValue
+                                listOfSetups = nil
+                        end
+
+                        cui.offsetCursorY(15)
+
+                        for i, v in ipairs(setupsOrder) do
+                                cui.setCursorX(15)
+                                if
+                                        cui.menuButton(
+                                                v[1],
+                                                vec2(ui.windowWidth() - 30 * cui.uiScale(), comboSize.y),
+                                                ui.Alignment.Center
+                                        )
+                                then
+                                        stored.setupsOrder = i
+                                        listOfSetups = nil
+                                end
+                        end
+
+                        cui.offsetCursorY(15)
+                end
+        )
+end
+
 local function windowGeneric(paddingDown)
         local setups = refreshSetups()
         if not setups then
@@ -1292,28 +1437,35 @@ local function windowGeneric(paddingDown)
                 return
         end
 
+        local filterSpaceSize = 5 * cui.uiScale()
+
+        if not discussingItem then
+                filterSpaceSize = 50 * cui.uiScale()
+                searchFilters()
+        end
+
         cui.pushWindow(
                 "setup_exchange_setups",
                 0,
-                0,
+                filterSpaceSize,
                 ui.windowWidth(),
-                ui.windowHeight() * 0.73,
+                ui.windowHeight() - filterSpaceSize,
                 false,
                 ui.ButtonFlags.None
         )
         ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiColorBackground, 6 * cui.uiScale())
         sortControls()
-        searchFilterControls()
+        -- searchFilterControls()
         -- userControls()
         -- commentsBlock()
 
         setupsListWindow(setups)
         cui.popWindow()
 
-        cui.pushWindow("setup_exchange_io", 0, ui.windowHeight() * 0.75, ui.windowWidth(), ui.windowHeight() * 0.25)
-        shareSetupButton()
+        -- cui.pushWindow("setup_exchange_io", 0, ui.windowHeight() * 0.75, ui.windowWidth(), ui.windowHeight() * 0.25)
+        -- shareSetupButton()
 
-        cui.popWindow()
+        -- cui.popWindow()
 end
 
 local introHeight = 100

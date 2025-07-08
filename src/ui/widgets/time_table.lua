@@ -1,7 +1,8 @@
 local cui = require("ui.cui")
-local settings = require("settings")
-local sim = ac.getSim()
 local race = require("race")
+local settings = require("settings")
+local style = require("style")
+local sim = ac.getSim()
 
 local timetable = { isShowingDisconnected = false }
 
@@ -345,7 +346,7 @@ function timetableEntryButton(car, yPos, height)
                 local value, color = entry.value(car, x, y)
                 ui.dwriteTextAligned(
                         value,
-                        18 * cui.uiScale(),
+                        style.main.font.bodyLarge.size,
                         entry.align,
                         ui.Alignment.Center,
                         vec2(x, y),
@@ -361,7 +362,7 @@ function timetableEntryButton(car, yPos, height)
 end
 
 function timetable:draw(xPos, yPos, width, height)
-        local height = 18 * cui.uiScale() * 2
+        local height = style.main.font.bodyLarge.size * 2
         timetableBanner(0, height)
 
         cui.pushWindow("home_timetable_entrant_window", 0, height, ui.windowWidth(), ui.windowHeight() - height, true)

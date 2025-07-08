@@ -172,7 +172,7 @@ local function drawTelemetrySlice()
         ui.setCursor(mousePos)
         if ui.windowHovered() then
                 ui.tooltip(function()
-                        local fontSize = 18 * cui.uiScale()
+                        local fontSize = style.main.font.bodyLarge.size
                         local textBoxSize = vec2Temp1:set(100 * cui.uiScale(), 24 * cui.uiScale())
 
                         cui.snapCursor()

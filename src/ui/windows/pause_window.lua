@@ -38,16 +38,12 @@ function PauseMenuWindow(dt)
         if cui.modalDialogCallback then
                 cui.contentWindow(
                         "callback_window",
-                        vec2(0, 0),
+                        0,
                         ui.windowSize(),
                         ui.WindowFlags.NoScrollbar + ui.WindowFlags.NoScrollWithMouse,
                         function()
                                 ui.setCursor(0)
-                                ui.drawRectFilled(
-                                        vec2(0, 0),
-                                        ui.windowSize(),
-                                        settings.Appearance.uiColorBackgroundShade * 0.98
-                                )
+                                ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiColorBackgroundShade * 0.98)
                                 local childWindowWith = ui.windowWidth() / 5
                                 local childWindowHeight = ui.windowHeight() / 5
                                 cui.contentWindow(

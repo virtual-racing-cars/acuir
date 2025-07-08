@@ -6,13 +6,23 @@ local setup = {
         current = "generic/default",
         loaded = {},
         trackList = {},
+        trackListAll = {},
         selected = { name = "", track = "", description = "", path = "", lastWriteTime = "" },
         input = { name = "", track = ac.getTrackID(), description = "", path = "", lastWriteTime = "" },
 }
 
 local setupsDir = ac.getFolder(ac.FolderID.UserSetups) .. "\\" .. ac.getCarID(0)
+local tracksDir = ac.getFolder(ac.FolderID.ContentTracks)
 
-function setup:getFiles() end
+io.scanDir(tracksDir, function(dirName)
+        if io.dirExists(tracksDir .. "\\" .. dirName) then table.insert(setup.trackListAll, dirName) end
+end)
+
+table.sort(setup.trackListAll)
+table.removeItem(setup.trackListAll, "generic")
+table.insert(setup.trackListAll, 1, "generic")
+table.removeItem(setup.trackListAll, ac.getTrackID())
+table.insert(setup.trackListAll, 1, ac.getTrackID())
 
 function setup:load()
         for track, _ in pairs(setup.loaded) do

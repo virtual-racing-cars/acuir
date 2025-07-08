@@ -123,7 +123,7 @@ local centerStatusInfo = {
 
 function CarStatusWindow()
         local spaceSize = 34 * cui.uiScale()
-        local fontSize = 18 * cui.uiScale()
+        local fontSize = style.main.font.bodyLarge.size
 
         style:pushFontBold()
         ui.setCursor(0)

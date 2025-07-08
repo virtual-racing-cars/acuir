@@ -40,7 +40,7 @@ local function scanApp(appName, appDirectory)
                         package.add("..\\%s" % appName)
                         local name = appManifestINI:get(section, "NAME", appName)
 
-                        if name ~= "SetupExchange" then
+                        if name ~= "Setup Exchange" then
                                 setupapps[name] = {
                                         inline = true,
                                         script = sandboxedRequire(

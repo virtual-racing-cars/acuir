@@ -77,7 +77,7 @@ local pauseButtons = {
 
 function page.draw(dt)
         local childWindowWith = (500 * cui.uiScale())
-        local childWindowHeight = (700 * cui.uiScale())
+        local childWindowHeight = (800 * cui.uiScale())
         local mainWindowFlags = ui.WindowFlags.NoScrollbar + ui.WindowFlags.NoScrollWithMouse
 
         if cui.modalDialogCallback then
@@ -106,7 +106,7 @@ function page.draw(dt)
                         ui.setCursorX(ui.windowWidth() * 0.1)
                         ui.beginGroup(ui.windowWidth() * 0.1)
 
-                        local menuButtonSize = vec2(ui.windowWidth() * 0.8, ui.windowHeight() / 14)
+                        local menuButtonSize = vec2(ui.windowWidth() * 0.8, ui.windowHeight() / 12)
 
                         ui.pushStyleColor(ui.StyleColor.Button, settings.Appearance.uiColorPrimary)
                         for i in ipairs(pauseButtons) do

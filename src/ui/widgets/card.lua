@@ -1,6 +1,7 @@
 local cui = require("ui.cui")
 local race = require("race")
 local settings = require("settings")
+local style = require("style")
 local sim = ac.getSim()
 
 local card = {}
@@ -41,7 +42,7 @@ function card:draw(xPos, yPos, width, height)
                 false
         )
 
-        local fontSize = 18 * cui.uiScale()
+        local fontSize = style.main.font.bodyLarge.size
 
         local driverName = ac.getDriverName(sim.focusedCar)
         driverName = isempty(driverName) and "Driver %s" % sim.focusedCar or driverName

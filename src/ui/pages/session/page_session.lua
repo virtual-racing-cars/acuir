@@ -5,6 +5,7 @@ local settings = require("settings")
 local timetableWidget = require("ui.widgets.time_table")
 local trackMapWidget = require("ui.widgets.track_map")
 
+local style = require("style")
 local units = require("units")
 local weather = require("weather")
 local car = ac.getCar(0)
@@ -119,7 +120,7 @@ end
 
 function page.draw()
         genericButtonHeight = 40 * cui.uiScale()
-        fontSize = 18 * cui.uiScale()
+        fontSize = style.main.font.bodyLarge.size
 
         cui.pushWindow("session_box_window", 0, 0, ui.windowWidth(), ui.windowHeight() - 255 * cui.uiScale())
 

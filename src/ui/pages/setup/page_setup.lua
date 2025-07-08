@@ -10,6 +10,7 @@ local cui = require("ui.cui")
 local dataLogger = require("data_logger")
 local settings = require("settings")
 local setupExchange = require("setup_exchange")
+local style = require("style")
 local car = ac.getCar(0)
 
 local carStatusActive = true
@@ -44,7 +45,7 @@ local function helpWindow()
         cui.setCursorX(15)
         ui.pushTextWrapPosition(ui.windowWidth() - 15 * cui.uiScale())
         cui.snapCursor()
-        ui.dwriteText(sm.activeHelpString, 18 * cui.uiScale())
+        ui.dwriteText(sm.activeHelpString, style.main.font.bodyLarge.size)
 
         ui.popTextWrapPosition()
 
@@ -87,7 +88,7 @@ local function dataLoggingWindow()
                         cui.snapCursor()
                         ui.dwriteTextAligned(
                                 dataLogger:loggerTime(),
-                                18 * cui.uiScale(),
+                                style.main.font.bodyLarge.size,
                                 ui.Alignment.Start,
                                 ui.Alignment.Center,
                                 ui.windowSize(),
@@ -98,7 +99,7 @@ local function dataLoggingWindow()
                         settings.DataLogger.autoStartLogging = drawCheckbox(
                                 "##dataLoggerAutoStart",
                                 "Auto-Start",
-                                18 * cui.uiScale(),
+                                style.main.font.bodyLarge.size,
                                 settings.DataLogger.autoStartLogging
                         )
                 end
@@ -108,7 +109,7 @@ local function dataLoggingWindow()
                 ui.setCursor(0)
                 ui.dwriteTextAligned(
                         "Requires a Car with Extended Physics",
-                        18 * cui.uiScale(),
+                        style.main.font.bodyLarge.size,
                         ui.Alignment.Center,
                         ui.Alignment.Center,
                         ui.windowSize(),
@@ -190,61 +191,71 @@ local function carStatusWindow()
         cui.popContentWindow()
 end
 
-local function setupIoWindow()
-        ui.setCursor(0)
+local carSetupTab = 3
+local saveSetupTab = 1
 
-        cui.pushContentWindow(
-                "setup_left_window",
-                0,
-                0,
-                ui.windowWidth() / 5,
-                ui.windowHeight() * 0.5 - 7.5 * cui.uiScale(),
-                function()
-                        ui.setCursor(0)
-                        if cui.windowTabButton("Car Setup", 36, ui.ButtonFlags.None, false) then
-                        end
-                end,
-                function()
-                        if cui.menuButton("Reset All", ui.windowSize(), nil, nil) then
-                                ac.resetSetupToDefault()
-                                cui.menuBanner("Setup reset to default", nil, rgbm.colors.orange)
-                        end
-                end
-        )
+local function setupExchangeFooter()
+        if cui.menuButton("Reset All", ui.windowSize(), nil, nil) then
+                ac.resetSetupToDefault()
+                cui.menuBanner("Setup reset to default", nil, rgbm.colors.orange)
+        end
+end
 
+local WidgetWindow = require("src.classes.WidgetWindow")
+
+local carSetupWindow = WidgetWindow("car_setup")
+
+carSetupWindow:addWidget("Car Setup", function()
         cui.pushWindow("setup_tab_bar_window", 0, 0, ui.windowWidth(), ui.windowHeight(), true)
         app.state.setupTab = setupTabBar(sm.setupTabs)
         cui.popWindow(false)
+end)
 
-        cui.popContentWindow()
+carSetupWindow:addWidget("Local Setups", function() drawSetupIO(sm) end)
+
+carSetupWindow:addWidget("Setup Exchange", function() setupExchange:draw() end)
+
+local function setupIoWindow()
+        ui.setCursor(0)
+
+        carSetupWindow:draw()
 
         cui.pushContentWindow(
-                "setup_io_main_window",
+                "setup_save_window",
                 0,
-                ui.windowHeight() * 0.5 + 7.5 * cui.uiScale(),
-                ui.windowWidth() / 5,
-                ui.windowHeight() * 0.5 - 7.5 * cui.uiScale(),
+                ui.windowHeight() * 0.75 + 7.5 * cui.uiScale(),
+                ui.windowWidth() * 0.22,
+                ui.windowHeight() * 0.25 - 7.5 * cui.uiScale(),
                 function()
                         ui.setCursor(0)
-                        if cui.windowTabButton("Local Setups", 36, ui.ButtonFlags.None, not setupExchangeActive) then
-                                setupExchangeActive = false
+                        if
+                                cui.windowTabButton(
+                                        "Save Setup",
+                                        ui.windowHeight(),
+                                        ui.ButtonFlags.None,
+                                        saveSetupTab == 1
+                                )
+                        then
+                                saveSetupTab = 1
                         end
                         ui.sameLine()
 
-                        if cui.windowTabButton("Setup Exchange", 36, ui.ButtonFlags.None, setupExchangeActive) then
-                                setupExchangeActive = true
+                        if
+                                cui.windowTabButton(
+                                        "Setup Changelog",
+                                        ui.windowHeight(),
+                                        ui.ButtonFlags.None,
+                                        saveSetupTab == 2
+                                )
+                        then
+                                saveSetupTab = 2
                         end
-                        ui.sameLine()
                 end,
                 nil,
                 true
         )
 
-        if setupExchangeActive then
-                setupExchange:draw()
-        else
-                drawSetupIO(sm)
-        end
+        drawSetupControls(sm)
 
         cui.popContentWindow()
 end

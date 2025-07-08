@@ -3,6 +3,7 @@ local Widget = require("src.classes.Widget")
 local cui = require("ui.cui")
 local race = require("race")
 local settings = require("settings")
+local style = require("style")
 local weather = require("weather")
 local car = ac.getCar(0)
 local sim = ac.getSim()
@@ -358,10 +359,10 @@ function trackMapWidget:body()
 
                 ui.dwriteTextAligned(
                         trackLine,
-                        18 * cui.uiScale(),
+                        style.main.font.bodyLarge.size,
                         ui.Alignment.Start,
                         ui.Alignment.Center,
-                        vec2(ui.windowWidth(), 18 * cui.uiScale() * 1.2)
+                        vec2(ui.windowWidth(), style.main.font.bodyLarge.size * 1.2)
                 )
         end
 
@@ -369,10 +370,10 @@ function trackMapWidget:body()
         cui.snapCursor()
         ui.dwriteTextAligned(
                 "%s" % getTrackLocation(),
-                18 * cui.uiScale(),
+                style.main.font.bodyLarge.size,
                 ui.Alignment.Start,
                 ui.Alignment.Center,
-                vec2(ui.windowWidth(), 18 * cui.uiScale())
+                vec2(ui.windowWidth(), style.main.font.bodyLarge.size)
         )
 end
 

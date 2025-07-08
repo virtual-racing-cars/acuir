@@ -384,7 +384,7 @@ function CUI.windowTabButton(label, size, flags, active)
 
         size = size * uiScale
         sizeY = size
-        fontSize = sizeY * 0.5
+        fontSize = style.main.font.header.size
         buttonSize =
                 vec2Temp1:set(math.round(ui.measureDWriteText(string.upper(label), fontSize).x + 30 * uiScale), size)
 
@@ -821,8 +821,7 @@ local treeNodeParent = ""
 function CUI.treeNodeButton(label, size, active, bold, count, defaultOpen)
         if not count then count = 0 end
 
-        local fontSize = math.floor(size.y * 0.55)
-        fontSize = (fontSize % 2 ~= 0) and fontSize + 1 or fontSize
+        local fontSize = style.main.font.header.size
         local fontColor = settings.Appearance.uiColorText
 
         local tempCursor = ui.getCursor()
@@ -857,11 +856,18 @@ function CUI.treeNodeButton(label, size, active, bold, count, defaultOpen)
                 ui.drawRect(r1, r2, settings.Appearance.uiColorAccent, 6 * uiScale, ui.CornerFlags.All, 1)
         end
 
+        ui.setCursor(r1)
+        if bold and count > 0 then
+                ui.icon(
+                        CUI.loadStoredBool(id) and ui.Icons.Minus or ui.Icons.Plus,
+                        vec2Temp1:set(size.y, size.y),
+                        rgbm.colors.white,
+                        size.y * 0.5
+                )
+        else
+                ui.dummy(size.y)
+        end
         ui.sameLine()
-
-        local textOffset = bold and size.x / 20 or size.x / 40
-        ui.setCursor(tempCursor)
-        ui.offsetCursorX(textOffset)
 
         local text = count > 0 and string.format(" %s (%s)", label, count) or string.format(" %s", label)
         CUI.snapCursor()
@@ -870,21 +876,12 @@ function CUI.treeNodeButton(label, size, active, bold, count, defaultOpen)
                 fontSize,
                 ui.Alignment.Start,
                 ui.Alignment.Center,
-                vec2Temp1:set(size.x - textOffset, size.y),
+                vec2Temp1:set(size.x - size.y, size.y),
                 false,
                 hovered and rgbm(1, 1, 1, 1) or fontColor
         )
 
         ui.setCursorY(tempCursor.y + size.y)
-
-        if bold and count > 0 then
-                ui.addIcon(
-                        CUI.loadStoredBool(id) and ui.Icons.Minus or ui.Icons.Plus,
-                        vec2Temp1:set(size.y / 2, size.y / 2),
-                        vec2Temp2:set(0.92, 0.5),
-                        settings.Appearance.uiColorText
-                )
-        end
 
         return clicked, open, id, hovered
 end
@@ -926,42 +923,45 @@ function CUI.combo(id, size, previewValue, previewAlignment, openDown, contentSi
         local closedIcon = openDown and ui.Icons.Down or ui.Icons.Up
         local openIcon = openDown and ui.Icons.Up or ui.Icons.Down
         local iconAlignemnt = 0.98
+        local justOpened = false
 
         if previewAlignment == ui.Alignment.End then iconAlignemnt = 0.02 end
 
         if hovered then color = settings.Appearance.uiColorSecondary end
-        if clicked then CUI.storeBool(id, not open) end
+        if clicked then
+                CUI.storeBool(id, not open)
+                if not open then justOpened = true end
+        end
 
-        ui.drawRectFilled(r1, r2, settings.Appearance.uiColorPrimary, 6 * CUI.uiScale())
+        ui.drawRect(r1, r2, settings.Appearance.uiColorText * 0.75, 6 * CUI.uiScale())
         ui.addIcon(open and openIcon or closedIcon, vec2(size.y, size.y) * 0.35, vec2(iconAlignemnt, 0.5), color)
 
         ui.setCursor(r1)
-        ui.offsetCursorX(size.x * 0.1)
+        CUI.offsetCursorX(10)
         CUI.snapCursor()
         ui.dwriteTextAligned(
                 previewValue,
-                size.y * 0.65,
+                size.y * 0.5,
                 previewAlignment,
                 ui.Alignment.Center,
-                vec2(size.x * 0.8, size.y),
+                vec2(size.x - 10 * CUI.uiScale(), size.y),
                 false,
                 color
         )
 
-        local comboOpenPosition = openDown and sp1 + vec2(0, size.y) or sp1 - vec2(0, contentSize.y)
+        local comboOpenPosition = openDown and sp1 + vec2(0, size.y - 5 * uiScale)
+                or sp1 - vec2(0, contentSize.y + 5 * uiScale)
 
         if open then
                 ui.transparentWindow(id, comboOpenPosition, contentSize, true, true, function()
                         ui.bringWindowToFront()
                         ui.setCursor(0)
 
+                        ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiColorBackgroundShade, 6 * uiScale)
+                        ui.drawRect(0, ui.windowSize(), settings.Appearance.uiColorText * 0.75, 6 * CUI.uiScale())
                         CUI.pushWindow(id .. "scroll_window", 0, 0, ui.windowWidth(), ui.windowHeight(), true)
-                        ui.drawRectFilled(
-                                ui.getCursor(),
-                                vec2(ui.windowWidth(), 1000),
-                                settings.Appearance.uiColorBackground,
-                                6 * uiScale
-                        )
+
+                        if justOpened then ui.setScrollY(0) end
 
                         content()
 
@@ -1381,9 +1381,9 @@ end
 function CUI.pushContentWindow(id, x, y, width, height, headerFunc, footerFunc, hideBackground, noCorners)
         CUI.pushWindow(id .. "_background", x, y, width, height)
 
-        local headerSize = 36 * uiScale
-        local footerSize = 36 * uiScale
-        local marginSize = 8 * uiScale
+        local headerSize = style.main.font.header.space
+        local footerSize = headerSize
+        local marginSize = 10 * uiScale
         local innerCurve = 6 * uiScale
 
         ui.beginGradientShade()
