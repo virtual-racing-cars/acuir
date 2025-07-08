@@ -51,7 +51,7 @@ local function onboardingBody()
         ui.setCursorY(ui.windowHeight() * 0.475)
 
         for i, v in ipairs(settings.Modules) do
-                local height = style.main.font.bodyLarge.size
+                local height = style.main.font.body.size
 
                 ui.setCursorX(ui.windowWidth() * 0.5 - height * 6)
 
@@ -78,7 +78,7 @@ local function onboardingBody()
         ui.setCursor(0)
         ui.dwriteTextAligned(
                 app.fullInfo,
-                style.main.font.bodyLarge.size,
+                style.main.font.body.size,
                 ui.Alignment.Center,
                 ui.Alignment.End,
                 ui.windowSize(),

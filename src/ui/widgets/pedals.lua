@@ -24,7 +24,7 @@ function card:draw(xPos, yPos, width, height)
         cui.snapCursor()
         ui.dwriteTextAligned(
                 "SPEED",
-                style.main.font.bodyLarge.size,
+                style.main.font.body.size,
                 ui.Alignment.Start,
                 ui.Alignment.Center,
                 vec2(ui.windowWidth() / 3, 32 * cui.uiScale())
@@ -34,7 +34,7 @@ function card:draw(xPos, yPos, width, height)
         cui.snapCursor()
         ui.dwriteTextAligned(
                 "POSITION",
-                style.main.font.bodyLarge.size,
+                style.main.font.body.size,
                 ui.Alignment.Start,
                 ui.Alignment.Center,
                 vec2(ui.windowWidth() / 3, 32 * cui.uiScale())
@@ -44,7 +44,7 @@ function card:draw(xPos, yPos, width, height)
         cui.snapCursor()
         ui.dwriteTextAligned(
                 "LAST LAP",
-                style.main.font.bodyLarge.size,
+                style.main.font.body.size,
                 ui.Alignment.Start,
                 ui.Alignment.Center,
                 vec2(ui.windowWidth() / 3, 32 * cui.uiScale())

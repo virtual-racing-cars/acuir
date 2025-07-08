@@ -359,10 +359,10 @@ function trackMapWidget:body()
 
                 ui.dwriteTextAligned(
                         trackLine,
-                        style.main.font.bodyLarge.size,
+                        style.main.font.body.size,
                         ui.Alignment.Start,
                         ui.Alignment.Center,
-                        vec2(ui.windowWidth(), style.main.font.bodyLarge.size * 1.2)
+                        vec2(ui.windowWidth(), style.main.font.body.size * 1.2)
                 )
         end
 
@@ -370,10 +370,10 @@ function trackMapWidget:body()
         cui.snapCursor()
         ui.dwriteTextAligned(
                 "%s" % getTrackLocation(),
-                style.main.font.bodyLarge.size,
+                style.main.font.body.size,
                 ui.Alignment.Start,
                 ui.Alignment.Center,
-                vec2(ui.windowWidth(), style.main.font.bodyLarge.size)
+                vec2(ui.windowWidth(), style.main.font.body.size)
         )
 end
 

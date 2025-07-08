@@ -120,7 +120,7 @@ end
 
 function page.draw()
         genericButtonHeight = 40 * cui.uiScale()
-        fontSize = style.main.font.bodyLarge.size
+        fontSize = style.main.font.body.size
 
         cui.pushWindow("session_box_window", 0, 0, ui.windowWidth(), ui.windowHeight() - 255 * cui.uiScale())
 

@@ -346,7 +346,7 @@ function timetableEntryButton(car, yPos, height)
                 local value, color = entry.value(car, x, y)
                 ui.dwriteTextAligned(
                         value,
-                        style.main.font.bodyLarge.size,
+                        style.main.font.body.size,
                         entry.align,
                         ui.Alignment.Center,
                         vec2(x, y),
@@ -362,7 +362,7 @@ function timetableEntryButton(car, yPos, height)
 end
 
 function timetable:draw(xPos, yPos, width, height)
-        local height = style.main.font.bodyLarge.size * 2
+        local height = style.main.font.body.size * 2
         timetableBanner(0, height)
 
         cui.pushWindow("home_timetable_entrant_window", 0, height, ui.windowWidth(), ui.windowHeight() - height, true)

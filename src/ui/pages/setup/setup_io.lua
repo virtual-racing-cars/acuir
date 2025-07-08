@@ -155,7 +155,7 @@ function drawSetupControls(sm)
         local iconButtonHeight = 36 * cui.uiScale()
         local buttonWidth = ui.windowWidth() * 0.99
         local groupBegin = (ui.windowWidth() / 24)
-        local fontSize = style.main.font.bodyLarge.size
+        local fontSize = style.main.font.body.size
 
         ui.setCursorX(ui.windowWidth() * 0.005)
         cui.offsetCursorY(15)

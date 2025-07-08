@@ -13,7 +13,7 @@ local function logWindow(height)
         cui.pushWindow("chat_log_window", 0, 0, ui.windowWidth(), height, true)
         ui.pushTextWrapPosition(ui.windowWidth() * 0.93)
 
-        local fontSize = style.main.font.bodyLarge.size
+        local fontSize = style.main.font.body.size
         local chatLineSize = 24 * cui.uiScale()
 
         ui.setCursorY(5 * cui.uiScale())

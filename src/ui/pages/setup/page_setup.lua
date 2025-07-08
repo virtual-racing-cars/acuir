@@ -45,7 +45,7 @@ local function helpWindow()
         cui.setCursorX(15)
         ui.pushTextWrapPosition(ui.windowWidth() - 15 * cui.uiScale())
         cui.snapCursor()
-        ui.dwriteText(sm.activeHelpString, style.main.font.bodyLarge.size)
+        ui.dwriteText(sm.activeHelpString, style.main.font.body.size)
 
         ui.popTextWrapPosition()
 
@@ -88,7 +88,7 @@ local function dataLoggingWindow()
                         cui.snapCursor()
                         ui.dwriteTextAligned(
                                 dataLogger:loggerTime(),
-                                style.main.font.bodyLarge.size,
+                                style.main.font.body.size,
                                 ui.Alignment.Start,
                                 ui.Alignment.Center,
                                 ui.windowSize(),
@@ -99,7 +99,7 @@ local function dataLoggingWindow()
                         settings.DataLogger.autoStartLogging = drawCheckbox(
                                 "##dataLoggerAutoStart",
                                 "Auto-Start",
-                                style.main.font.bodyLarge.size,
+                                style.main.font.body.size,
                                 settings.DataLogger.autoStartLogging
                         )
                 end
@@ -109,7 +109,7 @@ local function dataLoggingWindow()
                 ui.setCursor(0)
                 ui.dwriteTextAligned(
                         "Requires a Car with Extended Physics",
-                        style.main.font.bodyLarge.size,
+                        style.main.font.body.size,
                         ui.Alignment.Center,
                         ui.Alignment.Center,
                         ui.windowSize(),

@@ -563,8 +563,8 @@ local function shareSetup(name)
 end
 
 local function likeButtons(path, item, likedList, dislikedList, itemID, contextTable)
-        local fontSize = style.main.font.bodySmall.size
-        local fontSpace = style.main.font.bodySmall.space
+        local fontSize = style.main.font.small.size
+        local fontSpace = style.main.font.small.space
         local actionBlockSize = vec2(ui.availableSpaceX() / 4 - 10 * cui.uiScale(), fontSpace)
         cui.offsetCursorY(fontSpace / 6)
         local voteZoneButton =
@@ -608,7 +608,7 @@ local function likeButtons(path, item, likedList, dislikedList, itemID, contextT
         cui.snapCursor()
         ui.dwriteTextAligned(
                 formatNumber(likeDelta),
-                style.main.font.bodySmall.size,
+                style.main.font.small.size,
                 ui.Alignment.Center,
                 ui.Alignment.Center,
                 vec2(actionBlockSize.x / 3, fontSpace),
@@ -691,8 +691,8 @@ local function commentsBlock()
         end
 
         ui.childWindow("commentsScroll", ui.availableSpace(), function()
-                local fontSize = style.main.font.bodySmall.size
-                local fontSpace = style.main.font.bodySmall.space
+                local fontSize = style.main.font.small.size
+                local fontSpace = style.main.font.small.space
                 local setupItemWidth = ui.windowWidth() - 10 * cui.uiScale()
                 local actionBlockSize = vec2(ui.availableSpaceX() / 4 - 10 * cui.uiScale(), fontSpace)
 
@@ -978,8 +978,8 @@ function formatNumber(n)
 end
 
 local function drawSetupItem(i, v)
-        local fontSize = style.main.font.bodySmall.size
-        local fontSpace = style.main.font.bodySmall.space
+        local fontSize = style.main.font.small.size
+        local fontSpace = style.main.font.small.space
         local setupItemWidth = ui.windowWidth() - 10 * cui.uiScale()
         local setupItemHeight = fontSpace * 4
         ui.setCursorX(0)
@@ -1065,7 +1065,7 @@ local function drawSetupItem(i, v)
         cui.snapCursor()
         ui.dwriteTextAligned(
                 v.userName,
-                style.main.font.bodySmall.size,
+                style.main.font.small.size,
                 ui.Alignment.Center,
                 ui.Alignment.Center,
                 usernameButtonSize,
@@ -1078,7 +1078,7 @@ local function drawSetupItem(i, v)
         cui.snapCursor()
         ui.dwriteTextAligned(
                 timeAgo(v.createdDate),
-                style.main.font.bodySmall.size,
+                style.main.font.small.size,
                 ui.Alignment.Start,
                 ui.Alignment.Center,
                 vec2(ui.availableSpaceX() - 10 * cui.uiScale(), fontSpace),
@@ -1092,7 +1092,7 @@ local function drawSetupItem(i, v)
         cui.snapCursor()
         ui.dwriteTextAligned(
                 string.format("%s Downloads", formatNumber(v.statDownloads)),
-                style.main.font.bodySmall.size,
+                style.main.font.small.size,
                 ui.Alignment.End,
                 ui.Alignment.Center,
                 vec2(setupItemWidth, fontSpace),
@@ -1153,7 +1153,7 @@ local function drawSetupItem(i, v)
         cui.snapCursor()
         ui.dwriteTextAligned(
                 formatNumber(v.statComments) .. " Comments",
-                style.main.font.bodySmall.size,
+                style.main.font.small.size,
                 ui.Alignment.Center,
                 ui.Alignment.Center,
                 actionBlockSize,
@@ -1178,7 +1178,7 @@ local function drawSetupItem(i, v)
                 cui.snapCursor()
                 ui.dwriteTextAligned(
                         "Apply Setup",
-                        style.main.font.bodySmall.size,
+                        style.main.font.small.size,
                         ui.Alignment.Center,
                         ui.Alignment.Center,
                         actionBlockSize,
@@ -1241,7 +1241,7 @@ local function setupsListWindow(setups)
                         cui.snapCursor()
                         ui.dwriteTextAligned(
                                 "No fitting setups available yet.",
-                                style.main.font.bodyLarge.size,
+                                style.main.font.body.size,
                                 ui.Alignment.Start,
                                 ui.Alignment.Center,
                                 vec2(ui.windowWidth(), 28 * cui.uiScale()),
@@ -1252,7 +1252,7 @@ local function setupsListWindow(setups)
                         return
                 end
 
-                local fontSpace = style.main.font.bodySmall.space
+                local fontSpace = style.main.font.small.space
                 local setupItemHeight = fontSpace * 4 + 5 * cui.uiScale()
 
                 local f = 1 + math.floor(ui.getScrollY() / setupItemHeight)
@@ -1273,7 +1273,7 @@ local function shareSetupButton()
         local iconButtonHeight = 32 * cui.uiScale()
         local buttonWidth = ui.windowWidth() * 0.99
         local groupBegin = (ui.windowWidth() / 24)
-        local fontSize = style.main.font.bodyLarge.size
+        local fontSize = style.main.font.body.size
 
         cui.offsetCursorY(100)
 
@@ -1344,7 +1344,7 @@ local function searchFilters()
         local iconButtonHeight = 32 * cui.uiScale()
         local buttonWidth = ui.windowWidth() * 0.99
         local groupBegin = (ui.windowWidth() / 24)
-        local fontSize = style.main.font.bodyLarge.size
+        local fontSize = style.main.font.body.size
         local comboSize = vec2((ui.windowWidth() - 20 * cui.uiScale()) * 0.5, 32 * cui.uiScale())
 
         ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiColorBackgroundShade, 6 * cui.uiScale())
@@ -1394,7 +1394,7 @@ local function searchFilters()
                         showTracksValue, showTracksChanged = drawCheckbox(
                                 "##setup_exchange_show_current_track",
                                 "Show All Tracks",
-                                style.main.font.bodySmall.size,
+                                style.main.font.small.size,
                                 showTracksValue
                         )
 

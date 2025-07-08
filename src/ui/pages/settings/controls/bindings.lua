@@ -387,7 +387,7 @@ function bindings:draw()
         settings.General.showMPSBinds = drawCheckbox(
                 "##mapisShowingWeather",
                 "Show MPS Binds",
-                style.main.font.bodyLarge.size,
+                style.main.font.body.size,
                 settings.General.showMPSBinds
         )
 
@@ -416,7 +416,7 @@ function bindings:draw()
                                 cui.snapCursor()
                                 ui.dwriteTextAligned(
                                         string.upper(group.name),
-                                        style.main.font.bodyLarge.size,
+                                        style.main.font.body.size,
                                         ui.Alignment.Start,
                                         ui.Alignment.Center,
                                         vec2(ui.windowWidth(), 32 * cui.uiScale())
