@@ -5,7 +5,7 @@ local WidgetWindow = class("WidgetWindow")
 function WidgetWindow:initialize(id)
         self.id = id .. "_window"
         self.widgets = {}
-        self.activeWidgetIndex = 1
+        self.activeWidgetIndex = 2
 end
 
 function WidgetWindow:addWidget(name, widget) table.insert(self.widgets, { name = name, widget = widget }) end

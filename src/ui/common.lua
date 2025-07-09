@@ -168,7 +168,7 @@ function topBar(path)
                         "Session",
                         ui.Icons.Info,
                         driveButtonHeight,
-                        driveButtonHeight,
+                        driveButtonHeight * 1.5,
                         ui.ButtonFlags.None,
                         false,
                         nil,
@@ -181,6 +181,7 @@ function topBar(path)
                         pages:goToSession()
                 end
         end
+        ui.sameLine()
         ui.offsetCursorX(driveButtonHeight * 0.75)
 
         if
@@ -188,7 +189,7 @@ function topBar(path)
                         "Laps",
                         ui.Icons.List,
                         driveButtonHeight,
-                        driveButtonHeight,
+                        driveButtonHeight * 1.5,
                         ui.ButtonFlags.None,
                         false,
                         nil,
@@ -201,6 +202,7 @@ function topBar(path)
                         pages:goToLapTimes()
                 end
         end
+        ui.sameLine()
         ui.offsetCursorX(driveButtonHeight * 0.75)
 
         if
@@ -208,7 +210,7 @@ function topBar(path)
                         "Telemetry",
                         ui.Icons.Barcode,
                         driveButtonHeight,
-                        driveButtonHeight,
+                        driveButtonHeight * 1.5,
                         ui.ButtonFlags.None,
                         false,
                         nil,
@@ -221,6 +223,7 @@ function topBar(path)
                         pages:goToTelemetry()
                 end
         end
+        ui.sameLine()
 
         ui.setCursorX(ui.windowWidth() / 2 - driveButtonWidth / 2)
         ui.offsetCursorY(driveButtonHeight * 0.2)
@@ -252,7 +255,7 @@ function topBar(path)
                         "Garage",
                         ui.Icons.Wrench,
                         driveButtonHeight,
-                        driveButtonHeight,
+                        driveButtonHeight * 1.5,
                         ui.ButtonFlags.None,
                         false,
                         nil,
@@ -265,14 +268,24 @@ function topBar(path)
                         pages:goToSetup()
                 end
         end
+        ui.sameLine()
         ui.offsetCursorX(driveButtonHeight * 0.75)
 
-        if cui.iconButton("Settings", ui.Icons.Settings, driveButtonHeight, driveButtonHeight, ui.ButtonFlags.None) then
+        if
+                cui.iconButton(
+                        "Settings",
+                        ui.Icons.Settings,
+                        driveButtonHeight,
+                        driveButtonHeight * 1.5,
+                        ui.ButtonFlags.None
+                )
+        then
                 pages:goToSettings()
         end
+        ui.sameLine()
         ui.offsetCursorX(driveButtonHeight * 0.75)
 
-        if cui.iconButton("Quit", ui.Icons.Leave, driveButtonHeight, driveButtonHeight, ui.ButtonFlags.None) then
+        if cui.iconButton("Quit", ui.Icons.Leave, driveButtonHeight, driveButtonHeight * 1.5, ui.ButtonFlags.None) then
                 cui:promptShutdownAC()
         end
 end

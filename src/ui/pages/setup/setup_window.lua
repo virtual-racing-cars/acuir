@@ -4,6 +4,7 @@ local audio = require("audio")
 local cui = require("ui.cui")
 local gearSpeedsWidget = require("src.ui.widgets.gear_speeds")
 local settings = require("settings")
+local style = require("style")
 
 local vec2Temp1 = vec2()
 
@@ -73,7 +74,7 @@ end
 
 local function drawSetupSpinner(si)
         local spinnerWidth = ui.windowWidth() * 0.42
-        local spinnerHeight = 90 * cui.uiScale()
+        local spinnerHeight = style.main.font.title.size * 2.10
 
         if si.child or si.repair then return end
 

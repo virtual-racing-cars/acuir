@@ -12,6 +12,7 @@ local style = {
                 },
                 font = {
                         type = ui.DWriteFont("Rajdhani", ac.dirname() .. "\\assets\\fonts\\"),
+                        title = { size = 30, space = 40 },
                         header = { size = 20, space = 36 },
                         body = { size = 18, space = 34 },
                         small = { size = 16, space = 32 },

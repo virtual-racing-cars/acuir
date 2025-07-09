@@ -126,13 +126,13 @@ local function promptOverwriteSetup()
 end
 
 function drawLocalSetupFilters()
-        cui.offsetCursorX(10)
+        cui.offsetCursorX(20)
         cui.offsetCursorY(10)
         local hideChanged = false
         settings.General.hideOtherTrackSetups, hideChanged = drawCheckbox(
                 "##isSetupIOHidingOtherTracks",
                 "Show Other Tracks",
-                20 * cui.uiScale(),
+                style.main.font.body.size,
                 settings.General.hideOtherTrackSetups
         )
         ui.sameLine()

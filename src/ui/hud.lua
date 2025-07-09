@@ -4,6 +4,7 @@ require("ui.windows.pitstop_window")
 require("ui.windows.results_window")
 require("ui.windows.settings_window")
 require("ui.windows.onboarding_window")
+require("ui.windows.ui_test_window")
 local app = require("app")
 local audio = require("audio")
 local camera = require("camera")
@@ -60,6 +61,11 @@ local hudModes = {
 }
 
 ui.onExclusiveHUD(function(mode)
+        -- if true then
+        --         testUI()
+        --         return ""
+        -- end
+
         if ac.getLastError() or not app.state.appOpen then return end
 
         -- pages:goToSession()

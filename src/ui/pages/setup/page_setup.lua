@@ -120,14 +120,16 @@ local function dataLoggingWindow()
                 return
         end
 
+        local buttonSize = ui.windowHeight() * 0.8
+
         ui.setCursorX(ui.windowHeight() * 0.3)
-        ui.setCursorY(0)
+        ui.setCursorY(ui.windowHeight() * 0.15)
         if
                 cui.iconButton(
                         dataLogger:loggerActive() and "Stop & Save" or "Start",
                         dataLogger:loggerActive() and ui.Icons.Save or ui.Icons.Target,
-                        ui.windowHeight(),
-                        ui.windowHeight() * 0.7,
+                        buttonSize,
+                        buttonSize,
                         0
                 )
         then
@@ -139,13 +141,13 @@ local function dataLoggingWindow()
         end
 
         ui.setCursorX(ui.windowWidth() * 0.5 - ui.windowHeight() * 0.5)
-        ui.setCursorY(0)
+        ui.setCursorY(ui.windowHeight() * 0.15)
         if
                 cui.iconButton(
                         "Cancel",
                         ui.Icons.Cancel,
-                        ui.windowHeight(),
-                        ui.windowHeight() * 0.7,
+                        buttonSize,
+                        buttonSize,
                         dataLogger:loggerActive() and ui.ButtonFlags.None or ui.ButtonFlags.Disabled
                 )
         then
@@ -153,8 +155,8 @@ local function dataLoggingWindow()
         end
 
         ui.setCursorX(ui.windowWidth() - ui.windowHeight() * 1.3)
-        ui.setCursorY(0)
-        if cui.iconButton("Logs", ui.Icons.Folder, ui.windowHeight(), ui.windowHeight() * 0.7, 0) then
+        ui.setCursorY(ui.windowHeight() * 0.15)
+        if cui.iconButton("Logs", ui.Icons.Folder, buttonSize, buttonSize, 0) then
                 local logDirectory = dataLogger:getMotecDirectory(0)
                 if not io.dirExists(logDirectory) then io.createDir(logDirectory) end
                 os.openInExplorer(logDirectory)

@@ -26,8 +26,8 @@ local function drawSlider(id, name, width, height, value, sliderParams, noScroll
         local steps = (max - min) / step
         local changed = false
 
-        local fontSize = height * 0.4
-        local barSize = height * 0.3
+        local fontSize = height * 0.45
+        local barSize = height * 0.45
         local grabberSize = math.max(width / (steps + 1), 35)
 
         local sliderNameText = name:gsub("->            ", ""):gsub("             %?", "")
@@ -89,14 +89,14 @@ local function drawSlider(id, name, width, height, value, sliderParams, noScroll
         if sliderFill > r1.x then
                 ui.drawRectFilled(
                         r1,
-                        vec2Temp1:set(sliderFill, r2.y),
+                        vec2Temp1:set(sliderFill + grabberSize * 0.5, r2.y),
                         settings.Appearance.uiColorSecondary,
                         6 * cui.uiScale(),
                         ui.CornerFlags.Left
                 )
         end
         ui.drawRectFilledMultiColor(
-                vec2Temp1:set(sliderFill, r1.y),
+                vec2Temp1:set(sliderFill + grabberSize * 0.5, r1.y),
                 vec2Temp2:set(r1.x, r2.y),
                 settings.Appearance.uiColorBackground * 0.25,
                 rgbm.colors.transparent,
@@ -104,7 +104,7 @@ local function drawSlider(id, name, width, height, value, sliderParams, noScroll
                 settings.Appearance.uiColorBackground * 0.25
         )
         ui.drawRectFilledMultiColor(
-                vec2Temp1:set(sliderFill, r1.y),
+                vec2Temp1:set(sliderFill + grabberSize * 0.5, r1.y),
                 r2,
                 settings.Appearance.uiColorBackground * 0.25,
                 rgbm.colors.transparent,
@@ -112,20 +112,39 @@ local function drawSlider(id, name, width, height, value, sliderParams, noScroll
                 settings.Appearance.uiColorBackground * 0.25
         )
 
+        ui.beginGradientShade()
         ui.drawRectFilled(
                 vec2(sliderFill, r1.y),
                 vec2(sliderFill + grabberSize, r2.y),
-                settings.Appearance.uiColorBackground * 0.5,
+                settings.Appearance.uiColorPrimary,
                 6 * cui.uiScale()
         )
-        ui.drawRectFilled(
-                vec2(sliderFill + 1, r1.y - 1),
-                vec2(sliderFill + grabberSize - 1, r2.y + 1),
-                active and settings.Appearance.uiColorSecondary or settings.Appearance.uiColorAccent,
-                5 * cui.uiScale()
+        if active then
+                ui.endGradientShade(
+                        vec2(sliderFill, r2.y),
+                        vec2(sliderFill, r1.y),
+                        settings.Appearance.uiColorSecondary,
+                        settings.Appearance.uiColorSecondary * 4,
+                        true
+                )
+        else
+                ui.endGradientShade(
+                        vec2(sliderFill, r1.y),
+                        vec2(sliderFill, r2.y),
+                        active and settings.Appearance.uiColorSecondary or settings.Appearance.uiColorAccent,
+                        active and settings.Appearance.uiColorSecondary or settings.Appearance.uiColorPrimary * 1.2,
+                        true
+                )
+        end
+
+        ui.drawRect(
+                vec2(sliderFill, r1.y),
+                vec2(sliderFill + grabberSize, r2.y),
+                settings.Appearance.uiColorBackground,
+                6 * cui.uiScale(),
+                ui.CornerFlags.All,
+                2 * cui.uiScale()
         )
-        ui.setCursor(vec2(sliderFill, r2.y - barSize))
-        ui.icon(ui.Icons.Menu, vec2(grabberSize, barSize), settings.Appearance.uiColorBackground * 0.3, barSize * 0.75)
 
         local value = valueStep * step + min
 
