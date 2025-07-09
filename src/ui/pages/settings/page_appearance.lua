@@ -29,7 +29,7 @@ local tertiaryActive = false
 function page.draw()
         ui.drawRectFilled(vec2(0, 0), ui.windowSize(), settings.Appearance.uiColorPrimary / 1.1)
 
-        cui.pushWindowFitted("settings_appearance_window")
+        cui.pushFittedWindow("settings_appearance_window")
 
         topSubBar("/Settings/UI")
 

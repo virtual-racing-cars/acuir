@@ -12,19 +12,19 @@ local simutils = require("simutils")
 local tracesWidget = require("ui.widgets.traces")
 
 local acLogo = ac.getFolder(ac.FolderID.Root) .. "\\launcher\\themes\\default\\graphics\\btn_AC_logo.png"
-local acLogoSize = ui.imageSize(acLogo) * cui.uiScale()
+local acLogoSize = ui.imageSize(acLogo) * cui.scale()
 
-local topBarHeight = 200 * cui.uiScale()
+local topBarHeight = 200 * cui.scale()
 
 local menuButtonSize = 56
 local versionString = string.format("%s: %s, CSP: %s (%s)", app.name, app.version, csp.version, csp.versionCode)
 
 function bottomBar(buttons)
         ui.drawRectFilled(
-                vec2(0, ui.windowHeight() - 56 * cui.uiScale()),
+                vec2(0, ui.windowHeight() - 56 * cui.scale()),
                 ui.windowSize(),
                 settings.Appearance.uiColorPrimary / 3,
-                6 * cui.uiScale()
+                6 * cui.scale()
         )
 
         if settings.UI.showVersions then
@@ -32,10 +32,10 @@ function bottomBar(buttons)
                 ui.setCursorY(10)
                 ui.dwriteTextAligned(
                         versionString,
-                        26 * cui.uiScale(),
+                        26 * cui.scale(),
                         ui.Alignment.Center,
                         ui.Alignment.End,
-                        ui.availableSpace() - vec2(40, 10) * cui.uiScale(),
+                        ui.availableSpace() - vec2(40, 10) * cui.scale(),
                         false,
                         rgbm(0.8, 0.8, 0.8, 0.2)
                 )
@@ -43,7 +43,7 @@ function bottomBar(buttons)
 
         ui.pushStyleColor(ui.StyleColor.Button, rgbm.colors.transparent)
         ui.setCursorX(0)
-        ui.setCursorY(ui.windowHeight() - 56 * cui.uiScale())
+        ui.setCursorY(ui.windowHeight() - 56 * cui.scale())
         for i in ipairs(buttons) do
                 local menuButton = buttons[i]
 
@@ -72,23 +72,23 @@ function topSubBar(path)
         ui.image(acLogo, acLogoSize)
 
         cui.setCursorX(180)
-        ui.setCursorY(topBarHeight / 2 - (100 * cui.uiScale()) / 2)
+        ui.setCursorY(topBarHeight / 2 - (100 * cui.scale()) / 2)
 
         if not path then return end
         local pathString = path == "" and "" or " / " .. path
         ui.dwriteTextAligned(
                 " / Settings" .. pathString,
-                50 * cui.uiScale(),
+                50 * cui.scale(),
                 ui.Alignment.Start,
                 ui.Alignment.Center,
-                vec2(600 * cui.uiScale(), 100 * cui.uiScale()),
+                vec2(600 * cui.scale(), 100 * cui.scale()),
                 false
         )
 end
 
 function topBar(path)
-        local driveButtonWidth = 550 * cui.uiScale()
-        local driveButtonHeight = 70 * cui.uiScale()
+        local driveButtonWidth = 550 * cui.scale()
+        local driveButtonHeight = 70 * cui.scale()
 
         -- ui.drawSimpleLine(
         --         vec2(ui.windowWidth() * 0.5, 0),
@@ -100,18 +100,18 @@ function topBar(path)
                 0,
                 vec2(ui.windowWidth(), topBarHeight),
                 settings.Appearance.uiColorBackground,
-                12 * cui.uiScale()
+                12 * cui.scale()
         )
 
         cui.contentWindow(
                 "top_bar_banner",
                 vec2(0, topBarHeight),
-                vec2(ui.windowWidth(), 50 * cui.uiScale()),
+                vec2(ui.windowWidth(), 50 * cui.scale()),
                 ui.WindowFlags.None,
                 function()
-                        local width1 = 200 * cui.uiScale()
-                        local width2 = 270 * cui.uiScale()
-                        local height = 80 * cui.uiScale()
+                        local width1 = 200 * cui.scale()
+                        local width2 = 270 * cui.scale()
+                        local height = 80 * cui.scale()
                         local center = ui.windowWidth() * 0.5
 
                         ui.drawQuadFilled(
@@ -130,27 +130,27 @@ function topBar(path)
                         --         ui.CornerFlags.Bottom
                         -- )
 
-                        ui.setCursorX(ui.windowWidth() * 0.5 - 320 * cui.uiScale())
+                        ui.setCursorX(ui.windowWidth() * 0.5 - 320 * cui.scale())
                         ui.setCursorY(0)
                         cui.snapCursor()
 
                         ui.dwriteTextAligned(
                                 simutils.raceSessionTypeString .. " " .. simutils.sessionTotalTimeString,
-                                22 * cui.uiScale(),
+                                22 * cui.scale(),
                                 ui.Alignment.End,
                                 ui.Alignment.Center,
-                                vec2(300 * cui.uiScale(), ui.windowHeight())
+                                vec2(300 * cui.scale(), ui.windowHeight())
                         )
                         ui.sameLine()
-                        ui.setCursorX(ui.windowWidth() * 0.5 + 20 * cui.uiScale())
+                        ui.setCursorX(ui.windowWidth() * 0.5 + 20 * cui.scale())
                         cui.snapCursor()
 
                         ui.dwriteTextAligned(
                                 simutils.sessionTimeLeftString,
-                                22 * cui.uiScale(),
+                                22 * cui.scale(),
                                 ui.Alignment.Start,
                                 ui.Alignment.Center,
-                                vec2(600 * cui.uiScale(), ui.windowHeight())
+                                vec2(600 * cui.scale(), ui.windowHeight())
                         )
 
                         if callback.info then callback.info() end
@@ -294,15 +294,15 @@ function bottomWidgetBar()
         cui.pushContentWindow(
                 "bottom_widget_bar_window",
                 0,
-                ui.windowHeight() - 240 * cui.uiScale(),
+                ui.windowHeight() - 240 * cui.scale(),
                 ui.windowWidth(),
-                240 * cui.uiScale(),
+                240 * cui.scale(),
                 nil,
                 nil,
                 true
         )
 
-        local border = 3 * cui.uiScale()
+        local border = 3 * cui.scale()
 
         local widgetYPos = 0
         local widgetWidth = ui.windowWidth() / 3 - border * 2
@@ -322,6 +322,6 @@ function settingsMenuCommon(path, bottomBarButtons)
 end
 
 function updateCommon()
-        acLogoSize = ui.imageSize(acLogo) * 0.85 * cui.uiScale()
-        topBarHeight = 130 * cui.uiScale()
+        acLogoSize = ui.imageSize(acLogo) * 0.85 * cui.scale()
+        topBarHeight = 130 * cui.scale()
 end

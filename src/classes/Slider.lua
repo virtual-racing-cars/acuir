@@ -51,7 +51,7 @@ local function drawSlider(id, name, width, height, value, sliderParams, noScroll
         ui.setCursorY(p1.y + height - height * 0.4)
         ui.invisibleButton("slider" .. id, vec2Temp1:set(width, barSize))
         local r1, r2 = ui.itemRect()
-        ui.drawRectFilled(r1, r2, settings.Appearance.uiColorBackground * 0.2, 6 * cui.uiScale())
+        ui.drawRectFilled(r1, r2, settings.Appearance.uiColorBackground * 0.2, 6 * cui.scale())
 
         local active = ui.itemActive() or (itemHeld == id and ui.mouseDown(ui.MouseButton.Left))
         local hovered = ui.rectHovered(r1, r2)
@@ -91,7 +91,7 @@ local function drawSlider(id, name, width, height, value, sliderParams, noScroll
                         r1,
                         vec2Temp1:set(sliderFill + grabberSize * 0.5, r2.y),
                         settings.Appearance.uiColorSecondary,
-                        6 * cui.uiScale(),
+                        6 * cui.scale(),
                         ui.CornerFlags.Left
                 )
         end
@@ -118,7 +118,7 @@ local function drawSlider(id, name, width, height, value, sliderParams, noScroll
                 vec2(sliderFill, r1.y),
                 vec2(sliderFill + grabberSize, r2.y),
                 settings.Appearance.uiColorPrimary,
-                6 * cui.uiScale()
+                6 * cui.scale()
         )
         if active then
                 ui.endGradientShade(
@@ -142,9 +142,9 @@ local function drawSlider(id, name, width, height, value, sliderParams, noScroll
                 vec2(sliderFill, r1.y),
                 vec2(sliderFill + grabberSize, r2.y),
                 settings.Appearance.uiColorBackground,
-                6 * cui.uiScale(),
+                6 * cui.scale(),
                 ui.CornerFlags.All,
-                2 * cui.uiScale()
+                2 * cui.scale()
         )
 
         local value = valueStep * step + min

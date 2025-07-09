@@ -2,7 +2,7 @@ local app = require("app")
 local csp = require("csp")
 local cui = require("src.ui.cui")
 local settings = require("settings")
-local style = require("style")
+local style = require("src.ui.style")
 
 local inputTextString = ""
 local checkboxValue = false
@@ -10,13 +10,13 @@ local sliderValue = 5
 
 function testUI(dt)
         ui.drawRectFilled(0, ui.windowSize(), rgbm(0.05, 0.05, 0.05, 1))
-        cui.pushWindowFitted("full_window")
+        cui.pushFittedWindow("full_window")
 
         ui.bringWindowToFront()
         ui.pushAllowKeyboardFocus(false)
 
-        local width = 400 * cui.uiScale()
-        local height = 50 * cui.uiScale()
+        local width = 400 * cui.scale()
+        local height = 50 * cui.scale()
 
         ui.dwriteText("Combo Box")
         cui.combo("test", vec2(width, height), "Test", ui.Alignment.Center, true, vec2(width, height), function() end)
@@ -41,12 +41,12 @@ function testUI(dt)
 
         ui.newLine()
         ui.dwriteText("Tree Node Button")
-        cui.treeNodeButton("Test", vec2(width, height), false, false, 0, false)
-        cui.treeNodeButton("Test", vec2(width, height), true, true, 0, false)
+        cui.treeNodeChildButton("Test", vec2(width, height), false, false, 0, false)
+        cui.treeNodeChildButton("Test", vec2(width, height), true, true, 0, false)
 
         ui.newLine()
         ui.dwriteText("Drive Button")
-        cui.specialButton(
+        cui.driveButton(
                 "Drive",
                 vec2(width, height),
                 ui.Alignment.Center,

@@ -3,7 +3,7 @@ local Widget = require("src.classes.Widget")
 local cui = require("ui.cui")
 local race = require("race")
 local settings = require("settings")
-local style = require("style")
+local style = require("src.ui.style")
 local weather = require("weather")
 local car = ac.getCar(0)
 local sim = ac.getSim()
@@ -211,7 +211,7 @@ local function drawCarDot(car, position)
         local spectatedCar = ac.getCar(sim.focusedCar)
         if not spectatedCar then return end
 
-        local localPos = getCanvasPos(car.position) * cui.uiScale()
+        local localPos = getCanvasPos(car.position) * cui.scale()
         local screenPos = position + localPos
 
         local dotSize = strokeWidths.carDot
@@ -242,39 +242,39 @@ local function drawCarDot(car, position)
                 backColor = rgbm.colors.transparent
         end
 
-        ui.drawCircleFilled(screenPos, dotSize * 1.2 * cui.uiScale(), backColor, 20 * cui.uiScale())
-        ui.drawCircleFilled(screenPos, dotSize * cui.uiScale(), carColor, 20 * cui.uiScale())
-        ui.setCursor(screenPos - vec2(dotSize * cui.uiScale(), dotSize * cui.uiScale()))
+        ui.drawCircleFilled(screenPos, dotSize * 1.2 * cui.scale(), backColor, 20 * cui.scale())
+        ui.drawCircleFilled(screenPos, dotSize * cui.scale(), carColor, 20 * cui.scale())
+        ui.setCursor(screenPos - vec2(dotSize * cui.scale(), dotSize * cui.scale()))
         if
                 ui.invisibleButton(
                         "##focuscarmarker" .. car.index,
-                        vec2(dotSize * 2 * cui.uiScale(), dotSize * 2 * cui.uiScale()),
+                        vec2(dotSize * 2 * cui.scale(), dotSize * 2 * cui.scale()),
                         ui.ButtonFlags.None
                 )
         then
                 if car.isConnected then ac.focusCar(car.index) end
         end
 
-        ui.setCursor(screenPos - vec2(textSize, textSize) * cui.uiScale())
+        ui.setCursor(screenPos - vec2(textSize, textSize) * cui.scale())
         ui.dwriteTextAligned(
                 leaderboardPosition,
-                textSize * cui.uiScale(),
+                textSize * cui.scale(),
                 0,
                 0,
-                vec2(textSize, textSize) * 2 * cui.uiScale(),
+                vec2(textSize, textSize) * 2 * cui.scale(),
                 false,
                 spectatedCar.index == car.index and settings.Appearance.uiColorBackground or rgbm.colors.white
         )
 end
 
 local function drawWeather()
-        local xStart = 80 * cui.uiScale()
-        local yStart = 50 * cui.uiScale()
-        local size = 50 * cui.uiScale()
+        local xStart = 80 * cui.scale()
+        local yStart = 50 * cui.scale()
+        local size = 50 * cui.scale()
         local row = 0
         local column = 0
-        local xGap = 100 * cui.uiScale()
-        local yGap = 120 * cui.uiScale()
+        local xGap = 100 * cui.scale()
+        local yGap = 120 * cui.scale()
         local columnMax = 5
 
         for i = 0, 24 do
@@ -297,18 +297,18 @@ local function drawWeather()
 
         ui.drawIcon(
                 weather.typeIcon[sim.weatherType],
-                vec2(25 * cui.uiScale(), ui.windowHeight() - 75 * cui.uiScale()),
-                vec2(75 * cui.uiScale(), ui.windowHeight() - 25 * cui.uiScale())
+                vec2(25 * cui.scale(), ui.windowHeight() - 75 * cui.scale()),
+                vec2(75 * cui.scale(), ui.windowHeight() - 25 * cui.scale())
         )
 
         ui.drawIcon(
                 ui.Icons.Compass,
-                vec2(ui.windowWidth() - 75 * cui.uiScale(), ui.windowHeight() - 75 * cui.uiScale()),
-                vec2(ui.windowWidth() - 25 * cui.uiScale(), ui.windowHeight() - 25 * cui.uiScale())
+                vec2(ui.windowWidth() - 75 * cui.scale(), ui.windowHeight() - 75 * cui.scale()),
+                vec2(ui.windowWidth() - 25 * cui.scale(), ui.windowHeight() - 25 * cui.scale())
         )
-        ui.setCursorX(ui.windowWidth() - 62 * cui.uiScale())
-        ui.setCursorY(ui.windowHeight() - 125 * cui.uiScale())
-        ui.dwriteText("N", 40 * cui.uiScale())
+        ui.setCursorX(ui.windowWidth() - 62 * cui.scale())
+        ui.setCursorY(ui.windowHeight() - 125 * cui.scale())
+        ui.dwriteText("N", 40 * cui.scale())
 end
 
 drawMapCanvas()
@@ -331,7 +331,7 @@ end
 
 function trackMapWidget:body()
         local spectatedCar = ac.getCar(sim.focusedCar)
-        local canvasSizeScaled = vec2(canvasSize, canvasSize) * cui.uiScale()
+        local canvasSizeScaled = vec2(canvasSize, canvasSize) * cui.scale()
 
         local canvasPos = (ui.windowSize() - canvasSizeScaled) / 2
 

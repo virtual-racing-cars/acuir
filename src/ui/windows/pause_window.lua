@@ -4,7 +4,7 @@ local app = require("app")
 local cui = require("ui.cui")
 local pages = require("ui.pages.pages")
 local settings = require("settings")
-local style = require("style")
+local style = require("src.ui.style")
 pages.manager:registerPage("PauseMenu", require("ui.pages.pause.page_pause_home"))
 
 function PauseMenuWindow(dt)
@@ -16,8 +16,8 @@ function PauseMenuWindow(dt)
         if ac.isKeyPressed(ui.KeyIndex.XButton1) then pages:undo() end
         if ac.isKeyPressed(ui.KeyIndex.XButton2) then pages:redo() end
 
-        local childWindowWith = 2560 * cui.uiScale()
-        local childWindowHeight = 1440 * cui.uiScale()
+        local childWindowWith = 2560 * cui.scale()
+        local childWindowHeight = 1440 * cui.scale()
         local mainWindowFlags = ui.WindowFlags.NoScrollbar + ui.WindowFlags.NoScrollWithMouse
 
         if cui.modalDialogCallback then

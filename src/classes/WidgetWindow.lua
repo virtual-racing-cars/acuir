@@ -18,7 +18,7 @@ function WidgetWindow:draw(dt)
                 0,
                 0,
                 ui.windowWidth() * 0.22,
-                ui.windowHeight() * 0.75 - 7.5 * cui.uiScale(),
+                ui.windowHeight() * 0.75 - 7.5 * cui.scale(),
                 function()
                         for i, v in ipairs(self.widgets) do
                                 if

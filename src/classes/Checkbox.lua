@@ -10,7 +10,7 @@ function drawCheckbox(id, name, height, value, flags)
         if flags == ui.ButtonFlags.Disabled then disabled = true end
 
         local fontSize = height
-        local width = ui.measureDWriteText(name, fontSize).x + height + 10 * cui.uiScale()
+        local width = ui.measureDWriteText(name, fontSize).x + height + 10 * cui.scale()
 
         local p1 = ui.getCursor()
         local p2 = p1 + vec2(width, height)
@@ -42,15 +42,15 @@ function drawCheckbox(id, name, height, value, flags)
                 r1,
                 vec2Temp2:set(r1.x + height, r2.y),
                 (value or disabled) and fillColor or settings.Appearance.uiColorBackground,
-                4 * cui.uiScale()
+                4 * cui.scale()
         )
         ui.drawRect(
                 r1,
                 vec2Temp2:set(r1.x + height, r2.y),
                 value and settings.Appearance.uiColorText or settings.Appearance.uiColorTextDim,
-                4 * cui.uiScale(),
+                4 * cui.scale(),
                 ui.CornerFlags.All,
-                2 * cui.uiScale()
+                2 * cui.scale()
         )
 
         return value, changed

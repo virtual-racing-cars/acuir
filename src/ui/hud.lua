@@ -12,7 +12,7 @@ local csp = require("csp")
 local cui = require("src.ui.cui")
 local pages = require("ui.pages.pages")
 local settings = require("settings")
-local style = require("style")
+local style = require("src.ui.style")
 
 local fadingTimer = ui.FadingElement(function()
         cui.pushWindowFull("overlay_window_full")

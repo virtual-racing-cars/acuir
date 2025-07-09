@@ -1,7 +1,7 @@
 local cui = require("ui.cui")
 local messages = require("messages")
 local settings = require("settings")
-local style = require("style")
+local style = require("src.ui.style")
 local sim = ac.getSim()
 
 local chat = {
@@ -14,9 +14,9 @@ local function logWindow(height)
         ui.pushTextWrapPosition(ui.windowWidth() * 0.93)
 
         local fontSize = style.main.font.body.size
-        local chatLineSize = 24 * cui.uiScale()
+        local chatLineSize = 24 * cui.scale()
 
-        ui.setCursorY(5 * cui.uiScale())
+        ui.setCursorY(5 * cui.scale())
         for i, line in ipairs(messages.log) do
                 if line.sender == -1 then
                         ui.setCursorX(ui.windowWidth() * 0.01)
@@ -30,7 +30,7 @@ local function logWindow(height)
                                 fontSize,
                                 ui.Alignment.End,
                                 ui.Alignment.Center,
-                                vec2(ui.windowWidth() * 0.98, chatLineSize * cui.uiScale()),
+                                vec2(ui.windowWidth() * 0.98, chatLineSize * cui.scale()),
                                 false,
                                 rgbm.colors.gray
                         )
@@ -42,7 +42,7 @@ local function logWindow(height)
                                 fontSize,
                                 ui.Alignment.End,
                                 ui.Alignment.Center,
-                                vec2(ui.windowWidth() * 0.98, chatLineSize * cui.uiScale()),
+                                vec2(ui.windowWidth() * 0.98, chatLineSize * cui.scale()),
                                 false,
                                 rgbm.colors.gray
                         )
@@ -52,7 +52,7 @@ local function logWindow(height)
                         cui.snapCursor()
                         ui.dwriteText("%s:" % ac.getDriverName(line.sender), fontSize, line.color)
                         ui.sameLine()
-                        ui.offsetCursorX(5 * cui.uiScale())
+                        ui.offsetCursorX(5 * cui.scale())
 
                         local maxMessageLength = 80
                         local messageRepeat = math.ceil(#line.msg / maxMessageLength) - 1
@@ -71,7 +71,7 @@ local function logWindow(height)
                                         fontSize,
                                         ui.Alignment.Start,
                                         ui.Alignment.Center,
-                                        vec2(ui.windowWidth() * 0.98, chatLineSize * cui.uiScale()),
+                                        vec2(ui.windowWidth() * 0.98, chatLineSize * cui.scale()),
                                         false,
                                         line.color
                                 )
@@ -115,7 +115,7 @@ local function chatInput(height)
                 vec2(3, ui.windowHeight() - height),
                 ui.windowSize() - vec2(3, 0),
                 settings.Appearance.uiColorPrimary * 2,
-                6 * cui.uiScale(),
+                6 * cui.scale(),
                 ui.CornerFlags.All,
                 2
         )
@@ -148,26 +148,26 @@ local function chatInput(height)
                         ui.windowWidth() * 0.5,
                         0,
                         ui.windowWidth() * 0.5,
-                        ui.windowHeight() - 40 * cui.uiScale(),
+                        ui.windowHeight() - 40 * cui.scale(),
                         true
                 )
 
                 ui.drawRectFilled(
                         vec2(0, 0),
-                        vec2(ui.windowWidth(), 2000 * cui.uiScale()),
+                        vec2(ui.windowWidth(), 2000 * cui.scale()),
                         settings.Appearance.uiColorBackground
                 )
                 ui.setCursorX(ui.windowWidth() * 0.02)
-                ui.setCursorY(10 * cui.uiScale())
+                ui.setCursorY(10 * cui.scale())
                 ui.dwriteTextAligned(
                         "Emojis",
-                        22 * cui.uiScale(),
+                        22 * cui.scale(),
                         ui.Alignment.Start,
                         ui.Alignment.Center,
-                        vec2(ui.windowWidth() * 0.98, 24 * cui.uiScale())
+                        vec2(ui.windowWidth() * 0.98, 24 * cui.scale())
                 )
 
-                ui.setCursorY(38 * cui.uiScale())
+                ui.setCursorY(38 * cui.scale())
                 ui.setCursorX(ui.windowWidth() * 0.02)
 
                 for i, emoji in ipairs(messages.emojiList) do
@@ -180,8 +180,8 @@ local function chatInput(height)
                                 cui.emojiButton(
                                         "emoji" .. emoji.label,
                                         emoji.icon,
-                                        38 * cui.uiScale(),
-                                        38 * cui.uiScale(),
+                                        38 * cui.scale(),
+                                        38 * cui.scale(),
                                         ui.ButtonFlags.None,
                                         false
                                 )
@@ -246,7 +246,7 @@ end
 function chat:draw(xPos, yPos, width, height)
         -- if not sim.isOnlineRace then return end
 
-        local chatInputHeight = 40 * cui.uiScale()
+        local chatInputHeight = 40 * cui.scale()
 
         cui.pushWindow("chat_widget_window", xPos, yPos, width, height, false)
         ui.drawRectFilled(vec2(0, 0), ui.windowSize(), settings.Appearance.uiColorBackground, 12)

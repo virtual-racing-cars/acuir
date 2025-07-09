@@ -16,14 +16,14 @@ ac.onSessionStart(function(sessionIndex, restarted) lapTimeSession = sessionInde
 function page.update() end
 
 function page.draw()
-        local genericButtonHeight = 40 * cui.uiScale()
+        local genericButtonHeight = 40 * cui.scale()
 
         cui.pushContentWindow(
                 "lap_times_window",
                 0,
                 0,
                 ui.windowWidth() * 0.5,
-                ui.windowHeight() - 255 * cui.uiScale(),
+                ui.windowHeight() - 255 * cui.scale(),
                 function()
                         ui.setCursor(0)
 

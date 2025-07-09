@@ -173,7 +173,7 @@ function replayWidget:draw(xPos, yPos, width, height)
         cui.snapCursor()
         ui.dwriteTextAligned(
                 ac.getCar(sim.focusedCar).lapCount + 1,
-                30 * cui.uiScale(),
+                30 * cui.scale(),
                 ui.Alignment.Center,
                 ui.Alignment.Center,
                 vec2(ui.windowWidth() / 3, 36)
@@ -186,7 +186,7 @@ function replayWidget:draw(xPos, yPos, width, height)
         cui.snapCursor()
         ui.dwriteTextAligned(
                 playback,
-                30 * cui.uiScale(),
+                30 * cui.scale(),
                 ui.Alignment.Center,
                 ui.Alignment.Center,
                 vec2(ui.windowWidth() / 3, 36)
@@ -219,7 +219,7 @@ function replayWidget:draw(xPos, yPos, width, height)
         cui.snapCursor()
         ui.dwriteTextAligned(
                 cameraModeString,
-                30 * cui.uiScale(),
+                30 * cui.scale(),
                 ui.Alignment.Center,
                 ui.Alignment.Center,
                 vec2(ui.windowWidth() / 3, 36)

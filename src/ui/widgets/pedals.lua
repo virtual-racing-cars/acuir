@@ -1,7 +1,7 @@
 local cui = require("ui.cui")
 local race = require("race")
 local settings = require("settings")
-local style = require("style")
+local style = require("src.ui.style")
 local units = require("units")
 local sim = ac.getSim()
 
@@ -13,7 +13,7 @@ local function progressBar(progress, xPos, yPos, width, color, thickness)
 end
 
 function card:draw(xPos, yPos, width, height)
-        local border = 20 * cui.uiScale()
+        local border = 20 * cui.scale()
 
         cui.pushWindow("pedals_widget_window", xPos, yPos, width, height, false)
         ui.drawRectFilled(vec2(0, 0), ui.windowSize(), settings.Appearance.uiColorBackground, 12, ui.CornerFlags.Right)
@@ -27,7 +27,7 @@ function card:draw(xPos, yPos, width, height)
                 style.main.font.body.size,
                 ui.Alignment.Start,
                 ui.Alignment.Center,
-                vec2(ui.windowWidth() / 3, 32 * cui.uiScale())
+                vec2(ui.windowWidth() / 3, 32 * cui.scale())
         )
         ui.sameLine()
 
@@ -37,7 +37,7 @@ function card:draw(xPos, yPos, width, height)
                 style.main.font.body.size,
                 ui.Alignment.Start,
                 ui.Alignment.Center,
-                vec2(ui.windowWidth() / 3, 32 * cui.uiScale())
+                vec2(ui.windowWidth() / 3, 32 * cui.scale())
         )
         ui.sameLine()
 
@@ -47,7 +47,7 @@ function card:draw(xPos, yPos, width, height)
                 style.main.font.body.size,
                 ui.Alignment.Start,
                 ui.Alignment.Center,
-                vec2(ui.windowWidth() / 3, 32 * cui.uiScale())
+                vec2(ui.windowWidth() / 3, 32 * cui.scale())
         )
 
         cui.setCursorX(15)
@@ -55,30 +55,30 @@ function card:draw(xPos, yPos, width, height)
         cui.snapCursor()
         ui.dwriteTextAligned(
                 math.round(units:speed(spectatedCar.speedKmh)),
-                32 * cui.uiScale(),
+                32 * cui.scale(),
                 ui.Alignment.Start,
                 ui.Alignment.Center,
-                vec2(ui.windowWidth() / 3, 32 * cui.uiScale())
+                vec2(ui.windowWidth() / 3, 32 * cui.scale())
         )
         ui.sameLine()
 
         cui.snapCursor()
         ui.dwriteTextAligned(
                 race:getLeaderboardPosition(spectatedCar.index),
-                32 * cui.uiScale(),
+                32 * cui.scale(),
                 ui.Alignment.Start,
                 ui.Alignment.Center,
-                vec2(ui.windowWidth() / 3, 32 * cui.uiScale())
+                vec2(ui.windowWidth() / 3, 32 * cui.scale())
         )
         ui.sameLine()
 
         cui.snapCursor()
         ui.dwriteTextAligned(
                 ac.lapTimeToString(spectatedCar.bestLapTimeMs),
-                32 * cui.uiScale(),
+                32 * cui.scale(),
                 ui.Alignment.Start,
                 ui.Alignment.Center,
-                vec2(ui.windowWidth() / 3, 32 * cui.uiScale())
+                vec2(ui.windowWidth() / 3, 32 * cui.scale())
         )
         ui.sameLine()
 
@@ -89,15 +89,15 @@ function card:draw(xPos, yPos, width, height)
         cui.snapCursor()
         ui.dwriteTextAligned(
                 "Gear\n" .. ac.getCarGearLabel(spectatedCar.index),
-                40 * cui.uiScale(),
+                40 * cui.scale(),
                 ui.Alignment.Center,
                 ui.Alignment.Center,
-                vec2(80 * cui.uiScale(), ui.windowHeight())
+                vec2(80 * cui.scale(), ui.windowHeight())
         )
 
         local barPosition = ui.windowHeight() / 20 * 4
-        local barWidth = 290 * cui.uiScale()
-        local barStart = 100 * cui.uiScale()
+        local barWidth = 290 * cui.scale()
+        local barStart = 100 * cui.scale()
 
         local steer = math.round(math.clamp(spectatedCar.steer / spectatedCar.steerLock, -1, 1), 3)
 

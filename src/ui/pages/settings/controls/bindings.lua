@@ -4,7 +4,7 @@ local controls = require("controls")
 local cui = require("ui.cui")
 local keys = require("keys")
 local settings = require("settings")
-local style = require("style")
+local style = require("src.ui.style")
 local sim = ac.getSim()
 
 local inputModeStringKeys = {
@@ -69,26 +69,26 @@ local function bindingInUseDialog(button, name, inputMode, inUseBinds)
                 )
 
                 local buttonWidth = (ui.windowWidth() * 0.2) / 3
-                ui.setCursorX(ui.windowWidth() / 2 - buttonWidth * 1.5 - 10 * cui.uiScale())
-                if cui.modalButton("Cancel", buttonWidth, 50 * cui.uiScale(), ui.ButtonFlags.None) then
+                ui.setCursorX(ui.windowWidth() / 2 - buttonWidth * 1.5 - 10 * cui.scale())
+                if cui.modalButton("Cancel", buttonWidth, 50 * cui.scale(), ui.ButtonFlags.None) then
                         button:clearAssign()
 
                         ui.popStyleVar(1)
                         return true
                 end
                 ui.sameLine()
-                ui.offsetCursorX(5 * cui.uiScale())
+                ui.offsetCursorX(5 * cui.scale())
 
-                if cui.modalButton("KEEP ALL", buttonWidth, 50 * cui.uiScale(), ui.ButtonFlags.None) then
+                if cui.modalButton("KEEP ALL", buttonWidth, 50 * cui.scale(), ui.ButtonFlags.None) then
                         button:save(inputMode)
 
                         ui.popStyleVar(1)
                         return true
                 end
                 ui.sameLine()
-                ui.offsetCursorX(5 * cui.uiScale())
+                ui.offsetCursorX(5 * cui.scale())
 
-                if cui.modalButton("REPLACE OLD", buttonWidth, 50 * cui.uiScale(), ui.ButtonFlags.None) then
+                if cui.modalButton("REPLACE OLD", buttonWidth, 50 * cui.scale(), ui.ButtonFlags.None) then
                         button:save(inputMode)
 
                         for _, bind in ipairs(inUseBinds) do
@@ -259,7 +259,7 @@ local function bindingBoxes(binding, name, label, button, bind, yOffset)
                         name,
                         label,
                         button,
-                        vec2(ui.windowWidth() - 15 * cui.uiScale(), 64 * cui.uiScale()),
+                        vec2(ui.windowWidth() - 15 * cui.scale(), 64 * cui.scale()),
                         ui.ButtonFlags.None or ui.ButtonFlags.None
                 )
         then
@@ -275,7 +275,7 @@ local function axisBoxes(binding, name, label, button, bind, yOffset)
                         name,
                         label,
                         button,
-                        vec2(ui.windowWidth() - 15 * cui.uiScale(), 64 * cui.uiScale()),
+                        vec2(ui.windowWidth() - 15 * cui.scale(), 64 * cui.scale()),
                         ui.ButtonFlags.None or ui.ButtonFlags.None
                 )
         then
@@ -350,27 +350,27 @@ end
 function bindings:draw()
         cui.pushWindow("settings_button_bind_tabbar", 0, 0, ui.windowWidth() * 0.2, ui.windowHeight(), false)
         ui.setCursor(0)
-        ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiColorBackground, 6 * cui.uiScale())
+        ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiColorBackground, 6 * cui.scale())
 
         local app = applicationControlsTabBar:draw(controls.tabs)
         cui.popWindow()
 
         cui.pushWindow(
                 "settings_button_binds_window2",
-                ui.windowWidth() * 0.2 + 10 * cui.uiScale(),
+                ui.windowWidth() * 0.2 + 10 * cui.scale(),
                 0,
-                ui.windowWidth() * 0.8 - 10 * cui.uiScale(),
+                ui.windowWidth() * 0.8 - 10 * cui.scale(),
                 ui.windowHeight(),
                 false
         )
 
         local textInputWidth = ui.windowWidth() * 0.25
-        local r1, r2 = ui.getCursor(), ui.getCursor() + vec2(textInputWidth, 36 * cui.uiScale())
-        ui.drawRectFilled(r1, r2, settings.Appearance.uiColorBackground * 0.25, 6 * cui.uiScale())
+        local r1, r2 = ui.getCursor(), ui.getCursor() + vec2(textInputWidth, 36 * cui.scale())
+        ui.drawRectFilled(r1, r2, settings.Appearance.uiColorBackground * 0.25, 6 * cui.scale())
 
         settingsSearchInput, settingsSearchActive = cui.inputText(
                 "##controlsSearcher",
-                vec2(textInputWidth, 36 * cui.uiScale()),
+                vec2(textInputWidth, 36 * cui.scale()),
                 "",
                 settingsSearchInput,
                 "Search Controls...",
@@ -379,7 +379,7 @@ function bindings:draw()
 
         ui.setCursorX(r2.x - ui.windowHeight() / 22)
         ui.setCursorY(0)
-        ui.icon(ui.Icons.ZoomIn, 36 * cui.uiScale(), rgbm.colors.gray, 36 * cui.uiScale() * 0.5)
+        ui.icon(ui.Icons.ZoomIn, 36 * cui.scale(), rgbm.colors.gray, 36 * cui.scale() * 0.5)
 
         ui.sameLine()
         cui.offsetCursorX(30)
@@ -419,7 +419,7 @@ function bindings:draw()
                                         style.main.font.body.size,
                                         ui.Alignment.Start,
                                         ui.Alignment.Center,
-                                        vec2(ui.windowWidth(), 32 * cui.uiScale())
+                                        vec2(ui.windowWidth(), 32 * cui.scale())
                                 )
                         end
 

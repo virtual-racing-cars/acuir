@@ -2,14 +2,14 @@ local app = require("app")
 local csp = require("csp")
 local cui = require("src.ui.cui")
 local settings = require("settings")
-local style = require("style")
+local style = require("src.ui.style")
 
 ac.setWindowOpen("entryWindow", true)
 
 function script.entryWindow(dt)
         style:pushFontRegular()
 
-        local windowSize = vec2(300, 350) * cui.uiScale()
+        local windowSize = vec2(300, 350) * cui.scale()
 
         cui.pushContentWindow(
                 "entry_point_window",
@@ -20,7 +20,7 @@ function script.entryWindow(dt)
                 function()
                         ui.dwriteTextAligned(
                                 app.name,
-                                32 * cui.uiScale(),
+                                32 * cui.scale(),
                                 ui.Alignment.Center,
                                 ui.Alignment.Center,
                                 ui.windowSize()
@@ -64,7 +64,7 @@ function script.entryWindow(dt)
                 if
                         cui.menuButton(
                                 app.state.appOpen and "Disable HUD" or "Enable HUD",
-                                vec2(ui.windowWidth(), 36 * cui.uiScale())
+                                vec2(ui.windowWidth(), 36 * cui.scale())
                         )
                 then
                         settings.Modules.autoStart = not app.state.appOpen

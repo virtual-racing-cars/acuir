@@ -5,7 +5,7 @@ local cui = require("ui.cui")
 local pages = require("ui.pages.pages")
 local settings = require("settings")
 local simutils = require("simutils")
-local style = require("style")
+local style = require("src.ui.style")
 local sim = ac.getSim()
 local car = ac.getCar(0)
 
@@ -77,8 +77,8 @@ local pauseButtons = {
 }
 
 function page.draw(dt)
-        local childWindowWith = (500 * cui.uiScale())
-        local childWindowHeight = (750 * cui.uiScale())
+        local childWindowWith = (500 * cui.scale())
+        local childWindowHeight = (750 * cui.scale())
         local mainWindowFlags = ui.WindowFlags.NoScrollbar + ui.WindowFlags.NoScrollWithMouse
 
         if cui.modalDialogCallback then
@@ -101,7 +101,7 @@ function page.draw(dt)
                                 vec2(0, 0),
                                 ui.windowSize(),
                                 settings.Appearance.uiColorPrimary / 1.5,
-                                12 * cui.uiScale()
+                                12 * cui.scale()
                         )
 
                         acLogoSize = vec2(ui.windowHeight() * 0.2, ui.windowHeight() * 0.2)
@@ -109,7 +109,7 @@ function page.draw(dt)
                         ui.image(acLogo, acLogoSize)
                         cui.offsetCursorY(30)
 
-                        local menuButtonSize = vec2(ui.availableSpaceX() - 40 * cui.uiScale(), 60 * cui.uiScale())
+                        local menuButtonSize = vec2(ui.availableSpaceX() - 40 * cui.scale(), 60 * cui.scale())
 
                         ui.pushStyleColor(ui.StyleColor.Button, settings.Appearance.uiColorPrimary)
                         for i in ipairs(pauseButtons) do

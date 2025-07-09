@@ -37,7 +37,7 @@ local function drawGammaCurve(gamma, joy, axle, min, max, isSteering)
                         local x = (i / 30) ^ 2
                         ui.pathLineTo(f + vec2(x, x ^ gamma) * s)
                 end
-                ui.pathStroke(settings.Appearance.uiColorSecondary, false, 3 * cui.uiScale())
+                ui.pathStroke(settings.Appearance.uiColorSecondary, false, 3 * cui.scale())
         else
                 local relSteer = math.clamp(math.sign(b) * (ax ^ gamma), -1, 1)
 
@@ -58,7 +58,7 @@ local function drawGammaCurve(gamma, joy, axle, min, max, isSteering)
                                         ui.pathLineTo(f + vec2(0.5 - 0.5 * x, 0.5 - 0.5 * x ^ gamma) * s)
                                 end
                         end
-                        ui.pathStroke(settings.Appearance.uiColorSecondary, false, 3 * cui.uiScale())
+                        ui.pathStroke(settings.Appearance.uiColorSecondary, false, 3 * cui.scale())
                 end
         end
 end
@@ -100,21 +100,21 @@ local function drawGamepadGammaCurve()
                 f + vec2(0, (0.5 + 0.5 * steer) * s.y),
                 f + vec2(s.x, (0.5 + 0.5 * steer) * s.y),
                 rgbm.colors.gray,
-                2 * cui.uiScale()
+                2 * cui.scale()
         )
 
         ui.drawLine(
                 f + vec2((0.5 + 0.5 * b) * s.x, 0),
                 f + vec2((0.5 + 0.5 * b) * s.x, s.y),
                 rgbm.colors.gray,
-                2 * cui.uiScale()
+                2 * cui.scale()
         )
 
         ui.drawLine(
                 f + vec2((0.5 + 0.5 * b) * s.x, 0),
                 f + vec2((0.5 + 0.5 * b) * s.x, s.y),
                 rgbm.colors.gray,
-                2 * cui.uiScale()
+                2 * cui.scale()
         )
 
         for i0 = 0, 1 do
@@ -137,7 +137,7 @@ local function drawGamepadGammaCurve()
                                 end
                         end
                 end
-                ui.pathStroke(settings.Appearance.uiColorSecondary, false, 3 * cui.uiScale())
+                ui.pathStroke(settings.Appearance.uiColorSecondary, false, 3 * cui.scale())
         end
 
         ui.drawRectFilled(
@@ -203,7 +203,7 @@ function tweaks:draw()
                         "CAR.FFB",
                         "Car FFB Gain",
                         ui.windowWidth() * 0.98,
-                        80 * cui.uiScale(),
+                        80 * cui.scale(),
                         false,
                         ac.getCar(0).ffbMultiplier,
                         {
@@ -234,10 +234,10 @@ function tweaks:draw()
                 ui.setCursorX(0)
                 ui.dwriteTextAligned(
                         tweakSection.group,
-                        24 * cui.uiScale(),
+                        24 * cui.scale(),
                         ui.Alignment.Center,
                         ui.Alignment.Center,
-                        vec2(ui.windowWidth(), 36 * cui.uiScale())
+                        vec2(ui.windowWidth(), 36 * cui.scale())
                 )
 
                 for _, tweak in ipairs(tweakSection.tweaks) do
@@ -251,7 +251,7 @@ function tweaks:draw()
                                 tweak.section .. tweak.id,
                                 tweak.label,
                                 ui.windowWidth() * 0.98,
-                                80 * cui.uiScale(),
+                                80 * cui.scale(),
                                 false,
                                 oldValue,
                                 tweak,
@@ -281,10 +281,10 @@ function tweaks:draw()
                 ui.setCursorX(0)
                 ui.dwriteTextAligned(
                         "FFB Gyro",
-                        24 * cui.uiScale(),
+                        24 * cui.scale(),
                         ui.Alignment.Center,
                         ui.Alignment.Center,
-                        vec2(ui.windowWidth(), 36 * cui.uiScale())
+                        vec2(ui.windowWidth(), 36 * cui.scale())
                 )
 
                 local currentGyroMode = (
@@ -300,7 +300,7 @@ function tweaks:draw()
                         "GYRO.GYRO",
                         "Range compression",
                         ui.windowWidth() * 0.98,
-                        80 * cui.uiScale(),
+                        80 * cui.scale(),
                         false,
                         currentGyroMode,
                         {
@@ -327,10 +327,10 @@ function tweaks:draw()
                 ui.setCursorX(0)
                 ui.dwriteTextAligned(
                         "FFB Post-Processing",
-                        24 * cui.uiScale(),
+                        24 * cui.scale(),
                         ui.Alignment.Center,
                         ui.Alignment.Center,
-                        vec2(ui.windowWidth(), 36 * cui.uiScale())
+                        vec2(ui.windowWidth(), 36 * cui.scale())
                 )
 
                 ui.setCursorX(ui.windowWidth() * 0.01)
@@ -338,7 +338,7 @@ function tweaks:draw()
                         "POSTPROCESSING.RANGE_COMPRESSION",
                         "Range compression",
                         ui.windowWidth() * 0.98,
-                        80 * cui.uiScale(),
+                        80 * cui.scale(),
                         false,
                         configs.FFBTWEAKS:get("POSTPROCESSING", "RANGE_COMPRESSION"),
                         {
@@ -363,7 +363,7 @@ function tweaks:draw()
                                 "POSTPROCESSING.RANGE_COMPRESSION_ASSIST",
                                 "Use Car Steer Assist",
                                 ui.windowWidth() * 0.98,
-                                80 * cui.uiScale(),
+                                80 * cui.scale(),
                                 false,
                                 configs.FFBTWEAKS:get("POSTPROCESSING", "RANGE_COMPRESSION_ASSIST"),
                                 {
@@ -398,7 +398,7 @@ function tweaks:draw()
                         "PP.MODE",
                         "Post-Process Mode",
                         ui.windowWidth() * 0.98,
-                        80 * cui.uiScale(),
+                        80 * cui.scale(),
                         false,
                         currentPPMode,
                         {
@@ -429,7 +429,7 @@ function tweaks:draw()
                                 "PP.GAMMA.VALUE",
                                 "Gamma",
                                 ui.windowWidth() * 0.98,
-                                80 * cui.uiScale(),
+                                80 * cui.scale(),
                                 false,
                                 configs.FFPOSTPROCESS:get("GAMMA", "VALUE"),
                                 {
@@ -491,7 +491,7 @@ function tweaks:draw()
                                 "LUT.CURVES",
                                 "Curves ( %s )" % #curves,
                                 ui.windowWidth() * 0.98,
-                                80 * cui.uiScale(),
+                                80 * cui.scale(),
                                 false,
                                 currentCurveIndex,
                                 {
@@ -515,7 +515,7 @@ function tweaks:draw()
 
                         drawCurve(curves[currentCurveIndex])
                 else
-                        ui.dummy(ui.windowWidth() * 0.8 + 118 * cui.uiScale())
+                        ui.dummy(ui.windowWidth() * 0.8 + 118 * cui.scale())
                 end
         end
 

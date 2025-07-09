@@ -48,14 +48,14 @@ local settingsPages = {
 function page.draw()
         ui.drawRectFilled(vec2(0, 0), ui.windowSize(), settings.Appearance.uiColorBackgroundShade * 0.75)
 
-        cui.pushWindowFitted("settings_page_window")
+        cui.pushFittedWindow("settings_page_window")
         topSubBar("")
 
-        local rowWidth = 1924 * cui.uiScale()
+        local rowWidth = 1924 * cui.scale()
         ui.setCursorX((ui.windowWidth() - rowWidth) / 2)
         cui.setCursorY(366)
 
-        ui.pushStyleVar(ui.StyleVar.ItemSpacing, 122 * cui.uiScale())
+        ui.pushStyleVar(ui.StyleVar.ItemSpacing, 122 * cui.scale())
         ui.beginGroup()
 
         for i = 1, #settingsPages do
@@ -64,8 +64,8 @@ function page.draw()
                 if
                         cui.settingsButton(
                                 page.label,
-                                560 * cui.uiScale(),
-                                300 * cui.uiScale(),
+                                560 * cui.scale(),
+                                300 * cui.scale(),
                                 page.enabled and ui.ButtonFlags.None or ui.ButtonFlags.Disabled,
                                 page.icon
                         )

@@ -66,7 +66,7 @@ local function drawGridLines()
                         vec2(0, i * quarterHeight),
                         vec2(ui.windowWidth(), i * quarterHeight),
                         rgbm(0.15, 0.15, 0.15, 1),
-                        2 * cui.uiScale()
+                        2 * cui.scale()
                 )
         end
 end
@@ -84,7 +84,7 @@ local function drawTraces()
                                 )
                         )
                 end
-                ui.pathSmoothStroke(trace.color, false, 4 * cui.uiScale())
+                ui.pathSmoothStroke(trace.color, false, 4 * cui.scale())
         end
 end
 
@@ -92,7 +92,7 @@ function tracesGraph:draw(xPos, yPos, width, height)
         cui.pushWindow("traces_widget_window", xPos, yPos, width, height, false)
         ui.drawRectFilled(vec2(0, 0), ui.windowSize(), settings.Appearance.uiColorBackground, 12)
 
-        border = 7.5 * cui.uiScale()
+        border = 7.5 * cui.scale()
 
         cui.pushWindow("traces_widget_window2", border, border, width - border * 2, height - border * 2, false)
         drawGridLines()

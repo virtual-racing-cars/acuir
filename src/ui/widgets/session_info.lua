@@ -2,7 +2,7 @@ local Widget = require("src.classes.Widget")
 local cui = require("src.ui.cui")
 local settings = require("settings")
 local simutils = require("simutils")
-local style = require("style")
+local style = require("src.ui.style")
 local units = require("units")
 local weather = require("weather")
 local sim = ac.getSim()
@@ -132,13 +132,13 @@ function sessionInfoWidget:body()
                         bodyFontSize,
                         ui.Alignment.End,
                         ui.Alignment.Center,
-                        vec2(ui.windowWidth() * 0.5 - 15 * cui.uiScale(), bodyFontSpace),
+                        vec2(ui.windowWidth() * 0.5 - 15 * cui.scale(), bodyFontSpace),
                         false,
                         sim.currentSessionIndex == sessionIndex and settings.Appearance.uiColorSecondary
                                 or settings.Appearance.uiColorText
                 )
                 ui.sameLine()
-                ui.setCursorX(ui.windowWidth() * 0.5 + 15 * cui.uiScale())
+                ui.setCursorX(ui.windowWidth() * 0.5 + 15 * cui.scale())
 
                 if session.durationMinutes == 0 then
                         if session.type == ac.SessionType.Race then
@@ -200,10 +200,10 @@ function sessionInfoWidget:body()
                         bodyFontSize,
                         ui.Alignment.End,
                         ui.Alignment.Center,
-                        vec2(ui.windowWidth() * 0.5 - 15 * cui.uiScale(), bodyFontSpace)
+                        vec2(ui.windowWidth() * 0.5 - 15 * cui.scale(), bodyFontSpace)
                 )
                 ui.sameLine()
-                ui.setCursorX(ui.windowWidth() * 0.5 + 15 * cui.uiScale())
+                ui.setCursorX(ui.windowWidth() * 0.5 + 15 * cui.scale())
 
                 cui.snapCursor()
                 ui.dwriteTextAligned(
@@ -235,10 +235,10 @@ function sessionInfoWidget:body()
                         bodyFontSize,
                         ui.Alignment.End,
                         ui.Alignment.Center,
-                        vec2(ui.windowWidth() * 0.5 - 15 * cui.uiScale(), bodyFontSpace)
+                        vec2(ui.windowWidth() * 0.5 - 15 * cui.scale(), bodyFontSpace)
                 )
                 ui.sameLine()
-                ui.setCursorX(ui.windowWidth() * 0.5 + 15 * cui.uiScale())
+                ui.setCursorX(ui.windowWidth() * 0.5 + 15 * cui.scale())
                 cui.snapCursor()
                 ui.dwriteTextAligned(
                         assist.value,

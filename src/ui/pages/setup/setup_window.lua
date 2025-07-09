@@ -4,7 +4,7 @@ local audio = require("audio")
 local cui = require("ui.cui")
 local gearSpeedsWidget = require("src.ui.widgets.gear_speeds")
 local settings = require("settings")
-local style = require("style")
+local style = require("src.ui.style")
 
 local vec2Temp1 = vec2()
 
@@ -14,7 +14,7 @@ local function tabItem(index, title)
         if
                 cui.treeNodeButton(
                         title,
-                        vec2(ui.availableSpaceX() - 20 * cui.uiScale(), style.main.font.header.space),
+                        vec2(ui.availableSpaceX() - 20 * cui.scale(), style.main.font.header.space),
                         currentApp == index,
                         true
                 )
@@ -23,7 +23,7 @@ local function tabItem(index, title)
         end
         cui.offsetCursorY(5)
 
-        if currentApp == index then ui.setScrollY((index - 5) * 48 * cui.uiScale()) end
+        if currentApp == index then ui.setScrollY((index - 5) * 48 * cui.scale()) end
 end
 
 local scrollDelayTimer = 0
@@ -89,13 +89,13 @@ local function drawSetupSpinner(si)
         si:run(true)
 
         local positions = {
-                [0] = 40 * cui.uiScale(),
+                [0] = 40 * cui.scale(),
                 [0.5] = ui.windowWidth() / 2 - spinnerWidth / 2,
-                [1] = (ui.windowWidth() - spinnerWidth) - 40 * cui.uiScale(),
+                [1] = (ui.windowWidth() - spinnerWidth) - 40 * cui.scale(),
         }
 
         local xPos = positions[si.xPos]
-        local yPos = (si.yPos * 1.2 * spinnerHeight / cui.uiScale()) * cui.uiScale()
+        local yPos = (si.yPos * 1.2 * spinnerHeight / cui.scale()) * cui.scale()
                 + (ui.windowHeight() - spinnerHeight * 10) * 0.5
 
         if si.items then
@@ -118,7 +118,7 @@ local function drawSetupSpinner(si)
                 vec2(xPos, yPos - spinnerHeight * 0.18),
                 vec2(xPos + spinnerWidth, yPos + spinnerHeight * 1.18),
                 settings.Appearance.uiColorBackground,
-                6 * cui.uiScale(),
+                6 * cui.scale(),
                 cornerFlags
         )
 
@@ -174,7 +174,7 @@ local function drawSetupSpinner(si)
                         linkButton(
                                 si.name,
                                 vec2Temp1:set(
-                                        ((ui.windowWidth() - spinnerWidth) - 40 * cui.uiScale()) - ui.getCursorX(),
+                                        ((ui.windowWidth() - spinnerWidth) - 40 * cui.scale()) - ui.getCursorX(),
                                         spinnerHeight * 1.36
                                 ),
                                 si.mirrored

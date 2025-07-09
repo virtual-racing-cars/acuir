@@ -30,15 +30,15 @@ local audioChannels = {
 function page.draw()
         ui.drawRectFilled(vec2(0, 0), ui.windowSize(), settings.Appearance.uiColorBackgroundShade * 0.75)
 
-        cui.pushWindowFitted("settings_audio_main_window")
+        cui.pushFittedWindow("settings_audio_main_window")
         topSubBar("Audio")
 
         cui.pushContentWindow(
                 "settings_AUDIO_window",
                 ui.windowWidth() * 0.25,
-                180 * cui.uiScale(),
+                180 * cui.scale(),
                 ui.windowWidth() * 0.5,
-                ui.windowHeight() - 303 * cui.uiScale(),
+                ui.windowHeight() - 303 * cui.scale(),
                 function()
                         if cui.menuButton("General", 40, 0, 0, 0, false, false, ui.CornerFlags.Top) then
                         end
@@ -66,7 +66,7 @@ function page.draw()
                         "##" .. id,
                         v,
                         ui.windowWidth() * 0.5,
-                        95 * cui.uiScale(),
+                        95 * cui.scale(),
                         false,
                         ac.getAudioVolume(ac.AudioChannel[id]) * 100,
                         {

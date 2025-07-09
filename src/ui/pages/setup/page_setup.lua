@@ -10,7 +10,7 @@ local cui = require("ui.cui")
 local dataLogger = require("data_logger")
 local settings = require("settings")
 local setupExchange = require("setup_exchange")
-local style = require("style")
+local style = require("src.ui.style")
 local car = ac.getCar(0)
 
 local carStatusActive = true
@@ -43,7 +43,7 @@ local function helpWindow()
 
         cui.setCursorY(10)
         cui.setCursorX(15)
-        ui.pushTextWrapPosition(ui.windowWidth() - 15 * cui.uiScale())
+        ui.pushTextWrapPosition(ui.windowWidth() - 15 * cui.scale())
         cui.snapCursor()
         ui.dwriteText(sm.activeHelpString, style.main.font.body.size)
 
@@ -58,7 +58,7 @@ local function dataLoggingWindow()
                 ui.windowWidth() * 0.78,
                 0,
                 ui.windowWidth() * 0.22,
-                ui.windowHeight() * 0.16 - 7.5 * cui.uiScale(),
+                ui.windowHeight() * 0.16 - 7.5 * cui.scale(),
                 function()
                         ui.setCursor(0)
                         if cui.windowTabButton("CSP Data Logger", 36, ui.ButtonFlags.None, false) then
@@ -169,9 +169,9 @@ local function carStatusWindow()
         cui.pushContentWindow(
                 "car_status_window",
                 ui.windowWidth() * 0.78,
-                ui.windowHeight() * 0.16 + 7.5 * cui.uiScale(),
+                ui.windowHeight() * 0.16 + 7.5 * cui.scale(),
                 ui.windowWidth() * 0.22,
-                ui.windowHeight() * 0.84 - 7.5 * cui.uiScale(),
+                ui.windowHeight() * 0.84 - 7.5 * cui.scale(),
                 function()
                         ui.setCursor(0)
                         if cui.windowTabButton("Car Status", 36, ui.ButtonFlags.None, carStatusActive) then
@@ -225,9 +225,9 @@ local function setupIoWindow()
         cui.pushContentWindow(
                 "setup_save_window",
                 0,
-                ui.windowHeight() * 0.75 + 7.5 * cui.uiScale(),
+                ui.windowHeight() * 0.75 + 7.5 * cui.scale(),
                 ui.windowWidth() * 0.22,
-                ui.windowHeight() * 0.25 - 7.5 * cui.uiScale(),
+                ui.windowHeight() * 0.25 - 7.5 * cui.scale(),
                 function()
                         ui.setCursor(0)
                         if

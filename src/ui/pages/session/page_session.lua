@@ -5,7 +5,7 @@ local settings = require("settings")
 local timetableWidget = require("ui.widgets.time_table")
 local trackMapWidget = require("ui.widgets.track_map")
 
-local style = require("style")
+local style = require("src.ui.style")
 local units = require("units")
 local weather = require("weather")
 local car = ac.getCar(0)
@@ -62,23 +62,23 @@ local carInfoTable = {
 function page.update() end
 
 local function trackMapWindow()
-        trackMapWidget:setPosition(ui.windowWidth() * 0.5 + 7.5 * cui.uiScale(), 0)
-        trackMapWidget:setSize(730 * cui.uiScale(), ui.windowHeight())
+        trackMapWidget:setPosition(ui.windowWidth() * 0.5 + 7.5 * cui.scale(), 0)
+        trackMapWidget:setSize(730 * cui.scale(), ui.windowHeight())
         trackMapWidget:draw()
 end
 
 local function sessionControlWindow()
         sessionControlWidget:setPosition(ui.windowWidth() - ui.windowWidth() / 5, 0)
-        sessionControlWidget:setSize(ui.windowWidth() / 5, ui.windowHeight() * 0.15 - 7.5 * cui.uiScale())
+        sessionControlWidget:setSize(ui.windowWidth() / 5, ui.windowHeight() * 0.15 - 7.5 * cui.scale())
         sessionControlWidget:draw()
 end
 
 local function modifiersWindow()
         sessionInfoWidget:setPosition(
                 ui.windowWidth() - ui.windowWidth() / 5,
-                ui.windowHeight() * 0.15 + 7.5 * cui.uiScale()
+                ui.windowHeight() * 0.15 + 7.5 * cui.scale()
         )
-        sessionInfoWidget:setSize(ui.windowWidth() / 5, ui.windowHeight() * 0.85 - 7.5 * cui.uiScale())
+        sessionInfoWidget:setSize(ui.windowWidth() / 5, ui.windowHeight() * 0.85 - 7.5 * cui.scale())
         sessionInfoWidget:draw()
 end
 
@@ -87,7 +87,7 @@ local function leaderboardWindow()
                 "home_leaderboard_window",
                 0,
                 0,
-                ui.windowWidth() * 0.5 - 7.5 * cui.uiScale(),
+                ui.windowWidth() * 0.5 - 7.5 * cui.scale(),
                 ui.windowHeight(),
                 function()
                         ui.setCursor(0)
@@ -119,10 +119,10 @@ local function leaderboardWindow()
 end
 
 function page.draw()
-        genericButtonHeight = 40 * cui.uiScale()
+        genericButtonHeight = 40 * cui.scale()
         fontSize = style.main.font.body.size
 
-        cui.pushWindow("session_box_window", 0, 0, ui.windowWidth(), ui.windowHeight() - 255 * cui.uiScale())
+        cui.pushWindow("session_box_window", 0, 0, ui.windowWidth(), ui.windowHeight() - 255 * cui.scale())
 
         leaderboardWindow()
         trackMapWindow()

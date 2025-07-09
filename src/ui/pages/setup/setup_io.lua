@@ -2,7 +2,7 @@ local cui = require("ui.cui")
 
 local carSetup = require("src.car_setup")
 local settings = require("settings")
-local style = require("style")
+local style = require("src.ui.style")
 
 local vec2Temp1 = vec2()
 
@@ -37,8 +37,8 @@ local function promptDeleteSetup()
                 )
 
                 local buttonWidth = ui.windowWidth() / 3
-                ui.setCursorX(ui.windowWidth() / 2 - buttonWidth - 5 * cui.uiScale())
-                if cui.modalButton("Cancel", ui.windowWidth() / 3, 50 * cui.uiScale(), ui.ButtonFlags.None) then
+                ui.setCursorX(ui.windowWidth() / 2 - buttonWidth - 5 * cui.scale())
+                if cui.modalButton("Cancel", ui.windowWidth() / 3, 50 * cui.scale(), ui.ButtonFlags.None) then
                         ui.popStyleVar(1)
 
                         return true
@@ -50,8 +50,8 @@ local function promptDeleteSetup()
                         mouseMoved = true
                 end
 
-                ui.setCursorX(ui.windowWidth() / 2 + 5 * cui.uiScale())
-                if cui.modalButton("Confirm", ui.windowWidth() / 3, 50 * cui.uiScale(), ui.ButtonFlags.None) then
+                ui.setCursorX(ui.windowWidth() / 2 + 5 * cui.scale())
+                if cui.modalButton("Confirm", ui.windowWidth() / 3, 50 * cui.scale(), ui.ButtonFlags.None) then
                         carSetup:delete()
                         cui.menuBanner("Deleted Setup", nil, rgbm.colors.red)
 
@@ -98,8 +98,8 @@ local function promptOverwriteSetup()
                 )
 
                 local buttonWidth = ui.windowWidth() / 3
-                ui.setCursorX(ui.windowWidth() / 2 - buttonWidth - 5 * cui.uiScale())
-                if cui.modalButton("Cancel", ui.windowWidth() / 3, 50 * cui.uiScale(), ui.ButtonFlags.None) then
+                ui.setCursorX(ui.windowWidth() / 2 - buttonWidth - 5 * cui.scale())
+                if cui.modalButton("Cancel", ui.windowWidth() / 3, 50 * cui.scale(), ui.ButtonFlags.None) then
                         ui.popStyleVar(1)
 
                         return true
@@ -111,8 +111,8 @@ local function promptOverwriteSetup()
                         mouseMoved = true
                 end
 
-                ui.setCursorX(ui.windowWidth() / 2 + 5 * cui.uiScale())
-                if cui.modalButton("Confirm", ui.windowWidth() / 3, 50 * cui.uiScale(), ui.ButtonFlags.None) then
+                ui.setCursorX(ui.windowWidth() / 2 + 5 * cui.scale())
+                if cui.modalButton("Confirm", ui.windowWidth() / 3, 50 * cui.scale(), ui.ButtonFlags.None) then
                         carSetup:save(sm)
                         cui.menuBanner("Saved Setup", nil, rgbm.colors.green)
 
@@ -144,7 +144,7 @@ function drawLocalSetupFilters()
         settings.General.sortTrackSetupsAZ, sortChanged = drawCheckbox(
                 "##isSetupIOSortingAlpha",
                 "Sort A-Z",
-                20 * cui.uiScale(),
+                20 * cui.scale(),
                 settings.General.sortTrackSetupsAZ
         )
 
@@ -153,7 +153,7 @@ end
 
 function drawSetupControls(sm)
         local iconButtonHeight = style.main.font.body.size * 2
-        local buttonWidth = ui.availableSpaceX() - 20 * cui.uiScale()
+        local buttonWidth = ui.availableSpaceX() - 20 * cui.scale()
         local groupBegin = (ui.windowWidth() / 24)
 
         cui.setCursorX(10)
@@ -182,7 +182,7 @@ function drawSetupControls(sm)
                 ui.getCursor(),
                 ui.getCursor() + vec2Temp1:set(buttonWidth, iconButtonHeight),
                 settings.Appearance.uiColorText * 0.75,
-                6 * cui.uiScale()
+                6 * cui.scale()
         )
         carSetup.input.name = cui.inputText(
                 "##SetupName",
@@ -194,7 +194,7 @@ function drawSetupControls(sm)
         )
         ui.sameLine()
 
-        ui.setCursorX(ui.windowWidth() - iconButtonHeight - 15 * cui.uiScale())
+        ui.setCursorX(ui.windowWidth() - iconButtonHeight - 15 * cui.scale())
 
         if
                 cui.iconButton(
@@ -225,7 +225,7 @@ function drawSetupControls(sm)
         -- if
         --         cui.menuButton(
         --                 "Load Setup",
-        --                 vec2Temp1:set(buttonWidth * 0.5 - 5 * cui.uiScale(), iconButtonHeight),
+        --                 vec2Temp1:set(buttonWidth * 0.5 - 5 * cui.scale(), iconButtonHeight),
         --                 nil,
         --                 nil,
         --                 setupFileExists and ui.ButtonFlags.None or ui.ButtonFlags.Disabled,
@@ -281,7 +281,7 @@ function drawSetupControls(sm)
                 end
         end
 
-        buttonWidth = buttonWidth + 10 * cui.uiScale()
+        buttonWidth = buttonWidth + 10 * cui.scale()
 
         -- if cui.menuButton("Reset Setup To Default", vec2Temp1:set(buttonWidth, iconButtonHeight), nil, nil) then
         --         ac.resetSetupToDefault()
@@ -293,8 +293,8 @@ local function drawSetupNode(setup, track)
         cui.offsetCursorY(5)
         local setupActive = carSetup.selected.path == setup.path
         local name = string.replace(setup.name, ".ini", "")
-        local buttonSize = vec2(ui.availableSpaceX() - 20 * cui.uiScale(), style.main.font.header.space)
-        local popupButtonSize = vec2(ui.windowWidth() * 0.3, 32 * cui.uiScale())
+        local buttonSize = vec2(ui.availableSpaceX() - 20 * cui.scale(), style.main.font.header.space)
+        local popupButtonSize = vec2(ui.windowWidth() * 0.3, 32 * cui.scale())
 
         local clicked, deleteClicked, loadClicked, explorerClicked, hovered =
                 cui.setupSelectButton(track .. " / " .. name, setupActive, setup.lastWriteTime)
@@ -343,7 +343,7 @@ local function drawSetupList()
         for i, track in ipairs(carSetup.trackList) do
                 ui.setCursorX(0)
                 if
-                        cui.treeNode(track, #carSetup.loaded[track], function()
+                        cui.treeNodeButton(track, #carSetup.loaded[track], function()
                                 for i in ipairs(carSetup.loaded[track]) do
                                         ui.setCursorX(0)
                                         drawSetupNode(carSetup.loaded[track][i], track)
@@ -362,22 +362,22 @@ function drawSetupIO(sm)
                 cui.menuBanner("Deleted Setup", nil, rgbm.colors.red)
         end
 
-        ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiColorBackgroundShade, 6 * cui.uiScale())
+        ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiColorBackgroundShade, 6 * cui.scale())
         drawLocalSetupFilters()
 
         ui.drawRectFilled(
-                vec2(0, 40 * cui.uiScale()),
+                vec2(0, 40 * cui.scale()),
                 ui.windowSize(),
                 settings.Appearance.uiColorBackground,
-                6 * cui.uiScale()
+                6 * cui.scale()
         )
 
         cui.pushWindow(
                 "load_setups",
                 0,
-                40 * cui.uiScale(),
+                40 * cui.scale(),
                 ui.windowWidth(),
-                ui.windowHeight() - 40 * cui.uiScale(),
+                ui.windowHeight() - 40 * cui.scale(),
                 true,
                 ui.ButtonFlags.None
         )

@@ -4,7 +4,7 @@
 
 local cui = require("src.ui.cui")
 local settings = require("settings")
-local style = require("style")
+local style = require("src.ui.style")
 
 -- if settings.General.autoStart then ac.uninstallApp("SetupExchange") end
 
@@ -565,13 +565,13 @@ end
 local function likeButtons(path, item, likedList, dislikedList, itemID, contextTable)
         local fontSize = style.main.font.small.size
         local fontSpace = style.main.font.small.space
-        local actionBlockSize = vec2(ui.availableSpaceX() / 4 - 10 * cui.uiScale(), fontSpace)
+        local actionBlockSize = vec2(ui.availableSpaceX() / 4 - 10 * cui.scale(), fontSpace)
         cui.offsetCursorY(fontSpace / 6)
         local voteZoneButton =
                 ui.invisibleButton("##vote_zone_setup_exchange", actionBlockSize, ui.ButtonFlags.Disabled)
         local r1, r2 = ui.itemRect()
 
-        ui.drawRectFilled(r1, r2, settings.Appearance.uiColorBackgroundShade, 6 * cui.uiScale())
+        ui.drawRectFilled(r1, r2, settings.Appearance.uiColorBackgroundShade, 6 * cui.scale())
 
         local likeDelta = item.statLikes - item.statDislikes
         -- ui.setCursor(p)
@@ -693,8 +693,8 @@ local function commentsBlock()
         ui.childWindow("commentsScroll", ui.availableSpace(), function()
                 local fontSize = style.main.font.small.size
                 local fontSpace = style.main.font.small.space
-                local setupItemWidth = ui.windowWidth() - 10 * cui.uiScale()
-                local actionBlockSize = vec2(ui.availableSpaceX() / 4 - 10 * cui.uiScale(), fontSpace)
+                local setupItemWidth = ui.windowWidth() - 10 * cui.scale()
+                local actionBlockSize = vec2(ui.availableSpaceX() / 4 - 10 * cui.scale(), fontSpace)
 
                 cui.offsetCursorY(15)
                 if #comments == 0 then
@@ -768,7 +768,7 @@ local function commentsBlock()
                                 end
                                 local r1, r2 = ui.itemRect()
 
-                                ui.drawRectFilled(r1, r2, settings.Appearance.uiColorBackgroundShade, 6 * cui.uiScale())
+                                ui.drawRectFilled(r1, r2, settings.Appearance.uiColorBackgroundShade, 6 * cui.scale())
                                 ui.addIcon(ui.Icons.Chat, iconSize, iconAlign)
 
                                 ui.setCursor(r1)
@@ -801,7 +801,7 @@ local function commentsBlock()
                                                 r1,
                                                 r2,
                                                 settings.Appearance.uiColorBackgroundShade,
-                                                6 * cui.uiScale()
+                                                6 * cui.scale()
                                         )
                                         ui.addIcon(ui.Icons.Delete, iconSize, iconAlign)
 
@@ -884,14 +884,7 @@ local function searchFilterControls()
                 end
                 ui.addIcon(ui.Icons.Cancel, iconSize, vec2(0, 0.5), rgbm.colors.white)
         elseif searchFilter ~= "" then
-                if
-                        cui.menuButton(
-                                "    Back",
-                                vec2(40, 20) * cui.uiScale(),
-                                ui.Alignment.Center,
-                                ui.Alignment.Center
-                        )
-                then
+                if cui.menuButton("    Back", vec2(40, 20) * cui.scale(), ui.Alignment.Center, ui.Alignment.Center) then
                         searchFilter = ""
                         listOfSetups = nil
                         return
@@ -980,10 +973,10 @@ end
 local function drawSetupItem(i, v)
         local fontSize = style.main.font.small.size
         local fontSpace = style.main.font.small.space
-        local setupItemWidth = ui.windowWidth() - 20 * cui.uiScale()
+        local setupItemWidth = ui.windowWidth() - 20 * cui.scale()
         local setupItemHeight = fontSpace * 4
         cui.setCursorX(10)
-        ui.setCursorY((setupItemHeight + 5 * cui.uiScale()) * (i - 1) + 10 * cui.uiScale())
+        ui.setCursorY((setupItemHeight + 5 * cui.scale()) * (i - 1) + 10 * cui.scale())
         ui.pushID(v.setupID)
 
         local p = ui.getCursor()
@@ -994,7 +987,7 @@ local function drawSetupItem(i, v)
         local buttonColor = settings.Appearance.uiColorPrimary
         local fontColor = settings.Appearance.uiColorText
         local subFontColor = settings.Appearance.uiColorText
-        local borderThickness = 1 * cui.uiScale()
+        local borderThickness = 1 * cui.scale()
 
         if clicked then selectedSetup = v end
         local active = selectedSetup and v.setupID == selectedSetup.setupID
@@ -1021,15 +1014,15 @@ local function drawSetupItem(i, v)
         -- active = true
 
         if active then
-                borderThickness = 5 * cui.uiScale()
+                borderThickness = 5 * cui.scale()
                 buttonColor = settings.Appearance.uiColorAccent
         elseif hovered then
-                borderThickness = 5 * cui.uiScale()
+                borderThickness = 5 * cui.scale()
                 buttonColor = settings.Appearance.uiColorSecondary
         end
 
-        ui.drawRectFilled(r1, r2, settings.Appearance.uiColorPrimary, 6 * cui.uiScale(), ui.CornerFlags.All)
-        ui.drawRect(r1, r2, buttonColor, 6 * cui.uiScale(), ui.CornerFlags.All, borderThickness)
+        ui.drawRectFilled(r1, r2, settings.Appearance.uiColorPrimary, 6 * cui.scale(), ui.CornerFlags.All)
+        ui.drawRect(r1, r2, buttonColor, 6 * cui.scale(), ui.CornerFlags.All, borderThickness)
 
         ui.setCursor(r1)
         cui.offsetCursorY(fontSpace / 6)
@@ -1041,7 +1034,7 @@ local function drawSetupItem(i, v)
                 fontSize,
                 ui.Alignment.Start,
                 ui.Alignment.Center,
-                vec2(setupItemWidth - 10 * cui.uiScale(), fontSpace),
+                vec2(setupItemWidth - 10 * cui.scale(), fontSpace),
                 false,
                 fontColor
         )
@@ -1059,7 +1052,7 @@ local function drawSetupItem(i, v)
                 r2,
                 v.userID == ownUserID and settings.Appearance.uiColorYellow
                         or settings.Appearance.uiColorBackgroundShade,
-                6 * cui.uiScale()
+                6 * cui.scale()
         )
 
         ui.setCursor(r1)
@@ -1082,7 +1075,7 @@ local function drawSetupItem(i, v)
                 style.main.font.small.size,
                 ui.Alignment.Start,
                 ui.Alignment.Center,
-                vec2(ui.availableSpaceX() - 10 * cui.uiScale(), fontSpace),
+                vec2(ui.availableSpaceX() - 10 * cui.scale(), fontSpace),
                 false,
                 subFontColor
         )
@@ -1101,7 +1094,7 @@ local function drawSetupItem(i, v)
                 subFontColor
         )
 
-        local actionBlockSize = vec2(ui.availableSpaceX() / 4 - 10 * cui.uiScale(), fontSpace)
+        local actionBlockSize = vec2(ui.availableSpaceX() / 4 - 10 * cui.scale(), fontSpace)
         cui.setCursorX(20)
 
         likeButtons("likes", v, likedSetups, dislikedSetups, v.setupID, { carID = v.carID })
@@ -1113,7 +1106,7 @@ local function drawSetupItem(i, v)
         local commentsClicked = ui.invisibleButton("##setup_exchange_comments_" .. v.setupID, actionBlockSize)
         local commentsColor = rgbm.colors.gray * 0.7
         local r1, r2 = ui.itemRect()
-        ui.drawRectFilled(r1, r2, settings.Appearance.uiColorBackgroundShade, 6 * cui.uiScale())
+        ui.drawRectFilled(r1, r2, settings.Appearance.uiColorBackgroundShade, 6 * cui.scale())
 
         if ui.itemHovered() then
                 commentsColor = settings.Appearance.uiColorSecondary
@@ -1173,7 +1166,7 @@ local function drawSetupItem(i, v)
                         applyAvailable and 0 or ui.ButtonFlags.Disabled
                 )
                 local r1, r2 = ui.itemRect()
-                ui.drawRectFilled(r1, r2, settings.Appearance.uiColorBackgroundShade, 6 * cui.uiScale())
+                ui.drawRectFilled(r1, r2, settings.Appearance.uiColorBackgroundShade, 6 * cui.scale())
 
                 ui.setCursor(r1)
                 cui.snapCursor()
@@ -1245,7 +1238,7 @@ local function setupsListWindow(setups)
                                 style.main.font.body.size,
                                 ui.Alignment.Start,
                                 ui.Alignment.Center,
-                                vec2(ui.windowWidth(), 28 * cui.uiScale()),
+                                vec2(ui.windowWidth(), 28 * cui.scale()),
                                 false,
                                 settings.Appearance.uiColorTextDim
                         )
@@ -1254,7 +1247,7 @@ local function setupsListWindow(setups)
                 end
 
                 local fontSpace = style.main.font.small.space
-                local setupItemHeight = fontSpace * 4 + 5 * cui.uiScale()
+                local setupItemHeight = fontSpace * 4 + 5 * cui.scale()
 
                 local f = 1 + math.floor(ui.getScrollY() / setupItemHeight)
                 local t = 2 + math.floor((ui.getScrollY() + ui.windowHeight()) / setupItemHeight)
@@ -1266,12 +1259,12 @@ local function setupsListWindow(setups)
                         if v then drawSetupItem(i, v) end
                 end
 
-                ui.setMaxCursorY(math.max(setupsTotalCount, #setups) * setupItemHeight + 20 * cui.uiScale())
+                ui.setMaxCursorY(math.max(setupsTotalCount, #setups) * setupItemHeight + 20 * cui.scale())
         end)
 end
 
 local function shareSetupButton()
-        local iconButtonHeight = 32 * cui.uiScale()
+        local iconButtonHeight = 32 * cui.scale()
         local buttonWidth = ui.windowWidth() * 0.99
         local groupBegin = (ui.windowWidth() / 24)
         local fontSize = style.main.font.body.size
@@ -1342,13 +1335,13 @@ end
 local newSearchFilter = ""
 
 local function searchFilters()
-        local iconButtonHeight = 32 * cui.uiScale()
+        local iconButtonHeight = 32 * cui.scale()
         local buttonWidth = ui.windowWidth() * 0.99
         local groupBegin = (ui.windowWidth() / 24)
         local fontSize = style.main.font.body.size
-        local comboSize = vec2((ui.windowWidth() - 20 * cui.uiScale()) * 0.5, 32 * cui.uiScale())
+        local comboSize = vec2((ui.windowWidth() - 20 * cui.scale()) * 0.5, 32 * cui.scale())
 
-        ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiColorBackgroundShade, 6 * cui.uiScale())
+        ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiColorBackgroundShade, 6 * cui.scale())
 
         cui.offsetCursorX(10)
         cui.setCursorY(10)
@@ -1357,14 +1350,9 @@ local function searchFilters()
                 ui.getCursor(),
                 ui.getCursor() + comboSize,
                 settings.Appearance.uiColorBackground * 0.25,
-                6 * cui.uiScale()
+                6 * cui.scale()
         )
-        ui.drawRect(
-                ui.getCursor(),
-                ui.getCursor() + comboSize,
-                settings.Appearance.uiColorText * 0.75,
-                6 * cui.uiScale()
-        )
+        ui.drawRect(ui.getCursor(), ui.getCursor() + comboSize, settings.Appearance.uiColorText * 0.75, 6 * cui.scale())
 
         newSearchFilter = cui.inputText("##controlsSearcher", comboSize, "", newSearchFilter, "Search setups...", "")
 
@@ -1375,10 +1363,10 @@ local function searchFilters()
 
         ui.sameLine()
         ui.setCursorX(comboSize.x)
-        ui.icon(ui.Icons.ZoomIn, 32 * cui.uiScale(), rgbm.colors.gray, 32 * cui.uiScale() * 0.5)
+        ui.icon(ui.Icons.ZoomIn, 32 * cui.scale(), rgbm.colors.gray, 32 * cui.scale() * 0.5)
 
         ui.sameLine()
-        ui.setCursorX(ui.windowWidth() * 0.5 + 10 * cui.uiScale())
+        ui.setCursorX(ui.windowWidth() * 0.5 + 10 * cui.scale())
 
         cui.combo(
                 "##sort_setup_exchange",
@@ -1411,7 +1399,7 @@ local function searchFilters()
                                 if
                                         cui.menuButton(
                                                 v[1],
-                                                vec2(ui.windowWidth() - 30 * cui.uiScale(), comboSize.y),
+                                                vec2(ui.windowWidth() - 30 * cui.scale(), comboSize.y),
                                                 ui.Alignment.Center
                                         )
                                 then
@@ -1439,10 +1427,10 @@ local function windowGeneric(paddingDown)
                 return
         end
 
-        local filterSpaceSize = 5 * cui.uiScale()
+        local filterSpaceSize = 5 * cui.scale()
 
         if not discussingItem then
-                filterSpaceSize = 50 * cui.uiScale()
+                filterSpaceSize = 50 * cui.scale()
                 searchFilters()
         end
 
@@ -1455,7 +1443,7 @@ local function windowGeneric(paddingDown)
                 false,
                 ui.ButtonFlags.None
         )
-        ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiColorBackground, 6 * cui.uiScale())
+        ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiColorBackground, 6 * cui.scale())
         sortControls()
         -- searchFilterControls()
         -- userControls()

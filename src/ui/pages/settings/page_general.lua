@@ -16,7 +16,7 @@ local bottomBarButtons = {
 local function generalSettings()
         cui.setCursorY(100)
         for i, v in ipairs(settings.General) do
-                local height = 95 * 0.7 * 0.3 * cui.uiScale()
+                local height = 95 * 0.7 * 0.3 * cui.scale()
 
                 if v.widget == 1 then
                         ui.setCursorX(ui.windowWidth() * 0.5 - height * 7)
@@ -33,7 +33,7 @@ local function generalSettings()
                                 v.label,
                                 v.label,
                                 ui.windowWidth() * 0.5,
-                                95 * cui.uiScale(),
+                                95 * cui.scale(),
                                 false,
                                 settings.General[v.key],
                                 {
@@ -64,7 +64,7 @@ end
 local function uiSettings()
         cui.setCursorY(100)
         for i, v in ipairs(settings.UI) do
-                local height = 95 * 0.7 * 0.3 * cui.uiScale()
+                local height = 95 * 0.7 * 0.3 * cui.scale()
 
                 if v.widget == 1 then
                         ui.setCursorX(ui.windowWidth() * 0.5 - height * 7)
@@ -82,7 +82,7 @@ local function uiSettings()
                                 v.label,
                                 v.label,
                                 ui.windowWidth() * 0.5,
-                                95 * cui.uiScale(),
+                                95 * cui.scale(),
                                 false,
                                 settings.UI[v.key],
                                 {
@@ -113,16 +113,16 @@ end
 function page.draw()
         ui.drawRectFilled(vec2(0, 0), ui.windowSize(), settings.Appearance.uiColorBackgroundShade * 0.75)
 
-        cui.pushWindowFitted("general_page_window")
+        cui.pushFittedWindow("general_page_window")
 
         topSubBar(app.name)
 
         cui.pushContentWindow(
                 "settings_general_window",
                 ui.windowWidth() * 0.25,
-                180 * cui.uiScale(),
+                180 * cui.scale(),
                 ui.windowWidth() * 0.5,
-                ui.windowHeight() - 303 * cui.uiScale(),
+                ui.windowHeight() - 303 * cui.scale(),
                 function()
                         if cui.menuButton("General", 40, 0, 0, 0, page.tab == 1, false, ui.CornerFlags.Top) then
                                 page.tab = 1

@@ -2,6 +2,7 @@ local audio = require("audio")
 local banner = require("src.ui.banner")
 local button = require("src.ui.button")
 local callback = require("callback")
+local combo = require("src.ui.combo")
 local cursor = require("src.ui.cursor")
 local dialog = require("src.ui.dialog")
 local input = require("src.ui.input")
@@ -22,7 +23,7 @@ cui.menuBanner = banner.menu
 
 cui.setCursorX = cursor.setX
 cui.setCursorY = cursor.setY
-cui.offsetCursorY = cursor.offsetX
+cui.offsetCursorX = cursor.offsetX
 cui.offsetCursorY = cursor.offsetY
 cui.snapCursor = cursor.snap
 
@@ -49,6 +50,8 @@ cui.textWriteAligned = text.writeAligned
 cui.textWriteBodyAligned = text.writeBodyAligned
 
 cui.inputText = input.text
+
+cui.combo = combo.box
 
 cui.modalDialog = dialog.modal
 cui.promptShutdownACDialog = dialog.promptShutdownAC

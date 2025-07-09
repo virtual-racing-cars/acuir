@@ -17,15 +17,15 @@ local bottomBarButtons = {
 function page.draw()
         ui.drawRectFilled(vec2(0, 0), ui.windowSize(), settings.Appearance.uiColorBackgroundShade * 0.75)
 
-        cui.pushWindowFitted("settings_controls_main_window")
+        cui.pushFittedWindow("settings_controls_main_window")
         topSubBar("Controls")
 
         cui.pushContentWindow(
                 "settings_controls_window",
                 0,
-                180 * cui.uiScale(),
-                ui.windowWidth() * 0.7 - 7.5 * cui.uiScale(),
-                ui.windowHeight() - 303 * cui.uiScale(),
+                180 * cui.scale(),
+                ui.windowWidth() * 0.7 - 7.5 * cui.scale(),
+                ui.windowHeight() - 303 * cui.scale(),
                 function() bindindWindow:drawHeader() end,
                 nil,
                 true
@@ -36,10 +36,10 @@ function page.draw()
 
         cui.pushContentWindow(
                 "settings_controls_window_tweaks",
-                ui.windowWidth() * 0.7 + 7.5 * cui.uiScale(),
-                180 * cui.uiScale(),
-                ui.windowWidth() * 0.3 - 7.5 * cui.uiScale(),
-                ui.windowHeight() - 303 * cui.uiScale(),
+                ui.windowWidth() * 0.7 + 7.5 * cui.scale(),
+                180 * cui.scale(),
+                ui.windowWidth() * 0.3 - 7.5 * cui.scale(),
+                ui.windowHeight() - 303 * cui.scale(),
                 function() tweaksWindow:drawHeader() end,
                 nil,
                 true

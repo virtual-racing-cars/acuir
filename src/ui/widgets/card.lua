@@ -1,7 +1,7 @@
 local cui = require("ui.cui")
 local race = require("race")
 local settings = require("settings")
-local style = require("style")
+local style = require("src.ui.style")
 local sim = ac.getSim()
 
 local card = {}
@@ -26,7 +26,7 @@ local function getDriverTags(carIndex) return ac.DriverTags(ac.getDriverName(car
 local comboActive = false
 
 function card:draw(xPos, yPos, width, height)
-        local border = 10 * cui.uiScale()
+        local border = 10 * cui.scale()
 
         cui.pushWindow("card_widget_window", xPos, yPos, width, height, false)
         ui.drawRectFilled(vec2(0, 0), ui.windowSize(), settings.Appearance.uiColorBackground, 12, ui.CornerFlags.Left)
@@ -69,14 +69,14 @@ function card:draw(xPos, yPos, width, height)
 
         cui.offsetCursorY(20)
         cui.offsetCursorX(46)
-        local size = vec2(ui.availableSpaceX() - 92 * cui.uiScale(), style.main.font.body.size * 2)
+        local size = vec2(ui.availableSpaceX() - 92 * cui.scale(), style.main.font.body.size * 2)
         cui.combo(
                 "##comboCurrentCamera",
                 size,
                 string.format("Camera: %s", cameraModeString[sim.cameraMode]()),
                 ui.Alignment.Center,
                 false,
-                vec2(ui.availableSpaceX() - 92 * cui.uiScale(), size.y * 8),
+                vec2(ui.availableSpaceX() - 92 * cui.scale(), size.y * 8),
                 function()
                         for k, v in pairs(cameraModeString) do
                                 ui.setCursorX(0)
@@ -97,12 +97,7 @@ function card:draw(xPos, yPos, width, height)
 
         ui.setCursorX(ui.windowWidth() - skinImageSize)
         ui.setCursorY(0)
-        ui.drawImageRounded(
-                skin,
-                ui.getCursor(),
-                ui.getCursor() + vec2(skinImageSize, skinImageSize),
-                6 * cui.uiScale()
-        )
+        ui.drawImageRounded(skin, ui.getCursor(), ui.getCursor() + vec2(skinImageSize, skinImageSize), 6 * cui.scale())
 
         local managePlayerButtonSize = 42 * cui:uiScale()
         ui.setCursorX(0)
@@ -196,10 +191,10 @@ function card:draw(xPos, yPos, width, height)
         cui.snapCursor()
         ui.dwriteTextAligned(
                 string.format("Ping %s ms", spectatedCar.ping),
-                22 * cui.uiScale(),
+                22 * cui.scale(),
                 ui.Alignment.Start,
                 ui.Alignment.Center,
-                vec2(120 * cui.uiScale(), managePlayerButtonSize),
+                vec2(120 * cui.scale(), managePlayerButtonSize),
                 false,
                 pingColor
         )

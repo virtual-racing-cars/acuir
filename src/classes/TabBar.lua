@@ -1,7 +1,7 @@
 local audio = require("audio")
 local cui = require("ui.cui")
 local settings = require("settings")
-local style = require("style")
+local style = require("src.ui.style")
 
 local TabBar = class("TabBar")
 
@@ -31,7 +31,7 @@ function TabBar:draw(tabs)
                 if
                         cui.treeNodeButton(
                                 toCapitalCase(tabs[i].name),
-                                vec2(ui.availableSpaceX() - 20 * cui.uiScale(), style.main.font.header.space),
+                                vec2(ui.availableSpaceX() - 20 * cui.scale(), style.main.font.header.space),
                                 self.currentTab == i,
                                 true
                         )
@@ -41,7 +41,7 @@ function TabBar:draw(tabs)
 
                 cui.offsetCursorY(5)
 
-                if self.currentTab == i then ui.setScrollY((i - 5) * 48 * cui.uiScale()) end
+                if self.currentTab == i then ui.setScrollY((i - 5) * 48 * cui.scale()) end
         end
 
         ui.popStyleColor(1)

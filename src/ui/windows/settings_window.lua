@@ -4,7 +4,7 @@ local app = require("app")
 local cui = require("ui.cui")
 local pages = require("ui.pages.pages")
 local settings = require("settings")
-local style = require("style")
+local style = require("src.ui.style")
 
 function SettingsWindow(dt)
         style:pushStyleMain()

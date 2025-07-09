@@ -5,7 +5,7 @@ local csp = require("csp")
 local cui = require("ui.cui")
 local pages = require("ui.pages.pages")
 local settings = require("settings")
-local style = require("style")
+local style = require("src.ui.style")
 local sim = ac.getSim()
 
 if settings.AppData.shownOnboarding == false then
@@ -31,7 +31,7 @@ local function onboardingBody()
         cui.snapCursor()
         ui.dwriteTextAligned(
                 "ACUIR",
-                100 * cui.uiScale(),
+                100 * cui.scale(),
                 ui.Alignment.Center,
                 ui.Alignment.Center,
                 vec2(ui.windowWidth(), ui.windowHeight() * 0.35)
@@ -41,7 +41,7 @@ local function onboardingBody()
         cui.snapCursor()
         ui.dwriteTextAligned(
                 "Quick Setup",
-                30 * cui.uiScale(),
+                30 * cui.scale(),
                 ui.Alignment.Center,
                 ui.Alignment.End,
                 vec2(ui.windowWidth(), ui.windowHeight() * 0.35)
@@ -69,7 +69,7 @@ local function onboardingBody()
         end
 
         ui.setCursorY(ui.windowHeight() * 0.8)
-        if cui.menuButton("Continue", vec2(ui.windowWidth(), 60 * cui.uiScale())) then
+        if cui.menuButton("Continue", vec2(ui.windowWidth(), 60 * cui.scale())) then
                 onboardingAcknowledged = true
                 app.state.screenTransition = os.clock() + 0.5
                 setTimeout(function() settings.AppData.shownOnboarding = true end, 0.25, "onboarding_acknowledge")

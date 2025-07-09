@@ -4,7 +4,7 @@ local app = require("app")
 local cui = require("ui.cui")
 local pages = require("ui.pages.pages")
 local settings = require("settings")
-local style = require("style")
+local style = require("src.ui.style")
 local sim = ac.getSim()
 
 pages.manager:registerPage("EmptyPage", require("ui.pages.empty.page_empty"))
@@ -38,14 +38,14 @@ function MainMenuWindow(dt)
 
         updateCommon()
 
-        cui.pushWindowFitted()
+        cui.pushFittedWindow()
         topBar()
         cui.pushWindow(
                 "main_menu_window_sub",
                 0,
-                195 * cui.uiScale(),
+                195 * cui.scale(),
                 ui.windowWidth(),
-                ui.windowHeight() - 195 * cui.uiScale()
+                ui.windowHeight() - 195 * cui.scale()
         )
         exclusiveHudMode = pages.manager:draw()
         cui.popWindow(false)

@@ -2,7 +2,7 @@ local app = require("app")
 local cui = require("ui.cui")
 local pitstop = require("pitstop")
 local settings = require("settings")
-local style = require("style")
+local style = require("src.ui.style")
 local sim = ac.getSim()
 
 local activeItemIndex = 0
@@ -179,7 +179,7 @@ function script.pitstopWindow(dt)
         end
 
         local itemCount = #ac.getPitstopSpinners() <= 9 and #ac.getPitstopSpinners() + 6 or #ac.getPitstopSpinners() + 7
-        local itemHeight = 32 * cui.uiScale()
+        local itemHeight = 32 * cui.scale()
         local windowHeight = itemHeight * itemCount
         local fontSize = math.floor(itemHeight * 0.8)
         fontSize = (fontSize % 2 == 0) and fontSize + 1 or fontSize

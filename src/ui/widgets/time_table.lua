@@ -1,7 +1,7 @@
 local cui = require("ui.cui")
 local race = require("race")
 local settings = require("settings")
-local style = require("style")
+local style = require("src.ui.style")
 local sim = ac.getSim()
 
 local timetable = { isShowingDisconnected = false }

@@ -151,23 +151,23 @@ function page:draw()
                 settings.Appearance.uiColorSecondary
         )
 
-        cui.pushWindowFitted("settings_view_main_window")
+        cui.pushFittedWindow("settings_view_main_window")
         ui.drawRectFilled(
                 0,
-                vec2(ui.windowWidth(), 130 * cui.uiScale()),
+                vec2(ui.windowWidth(), 130 * cui.scale()),
                 settings.Appearance.uiColorBackground,
-                12 * cui.uiScale()
+                12 * cui.scale()
         )
 
         topSubBar("View")
 
-        cui.pushWindow("settings_view_window", 0, 180 * cui.uiScale(), ui.windowWidth(), ui.windowHeight() * 0.8, false)
+        cui.pushWindow("settings_view_window", 0, 180 * cui.scale(), ui.windowWidth(), ui.windowHeight() * 0.8, false)
 
         ui.drawRectFilled(
                 vec2(0, 0),
                 vec2(ui.windowWidth(), ui.windowHeight() * 0.3),
                 settings.Appearance.uiColorPrimary * 0.2,
-                12 * cui.uiScale()
+                12 * cui.scale()
         )
 
         local onboardParams = ac.getOnboardCameraParams(0)
@@ -185,7 +185,7 @@ function page:draw()
                         "##" .. viewSetting.id,
                         viewSetting.label,
                         ui.windowWidth() * 0.5,
-                        95 * cui.uiScale(),
+                        95 * cui.scale(),
                         false,
                         viewSetting.get(onboardParams),
                         {

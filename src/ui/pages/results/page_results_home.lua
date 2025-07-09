@@ -95,7 +95,7 @@ function page.draw(dt)
         cui.contentWindow("results_home_window", vec2(0, 0), ui.windowSize(), mainWindowFlags, function()
                 ui.drawRectFilled(vec2(0, 0), ui.windowSize(), settings.Appearance.uiColorPrimary / 4)
 
-                acLogoSize = ui.imageSize(acLogo) * 2 * cui.uiScale()
+                acLogoSize = ui.imageSize(acLogo) * 2 * cui.scale()
                 ui.setCursorX(ui.windowWidth() / 2 - acLogoSize.x / 2)
                 ui.image(acLogo, acLogoSize)
                 ui.newLine()
@@ -105,10 +105,10 @@ function page.draw(dt)
                 cui.snapCursor()
                 ui.dwriteTextAligned(
                         "Results",
-                        70 * cui.uiScale(),
+                        70 * cui.scale(),
                         ui.Alignment.Start,
                         ui.Alignment.Center,
-                        vec2(300 * cui.uiScale(), 140 * cui.uiScale()),
+                        vec2(300 * cui.scale(), 140 * cui.scale()),
                         false,
                         rgbm.colors.white
                 )
@@ -116,12 +116,12 @@ function page.draw(dt)
                 cui.pushWindow(
                         "home_leaderboard_window",
                         ui.windowWidth() / 20,
-                        450 * cui.uiScale(),
-                        1000 * cui.uiScale(),
-                        ui.windowHeight() - 459 * cui.uiScale(),
+                        450 * cui.scale(),
+                        1000 * cui.scale(),
+                        ui.windowHeight() - 459 * cui.scale(),
                         true
                 )
-                local height = 50 * cui.uiScale()
+                local height = 50 * cui.scale()
                 playerListBanner(0, 0, ui.windowWidth(), height * 0.9)
 
                 cui.pushWindow(
@@ -138,7 +138,7 @@ function page.draw(dt)
                 cui.popWindow(true)
                 cui.popWindow()
 
-                local driveButtonHeight = 70 * cui.uiScale()
+                local driveButtonHeight = 70 * cui.scale()
 
                 ui.setCursorX(ui.windowWidth() * 0.5 - (driveButtonHeight * 5) * 0.5)
                 cui.setCursorY(1300)

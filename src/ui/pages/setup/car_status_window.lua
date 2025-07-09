@@ -1,5 +1,5 @@
 local cui = require("ui.cui")
-local style = require("style")
+local style = require("src.ui.style")
 local units = require("units")
 local uis = ac.getUI()
 
@@ -122,7 +122,7 @@ local centerStatusInfo = {
 }
 
 function CarStatusWindow()
-        local spaceSize = 34 * cui.uiScale()
+        local spaceSize = 34 * cui.scale()
         local fontSize = style.main.font.body.size
 
         style:pushFontBold()

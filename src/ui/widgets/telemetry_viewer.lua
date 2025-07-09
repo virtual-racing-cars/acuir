@@ -12,7 +12,7 @@ local telemetryViewer = {
 
 local function drawTelemetryGraphs()
         local channelsCount = #telemetry.lastLap.channels
-        local graphHeight = (ui.windowHeight() / channelsCount) - 10 * cui.uiScale()
+        local graphHeight = (ui.windowHeight() / channelsCount) - 10 * cui.scale()
         local graphWidth = ui.windowWidth()
 
         for i, _ in ipairs(telemetry.lastLap.channels) do
@@ -29,7 +29,7 @@ local function drawTelemetryGraphs()
                 local r1, r2 = ui.itemRect()
                 ui.drawRectFilled(
                         r1,
-                        vec2Temp1:set(r2.x, r1.y + 40 * cui.uiScale()),
+                        vec2Temp1:set(r2.x, r1.y + 40 * cui.scale()),
                         settings.Appearance.uiColorBackground * 0.2
                 )
 
@@ -40,7 +40,7 @@ local function drawTelemetryGraphs()
                 cui.snapCursor()
                 ui.dwriteText(
                         string.format("%s %s", lastLapChannel.label, lastLapChannel.units),
-                        25 * cui.uiScale(),
+                        25 * cui.scale(),
                         rgbm.colors.white
                 )
 
@@ -49,7 +49,7 @@ local function drawTelemetryGraphs()
                         cui.snapCursor()
                         ui.dwriteTextAligned(
                                 "NO DATA",
-                                50 * cui.uiScale(),
+                                50 * cui.scale(),
                                 ui.Alignment.Center,
                                 ui.Alignment.Center,
                                 vec2Temp1:set(graphWidth, r2.y - ui.getCursorY()),
@@ -60,8 +60,8 @@ local function drawTelemetryGraphs()
 
                 ui.setCursor(r2)
 
-                r1.y = r1.y + 40 * cui.uiScale()
-                r2.y = r2.y - 40 * cui.uiScale()
+                r1.y = r1.y + 40 * cui.scale()
+                r2.y = r2.y - 40 * cui.scale()
 
                 local height = r2.y - r1.y
                 local yMin = math.max(bestLapChannel.max, lastLapChannel.max)
@@ -89,7 +89,7 @@ local function drawTelemetryGraphs()
                                         )
                                 end
                         end
-                        ui.pathSmoothStroke(rgbm(0, 1, 0, 1), false, 2 * cui.uiScale())
+                        ui.pathSmoothStroke(rgbm(0, 1, 0, 1), false, 2 * cui.scale())
                 end
 
                 if telemetryViewer.isShowingLast then
@@ -113,7 +113,7 @@ local function drawTelemetryGraphs()
                                         )
                                 end
                         end
-                        ui.pathSmoothStroke(rgbm.colors.red, false, 2 * cui.uiScale())
+                        ui.pathSmoothStroke(rgbm.colors.red, false, 2 * cui.scale())
                 end
 
                 cui.offsetCursorY(20)
@@ -173,7 +173,7 @@ local function drawTelemetrySlice()
         if ui.windowHovered() then
                 ui.tooltip(function()
                         local fontSize = style.main.font.body.size
-                        local textBoxSize = vec2Temp1:set(100 * cui.uiScale(), 24 * cui.uiScale())
+                        local textBoxSize = vec2Temp1:set(100 * cui.scale(), 24 * cui.scale())
 
                         cui.snapCursor()
                         ui.dwriteTextAligned(
@@ -299,7 +299,7 @@ local function drawTelemetrySlice()
                                 fontSize,
                                 ui.Alignment.Start,
                                 ui.Alignment.Center,
-                                vec2Temp1:set(250, 24) * cui.uiScale(),
+                                vec2Temp1:set(250, 24) * cui.scale(),
                                 false,
                                 rgbm.colors.white
                         )

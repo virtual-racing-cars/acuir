@@ -2,7 +2,7 @@ local Widget = require("src.classes.Widget")
 local cui = require("src.ui.cui")
 local settings = require("settings")
 local simutils = require("simutils")
-local style = require("style")
+local style = require("src.ui.style")
 local units = require("units")
 local weather = require("weather")
 local sim = ac.getSim()
@@ -23,12 +23,12 @@ local gearSpeedWarning = false
 local showLabels = true
 
 function gearSpeedsWidget:body()
-        local xMin = 85 * cui.uiScale()
-        local xMax = ui.windowWidth() - 30 * cui.uiScale()
+        local xMin = 85 * cui.scale()
+        local xMax = ui.windowWidth() - 30 * cui.scale()
         local width = xMax - xMin
 
-        local yMin = 20 * cui.uiScale()
-        local yMax = ui.windowHeight() - 50 * cui.uiScale()
+        local yMin = 20 * cui.scale()
+        local yMax = ui.windowHeight() - 50 * cui.scale()
         local height = yMax - yMin
         if not maxSpeed or maxSpeed == 0 then maxSpeed = getGearMaxSpeed(car.gearCount) end
 
@@ -49,20 +49,20 @@ function gearSpeedsWidget:body()
                         style.main.font.body.size,
                         ui.Alignment.Center,
                         ui.Alignment.Center,
-                        vec2(65, 24) * cui.uiScale()
+                        vec2(65, 24) * cui.scale()
                 )
                 ui.pathLineTo(vec2(xMin + width / 10 * i, yMax))
                 ui.pathLineTo(vec2(xMin + width / 10 * i, yMax - height / 50))
                 ui.pathStroke(rgbm(0.4, 0.4, 0.4, 1), false, 3)
 
-                ui.setCursor(vec2(xMin - 70 * cui.uiScale(), yMin + (yMax - yMin) / 10 * i) - 10 * cui.uiScale())
+                ui.setCursor(vec2(xMin - 70 * cui.scale(), yMin + (yMax - yMin) / 10 * i) - 10 * cui.scale())
                 cui.snapCursor()
                 ui.dwriteTextAligned(
                         math.round(car.rpmLimiter - (car.rpmLimiter / 10) * i),
                         style.main.font.body.size,
                         ui.Alignment.End,
                         ui.Alignment.Center,
-                        vec2(65, 24) * cui.uiScale()
+                        vec2(65, 24) * cui.scale()
                 )
 
                 ui.pathLineTo(vec2(xMin, yMin + (yMax - yMin) / 10 * i))
@@ -87,9 +87,9 @@ function gearSpeedsWidget:body()
                 local p1 = vec2(x1, math.max(yMin + (yMax - yMin) * (1 - (prevGearSpeed / maxGearSpeed)), yMin))
                 local p2 = vec2(math.max(xMin + width * (maxGearSpeed / maxSpeed), x1), yMin)
 
-                local labelWidth = 125 * cui.uiScale()
-                local labelHeight = 20 * cui.uiScale()
-                local fontSize = 18 * cui.uiScale()
+                local labelWidth = 125 * cui.scale()
+                local labelHeight = 20 * cui.scale()
+                local fontSize = 18 * cui.scale()
 
                 ui.pathLineTo(p1)
                 ui.pathLineTo(p2)
@@ -105,7 +105,7 @@ function gearSpeedsWidget:body()
                         --         ui.getCursor(),
                         --         ui.getCursor() + vec2(labelWidth, labelHeight),
                         --         warning and settings.Appearance.uiColorSecondary or settings.Appearance.uiColorText,
-                        --         6 * cui.uiScale()
+                        --         6 * cui.scale()
                         -- )
 
                         cui.offsetCursorX(-5)
