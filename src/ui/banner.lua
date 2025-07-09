@@ -1,3 +1,6 @@
+local callback = require("callback")
+local scale = require("src.ui.scale")
+
 local banner = {}
 
 function banner.menu(label, time, bannerColor, rightSide, callbackType)
@@ -8,7 +11,7 @@ function banner.menu(label, time, bannerColor, rightSide, callbackType)
                 local xEnd = rightSide and ui.windowWidth() * 0.5 or ui.windowWidth() * 0.5
                 local xText = rightSide and ui.windowWidth() * 0.75 or 0
                 local alignment = rightSide and ui.Alignment.End or ui.Alignment.Start
-                local margin = rightSide and -20 * uiScale or 20 * uiScale
+                local margin = rightSide and -20 * scale.get() or 20 * scale.get()
 
                 ui.drawRectFilledMultiColor(
                         vec2(xStart, 0),
@@ -23,7 +26,7 @@ function banner.menu(label, time, bannerColor, rightSide, callbackType)
 
                 ui.dwriteTextAligned(
                         label,
-                        22 * uiScale,
+                        22 * scale.get(),
                         alignment,
                         ui.Alignment.Center,
                         vec2(ui.windowWidth() * 0.2, ui.windowHeight()),
@@ -35,7 +38,7 @@ function banner.menu(label, time, bannerColor, rightSide, callbackType)
                         ui.sameLine()
                         ui.dwriteTextAligned(
                                 string.format("%.1f", time),
-                                22 * uiScale,
+                                22 * scale.get(),
                                 ui.Alignment.End,
                                 ui.Alignment.Center,
                                 vec2(ui.windowWidth() * 0.05, ui.windowHeight()),

@@ -157,7 +157,7 @@ function input.text(label, size, stringPrefix, stringInput, stringDefault, filte
                         vec2(pos, r1.y + 7 * scale.get()),
                         vec2(pos, r2.y - 7 * scale.get()),
                         settings.Appearance.uiColorText * 0.75,
-                        2 * scale.get()()
+                        2 * scale.get()
                 )
         end
 

@@ -837,7 +837,7 @@ function button.setupSelect(label, active, createdDate)
                 cursor.offsetX(5)
 
                 explorerClicked =
-                        button.small("##open_in_explorer_" .. label, ui.Icons.Folder, vec2(fontSpace, fontSpace))
+                        button.smallIcon("##open_in_explorer_" .. label, ui.Icons.Folder, vec2(fontSpace, fontSpace))
         end
 
         cursor.offsetY(10)

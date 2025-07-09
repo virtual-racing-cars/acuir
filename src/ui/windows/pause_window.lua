@@ -39,7 +39,7 @@ function PauseMenuWindow(dt)
         if callback.dialog then
                 cui.contentWindow(
                         "callback_window",
-                        0,
+                        vec2(0, 0),
                         ui.windowSize(),
                         ui.WindowFlags.NoScrollbar + ui.WindowFlags.NoScrollWithMouse,
                         function()
