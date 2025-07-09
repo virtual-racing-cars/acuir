@@ -9,7 +9,7 @@ local checkboxValue = false
 local sliderValue = 5
 
 function testUI(dt)
-        ui.drawRectFilled(0, ui.windowSize(), rgbm.colors.gray)
+        ui.drawRectFilled(0, ui.windowSize(), rgbm(0.05, 0.05, 0.05, 1))
         cui.pushWindowFitted("full_window")
 
         ui.bringWindowToFront()
@@ -21,24 +21,30 @@ function testUI(dt)
         ui.dwriteText("Combo Box")
         cui.combo("test", vec2(width, height), "Test", ui.Alignment.Center, true, vec2(width, height), function() end)
 
+        ui.newLine()
         ui.dwriteText("Menu Button")
         cui.menuButton("Test", vec2(width, height))
         cui.menuButton("Test", vec2(width, height))
 
+        ui.newLine()
         ui.dwriteText("Icon Button")
         cui.offsetCursorX(50)
         cui.iconButton("Icon Button", ui.Icons.Air, height, height, ui.ButtonFlags.None, false, 0.5, true)
 
+        ui.newLine()
         ui.dwriteText("Emoji Button")
         cui.emojiButton("Test", "😁", height, height, ui.ButtonFlags.None, false)
 
+        ui.newLine()
         ui.dwriteText("Modal Button")
         cui.modalButton("Test", width, height, ui.ButtonFlags.None)
 
+        ui.newLine()
         ui.dwriteText("Tree Node Button")
         cui.treeNodeButton("Test", vec2(width, height), false, false, 0, false)
         cui.treeNodeButton("Test", vec2(width, height), true, true, 0, false)
 
+        ui.newLine()
         ui.dwriteText("Drive Button")
         cui.specialButton(
                 "Drive",
@@ -50,9 +56,11 @@ function testUI(dt)
                 ""
         )
 
+        ui.newLine()
         ui.dwriteText("Window Tab Button")
         cui.windowTabButton("Test", height, ui.ButtonFlags.None, true)
 
+        ui.newLine()
         ui.dwriteText("Input Text")
         inputTextString = cui.inputText("Test2222", vec2(width, height), "", inputTextString, "Test", "[%w_ .;,><%-]")
 

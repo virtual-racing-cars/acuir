@@ -281,7 +281,7 @@ function CUI.modalButton(label, sizeX, sizeY, flags)
 
         local tempCursor = ui.getCursor()
         local clicked = ui.invisibleButton("##" .. label, vec2Temp1:set(sizeX, sizeY), flags)
-        local hovered = ui.itemHovered() and not CUI.modalDialogCallback
+        local hovered = ui.itemHovered()
         local r1, r2 = ui.itemRect()
 
         local buttonColor = settings.Appearance.uiColorPrimary
@@ -290,7 +290,7 @@ function CUI.modalButton(label, sizeX, sizeY, flags)
 
         ui.drawRectFilled(r1, r2, buttonColor, 6 * uiScale)
 
-        if not ui.itemHovered() or disabled then
+        if not hovered or disabled then
                 ui.drawRect(
                         r1,
                         r2,
@@ -320,6 +320,36 @@ function CUI.modalButton(label, sizeX, sizeY, flags)
 
         return (clicked and not (flags == ui.ButtonFlags.Disabled))
                 or (label == "Confirm" and not settings.UI.showConfirmDialogs)
+end
+
+function CUI.selectable(label, horizontalAligment)
+        horizontalAligment = horizontalAligment or ui.Alignment.Center
+
+        CUI.offsetCursorX(10)
+
+        local fontSize = style.main.font.body.size
+        local fontSpace = style.main.font.body.space
+        local size = vec2(ui.availableSpaceX() - 10 * uiScale, fontSpace)
+
+        local clicked = ui.invisibleButton("##selectable_" .. label, size, ui.ButtonFlags.None)
+        local r1, r2 = ui.itemRect()
+        local hovered = ui.itemHovered() and not CUI.modalDialogCallback
+
+        local buttonColor = settings.Appearance.uiColorPrimary
+        local fontColor = settings.Appearance.uiColorText
+
+        if hovered then buttonColor = settings.Appearance.uiColorSecondary end
+
+        ui.drawRectFilled(r1, r2, buttonColor, 6 * uiScale)
+
+        ui.setCursor(r1)
+
+        if horizontalAligment ~= 0 then CUI.offsetCursorX(10 * -horizontalAligment) end
+
+        CUI.snapCursor()
+        ui.dwriteTextAligned(label, fontSize, horizontalAligment, 0, size, false, fontColor)
+
+        return clicked
 end
 
 function CUI.menuButton(label, size, horizontalAligment, verticalAlignment, flags, active, bold, cornerFlags)
@@ -358,7 +388,7 @@ function CUI.menuButton(label, size, horizontalAligment, verticalAlignment, flag
         local fontColor = settings.Appearance.uiColorText
 
         if flags == ui.ButtonFlags.Disabled then
-                buttonColor = settings.Appearance.uiColorBackground
+                buttonColor = settings.Appearance.uiColorPrimary * 0.75
                 fontColor = rgbm(0.6, 0.6, 0.6, 1)
         elseif hovered then
                 buttonColor = settings.Appearance.uiColorSecondary
@@ -843,13 +873,169 @@ function CUI.emojiButton(label, emoji, sizeX, sizeY, flags, active)
         return clicked and not disabled
 end
 
+local function timeAgo(timestamp)
+        local now = os.time()
+        local diff = now - tonumber(timestamp)
+        local timeNum = diff
+        local timeUnit = "second"
+
+        if diff < 60 then
+        elseif diff < 3600 then
+                timeNum = math.floor(diff / 60)
+                timeUnit = "minute"
+        elseif diff < 86400 then
+                timeNum = math.floor(diff / 3600)
+                timeUnit = "hour"
+        elseif diff < 604800 then
+                timeNum = math.floor(diff / 86400)
+                timeUnit = "day"
+        elseif diff < 2629746 then -- ~1 month
+                timeNum = math.floor(diff / 604800)
+                timeUnit = "week"
+        elseif diff < 31556952 then -- ~1 year
+                timeNum = math.floor(diff / 2629746)
+                timeUnit = "month"
+        else
+                timeNum = math.floor(diff / 31556952)
+                timeUnit = "year"
+        end
+
+        return string.format("%s %s%s ago", timeNum, timeUnit, timeNum > 1 and "s" or "")
+end
+
+function CUI.smallButton(id, label, size)
+        local clicked = ui.invisibleButton(id, size)
+        local hovered = ui.itemHovered()
+        local color = settings.Appearance.uiColorPrimary
+        local r1, r2 = ui.itemRect()
+
+        if hovered then color = settings.Appearance.uiColorSecondary end
+
+        ui.drawRectFilled(r1, r2, color, 6 * uiScale)
+
+        ui.setCursor(r1)
+        CUI.snapCursor()
+        ui.dwriteTextAligned(
+                label,
+                style.main.font.small.size,
+                ui.Alignment.Center,
+                ui.Alignment.Center,
+                size,
+                false,
+                settings.Appearance.uiColorText
+        )
+
+        return clicked
+end
+
+function CUI.smallIconButton(id, icon, size)
+        local clicked = ui.invisibleButton(id, size)
+        local hovered = ui.itemHovered()
+        local color = settings.Appearance.uiColorPrimary
+        local r1, r2 = ui.itemRect()
+
+        if hovered then color = settings.Appearance.uiColorSecondary end
+
+        ui.drawRectFilled(r1, r2, color, 6 * uiScale)
+
+        ui.addIcon(icon, size * 0.5, vec2(0.5, 0.5), rgbm.colors.white, 0)
+
+        return clicked
+end
+
+function CUI.setupSelectButton(label, active, createdDate)
+        CUI.offsetCursorX(10)
+
+        local fontSpace = style.main.font.body.space
+        local fontSize = style.main.font.body.size
+        local size = vec2(ui.availableSpaceX() - 10 * uiScale, fontSpace * 2 + 20 * uiScale)
+        local fontColor = settings.Appearance.uiColorText
+
+        local tempCursor = ui.getCursor()
+        ui.dummy(size)
+        local clicked = ui.itemClicked()
+        local r1, r2 = ui.itemRect()
+        local hovered = ui.itemHovered() and not CUI.modalDialogCallback
+        local id = ui.getLastID()
+        if hovered and ui.mouseClicked(ui.MouseButton.Right) then clicked = true end
+
+        local color = settings.Appearance.uiColorBackgroundShade
+
+        if hovered then color = settings.Appearance.uiColorSecondary end
+
+        if active then
+                if hovered then
+                        color = settings.Appearance.uiColorSecondary
+                else
+                        color = settings.Appearance.uiColorAccent
+                end
+        end
+
+        -- ui.drawRectFilled(r1, r2, settings.Appearance.uiColorPrimary, 6 * uiScale, ui.CornerFlags.All)
+        ui.drawRect(r1, r2, color, 6 * uiScale, ui.CornerFlags.All, 3 * uiScale)
+
+        ui.setCursor(r1)
+        CUI.offsetCursorY(10)
+        CUI.offsetCursorX(10)
+        CUI.snapCursor()
+        ui.dwriteTextAligned(
+                label,
+                fontSize,
+                ui.Alignment.Start,
+                ui.Alignment.Center,
+                vec2(size.x, fontSpace),
+                false,
+                hovered and rgbm(1, 1, 1, 1) or fontColor
+        )
+
+        CUI.setCursorX(20)
+        CUI.snapCursor()
+        ui.dwriteTextAligned(
+                timeAgo(createdDate),
+                fontSize,
+                ui.Alignment.Start,
+                ui.Alignment.Center,
+                vec2(size.x, fontSpace),
+                false,
+                hovered and rgbm(1, 1, 1, 1) or fontColor
+        )
+
+        local deleteClicked, loadClicked, explorerClicked = false, false, false
+
+        if active then
+                ui.sameLine()
+                ui.setCursorX(0)
+
+                local buttonWidth = 100 * uiScale
+
+                ui.setCursorX(ui.availableSpaceX() - buttonWidth * 2 - fontSpace - 30 * uiScale)
+                deleteClicked = CUI.smallButton("##delete_setup_" .. label, "Delete", vec2(buttonWidth, fontSpace))
+                ui.sameLine()
+
+                CUI.offsetCursorX(5)
+                loadClicked = CUI.smallButton("##load_setup_" .. label, "Load", vec2(buttonWidth, fontSpace))
+                ui.sameLine()
+
+                CUI.offsetCursorX(5)
+
+                explorerClicked =
+                        CUI.smallIconButton("##open_in_explorer_" .. label, ui.Icons.Folder, vec2(fontSpace, fontSpace))
+        end
+
+        CUI.offsetCursorY(10)
+
+        return clicked, deleteClicked, loadClicked, explorerClicked, hovered
+end
+
 local treeNodeParent = ""
 function CUI.treeNodeButton(label, size, active, bold, count, defaultOpen)
         CUI.offsetCursorX(10)
         if not count then count = 0 end
 
         local fontSize = style.main.font.header.size
+        local fontSpace = style.main.font.header.space
         local fontColor = settings.Appearance.uiColorText
+        local size = vec2(ui.availableSpaceX() - 10 * uiScale, fontSpace + 20 * uiScale)
         local offset = bold and 0 or size.y
 
         local tempCursor = ui.getCursor()
@@ -879,13 +1065,13 @@ function CUI.treeNodeButton(label, size, active, bold, count, defaultOpen)
         end
 
         ui.drawRectFilled(r1, r2, color, 6 * uiScale)
-        ui.drawRect(r1, r2, settings.Appearance.uiColorAccent * 0.5, 6 * uiScale)
 
         if active and hovered then ui.drawRect(r1, r2, settings.Appearance.uiColorAccent, 6 * uiScale) end
 
-        local text = count > 0 and string.format(" %s (%s)", label, count) or string.format(" %s", label)
+        local text = count > 0 and string.format("%s (%s)", label, count) or string.format("%s", label)
 
         ui.setCursor(r1)
+        CUI.offsetCursorX(10)
         CUI.snapCursor()
         ui.dwriteTextAligned(
                 text,
@@ -898,7 +1084,7 @@ function CUI.treeNodeButton(label, size, active, bold, count, defaultOpen)
         )
         ui.sameLine()
 
-        ui.offsetCursorX(-size.y)
+        ui.offsetCursorX(-size.y - 10 * uiScale)
 
         if bold and count > 0 then
                 ui.icon(
@@ -991,13 +1177,19 @@ function CUI.combo(id, size, previewValue, previewAlignment, openDown, contentSi
                         ui.bringWindowToFront()
                         ui.setCursor(0)
 
-                        ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiColorBackgroundShade, 6 * uiScale)
-                        CUI.pushWindow(id .. "scroll_window", 0, 0, ui.windowWidth(), ui.windowHeight(), true)
+                        ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiColorBackground, 6 * uiScale)
+                        CUI.pushWindow(
+                                id .. "scroll_window",
+                                0,
+                                10 * uiScale,
+                                ui.windowWidth(),
+                                ui.windowHeight() - 20 * uiScale,
+                                true
+                        )
 
                         -- if justOpened then ui.setScrollY(0) end
 
                         content()
-                        ui.drawRect(0, ui.windowSize(), settings.Appearance.uiColorText * 0.75, 6 * CUI.uiScale())
 
                         if
                                 not clicked
@@ -1010,6 +1202,8 @@ function CUI.combo(id, size, previewValue, previewAlignment, openDown, contentSi
 
                         CUI.popWindow(true)
                         style:popStyleMain()
+
+                        ui.drawRect(0, ui.windowSize(), settings.Appearance.uiColorText * 0.75, 6 * CUI.uiScale())
                 end)
         end
 end

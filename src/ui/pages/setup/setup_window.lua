@@ -82,7 +82,7 @@ end
 
 local function drawSetupSpinner(si)
         local spinnerWidth = ui.windowWidth() * 0.42
-        local spinnerHeight = style.main.font.title.size * 2.10
+        local spinnerHeight = style.main.font.title.size * 2.5
 
         if si.child or si.repair then return end
 

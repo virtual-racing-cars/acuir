@@ -108,6 +108,10 @@ setTimeout(function()
 end, 1, "autoLoadLastSetup")
 
 function setup:save(sm)
+        if not io.dirExists(setupsDir .. "\\" .. setup.input.track) then
+                io.createDir(setupsDir .. "\\" .. setup.input.track)
+        end
+
         ac.setActiveSetupName(setup.input.name, setup.input.track)
         sm:saveSetup(setup.input.path)
 

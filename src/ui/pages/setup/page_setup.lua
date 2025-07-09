@@ -242,16 +242,16 @@ local function setupIoWindow()
                         end
                         ui.sameLine()
 
-                        if
-                                cui.windowTabButton(
-                                        "Setup Changelog",
-                                        ui.windowHeight(),
-                                        ui.ButtonFlags.None,
-                                        saveSetupTab == 2
-                                )
-                        then
-                                saveSetupTab = 2
-                        end
+                        -- if
+                        --         cui.windowTabButton(
+                        --                 "Setup Changelog",
+                        --                 ui.windowHeight(),
+                        --                 ui.ButtonFlags.None,
+                        --                 saveSetupTab == 2
+                        --         )
+                        -- then
+                        --         saveSetupTab = 2
+                        -- end
                 end,
                 nil,
                 true
