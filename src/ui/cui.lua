@@ -20,19 +20,23 @@ local uiScale = math.min(sim.windowHeight / defaultHeight, sim.windowWidth / def
         / guiINI:get("NEW_UI", "UI_SCALE", 1)
         * settings.UI.mainMenuScale
 
+style:refresh(uiScale)
+
 function refreshScale()
         uiScale = math.min(sim.windowHeight / defaultHeight, sim.windowWidth / defaultWidth)
                 / guiINI:get("NEW_UI", "UI_SCALE", 1)
                 * settings.UI.mainMenuScale
+
+        style:refresh(uiScale)
 end
 
-ac.onResolutionChange(
-        function(newSize, makingScreenshot)
-                uiScale = math.min(newSize.y / defaultHeight, newSize.x / defaultWidth)
-                        / guiINI:get("NEW_UI", "UI_SCALE", 1)
-                        * settings.UI.mainMenuScale
-        end
-)
+ac.onResolutionChange(function(newSize, makingScreenshot)
+        uiScale = math.min(newSize.y / defaultHeight, newSize.x / defaultWidth)
+                / guiINI:get("NEW_UI", "UI_SCALE", 1)
+                * settings.UI.mainMenuScale
+
+        style:refresh(uiScale)
+end)
 
 ac.onCSPConfigChanged(ac.CSPModuleID.GUI, function()
         guiINI = ac.INIConfig.cspModule(ac.CSPModuleID.GUI)
@@ -40,6 +44,8 @@ ac.onCSPConfigChanged(ac.CSPModuleID.GUI, function()
         uiScale = math.min(sim.windowHeight / defaultHeight, sim.windowWidth / defaultWidth)
                 / guiINI:get("NEW_UI", "UI_SCALE", 1)
                 * settings.UI.mainMenuScale
+
+        style:refresh(uiScale)
 end)
 
 function CUI.loadStoredBool(id, defaultTrue)
@@ -339,10 +345,8 @@ function CUI.menuButton(label, size, horizontalAligment, verticalAlignment, flag
                         size
                 )
         else
-                sizeX = size.x
-                sizeY = size.y
-                fontSize = sizeY * 0.45
-                buttonSize = vec2Temp1(sizeX, sizeY)
+                fontSize = size.y * 0.5
+                buttonSize = size
         end
 
         local tempCursor = ui.getCursor()
@@ -365,7 +369,7 @@ function CUI.menuButton(label, size, horizontalAligment, verticalAlignment, flag
 
         ui.drawRectFilled(r1, r2, buttonColor, 6 * uiScale, cornerFlags)
 
-        ui.setCursor(tempCursor)
+        ui.setCursor(r1)
         CUI.snapCursor()
         ui.dwriteTextAligned(
                 string.upper(label),
@@ -391,7 +395,7 @@ function CUI.windowTabButton(label, size, flags, active)
 
         size = size * uiScale
         sizeY = size
-        fontSize = style.main.font.header.size
+        fontSize = style.main.font.body.size
         buttonSize =
                 vec2Temp1:set(math.round(ui.measureDWriteText(string.upper(label), fontSize).x + 30 * uiScale), size)
 
@@ -788,7 +792,7 @@ function CUI.iconButton(label, icon, sizeX, sizeY, flags, flipped, iconScale, ac
         local iconSize = vec2(sizeX, sizeX)
         if flipped then iconSize = vec2(-sizeX, sizeX) end
 
-        ui.addIcon(icon, iconSize * iconScale, vec2(0.5, 0.1), iconColor, 0)
+        ui.addIcon(icon, iconSize * iconScale, vec2(0.5, hasLabel and 0.1 or 0.5), iconColor, 0)
 
         if hovered and active then ui.endOutline(settings.Appearance.uiColorAccent, 1) end
 
@@ -841,6 +845,7 @@ end
 
 local treeNodeParent = ""
 function CUI.treeNodeButton(label, size, active, bold, count, defaultOpen)
+        CUI.offsetCursorX(10)
         if not count then count = 0 end
 
         local fontSize = style.main.font.header.size
@@ -859,7 +864,7 @@ function CUI.treeNodeButton(label, size, active, bold, count, defaultOpen)
         local open = CUI.loadStoredBool(id, defaultOpen)
         if hovered and ui.mouseClicked(ui.MouseButton.Right) then clicked = true end
 
-        local color = bold and settings.Appearance.uiColorBackground or settings.Appearance.uiColorBackgroundShade
+        local color = bold and settings.Appearance.uiColorPrimary or settings.Appearance.uiColorBackgroundShade
 
         if hovered then color = settings.Appearance.uiColorSecondary end
 
@@ -873,10 +878,10 @@ function CUI.treeNodeButton(label, size, active, bold, count, defaultOpen)
                 end
         end
 
-        ui.drawRectFilled(r1, r2, color)
-        ui.drawRect(r1, r2, settings.Appearance.uiColorAccent * 0.5)
+        ui.drawRectFilled(r1, r2, color, 6 * uiScale)
+        ui.drawRect(r1, r2, settings.Appearance.uiColorAccent * 0.5, 6 * uiScale)
 
-        if active and hovered then ui.drawRect(r1, r2, settings.Appearance.uiColorAccent) end
+        if active and hovered then ui.drawRect(r1, r2, settings.Appearance.uiColorAccent, 6 * uiScale) end
 
         local text = count > 0 and string.format(" %s (%s)", label, count) or string.format(" %s", label)
 
@@ -912,7 +917,7 @@ end
 function CUI.treeNode(label, count, content, defaultOpen)
         local clicked, open, id = CUI.treeNodeButton(
                 label,
-                vec2Temp1:set(ui.availableSpaceX(), 36 * CUI.uiScale()),
+                vec2Temp1:set(ui.availableSpaceX() - 20 * uiScale, style.main.font.header.space),
                 false,
                 true,
                 count,
@@ -956,7 +961,6 @@ function CUI.combo(id, size, previewValue, previewAlignment, openDown, contentSi
                 if not open then justOpened = true end
         end
 
-        ui.drawRectFilled(r1, r2, settings.Appearance.uiColorPrimary, 6 * CUI.uiScale())
         ui.drawRect(r1, r2, color, 6 * CUI.uiScale())
         ui.addIcon(
                 open and openIcon or closedIcon,
@@ -983,16 +987,17 @@ function CUI.combo(id, size, previewValue, previewAlignment, openDown, contentSi
 
         if open then
                 ui.transparentWindow(id, comboOpenPosition, contentSize, true, true, function()
+                        style:pushStyleMain()
                         ui.bringWindowToFront()
                         ui.setCursor(0)
 
                         ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiColorBackgroundShade, 6 * uiScale)
-                        ui.drawRect(0, ui.windowSize(), settings.Appearance.uiColorText * 0.75, 6 * CUI.uiScale())
                         CUI.pushWindow(id .. "scroll_window", 0, 0, ui.windowWidth(), ui.windowHeight(), true)
 
-                        if justOpened then ui.setScrollY(0) end
+                        -- if justOpened then ui.setScrollY(0) end
 
                         content()
+                        ui.drawRect(0, ui.windowSize(), settings.Appearance.uiColorText * 0.75, 6 * CUI.uiScale())
 
                         if
                                 not clicked
@@ -1004,6 +1009,7 @@ function CUI.combo(id, size, previewValue, previewAlignment, openDown, contentSi
                         end
 
                         CUI.popWindow(true)
+                        style:popStyleMain()
                 end)
         end
 end
@@ -1413,7 +1419,7 @@ end
 function CUI.pushContentWindow(id, x, y, width, height, headerFunc, footerFunc, hideBackground, noCorners)
         CUI.pushWindow(id .. "_background", x, y, width, height)
 
-        local headerSize = style.main.font.header.space
+        local headerSize = style.main.font.body.space
         local footerSize = headerSize
         local marginSize = 10 * uiScale
         local innerCurve = 6 * uiScale
@@ -1461,15 +1467,13 @@ function CUI.pushContentWindow(id, x, y, width, height, headerFunc, footerFunc, 
 
         CUI.pushWindow(id .. "_content", x, y, width, height)
 
-        if not hideBackground then
-                ui.drawRectFilled(
-                        0,
-                        ui.windowSize(),
-                        settings.Appearance.uiColorBackground,
-                        noCorners and 0 or 6 * uiScale,
-                        ui.CornerFlags.All
-                )
-        end
+        ui.drawRectFilled(
+                0,
+                ui.windowSize(),
+                settings.Appearance.uiColorBackground,
+                noCorners and 0 or 6 * uiScale,
+                ui.CornerFlags.All
+        )
 end
 
 function CUI.popContentWindow()

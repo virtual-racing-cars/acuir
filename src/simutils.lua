@@ -16,11 +16,11 @@ local simutils = {
                 "Drag",
         },
         trackGripStrings = {
-                { 86, "DUSTY" },
-                { 89, "OLD" },
-                { 95, "GREEN" },
-                { 98, "RUBBERED" },
-                { 100, "OPTIMUM" },
+                { 86, "Dusty" },
+                { 89, "Old" },
+                { 95, "Green" },
+                { 98, "Rubbered" },
+                { 100, "Optimum" },
         },
         windDirectionStrings = {
                 "S",

@@ -131,7 +131,7 @@ local function chatInput(height)
                         height,
                         isempty(messages.input) and ui.ButtonFlags.Disabled or ui.ButtonFlags.None,
                         false,
-                        1
+                        nil
                 )
         then
                 messages.input = ""
@@ -206,7 +206,7 @@ local function chatInput(height)
                         height,
                         ui.ButtonFlags.None,
                         false,
-                        1,
+                        nil,
                         chat.emojisOpen
                 )
         then
@@ -214,9 +214,17 @@ local function chatInput(height)
         end
 
         ui.sameLine()
-        cui.iconButton("##chatAttachmentButton", ui.Icons.Paperclip, height, height, ui.ButtonFlags.Disabled, false, 1)
+        cui.iconButton(
+                "##chatAttachmentButton",
+                ui.Icons.Paperclip,
+                height,
+                height,
+                ui.ButtonFlags.Disabled,
+                false,
+                nil
+        )
         ui.sameLine()
-        cui.iconButton("##chatGroupButton", ui.Icons.Group, height, height, ui.ButtonFlags.Disabled, false, 1)
+        cui.iconButton("##chatGroupButton", ui.Icons.Group, height, height, ui.ButtonFlags.Disabled, false, nil)
         ui.sameLine()
 
         if
@@ -227,7 +235,7 @@ local function chatInput(height)
                         height,
                         isempty(messages.input) and ui.ButtonFlags.Disabled or ui.ButtonFlags.None,
                         false,
-                        1
+                        nil
                 )
         then
                 ac.sendChatMessage(messages.input)

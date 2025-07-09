@@ -980,10 +980,10 @@ end
 local function drawSetupItem(i, v)
         local fontSize = style.main.font.small.size
         local fontSpace = style.main.font.small.space
-        local setupItemWidth = ui.windowWidth() - 10 * cui.uiScale()
+        local setupItemWidth = ui.windowWidth() - 20 * cui.uiScale()
         local setupItemHeight = fontSpace * 4
-        ui.setCursorX(0)
-        ui.setCursorY((setupItemHeight + 5 * cui.uiScale()) * (i - 1))
+        cui.setCursorX(10)
+        ui.setCursorY((setupItemHeight + 5 * cui.uiScale()) * (i - 1) + 10 * cui.uiScale())
         ui.pushID(v.setupID)
 
         local p = ui.getCursor()
@@ -991,9 +991,9 @@ local function drawSetupItem(i, v)
         local clicked = ui.itemClicked()
         local hovered = ui.itemHovered()
         local r1, r2 = ui.itemRect()
-        local buttonColor = settings.Appearance.uiColorTextDim
+        local buttonColor = settings.Appearance.uiColorPrimary
         local fontColor = settings.Appearance.uiColorText
-        local subFontColor = settings.Appearance.uiColorTextDim
+        local subFontColor = settings.Appearance.uiColorText
         local borderThickness = 1 * cui.uiScale()
 
         if clicked then selectedSetup = v end
@@ -1028,11 +1028,12 @@ local function drawSetupItem(i, v)
                 buttonColor = settings.Appearance.uiColorSecondary
         end
 
+        ui.drawRectFilled(r1, r2, settings.Appearance.uiColorPrimary, 6 * cui.uiScale(), ui.CornerFlags.All)
         ui.drawRect(r1, r2, buttonColor, 6 * cui.uiScale(), ui.CornerFlags.All, borderThickness)
 
         ui.setCursor(r1)
         cui.offsetCursorY(fontSpace / 6)
-        cui.setCursorX(15)
+        cui.setCursorX(20)
         cui.snapCursor()
         style:pushFontBold()
         ui.dwriteTextAligned(
@@ -1040,14 +1041,14 @@ local function drawSetupItem(i, v)
                 fontSize,
                 ui.Alignment.Start,
                 ui.Alignment.Center,
-                vec2(setupItemWidth, fontSpace),
+                vec2(setupItemWidth - 10 * cui.uiScale(), fontSpace),
                 false,
                 fontColor
         )
         ui.popDWriteFont()
 
         cui.offsetCursorY(fontSpace / 6)
-        cui.setCursorX(15)
+        cui.setCursorX(20)
         local usernameButtonSize =
                 vec2(ui.measureDWriteText(string.format("%s....", v.userName), fontSize).x, fontSpace)
 
@@ -1088,7 +1089,7 @@ local function drawSetupItem(i, v)
         ui.sameLine()
         ui.setCursorX(0)
 
-        cui.offsetCursorX(-10)
+        cui.offsetCursorX(-5)
         cui.snapCursor()
         ui.dwriteTextAligned(
                 string.format("%s Downloads", formatNumber(v.statDownloads)),
@@ -1101,7 +1102,7 @@ local function drawSetupItem(i, v)
         )
 
         local actionBlockSize = vec2(ui.availableSpaceX() / 4 - 10 * cui.uiScale(), fontSpace)
-        cui.setCursorX(15)
+        cui.setCursorX(20)
 
         likeButtons("likes", v, likedSetups, dislikedSetups, v.setupID, { carID = v.carID })
 
@@ -1265,7 +1266,7 @@ local function setupsListWindow(setups)
                         if v then drawSetupItem(i, v) end
                 end
 
-                ui.setMaxCursorY(math.max(setupsTotalCount, #setups) * setupItemHeight)
+                ui.setMaxCursorY(math.max(setupsTotalCount, #setups) * setupItemHeight + 20 * cui.uiScale())
         end)
 end
 
@@ -1385,7 +1386,7 @@ local function searchFilters()
                 setupsOrder[stored.setupsOrder][1],
                 ui.Alignment.Start,
                 true,
-                vec2(comboSize.x, comboSize.y * (#setupsOrder + 2)),
+                vec2(comboSize.x, comboSize.y * (#setupsOrder + 3)),
                 function()
                         cui.offsetCursorX(25)
                         cui.offsetCursorY(15)
@@ -1417,6 +1418,7 @@ local function searchFilters()
                                         stored.setupsOrder = i
                                         listOfSetups = nil
                                 end
+                                cui.offsetCursorY(5)
                         end
 
                         cui.offsetCursorY(15)

@@ -28,7 +28,7 @@ local function drawSlider(id, name, width, height, value, sliderParams, noScroll
 
         local fontSize = height * 0.45
         local barSize = height * 0.45
-        local grabberSize = math.max(width / (steps + 1), 35)
+        local grabberSize = math.max(width / (steps + 1), barSize * 2)
 
         local sliderNameText = name:gsub("->            ", ""):gsub("             %?", "")
 
@@ -113,6 +113,7 @@ local function drawSlider(id, name, width, height, value, sliderParams, noScroll
         )
 
         ui.beginGradientShade()
+
         ui.drawRectFilled(
                 vec2(sliderFill, r1.y),
                 vec2(sliderFill + grabberSize, r2.y),

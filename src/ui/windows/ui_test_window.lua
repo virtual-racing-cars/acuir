@@ -23,6 +23,7 @@ function testUI(dt)
 
         ui.dwriteText("Menu Button")
         cui.menuButton("Test", vec2(width, height))
+        cui.menuButton("Test", vec2(width, height))
 
         ui.dwriteText("Icon Button")
         cui.offsetCursorX(50)

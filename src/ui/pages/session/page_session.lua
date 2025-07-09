@@ -69,16 +69,16 @@ end
 
 local function sessionControlWindow()
         sessionControlWidget:setPosition(ui.windowWidth() - ui.windowWidth() / 5, 0)
-        sessionControlWidget:setSize(ui.windowWidth() / 5, ui.windowHeight() * 0.2 - 7.5 * cui.uiScale())
+        sessionControlWidget:setSize(ui.windowWidth() / 5, ui.windowHeight() * 0.15 - 7.5 * cui.uiScale())
         sessionControlWidget:draw()
 end
 
 local function modifiersWindow()
         sessionInfoWidget:setPosition(
                 ui.windowWidth() - ui.windowWidth() / 5,
-                ui.windowHeight() * 0.2 + 7.5 * cui.uiScale()
+                ui.windowHeight() * 0.15 + 7.5 * cui.uiScale()
         )
-        sessionInfoWidget:setSize(ui.windowWidth() / 5, ui.windowHeight() * 0.8 - 7.5 * cui.uiScale())
+        sessionInfoWidget:setSize(ui.windowWidth() / 5, ui.windowHeight() * 0.85 - 7.5 * cui.uiScale())
         sessionInfoWidget:draw()
 end
 

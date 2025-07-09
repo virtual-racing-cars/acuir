@@ -67,19 +67,22 @@ function card:draw(xPos, yPos, width, height)
                 vec2(ui.windowWidth(), fontSize * 1.5)
         )
 
-        cui.offsetCursorY(15)
-        local size = vec2(ui.windowWidth(), 36 * cui.uiScale())
+        cui.offsetCursorY(20)
+        cui.offsetCursorX(46)
+        local size = vec2(ui.availableSpaceX() - 92 * cui.uiScale(), style.main.font.body.size * 2)
         cui.combo(
                 "##comboCurrentCamera",
                 size,
                 string.format("Camera: %s", cameraModeString[sim.cameraMode]()),
                 ui.Alignment.Center,
                 false,
-                vec2(ui.windowWidth(), size.y * 10),
+                vec2(ui.availableSpaceX() - 92 * cui.uiScale(), size.y * 8),
                 function()
                         for k, v in pairs(cameraModeString) do
                                 ui.setCursorX(0)
-                                if cui.menuButton(v(), vec2(ui.windowWidth(), size.y)) then ac.setCurrentCamera(k) end
+                                local ty = ui.getCursorY()
+                                if cui.menuButton(v(), size) then ac.setCurrentCamera(k) end
+                                ac.log(ui.getCursorY() - ty, size.y)
                         end
                 end
         )

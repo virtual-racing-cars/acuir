@@ -95,13 +95,13 @@ local settings = {
                 {
                         key = "uiColorBackground",
                         label = "Background Color",
-                        default = rgbm(0.09, 0.09, 0.12, 1),
+                        default = rgbm(0.09, 0.09, 0.11, 1),
                         widget = 1,
                 },
                 {
                         key = "uiColorBackgroundShade",
                         label = "Background Shade Color",
-                        default = rgbm(0.15, 0.15, 0.17, 1),
+                        default = rgbm(0.15, 0.15, 0.16, 1),
                         widget = 1,
                 },
                 { key = "uiColorText", label = "Text Color", default = rgbm.colors.white, widget = 1 },

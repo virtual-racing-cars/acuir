@@ -5,6 +5,7 @@ local cui = require("ui.cui")
 local pages = require("ui.pages.pages")
 local settings = require("settings")
 local simutils = require("simutils")
+local style = require("style")
 local sim = ac.getSim()
 local car = ac.getCar(0)
 
@@ -77,7 +78,7 @@ local pauseButtons = {
 
 function page.draw(dt)
         local childWindowWith = (500 * cui.uiScale())
-        local childWindowHeight = (800 * cui.uiScale())
+        local childWindowHeight = (750 * cui.uiScale())
         local mainWindowFlags = ui.WindowFlags.NoScrollbar + ui.WindowFlags.NoScrollWithMouse
 
         if cui.modalDialogCallback then
@@ -96,20 +97,23 @@ function page.draw(dt)
                         ui.setCursor(0)
                         cui.offsetCursorY(30)
 
-                        ui.drawRectFilled(vec2(0, 0), ui.windowSize(), settings.Appearance.uiColorPrimary / 1.5)
+                        ui.drawRectFilled(
+                                vec2(0, 0),
+                                ui.windowSize(),
+                                settings.Appearance.uiColorPrimary / 1.5,
+                                12 * cui.uiScale()
+                        )
 
                         acLogoSize = vec2(ui.windowHeight() * 0.2, ui.windowHeight() * 0.2)
                         ui.setCursorX(ui.windowWidth() / 2 - acLogoSize.x / 2)
                         ui.image(acLogo, acLogoSize)
                         cui.offsetCursorY(30)
 
-                        ui.setCursorX(ui.windowWidth() * 0.1)
-                        ui.beginGroup(ui.windowWidth() * 0.1)
-
-                        local menuButtonSize = vec2(ui.windowWidth() * 0.8, ui.windowHeight() / 12)
+                        local menuButtonSize = vec2(ui.availableSpaceX() - 40 * cui.uiScale(), 60 * cui.uiScale())
 
                         ui.pushStyleColor(ui.StyleColor.Button, settings.Appearance.uiColorPrimary)
                         for i in ipairs(pauseButtons) do
+                                cui.setCursorX(20)
                                 local menuButton = pauseButtons[i]
                                 local enabled = menuButton.enabled
                                 local hidden = false
@@ -128,12 +132,10 @@ function page.draw(dt)
                                 then
                                         menuButton.func()
                                 end
-                                cui.offsetCursorY(15)
+                                cui.offsetCursorY(10)
                         end
 
                         ui.popStyleColor(1)
-
-                        ui.endGroup()
                 end
         )
 

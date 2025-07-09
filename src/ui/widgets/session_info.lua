@@ -17,6 +17,11 @@ local raceINI = ac.INIConfig.raceConfig()
 local sessionInfo = {}
 
 local sessionInfoTable = {
+
+        {
+                label = "Grip",
+                value = function() return string.format("%.1f %% (%s)", sim.roadGrip * 100, simutils.trackGripString) end,
+        },
         {
                 label = "Track Temp",
                 value = function()
@@ -26,10 +31,6 @@ local sessionInfoTable = {
                                 uis.useImperialUnits and "°F" or "°C"
                         )
                 end,
-        },
-        {
-                label = "Grip",
-                value = function() return string.format("%s - %.1f %%", simutils.trackGripString, sim.roadGrip * 100) end,
         },
         {
                 label = "Air Temp",
@@ -105,14 +106,20 @@ local assists = {
 }
 
 function sessionInfoWidget:body()
+        local bodyFontSize = style.main.font.body.size
+        local bodyFontSpace = style.main.font.body.space
+
+        local headerFontSize = style.main.font.header.size
+        local headerFontSpace = style.main.font.header.space
+
         cui.setCursorX(0)
         cui.snapCursor()
         ui.dwriteTextAligned(
                 "Sessions",
-                24 * cui.uiScale(),
+                headerFontSize,
                 ui.Alignment.Center,
                 ui.Alignment.Center,
-                vec2(ui.windowWidth(), style.main.font.body.size * 1.5)
+                vec2(ui.windowWidth(), headerFontSpace)
         )
 
         for sessionIndex = 0, sim.sessionsCount - 1 do
@@ -122,10 +129,10 @@ function sessionInfoWidget:body()
                 cui.snapCursor()
                 ui.dwriteTextAligned(
                         string.format("%s ", simutils.sessionTypeStrings[session.type]),
-                        style.main.font.body.size,
+                        bodyFontSize,
                         ui.Alignment.End,
                         ui.Alignment.Center,
-                        vec2(ui.windowWidth() * 0.5 - 15 * cui.uiScale(), style.main.font.body.size * 1.5),
+                        vec2(ui.windowWidth() * 0.5 - 15 * cui.uiScale(), bodyFontSpace),
                         false,
                         sim.currentSessionIndex == sessionIndex and settings.Appearance.uiColorSecondary
                                 or settings.Appearance.uiColorText
@@ -138,10 +145,10 @@ function sessionInfoWidget:body()
                                 cui.snapCursor()
                                 ui.dwriteTextAligned(
                                         string.format("%.0f laps", session.laps),
-                                        style.main.font.body.size,
+                                        bodyFontSize,
                                         ui.Alignment.Start,
                                         ui.Alignment.Center,
-                                        vec2(ui.windowWidth(), style.main.font.body.size * 1.5),
+                                        vec2(ui.windowWidth(), bodyFontSpace),
                                         false,
                                         sim.currentSessionIndex == sessionIndex and settings.Appearance.uiColorSecondary
                                                 or settings.Appearance.uiColorText
@@ -150,10 +157,10 @@ function sessionInfoWidget:body()
                                 cui.snapCursor()
                                 ui.dwriteTextAligned(
                                         string.format("%.0f laps", car.lapCount),
-                                        style.main.font.body.size,
+                                        bodyFontSize,
                                         ui.Alignment.Start,
                                         ui.Alignment.Center,
-                                        vec2(ui.windowWidth(), style.main.font.body.size * 1.5),
+                                        vec2(ui.windowWidth(), bodyFontSpace),
                                         false,
                                         sim.currentSessionIndex == sessionIndex and settings.Appearance.uiColorSecondary
                                                 or settings.Appearance.uiColorText
@@ -163,26 +170,26 @@ function sessionInfoWidget:body()
                         cui.snapCursor()
                         ui.dwriteTextAligned(
                                 string.format("%.0f min", session.durationMinutes),
-                                style.main.font.body.size,
+                                bodyFontSize,
                                 ui.Alignment.Start,
                                 ui.Alignment.Center,
-                                vec2(ui.windowWidth(), style.main.font.body.size * 1.5),
+                                vec2(ui.windowWidth(), bodyFontSpace),
                                 false,
                                 sim.currentSessionIndex == sessionIndex and settings.Appearance.uiColorSecondary
                                         or settings.Appearance.uiColorText
                         )
                 end
         end
-        cui.offsetCursorY(15)
+        cui.offsetCursorY(5)
 
         cui.setCursorX(0)
         cui.snapCursor()
         ui.dwriteTextAligned(
                 "Conditions",
-                24 * cui.uiScale(),
+                headerFontSize,
                 ui.Alignment.Center,
                 ui.Alignment.Center,
-                vec2(ui.windowWidth(), style.main.font.body.size * 1.5)
+                vec2(ui.windowWidth(), headerFontSpace)
         )
 
         for _, weatherInfo in ipairs(sessionInfoTable) do
@@ -190,10 +197,10 @@ function sessionInfoWidget:body()
                 cui.snapCursor()
                 ui.dwriteTextAligned(
                         weatherInfo.label,
-                        style.main.font.body.size,
+                        bodyFontSize,
                         ui.Alignment.End,
                         ui.Alignment.Center,
-                        vec2(ui.windowWidth() * 0.5 - 15 * cui.uiScale(), style.main.font.body.size * 1.5)
+                        vec2(ui.windowWidth() * 0.5 - 15 * cui.uiScale(), bodyFontSpace)
                 )
                 ui.sameLine()
                 ui.setCursorX(ui.windowWidth() * 0.5 + 15 * cui.uiScale())
@@ -201,23 +208,23 @@ function sessionInfoWidget:body()
                 cui.snapCursor()
                 ui.dwriteTextAligned(
                         weatherInfo.value(),
-                        style.main.font.body.size,
+                        bodyFontSize,
                         ui.Alignment.Start,
                         ui.Alignment.Center,
-                        vec2(ui.windowWidth(), style.main.font.body.size * 1.5)
+                        vec2(ui.windowWidth(), bodyFontSpace)
                 )
         end
 
-        cui.offsetCursorY(15)
+        cui.offsetCursorY(5)
 
         cui.setCursorX(0)
         cui.snapCursor()
         ui.dwriteTextAligned(
                 "Modifiers",
-                24 * cui.uiScale(),
+                headerFontSize,
                 ui.Alignment.Center,
                 ui.Alignment.Center,
-                vec2(ui.windowWidth(), style.main.font.body.size * 1.5)
+                vec2(ui.windowWidth(), headerFontSpace)
         )
 
         for _, assist in ipairs(assists) do
@@ -225,20 +232,20 @@ function sessionInfoWidget:body()
                 cui.snapCursor()
                 ui.dwriteTextAligned(
                         assist.label,
-                        style.main.font.body.size,
+                        bodyFontSize,
                         ui.Alignment.End,
                         ui.Alignment.Center,
-                        vec2(ui.windowWidth() * 0.5 - 15 * cui.uiScale(), style.main.font.body.size * 1.5)
+                        vec2(ui.windowWidth() * 0.5 - 15 * cui.uiScale(), bodyFontSpace)
                 )
                 ui.sameLine()
                 ui.setCursorX(ui.windowWidth() * 0.5 + 15 * cui.uiScale())
                 cui.snapCursor()
                 ui.dwriteTextAligned(
                         assist.value,
-                        style.main.font.body.size,
+                        bodyFontSize,
                         ui.Alignment.Start,
                         ui.Alignment.Center,
-                        vec2(ui.windowWidth(), style.main.font.body.size * 1.5)
+                        vec2(ui.windowWidth(), bodyFontSpace)
                 )
         end
 end

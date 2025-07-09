@@ -9,12 +9,19 @@ local style = require("style")
 local vec2Temp1 = vec2()
 
 local currentApp = app.state.setupTab - 1
-local tabBarPosition = 0
 
 local function tabItem(index, title)
-        if cui.treeNodeButton(title, vec2(ui.windowWidth(), 36 * cui.uiScale()), currentApp == index, true) then
+        if
+                cui.treeNodeButton(
+                        title,
+                        vec2(ui.availableSpaceX() - 20 * cui.uiScale(), style.main.font.header.space),
+                        currentApp == index,
+                        true
+                )
+        then
                 currentApp = index
         end
+        cui.offsetCursorY(5)
 
         if currentApp == index then ui.setScrollY((index - 5) * 48 * cui.uiScale()) end
 end
@@ -38,7 +45,7 @@ function setupTabBar(tabs)
                 end
         end
 
-        ui.setCursorX(tabBarPosition)
+        cui.offsetCursorY(10)
         ui.pushStyleColor(ui.StyleColor.Button, settings.Appearance.uiColorPrimary)
         for i in ipairs(tabs) do
                 ui.setCursorX(0)
@@ -56,6 +63,7 @@ local function linkButton(name, size, linked)
         local r1, r2 = ui.itemRect()
         local hovered = ui.itemHovered() and not cui.modalDialogCallback
         ui.drawRectFilled(r1, r2, settings.Appearance.uiColorPrimary)
+        ui.drawRectFilled(r1, r2, settings.Appearance.uiColorBackground)
 
         local color = settings.Appearance.uiColorPrimary * 1.5
 
@@ -87,7 +95,7 @@ local function drawSetupSpinner(si)
         }
 
         local xPos = positions[si.xPos]
-        local yPos = (si.yPos * spinnerHeight / cui.uiScale()) * cui.uiScale()
+        local yPos = (si.yPos * 1.2 * spinnerHeight / cui.uiScale()) * cui.uiScale()
                 + (ui.windowHeight() - spinnerHeight * 10) * 0.5
 
         if si.items then
@@ -109,8 +117,8 @@ local function drawSetupSpinner(si)
         ui.drawRectFilled(
                 vec2(xPos, yPos - spinnerHeight * 0.18),
                 vec2(xPos + spinnerWidth, yPos + spinnerHeight * 1.18),
-                settings.Appearance.uiColorPrimary,
-                12,
+                settings.Appearance.uiColorBackground,
+                6 * cui.uiScale(),
                 cornerFlags
         )
 
@@ -208,11 +216,13 @@ function car_setup(sm)
 
         if tab.name == "PITSTOP STRATEGY" then
                 for _, spinner in ipairs(sm._pitSpinners) do
-                        if spinner.preset == -1 then
-                                drawSetupSpinner(spinner)
-                                currentQuickPitPreset = spinner.value - 1
-                        elseif spinner.preset == currentQuickPitPreset then
-                                drawSetupSpinner(spinner)
+                        if spinner.yPos > -2 then
+                                if spinner.preset == -1 then
+                                        drawSetupSpinner(spinner)
+                                        currentQuickPitPreset = spinner.value - 1
+                                elseif spinner.preset == currentQuickPitPreset then
+                                        drawSetupSpinner(spinner)
+                                end
                         end
                 end
         end

@@ -8,6 +8,7 @@ local style = {
                 },
                 var = {
                         { ui.StyleVar.ScrollbarSize, 5 },
+                        { ui.StyleVar.ScrollbarRounding, 6 },
                         { ui.StyleVar.ItemSpacing, 0 },
                 },
                 font = {
@@ -21,6 +22,29 @@ local style = {
                 margins = { innerSize = 10, outerSize = 15 },
         },
 }
+
+function style:refresh(scale)
+        style.main = {
+                colors = {
+                        { ui.StyleColor.ScrollbarGrab, settings.Appearance.uiColorAccent },
+                        { ui.StyleColor.ScrollbarBg, settings.Appearance.uiColorBackground },
+                },
+                var = {
+                        { ui.StyleVar.ScrollbarSize, 5 * scale },
+                        { ui.StyleVar.ScrollbarRounding, 6 * scale },
+                        { ui.StyleVar.ItemSpacing, 0 },
+                },
+                font = {
+                        type = ui.DWriteFont("Rajdhani", ac.dirname() .. "\\assets\\fonts\\"),
+                        title = { size = 30 * scale, space = 40 * scale },
+                        header = { size = 20 * scale, space = 36 * scale },
+                        body = { size = 18 * scale, space = 34 * scale },
+                        small = { size = 16 * scale, space = 32 * scale },
+                },
+                corners = { innerSize = 6 * scale, outerSize = 16 * scale },
+                margins = { innerSize = 10 * scale, outerSize = 15 * scale },
+        }
+end
 
 function style:pushFontRegular() ui.pushDWriteFont(style.main.font.type:weight(ui.DWriteFont.Weight.SemiBold)) end
 

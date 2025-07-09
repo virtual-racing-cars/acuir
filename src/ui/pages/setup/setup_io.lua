@@ -152,17 +152,16 @@ function drawLocalSetupFilters()
 end
 
 function drawSetupControls(sm)
-        local iconButtonHeight = 36 * cui.uiScale()
-        local buttonWidth = ui.windowWidth() * 0.99
+        local iconButtonHeight = style.main.font.body.size * 2
+        local buttonWidth = ui.availableSpaceX() - 20 * cui.uiScale()
         local groupBegin = (ui.windowWidth() / 24)
-        local fontSize = style.main.font.body.size
 
-        ui.setCursorX(ui.windowWidth() * 0.005)
-        cui.offsetCursorY(15)
+        cui.setCursorX(10)
+        cui.offsetCursorY(10)
         cui.combo(
                 "##save_setup_track",
                 vec2(buttonWidth, iconButtonHeight),
-                "Track: " .. carSetup.input.track,
+                carSetup.input.track,
                 ui.Alignment.Start,
                 false,
                 vec2(buttonWidth, 200),
@@ -178,8 +177,8 @@ function drawSetupControls(sm)
                 end
         )
 
-        ui.setCursorX(ui.windowWidth() * 0.005)
-        cui.offsetCursorY(5)
+        cui.setCursorX(10)
+        cui.offsetCursorY(10)
 
         ui.drawRect(
                 ui.getCursor(),
@@ -192,7 +191,7 @@ function drawSetupControls(sm)
                 vec2Temp1:set(buttonWidth - iconButtonHeight * 1.3, iconButtonHeight),
                 "",
                 carSetup.input.name,
-                " Setup Name",
+                "Setup Name",
                 "[%w_ .;,><%-]"
         )
         ui.sameLine()
@@ -206,8 +205,7 @@ function drawSetupControls(sm)
                         iconButtonHeight,
                         iconButtonHeight,
                         isempty(carSetup.input.name) and ui.ButtonFlags.Disabled or ui.ButtonFlags.None,
-                        false,
-                        1
+                        false
                 )
         then
                 carSetup.input.name = ""
@@ -223,26 +221,26 @@ function drawSetupControls(sm)
                 setupFileExists = io.fileExists(carSetup.input.path)
         end
 
-        cui.offsetCursorY(5)
-        ui.setCursorX(ui.windowWidth() * 0.005)
+        cui.offsetCursorY(10)
+        cui.setCursorX(10)
 
-        if
-                cui.menuButton(
-                        "Load Setup",
-                        vec2Temp1:set(buttonWidth * 0.49, iconButtonHeight),
-                        nil,
-                        nil,
-                        setupFileExists and ui.ButtonFlags.None or ui.ButtonFlags.Disabled,
-                        false,
-                        false
-                )
-        then
-                cui.menuBanner("Loaded Setup", nil, rgbm.colors.green)
-                sm:LoadStuff(carSetup.selected.path)
-                carSetup.current = carSetup.selected.track .. "/" .. carSetup.selected.name
-        end
-        ui.sameLine()
-        ui.offsetCursorX(buttonWidth * 0.02)
+        -- if
+        --         cui.menuButton(
+        --                 "Load Setup",
+        --                 vec2Temp1:set(buttonWidth * 0.5 - 5 * cui.uiScale(), iconButtonHeight),
+        --                 nil,
+        --                 nil,
+        --                 setupFileExists and ui.ButtonFlags.None or ui.ButtonFlags.Disabled,
+        --                 false,
+        --                 false
+        --         )
+        -- then
+        --         cui.menuBanner("Loaded Setup", nil, rgbm.colors.green)
+        --         sm:LoadStuff(carSetup.selected.path)
+        --         carSetup.current = carSetup.selected.track .. "/" .. carSetup.selected.name
+        -- end
+        -- ui.sameLine()
+        -- ui.offsetCursorX(10)
 
         -- if
         --         cui.menuButton(
@@ -257,7 +255,18 @@ function drawSetupControls(sm)
         -- end
         -- ui.sameLine()
 
-        if cui.menuButton("Save Setup", vec2Temp1:set(buttonWidth * 0.49, iconButtonHeight)) then
+        if cui.menuButton("Save Setup", vec2Temp1:set(buttonWidth, iconButtonHeight)) then
+                if setupFileExists then
+                        promptOverwriteSetup(sm)
+                else
+                        carSetup:save(sm)
+                        cui.menuBanner("Saved Setup", nil, rgbm.colors.green)
+                end
+        end
+
+        cui.offsetCursorY(10)
+        cui.setCursorX(10)
+        if cui.menuButton("Share", vec2Temp1:set(buttonWidth, iconButtonHeight), 0, 0, ui.ButtonFlags.Disabled) then
                 if setupFileExists then
                         promptOverwriteSetup(sm)
                 else
@@ -275,9 +284,10 @@ function drawSetupControls(sm)
 end
 
 local function drawSetupNode(setup, track)
+        cui.offsetCursorY(5)
         local setupActive = carSetup.selected.path == setup.path
         local name = string.replace(setup.name, ".ini", "")
-        local buttonSize = vec2(ui.windowWidth(), 36 * cui.uiScale())
+        local buttonSize = vec2(ui.availableSpaceX() - 20 * cui.uiScale(), style.main.font.header.space)
         local popupButtonSize = vec2(ui.windowWidth() * 0.3, 32 * cui.uiScale())
 
         if cui.treeNodeButton(name, buttonSize, setupActive, false) then
@@ -368,7 +378,7 @@ local function drawSetupList()
         end
 
         ui.setCursorY(0)
-
+        cui.offsetCursorY(10)
         for i, track in ipairs(carSetup.trackList) do
                 ui.setCursorX(0)
                 if
@@ -381,6 +391,7 @@ local function drawSetupList()
                 then
                         carSetup.input.track = track
                 end
+                cui.offsetCursorY(10)
         end
 end
 
@@ -393,8 +404,22 @@ function drawSetupIO(sm)
         ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiColorBackgroundShade, 6 * cui.uiScale())
         drawLocalSetupFilters()
 
-        cui.pushWindow("load_setups", 0, 40, ui.windowWidth(), ui.windowHeight() - 40, true, ui.ButtonFlags.None)
-        ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiColorBackground, 6 * cui.uiScale())
+        ui.drawRectFilled(
+                vec2(0, 40 * cui.uiScale()),
+                ui.windowSize(),
+                settings.Appearance.uiColorBackground,
+                6 * cui.uiScale()
+        )
+
+        cui.pushWindow(
+                "load_setups",
+                0,
+                40 * cui.uiScale(),
+                ui.windowWidth(),
+                ui.windowHeight() - 40 * cui.uiScale(),
+                true,
+                ui.ButtonFlags.None
+        )
         drawSetupList()
         cui.popWindow(true)
 

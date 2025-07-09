@@ -35,7 +35,7 @@ end
 local function helpWindow()
         if sm.activeHelpString == "" then return end
 
-        cui.pushContentWindow("help_window", 0, 0, ui.windowWidth() / 5, ui.windowHeight(), function()
+        cui.pushContentWindow("help_window", 0, 0, ui.windowWidth() * 0.22, ui.windowHeight(), function()
                 ui.setCursor(0)
                 if cui.windowTabButton("Help", 36, ui.ButtonFlags.None, false) then
                 end
@@ -55,9 +55,9 @@ end
 local function dataLoggingWindow()
         cui.pushContentWindow(
                 "data_logging_window",
-                (ui.windowWidth() / 5) * 4,
+                ui.windowWidth() * 0.78,
                 0,
-                ui.windowWidth() / 5,
+                ui.windowWidth() * 0.22,
                 ui.windowHeight() * 0.16 - 7.5 * cui.uiScale(),
                 function()
                         ui.setCursor(0)
@@ -168,9 +168,9 @@ end
 local function carStatusWindow()
         cui.pushContentWindow(
                 "car_status_window",
-                (ui.windowWidth() / 5) * 4,
+                ui.windowWidth() * 0.78,
                 ui.windowHeight() * 0.16 + 7.5 * cui.uiScale(),
-                ui.windowWidth() / 5,
+                ui.windowWidth() * 0.22,
                 ui.windowHeight() * 0.84 - 7.5 * cui.uiScale(),
                 function()
                         ui.setCursor(0)
@@ -193,7 +193,7 @@ local function carStatusWindow()
         cui.popContentWindow()
 end
 
-local carSetupTab = 3
+local carSetupTab = 1
 local saveSetupTab = 1
 
 local function setupExchangeFooter()

@@ -2,15 +2,17 @@ local Widget = require("src.classes.Widget")
 local cui = require("src.ui.cui")
 local settings = require("settings")
 local simutils = require("simutils")
+local style = require("style")
 local sim = ac.getSim()
 
 local sessionControlWidget = Widget("Session Control")
 
 function sessionControlWidget:body()
-        local driveButtonHeight = ui.windowHeight() * 0.7
+        local driveButtonHeight = ui.windowHeight() * 0.8
 
-        ui.setCursorX(ui.windowWidth() * 0.2)
-        ui.setCursorY(0)
+        ui.setCursorX(driveButtonHeight * 1.5)
+        ui.setCursorY(ui.windowHeight() * 0.1)
+
         if
                 cui.iconButton(
                         sim.isOnlineRace and "Vote Restart" or "Restart",
@@ -26,8 +28,9 @@ function sessionControlWidget:body()
                         ac.tryToRestartSession()
                 end
         end
+        ui.sameLine()
 
-        ui.setCursorX(ui.windowWidth() * 0.6)
+        ui.setCursorX(ui.windowWidth() - driveButtonHeight * 2.5)
 
         if
                 cui.iconButton(
@@ -46,11 +49,11 @@ function sessionControlWidget:body()
         end
 
         if not ac.canCastVote() and sim.isOnlineRace then
-                ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiColorSecondary * 0.75, 6)
+                ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiColorSecondary * 0.9, 6)
                 ui.setCursor(0)
                 ui.dwriteTextAligned(
                         "Voting Cooldown %.0f s" % ac.timeToNextVote(),
-                        32 * cui.uiScale(),
+                        style.main.font.title.size,
                         ui.Alignment.Center,
                         ui.Alignment.Center,
                         ui.windowSize()

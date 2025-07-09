@@ -89,7 +89,7 @@ function gearSpeedsWidget:body()
 
                 local labelWidth = 125 * cui.uiScale()
                 local labelHeight = 20 * cui.uiScale()
-                local fontSize = 16 * cui.uiScale()
+                local fontSize = 18 * cui.uiScale()
 
                 ui.pathLineTo(p1)
                 ui.pathLineTo(p2)
@@ -101,22 +101,23 @@ function gearSpeedsWidget:body()
                         ui.pathStroke(rgbm(1, 1, 1, 0.1), false, 3)
 
                         ui.setCursor(vec2(p2.x - labelWidth, yMax - (height / car.gearCount * 0.8) * i))
-                        ui.drawRectFilled(
-                                ui.getCursor(),
-                                ui.getCursor() + vec2(labelWidth, labelHeight),
-                                warning and settings.Appearance.uiColorSecondary or settings.Appearance.uiColorText,
-                                6 * cui.uiScale()
-                        )
+                        -- ui.drawRectFilled(
+                        --         ui.getCursor(),
+                        --         ui.getCursor() + vec2(labelWidth, labelHeight),
+                        --         warning and settings.Appearance.uiColorSecondary or settings.Appearance.uiColorText,
+                        --         6 * cui.uiScale()
+                        -- )
 
+                        cui.offsetCursorX(-5)
                         cui.snapCursor()
                         ui.dwriteTextAligned(
                                 string.format("%s - %s %s", i, maxGearSpeed, uis.useImperialUnits and "mph" or "kmh"),
                                 fontSize,
-                                0,
+                                1,
                                 0,
                                 vec2(labelWidth, labelHeight),
                                 false,
-                                settings.Appearance.uiColorBackground
+                                warning and settings.Appearance.uiColorSecondary or settings.Appearance.uiColorText
                         )
                 end
 
