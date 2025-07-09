@@ -435,7 +435,7 @@ function button.bindingAxle(name, label, binder, size, flags)
         ui.drawRectFilled(r1, r2, buttonColor, 6 * scale.get())
 
         if binder.isCentered and binder.inputModeBound then
-                local axisValue = button:getValue()
+                local axisValue = binder:getValue()
 
                 ui.drawRectFilled(
                         vec2(r1.x + size.x * 0.5 + size.x * 0.5 * math.min(axisValue, 0), r1.y),
@@ -453,7 +453,7 @@ function button.bindingAxle(name, label, binder, size, flags)
                         ui.CornerFlags.Right
                 )
         elseif binder.inputModeBound then
-                local axisValue = math.clamp((button:getValue() - button.min) / (button.max - button.min), -1, 1)
+                local axisValue = math.clamp((binder:getValue() - binder.min) / (binder.max - binder.min), -1, 1)
 
                 ui.drawRectFilled(
                         r1,
@@ -485,7 +485,7 @@ function button.bindingAxle(name, label, binder, size, flags)
                                 ui.CornerFlags.None
                         )
                 then
-                        button:unbind()
+                        binder:unbind()
                         ui.closePopup()
                 end
         end)

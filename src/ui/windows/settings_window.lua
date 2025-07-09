@@ -1,6 +1,7 @@
 require("classes.PageManager")
 require("ui.common")
 local app = require("app")
+local callback = require("callback")
 local cui = require("ui.cui")
 local pages = require("ui.pages.pages")
 local settings = require("settings")

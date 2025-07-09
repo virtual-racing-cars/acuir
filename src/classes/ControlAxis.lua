@@ -199,12 +199,12 @@ function ControlAxis:unbind()
 end
 
 function ControlAxis:getJoystickAxisValue()
-        self.joy = configs.CONTROLS.ini:get(self.bind, "JOY", -1)
-        self.axle = configs.CONTROLS.ini:get(self.bind, "AXLE", -1)
+        self.joy = configs.CONTROLS.ini:get(self.bind, "JOY", 0)
+        self.axle = configs.CONTROLS.ini:get(self.bind, "AXLE", 0)
         self.min = configs.CONTROLS.ini:get(self.bind, "MIN", -1)
         self.max = configs.CONTROLS.ini:get(self.bind, "MAX", 1)
 
-        return ac.getJoystickAxisValue(self.joy, self.axle)
+        return ac.getJoystickAxisValue(self.joy, self.axle) or 0
 end
 
 function ControlAxis:getGamepadAxisValue()
