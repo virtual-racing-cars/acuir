@@ -233,7 +233,7 @@ function topBar(path)
                 readyToDriveState[1], readyToDriveState[2], readyToDriveState[3], readyToDriveState[4]
 
         if
-                cui.specialButton(
+                cui.driveButton(
                         string.upper(driveButtonText),
                         vec2(driveButtonWidth, driveButtonHeight),
                         ui.Alignment.Center,
@@ -286,7 +286,7 @@ function topBar(path)
         ui.offsetCursorX(driveButtonHeight * 0.75)
 
         if cui.iconButton("Quit", ui.Icons.Leave, driveButtonHeight, driveButtonHeight * 1.5, ui.ButtonFlags.None) then
-                cui:promptShutdownAC()
+                cui.promptShutdownACDialog()
         end
 end
 

@@ -99,7 +99,7 @@ function card:draw(xPos, yPos, width, height)
         ui.setCursorY(0)
         ui.drawImageRounded(skin, ui.getCursor(), ui.getCursor() + vec2(skinImageSize, skinImageSize), 6 * cui.scale())
 
-        local managePlayerButtonSize = 42 * cui:uiScale()
+        local managePlayerButtonSize = 42 * cui.scale()
         ui.setCursorX(0)
         ui.setCursorY(ui.windowHeight() - managePlayerButtonSize * 1.75)
 

@@ -95,7 +95,7 @@ function OnboardingWindow(dt)
         style:pushStyleMain()
         local mainWindowFlags = ui.WindowFlags.NoScrollbar + ui.WindowFlags.NoScrollWithMouse
 
-        cui.pushWindowFull("onboarding_window_full")
+        cui.pushFullWindow("onboarding_window_full")
         ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiColorBackground * 0.85)
 
         if not onboardingAcknowledged then onboardingBody() end

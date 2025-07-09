@@ -53,7 +53,7 @@ function MainMenuWindow(dt)
 
         if cui.modalDialogCallback then
                 exclusiveHudMode = ""
-                cui.pushWindowFull("callback_window")
+                cui.pushFullWindow("callback_window")
                 ui.setCursor(0)
                 ui.drawRectFilled(vec2(0, 0), ui.windowSize(), settings.Appearance.uiColorBackgroundShade * 0.98)
                 local childWindowWith = ui.windowWidth() / 5

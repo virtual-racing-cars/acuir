@@ -12,7 +12,7 @@ local currentApp = app.state.setupTab - 1
 
 local function tabItem(index, title)
         if
-                cui.treeNodeButton(
+                cui.treeNodeChildButton(
                         title,
                         vec2(ui.availableSpaceX() - 20 * cui.scale(), style.main.font.header.space),
                         currentApp == index,

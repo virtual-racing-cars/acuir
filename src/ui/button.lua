@@ -287,7 +287,7 @@ function button.binding(name, label, binder, size, flags)
         if not flags then flags = ui.ButtonFlags.None end
         -- if flags == ui.ButtonFlags.Disabled then fontColor = settings.Appearance.uiColorTextDim end
 
-        local clicked = ui.invisibleButton("##" .. button.bind, size, flags)
+        local clicked = ui.invisibleButton("##" .. binder.bind, size, flags)
         local r1, r2 = ui.itemRect()
         local hovered = ui.itemHovered() and not callback.modalDialog
 
@@ -377,7 +377,7 @@ function button.binding(name, label, binder, size, flags)
         ui.sameLine()
 
         for i = 3, 1, -1 do
-                local boundDeviceID, buttonID = button:boundTo(i)
+                local boundDeviceID, buttonID = binder:boundTo(i)
                 local disabled = (sim.inputMode + 1 == 3 and i ~= 3) or (sim.inputMode + 1 == 1 and i == 2)
                 local tempCursor = ui.getCursor()
 
@@ -411,7 +411,7 @@ function button.binding(name, label, binder, size, flags)
         return clicked and not (flags == ui.ButtonFlags.Disabled)
 end
 
-function button.bindingAxle(name, label, button, size, flags)
+function button.bindingAxle(name, label, binder, size, flags)
         local sizeX = size.x
         local sizeY = size.y
         local fontSize = math.floor(sizeY * 0.4)
@@ -419,7 +419,7 @@ function button.bindingAxle(name, label, button, size, flags)
         if not flags then flags = ui.ButtonFlags.None end
         -- if flags == ui.ButtonFlags.Disabled then fontColor = settings.Appearance.uiColorTextDim end
 
-        local clicked = ui.invisibleButton("##" .. button.bind, size, flags)
+        local clicked = ui.invisibleButton("##" .. binder.bind, size, flags)
         local r1, r2 = ui.itemRect()
         local hovered = ui.itemHovered() and not callback.modalDialog
 
@@ -434,7 +434,7 @@ function button.bindingAxle(name, label, button, size, flags)
         -- if hovered and ui.mouseClicked(ui.MouseButton.Right) then button:unbind(i) end
         ui.drawRectFilled(r1, r2, buttonColor, 6 * scale.get())
 
-        if button.isCentered and button.inputModeBound then
+        if binder.isCentered and binder.inputModeBound then
                 local axisValue = button:getValue()
 
                 ui.drawRectFilled(
@@ -452,7 +452,7 @@ function button.bindingAxle(name, label, button, size, flags)
                         6 * scale.get(),
                         ui.CornerFlags.Right
                 )
-        elseif button.inputModeBound then
+        elseif binder.inputModeBound then
                 local axisValue = math.clamp((button:getValue() - button.min) / (button.max - button.min), -1, 1)
 
                 ui.drawRectFilled(
@@ -466,7 +466,7 @@ function button.bindingAxle(name, label, button, size, flags)
 
         ui.setCursor(r1)
 
-        ui.itemPopup("##unbinding" .. button.bind, ui.MouseButton.Right, function()
+        ui.itemPopup("##unbinding" .. binder.bind, ui.MouseButton.Right, function()
                 local popupButtonSize = vec2(200, 30) * scale.get()
 
                 ui.drawRectFilled(0, vec2(200, 30), rgbm(0.2, 0.2, 0.2, 1))
@@ -503,7 +503,7 @@ function button.bindingAxle(name, label, button, size, flags)
         )
         ui.sameLine()
 
-        local boundDeviceID, buttonID = button:boundTo(sim.inputMode + 1)
+        local boundDeviceID, buttonID = binder:boundTo(sim.inputMode + 1)
         local tempCursor = ui.getCursor()
 
         cursor.offsetY(boundDeviceID == "" and 0 or -size.y * 0.1)

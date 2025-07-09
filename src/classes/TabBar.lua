@@ -29,7 +29,7 @@ function TabBar:draw(tabs)
         cui.setCursorY(10)
         for i in ipairs(tabs) do
                 if
-                        cui.treeNodeButton(
+                        cui.treeNodeChildButton(
                                 toCapitalCase(tabs[i].name),
                                 vec2(ui.availableSpaceX() - 20 * cui.scale(), style.main.font.header.space),
                                 self.currentTab == i,

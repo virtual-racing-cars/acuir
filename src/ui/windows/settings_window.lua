@@ -23,14 +23,14 @@ function SettingsWindow(dt)
 
         updateCommon()
 
-        cui.pushWindowFull("settings_main_window", mainWindowFlags, false)
+        cui.pushFullWindow("settings_main_window", mainWindowFlags, false)
 
         pages.manager:draw()
 
         cui.popWindow(false)
 
         if cui.modalDialogCallback then
-                cui.pushWindowFull("callback_window")
+                cui.pushFullWindow("callback_window")
                 ui.setCursor(0)
                 ui.drawRectFilled(vec2(0, 0), ui.windowSize(), settings.Appearance.uiColorBackgroundShade * 0.98)
 

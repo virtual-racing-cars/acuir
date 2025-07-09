@@ -15,7 +15,7 @@ local settings = require("settings")
 local style = require("src.ui.style")
 
 local fadingTimer = ui.FadingElement(function()
-        cui.pushWindowFull("overlay_window_full")
+        cui.pushFullWindow("overlay_window_full")
         ui.drawRectFilled(0, ui.windowSize(), rgbm.colors.black)
         cui.popWindow()
 end)
@@ -61,12 +61,12 @@ local hudModes = {
 }
 
 ui.onExclusiveHUD(function(mode)
-        if true then
-                style:pushStyleMain()
-                testUI()
-                style:popStyleMain()
-                return ""
-        end
+        -- if true then
+        --         style:pushStyleMain()
+        --         testUI()
+        --         style:popStyleMain()
+        --         return ""
+        -- end
 
         if ac.getLastError() or not app.state.appOpen then return end
 
