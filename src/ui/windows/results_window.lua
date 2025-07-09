@@ -20,7 +20,7 @@ function ResultsMenuWindow(dt)
         local childWindowHeight = 1440 * cui.scale()
         local mainWindowFlags = ui.WindowFlags.NoScrollbar + ui.WindowFlags.NoScrollWithMouse
 
-        if cui.modalDialogCallback then
+        if callback.dialog then
                 mainWindowFlags = mainWindowFlags
                         + ui.WindowFlags.NoInputs
                         + ui.WindowFlags.NoMouseInputs
@@ -35,7 +35,7 @@ function ResultsMenuWindow(dt)
                 function() exclusiveHudMode = pages.manager:draw() end
         )
 
-        if cui.modalDialogCallback then
+        if callback.dialog then
                 cui.contentWindow(
                         "callback_window",
                         vec2(0, 0),
@@ -61,7 +61,7 @@ function ResultsMenuWindow(dt)
                                         function()
                                                 ui.bringWindowToFront()
                                                 ui.setCursor(0)
-                                                if cui.modalDialogCallback() then cui.modalDialogCallback = nil end
+                                                if callback.dialog() then callback.dialog = nil end
                                         end
                                 )
                         end

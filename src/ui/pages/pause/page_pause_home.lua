@@ -81,7 +81,7 @@ function page.draw(dt)
         local childWindowHeight = (750 * cui.scale())
         local mainWindowFlags = ui.WindowFlags.NoScrollbar + ui.WindowFlags.NoScrollWithMouse
 
-        if cui.modalDialogCallback then
+        if callback.dialog then
                 mainWindowFlags = mainWindowFlags
                         + ui.WindowFlags.NoInputs
                         + ui.WindowFlags.NoMouseInputs

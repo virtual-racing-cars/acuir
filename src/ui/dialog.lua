@@ -1,12 +1,10 @@
 local button = require("src.ui.button")
-local callback = require("src.ui.callback")
+local callback = require("callback")
 local scale = require("src.ui.scale")
 
 local dialog = {}
 
-callback.modal = nil
-
-function dialog.modal(callbackCall) callback.modal = callbackCall end
+function dialog.modal(callbackCall) callback.dialog = callbackCall end
 
 function dialog.promptShutdownAC()
         local mouseMoved = false

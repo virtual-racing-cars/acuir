@@ -29,7 +29,7 @@ function input.text(label, size, stringPrefix, stringInput, stringDefault, filte
         local captured, clicked = ui.interactiveArea("##textinput" .. label, size)
         local r1, r2 = ui.itemRect()
 
-        local hovered = ui.itemHovered() --and not CUI.modalDialogCallback
+        local hovered = ui.itemHovered() --and not callback.dialog
         local itemActive = ui.itemActive()
 
         if stringPrefix ~= "" then

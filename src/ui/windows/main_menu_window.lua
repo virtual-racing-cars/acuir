@@ -1,6 +1,7 @@
 require("classes.PageManager")
 require("ui.common")
 local app = require("app")
+local callback = require("callback")
 local cui = require("ui.cui")
 local pages = require("ui.pages.pages")
 local settings = require("settings")
@@ -27,7 +28,7 @@ function MainMenuWindow(dt)
         ui.pushAllowKeyboardFocus(false)
 
         local mainWindowFlags = bit.bor(ui.WindowFlags.NoScrollbar, ui.WindowFlags.NoScrollWithMouse)
-        if cui.modalDialogCallback then
+        if callback.dialog then
                 mainWindowFlags = bit.bor(
                         mainWindowFlags,
                         ui.WindowFlags.NoInputs,
@@ -51,7 +52,7 @@ function MainMenuWindow(dt)
         cui.popWindow(false)
         cui.popWindow(false)
 
-        if cui.modalDialogCallback then
+        if callback.dialog then
                 exclusiveHudMode = ""
                 cui.pushFullWindow("callback_window")
                 ui.setCursor(0)
@@ -68,7 +69,7 @@ function MainMenuWindow(dt)
 
                 ui.bringWindowToFront()
                 ui.setCursor(0)
-                if cui.modalDialogCallback() then cui.modalDialogCallback = nil end
+                if callback.dialog() then callback.dialog = nil end
 
                 cui.popWindow()
                 cui.popWindow()

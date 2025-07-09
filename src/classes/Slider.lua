@@ -1,3 +1,4 @@
+local callback = require("callback")
 local cui = require("ui.cui")
 local settings = require("settings")
 
@@ -180,7 +181,7 @@ function drawSpinner(id, name, width, height, locked, value, sliderParams, noScr
 
         -- ui.drawRectFilled(p1, p2, rgbm.colors.aqua)
 
-        local hovered = ui.rectHovered(p1, vec2Temp1:set(p2.x, p1.y + height)) and not cui.modalDialogCallback
+        local hovered = ui.rectHovered(p1, vec2Temp1:set(p2.x, p1.y + height)) and not callback.dialog
 
         ui.setCursorX(p1.x + width * 0.04)
         ui.setCursorY(p1.y + height * 0.1)

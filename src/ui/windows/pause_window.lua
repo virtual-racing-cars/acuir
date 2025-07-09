@@ -1,6 +1,7 @@
 require("ui.common")
 require("classes.PageManager")
 local app = require("app")
+local callback = require("callback")
 local cui = require("ui.cui")
 local pages = require("ui.pages.pages")
 local settings = require("settings")
@@ -20,7 +21,7 @@ function PauseMenuWindow(dt)
         local childWindowHeight = 1440 * cui.scale()
         local mainWindowFlags = ui.WindowFlags.NoScrollbar + ui.WindowFlags.NoScrollWithMouse
 
-        if cui.modalDialogCallback then
+        if callback.dialog then
                 mainWindowFlags = mainWindowFlags
                         + ui.WindowFlags.NoInputs
                         + ui.WindowFlags.NoMouseInputs
@@ -35,7 +36,7 @@ function PauseMenuWindow(dt)
                 function() exclusiveHudMode = pages.manager:draw() end
         )
 
-        if cui.modalDialogCallback then
+        if callback.dialog then
                 cui.contentWindow(
                         "callback_window",
                         0,
@@ -57,7 +58,7 @@ function PauseMenuWindow(dt)
                                         function()
                                                 ui.bringWindowToFront()
                                                 ui.setCursor(0)
-                                                if cui.modalDialogCallback() then cui.modalDialogCallback = nil end
+                                                if callback.dialog() then callback.dialog = nil end
                                         end
                                 )
                         end

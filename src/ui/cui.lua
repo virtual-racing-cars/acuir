@@ -70,7 +70,7 @@ cui.pushFittedWindow = window.pushFitted
 cui.menuPanAvailable = false
 cui.menuZoomAvailable = false
 
-function cui.globalDisable() return cui.modalDialogCallback ~= nil end
+function cui.globalDisable() return callback.dialog ~= nil end
 
 function cui.dummy(x, y) ui.dummy(vec2Temp1:set(x * cui.scale(), y * cui.scale())) end
 

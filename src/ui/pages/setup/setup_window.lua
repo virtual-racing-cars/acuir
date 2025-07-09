@@ -61,7 +61,7 @@ end
 local function linkButton(name, size, linked)
         local clicked = ui.invisibleButton("##linkButton" .. name, size)
         local r1, r2 = ui.itemRect()
-        local hovered = ui.itemHovered() and not cui.modalDialogCallback
+        local hovered = ui.itemHovered() and not callback.dialog
         ui.drawRectFilled(r1, r2, settings.Appearance.uiColorPrimary)
         ui.drawRectFilled(r1, r2, settings.Appearance.uiColorBackground)
 

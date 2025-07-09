@@ -11,7 +11,7 @@ function SettingsWindow(dt)
         ui.pushAllowKeyboardFocus(false)
 
         local mainWindowFlags = ui.WindowFlags.NoScrollbar + ui.WindowFlags.NoScrollWithMouse
-        if cui.modalDialogCallback then
+        if callback.dialog then
                 mainWindowFlags = mainWindowFlags
                         + ui.WindowFlags.NoInputs
                         + ui.WindowFlags.NoMouseInputs
@@ -29,7 +29,7 @@ function SettingsWindow(dt)
 
         cui.popWindow(false)
 
-        if cui.modalDialogCallback then
+        if callback.dialog then
                 cui.pushFullWindow("callback_window")
                 ui.setCursor(0)
                 ui.drawRectFilled(vec2(0, 0), ui.windowSize(), settings.Appearance.uiColorBackgroundShade * 0.98)
@@ -46,7 +46,7 @@ function SettingsWindow(dt)
 
                 ui.bringWindowToFront()
                 ui.setCursor(0)
-                if cui.modalDialogCallback() then cui.modalDialogCallback = nil end
+                if callback.dialog() then callback.dialog = nil end
 
                 cui.popWindow()
                 cui.popWindow()

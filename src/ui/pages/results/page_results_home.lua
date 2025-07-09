@@ -85,7 +85,7 @@ local pauseButtons = {
 function page.draw(dt)
         local mainWindowFlags = ui.WindowFlags.NoScrollbar + ui.WindowFlags.NoScrollWithMouse
 
-        if cui.modalDialogCallback then
+        if callback.dialog then
                 mainWindowFlags = mainWindowFlags
                         + ui.WindowFlags.NoInputs
                         + ui.WindowFlags.NoMouseInputs

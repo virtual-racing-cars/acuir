@@ -1,4 +1,4 @@
-local callback = require("src.ui.callback")
+local callback = require("callback")
 local cursor = require("src.ui.cursor")
 local scale = require("src.ui.scale")
 local settings = require("settings")
@@ -29,7 +29,7 @@ function button.button(label, sizeX, sizeY, fontSize, horizontalAligment, vertic
         local tempCursor = ui.getCursor()
         local clicked =
                 ui.button("##" .. label, vec2Temp1:set(textWidth + 30 * scale.get(), sizeY * scale.get()), flags)
-        local hovered = ui.itemHovered() and not callback.modalDialog
+        local hovered = ui.itemHovered() and not callback.dialog
 
         if flags == ui.ButtonFlags.Disabled then ui.popStyleColor(1) end
 
@@ -56,7 +56,7 @@ function button.settings(label, sizeX, sizeY, flags, icon)
         local disabled = flags == ui.ButtonFlags.Disabled
         local tempCursor = ui.getCursor()
         local clicked = ui.invisibleButton("##" .. label, vec2Temp1:set(sizeX, sizeY), flags)
-        local hovered = ui.itemHovered() and not callback.modalDialog
+        local hovered = ui.itemHovered() and not callback.dialog
         local r1, r2 = ui.itemRect()
 
         local buttonColor = settings.Appearance.uiColorPrimary
@@ -149,7 +149,7 @@ function button.selectable(label, horizontalAligment)
 
         local clicked = ui.invisibleButton("##selectable_" .. label, size, ui.ButtonFlags.None)
         local r1, r2 = ui.itemRect()
-        local hovered = ui.itemHovered() and not callback.modalDialog
+        local hovered = ui.itemHovered() and not callback.dialog
 
         local buttonColor = settings.Appearance.uiColorPrimary
         local fontColor = settings.Appearance.uiColorText
@@ -198,7 +198,7 @@ function button.menu(label, size, horizontalAligment, verticalAlignment, flags, 
         local tempCursor = ui.getCursor()
         local clicked = ui.invisibleButton("##" .. label, buttonSize, flags)
         local r1, r2 = ui.itemRect()
-        local hovered = ui.itemHovered() and not callback.modalDialog
+        local hovered = ui.itemHovered() and not callback.dialog
 
         local buttonColor = settings.Appearance.uiColorPrimary
         local fontColor = settings.Appearance.uiColorText
@@ -250,7 +250,7 @@ function button.windowTab(label, size, flags, active)
         local tempCursor = ui.getCursor()
         local clicked = ui.invisibleButton("##" .. label, buttonSize, flags)
         local r1, r2 = ui.itemRect()
-        local hovered = ui.itemHovered() and not callback.modalDialog
+        local hovered = ui.itemHovered() and not callback.dialog
 
         local buttonColor = rgbm.colors.transparent
         local fontColor = settings.Appearance.uiColorText
@@ -289,7 +289,7 @@ function button.binding(name, label, binder, size, flags)
 
         local clicked = ui.invisibleButton("##" .. binder.bind, size, flags)
         local r1, r2 = ui.itemRect()
-        local hovered = ui.itemHovered() and not callback.modalDialog
+        local hovered = ui.itemHovered() and not callback.dialog
 
         local buttonColor = settings.Appearance.uiColorBackgroundShade
         local textColor = settings.Appearance.uiColorText
@@ -421,7 +421,7 @@ function button.bindingAxle(name, label, binder, size, flags)
 
         local clicked = ui.invisibleButton("##" .. binder.bind, size, flags)
         local r1, r2 = ui.itemRect()
-        local hovered = ui.itemHovered() and not callback.modalDialog
+        local hovered = ui.itemHovered() and not callback.dialog
 
         local buttonColor = settings.Appearance.uiColorBackgroundShade
         local textColor = settings.Appearance.uiColorText
@@ -551,7 +551,7 @@ function button.drive(label, size, horizontalAligment, verticalAlignment, color,
 
         local tempCursor = ui.getCursor()
         local clicked = ui.invisibleButton("##" .. label, buttonSize, flags)
-        local hovered = ui.itemHovered() and not callback.modalDialog
+        local hovered = ui.itemHovered() and not callback.dialog
         local r1, r2 = ui.itemRect()
 
         local buttonColor = color
@@ -606,7 +606,7 @@ end
 
 function button.modern(label, sizeX, sizeY, flags, icon)
         local clicked = ui.modernButton(label, vec2(sizeX, sizeY) * scale.get(), flags, icon, 16 * scale.get())
-        local hovered = ui.itemHovered() and not callback.modalDialog
+        local hovered = ui.itemHovered() and not callback.dialog
         return clicked and not (flags == ui.ButtonFlags.Disabled)
 end
 
@@ -620,7 +620,7 @@ function button.icon(label, icon, sizeX, sizeY, flags, flipped, iconScale, activ
 
         local p = ui.getCursor()
         local clicked = ui.invisibleButton("##" .. label, vec2(sizeX, sizeY))
-        local hovered = ui.itemHovered() and not callback.modalDialog
+        local hovered = ui.itemHovered() and not callback.dialog
 
         -- local r1, r2 = ui.itemRect()
         -- ui.drawRectFilled(r1, r2, rgbm.colors.gray * 0.5)
@@ -677,7 +677,7 @@ function button.emoji(label, emoji, sizeX, sizeY, flags, active)
         if bit.band(flags, ui.ButtonFlags.Disabled) ~= 0 then disabled = true end
 
         local clicked = ui.invisibleButton("##" .. label, vec2(sizeX, sizeY))
-        local hovered = ui.itemHovered() and not callback.modalDialog
+        local hovered = ui.itemHovered() and not callback.dialog
         local r1, r2 = ui.itemRect()
 
         if hovered then ui.drawRectFilled(r1, r2, rgbm(0.2, 0.2, 0.2, 1), 6 * scale.get()) end
@@ -773,7 +773,7 @@ function button.setupSelect(label, active, createdDate)
         ui.dummy(size)
         local clicked = ui.itemClicked()
         local r1, r2 = ui.itemRect()
-        local hovered = ui.itemHovered() and not callback.modalDialog
+        local hovered = ui.itemHovered() and not callback.dialog
         local id = ui.getLastID()
         if hovered and ui.mouseClicked(ui.MouseButton.Right) then clicked = true end
 
@@ -863,7 +863,7 @@ function button.treeNodeChild(label, size, active, bold, count, defaultOpen)
                 ui.ButtonFlags.PressedOnClick + ui.ButtonFlags.PressedOnDoubleClick
         )
         local r1, r2 = ui.itemRect()
-        local hovered = ui.itemHovered() and not callback.modalDialog
+        local hovered = ui.itemHovered() and not callback.dialog
         local id = ui.getLastID()
         local open = state.loadStoredBool(id, defaultOpen)
         if hovered and ui.mouseClicked(ui.MouseButton.Right) then clicked = true end

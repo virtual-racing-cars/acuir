@@ -11,7 +11,7 @@ function combo.box(id, size, previewValue, previewAlignment, openDown, contentSi
         local id = "##combo" .. id
         local sp1 = ui.cursorScreenPos()
         local clicked = ui.invisibleButton("##comboCurrentCamera", size)
-        local hovered = ui.itemHovered() --and not CUI.modalDialogCallback
+        local hovered = ui.itemHovered() --and not callback.dialog
         local r1, r2 = ui.itemRect()
         local color = settings.Appearance.uiColorText * 0.75
         local open = state.loadStoredBool(id, false)
