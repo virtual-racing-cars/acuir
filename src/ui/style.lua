@@ -23,6 +23,14 @@ local style = {
         },
 }
 
+-- function refreshScale()
+--         uiScale = math.min(sim.windowHeight / defaultHeight, sim.windowWidth / defaultWidth)
+--                 / guiINI:get("NEW_UI", "UI_SCALE", 1)
+--                 * settings.UI.mainMenuScale
+
+--         style:refresh(uiScale)
+-- end
+
 function style:refresh(scale)
         style.main = {
                 colors = {
