@@ -90,7 +90,7 @@ end
 
 function tracesGraph:draw(xPos, yPos, width, height)
         cui.pushWindow("traces_widget_window", xPos, yPos, width, height, false)
-        ui.drawRectFilled(vec2(0, 0), ui.windowSize(), settings.Appearance.uiColorBackground, 12)
+        ui.drawRectFilled(vec2(0, 0), ui.windowSize(), settings.Appearance.uiColorBackground, 6 * cui.scale())
 
         border = 7.5 * cui.scale()
 

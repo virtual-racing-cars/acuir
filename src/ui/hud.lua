@@ -48,9 +48,9 @@ local hudModes = {
                 return PauseMenuWindow()
         end,
         replay = function(dt)
-                if not settings.Modules.newPauseMenu and csp.versionAllowed then return end
+                if not settings.Modules.newReplayMenu and csp.versionAllowed then return end
 
-                return
+                return ""
         end,
         results = function(dt)
                 if not settings.Modules.newResultsMenu then return end
@@ -72,7 +72,7 @@ ui.onExclusiveHUD(function(mode)
 
         -- pages:goToSession()
         -- pages:goToLapTimes()
-        -- pages:goToSetup()
+        pages:goToSetup()
         -- pages:goToSettingsControls()
         -- pages:goToSettingsGeneral()
         -- pages:goToSettingsAudio()

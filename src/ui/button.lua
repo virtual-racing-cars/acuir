@@ -141,7 +141,7 @@ end
 function button.selectable(label, horizontalAligment)
         horizontalAligment = horizontalAligment or ui.Alignment.Center
 
-        cursor.offsetCursorX(10)
+        cursor.offsetX(10)
 
         local fontSize = style.main.font.body.size
         local fontSpace = style.main.font.body.space

@@ -253,8 +253,7 @@ local function setupIoWindow()
                         --         saveSetupTab = 2
                         -- end
                 end,
-                nil,
-                true
+                nil
         )
 
         drawSetupControls(sm)

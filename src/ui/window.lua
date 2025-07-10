@@ -100,13 +100,15 @@ function window.pushContent(id, x, y, width, height, headerFunc, footerFunc, hid
 
         window.push(id .. "_content", x, y, width, height)
 
-        ui.drawRectFilled(
-                0,
-                ui.windowSize(),
-                settings.Appearance.uiColorBackground,
-                noCorners and 0 or 6 * scale.get(),
-                ui.CornerFlags.All
-        )
+        if not hideBackground then
+                ui.drawRectFilled(
+                        0,
+                        ui.windowSize(),
+                        settings.Appearance.uiColorBackground,
+                        noCorners and 0 or 6 * scale.get(),
+                        ui.CornerFlags.All
+                )
+        end
 end
 
 function window.popContent()

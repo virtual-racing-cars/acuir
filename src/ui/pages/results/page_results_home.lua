@@ -83,6 +83,8 @@ local pauseButtons = {
 }
 
 function page.draw(dt)
+        if true then return end
+
         local mainWindowFlags = ui.WindowFlags.NoScrollbar + ui.WindowFlags.NoScrollWithMouse
 
         if callback.dialog then

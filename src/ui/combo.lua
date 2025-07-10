@@ -28,6 +28,7 @@ function combo.box(id, size, previewValue, previewAlignment, openDown, contentSi
                 if not open then justOpened = true end
         end
 
+        ui.drawRectFilled(r1, r2, settings.Appearance.uiColorPrimary, 6 * scale.get())
         ui.drawRect(r1, r2, color, 6 * scale.get())
         ui.addIcon(
                 open and openIcon or closedIcon,

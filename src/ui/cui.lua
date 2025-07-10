@@ -21,8 +21,10 @@ cui.scale = scale.get
 
 cui.menuBanner = banner.menu
 
+cui.setCursor = cursor.set
 cui.setCursorX = cursor.setX
 cui.setCursorY = cursor.setY
+cui.offsetCursor = cursor.offset
 cui.offsetCursorX = cursor.offsetX
 cui.offsetCursorY = cursor.offsetY
 cui.snapCursor = cursor.snap

@@ -1,5 +1,7 @@
+local cursor = require("src.ui.cursor")
 local scale = require("src.ui.scale")
 local settings = require("settings")
+local style = require("src.ui.style")
 
 local vec2Temp1 = vec2()
 
@@ -35,13 +37,22 @@ function text.writeAligned(params)
         )
 end
 
-function text.writeBodyAligned(text, size, color, horizontalAligment, verticalAlignment)
-        if not color then color = settings.Appearance.uiColorText end
-        if not horizontalAligment then horizontalAligment = ui.Alignment.Center end
-        if not verticalAlignment then verticalAlignment = ui.Alignment.Center end
+function text.writeBodyAligned(text, width, height, horizontalAligment, verticalAlignment, color)
+        height = height or style.main.font.body.space
+        color = color or settings.Appearance.uiColorText
+        horizontalAligment = horizontalAligment or ui.Alignment.Center
+        verticalAlignment = verticalAlignment or ui.Alignment.Center
 
-        text.snapCursor()
-        ui.dwriteTextAligned(text, 18 * scale.get(), horizontalAligment, verticalAlignment, size, false, color)
+        cursor.snap()
+        ui.dwriteTextAligned(
+                text,
+                style.main.font.body.size,
+                horizontalAligment,
+                verticalAlignment,
+                vec2Temp1:set(width, height),
+                false,
+                color
+        )
 end
 
 return text

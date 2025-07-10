@@ -2,9 +2,19 @@ local scale = require("src.ui.scale")
 
 local cursor = {}
 
+function cursor.set(x, y)
+        ui.setCursorX(x * scale.get())
+        ui.setCursorY(y * scale.get())
+end
+
 function cursor.setX(v) ui.setCursorX(v * scale.get()) end
 
 function cursor.setY(v) ui.setCursorY(v * scale.get()) end
+
+function cursor.offset(x, y)
+        ui.offsetCursorX(x * scale.get())
+        ui.offsetCursorY(y * scale.get())
+end
 
 function cursor.offsetX(v) ui.offsetCursorX(v * scale.get()) end
 

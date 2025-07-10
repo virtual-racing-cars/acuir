@@ -1,6 +1,7 @@
 require("src.classes.Slider")
 local app = require("app")
 local audio = require("audio")
+local callback = require("callback")
 local cui = require("ui.cui")
 local gearSpeedsWidget = require("src.ui.widgets.gear_speeds")
 local settings = require("settings")

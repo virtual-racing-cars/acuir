@@ -26,10 +26,16 @@ local function getDriverTags(carIndex) return ac.DriverTags(ac.getDriverName(car
 local comboActive = false
 
 function card:draw(xPos, yPos, width, height)
-        local border = 10 * cui.scale()
+        local border = style.main.margins.innerSize
 
         cui.pushWindow("card_widget_window", xPos, yPos, width, height, false)
-        ui.drawRectFilled(vec2(0, 0), ui.windowSize(), settings.Appearance.uiColorBackground, 12, ui.CornerFlags.Left)
+        ui.drawRectFilled(
+                0,
+                ui.windowSize(),
+                settings.Appearance.uiColorBackground,
+                6 * cui.scale(),
+                ui.CornerFlags.All
+        )
 
         local spectatedCar = ac.getCar(sim.focusedCar)
 
@@ -58,17 +64,15 @@ function card:draw(xPos, yPos, width, height)
         )
 
         cui.setCursorX(0)
-        cui.snapCursor()
-        ui.dwriteTextAligned(
+        cui.textWriteBodyAligned(
                 ac.getCarName(spectatedCar.index),
-                fontSize,
+                ui.windowWidth(),
+                nil,
                 ui.Alignment.Start,
-                ui.Alignment.End,
-                vec2(ui.windowWidth(), fontSize * 1.5)
+                ui.Alignment.End
         )
 
-        cui.offsetCursorY(20)
-        cui.offsetCursorX(46)
+        cui.offsetCursor(46, 20)
         local size = vec2(ui.availableSpaceX() - 92 * cui.scale(), style.main.font.body.size * 2)
         cui.combo(
                 "##comboCurrentCamera",
@@ -81,8 +85,8 @@ function card:draw(xPos, yPos, width, height)
                         for k, v in pairs(cameraModeString) do
                                 ui.setCursorX(0)
                                 local ty = ui.getCursorY()
-                                if cui.menuButton(v(), size) then ac.setCurrentCamera(k) end
-                                ac.log(ui.getCursorY() - ty, size.y)
+                                if cui.selectable(v(), ui.Alignment.Center) then ac.setCurrentCamera(k) end
+                                cui.offsetCursorY(5)
                         end
                 end
         )
@@ -99,11 +103,12 @@ function card:draw(xPos, yPos, width, height)
         ui.setCursorY(0)
         ui.drawImageRounded(skin, ui.getCursor(), ui.getCursor() + vec2(skinImageSize, skinImageSize), 6 * cui.scale())
 
-        local managePlayerButtonSize = 42 * cui.scale()
+        local managePlayerButtonWidth = style.main.font.body.size * 2
+        local managePlayerButtonHeight = managePlayerButtonWidth * 2
         ui.setCursorX(0)
-        ui.setCursorY(ui.windowHeight() - managePlayerButtonSize * 1.75)
+        ui.setCursorY(ui.windowHeight() - managePlayerButtonHeight)
 
-        if not sim.isOnlineRace or spectatedCar.index == 0 then
+        if false then --not sim.isOnlineRace or spectatedCar.index == 0 then
                 cui.popWindow()
                 cui.popWindow()
                 return
@@ -115,8 +120,8 @@ function card:draw(xPos, yPos, width, height)
                 cui.iconButton(
                         "Add",
                         ui.Icons.Befriend,
-                        managePlayerButtonSize,
-                        managePlayerButtonSize,
+                        managePlayerButtonWidth,
+                        managePlayerButtonHeight,
                         ui.ButtonFlags.None,
                         false,
                         1
@@ -125,31 +130,30 @@ function card:draw(xPos, yPos, width, height)
                 driverTags.friend = not driverTags.friend
         end
 
-        cui.dummy(30, 3)
         ui.sameLine()
+        cui.offsetCursorX(30)
 
         if
                 cui.iconButton(
                         "Tag",
                         ui.Icons.Tag,
-                        managePlayerButtonSize,
-                        managePlayerButtonSize,
+                        managePlayerButtonWidth,
+                        managePlayerButtonHeight,
                         ui.ButtonFlags.None,
                         false,
                         1
                 )
         then
         end
-
-        cui.dummy(30, 3)
         ui.sameLine()
+        cui.offsetCursorX(30)
 
         if
                 cui.iconButton(
                         "Mute",
                         ui.Icons.Ban,
-                        managePlayerButtonSize,
-                        managePlayerButtonSize,
+                        managePlayerButtonWidth,
+                        managePlayerButtonHeight,
                         ui.ButtonFlags.None,
                         false,
                         1
@@ -157,16 +161,15 @@ function card:draw(xPos, yPos, width, height)
         then
                 driverTags.mute = not driverTags.mute
         end
-
-        cui.dummy(30, 3)
         ui.sameLine()
+        cui.offsetCursorX(30)
 
         if
                 cui.iconButton(
                         "Kick",
                         ui.Icons.Kick,
-                        managePlayerButtonSize,
-                        managePlayerButtonSize,
+                        managePlayerButtonWidth,
+                        managePlayerButtonHeight,
                         ui.ButtonFlags.None,
                         false,
                         1
@@ -175,6 +178,7 @@ function card:draw(xPos, yPos, width, height)
                 ac.castVote("kick", true, spectatedCar.index)
         end
         ui.sameLine()
+        cui.offsetCursorX(30)
 
         local pingColor = rgbm.colors.green
 
@@ -187,15 +191,12 @@ function card:draw(xPos, yPos, width, height)
         end
 
         cui.offsetCursorY(-20)
-        cui.offsetCursorX(0)
-        cui.snapCursor()
-        ui.dwriteTextAligned(
+        cui.textWriteBodyAligned(
                 string.format("Ping %s ms", spectatedCar.ping),
-                22 * cui.scale(),
+                120 * cui.scale(),
+                nil,
                 ui.Alignment.Start,
                 ui.Alignment.Center,
-                vec2(120 * cui.scale(), managePlayerButtonSize),
-                false,
                 pingColor
         )
 

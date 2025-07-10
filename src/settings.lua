@@ -13,6 +13,8 @@ local settings = {
                 { key = "newMainMenu", label = "New Main Menu", default = true, widget = Widgets.Checkbox },
                 { key = "newPauseMenu", label = "New Pause Menu", default = true, widget = Widgets.Checkbox },
                 { key = "newQuickPitMenu", label = "New Quick Pit Menu", default = true, widget = Widgets.Checkbox },
+                { key = "newResultsMenu", label = "New Results Menu", default = false, widget = Widgets.Checkbox },
+                { key = "newReplayMenu", label = "New Replay Menu", default = false, widget = Widgets.Checkbox },
         },
         DataLogger = {
                 { key = "autoStartLogging", label = "Auto-Log", default = false, widget = Widgets.Checkbox },
