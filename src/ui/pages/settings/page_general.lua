@@ -29,7 +29,7 @@ local function generalSettings()
                 elseif v.widget == 2 then
                         local changed = false
                         ui.setCursorX(ui.windowWidth() * 0.25)
-                        settings.General[v.key], changed = drawSpinner(
+                        settings.General[v.key], changed = cui.slider(
                                 v.label,
                                 v.label,
                                 ui.windowWidth() * 0.5,
@@ -78,7 +78,7 @@ local function uiSettings()
                         local changed = false
 
                         ui.setCursorX(ui.windowWidth() * 0.25)
-                        settings.UI[v.key], changed = drawSpinner(
+                        settings.UI[v.key], changed = cui.slider(
                                 v.label,
                                 v.label,
                                 ui.windowWidth() * 0.5,

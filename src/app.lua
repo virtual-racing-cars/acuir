@@ -28,7 +28,7 @@ function app.configDir() return ac.getFolder(ac.FolderID.ScriptConfig) end
 app.state = {
         appOpen = false,
         hasAppOpened = false,
-        setupTab = 2,
+        setupTab = 3,
         debug = appDebugMode,
         blockEscapeButton = false,
         screenTransition = 0,

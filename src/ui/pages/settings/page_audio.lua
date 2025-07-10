@@ -62,7 +62,7 @@ function page.draw()
                         ui.setCursorX(ui.windowWidth() * 0.5)
                 end
 
-                local value, changed = drawSpinner(
+                local value, changed = cui.slider(
                         "##" .. id,
                         v,
                         ui.windowWidth() * 0.5,

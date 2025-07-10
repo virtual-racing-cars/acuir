@@ -181,7 +181,7 @@ function page:draw()
                         ui.setCursorX(0)
                 end
 
-                local value, changed = drawSpinner(
+                local value, changed = cui.slider(
                         "##" .. viewSetting.id,
                         viewSetting.label,
                         ui.windowWidth() * 0.5,

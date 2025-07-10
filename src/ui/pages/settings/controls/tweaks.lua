@@ -199,7 +199,7 @@ function tweaks:draw()
 
         if currentSection == 2 then
                 ui.setCursorX(ui.windowWidth() * 0.01)
-                local value, changed, active, hovered = drawSpinner(
+                local value, changed, active, hovered = cui.spinner(
                         "CAR.FFB",
                         "Car FFB Gain",
                         ui.windowWidth() * 0.98,
@@ -247,7 +247,7 @@ function tweaks:draw()
 
                         if tweak.items then tweak.format = tweak.items[oldValue] end
 
-                        local value, changed, active, hovered = drawSpinner(
+                        local value, changed, active, hovered = cui.spinner(
                                 tweak.section .. tweak.id,
                                 tweak.label,
                                 ui.windowWidth() * 0.98,
@@ -296,7 +296,7 @@ function tweaks:draw()
                         or { "None", "Standard" }
 
                 ui.setCursorX(ui.windowWidth() * 0.01)
-                local value, changed, active, hovered = drawSpinner(
+                local value, changed, active, hovered = cui.spinner(
                         "GYRO.GYRO",
                         "Range compression",
                         ui.windowWidth() * 0.98,
@@ -334,7 +334,7 @@ function tweaks:draw()
                 )
 
                 ui.setCursorX(ui.windowWidth() * 0.01)
-                local value, changed, active, hovered = drawSpinner(
+                local value, changed, active, hovered = cui.spinner(
                         "POSTPROCESSING.RANGE_COMPRESSION",
                         "Range compression",
                         ui.windowWidth() * 0.98,
@@ -359,7 +359,7 @@ function tweaks:draw()
 
                 if configs.FFBTWEAKS.data.POSTPROCESSING.RANGE_COMPRESSION ~= 1 then
                         ui.setCursorX(ui.windowWidth() * 0.01)
-                        local value, changed, active, hovered = drawSpinner(
+                        local value, changed, active, hovered = cui.spinner(
                                 "POSTPROCESSING.RANGE_COMPRESSION_ASSIST",
                                 "Use Car Steer Assist",
                                 ui.windowWidth() * 0.98,
@@ -394,7 +394,7 @@ function tweaks:draw()
 
                 local ppModeStrings = { "Disabled", "Gamma", "LUT" }
                 ui.setCursorX(ui.windowWidth() * 0.01)
-                local value, changed, active, hovered = drawSpinner(
+                local value, changed, active, hovered = cui.spinner(
                         "PP.MODE",
                         "Post-Process Mode",
                         ui.windowWidth() * 0.98,
@@ -425,7 +425,7 @@ function tweaks:draw()
 
                 if currentPPMode == 2 then
                         ui.setCursorX(ui.windowWidth() * 0.01)
-                        local value, changed, active, hovered = drawSpinner(
+                        local value, changed, active, hovered = cui.spinner(
                                 "PP.GAMMA.VALUE",
                                 "Gamma",
                                 ui.windowWidth() * 0.98,
@@ -487,7 +487,7 @@ function tweaks:draw()
                         end
 
                         ui.setCursorX(ui.windowWidth() * 0.01)
-                        local value, changed, active, hovered = drawSpinner(
+                        local value, changed, active, hovered = cui.spinner(
                                 "LUT.CURVES",
                                 "Curves ( %s )" % #curves,
                                 ui.windowWidth() * 0.98,

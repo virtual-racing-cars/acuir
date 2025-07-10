@@ -66,7 +66,18 @@ function testUI(dt)
 
         checkboxValue = drawCheckbox("Checkbox", "Checkbox", height * 0.5, checkboxValue, ui.ButtonFlags.None)
 
-        sliderValue = drawSpinner("Spinner_Test", "Spinner", width, height * 2, false, sliderValue, {
+        sliderValue = cui.slider("Slider_Test", "Slider", width, height * 2, false, sliderValue, {
+                min = 0,
+                max = 100,
+                step = 1,
+                shiftStep = 1,
+                multiplier = 1,
+                offset = 0,
+                unit = "%",
+                format = "%.0f %s",
+        })
+
+        sliderValue = cui.spinner("Spinner_Test", "Spinner", width, height * 2, false, sliderValue, {
                 min = 0,
                 max = 100,
                 step = 1,

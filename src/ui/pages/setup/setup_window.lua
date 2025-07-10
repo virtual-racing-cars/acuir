@@ -162,7 +162,7 @@ local function drawSetupSpinner(si)
         -- end
 
         local value, changed, active, hovered =
-                drawSpinner(si.id, si.name, spinnerWidth, spinnerHeight, si.fixed, si.value, si, false)
+                cui.spinner(si.id, si.name, spinnerWidth, spinnerHeight, si.fixed, si.value, si, false)
 
         if hovered and si.help and si.help ~= "NULL" and si.help ~= "" then sm.activeHelpString = si.help end
 

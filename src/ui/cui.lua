@@ -8,6 +8,7 @@ local dialog = require("src.ui.dialog")
 local input = require("src.ui.input")
 local scale = require("src.ui.scale")
 local settings = require("settings")
+local slider = require("src.ui.slider")
 local text = require("src.ui.text")
 local window = require("src.ui.window")
 local sim = ac.getSim()
@@ -54,6 +55,9 @@ cui.textWriteBodyAligned = text.writeBodyAligned
 cui.inputText = input.text
 
 cui.combo = combo.box
+
+cui.spinner = slider.spinner
+cui.slider = slider.slider
 
 cui.modalDialog = dialog.modal
 cui.promptShutdownACDialog = dialog.promptShutdownAC
