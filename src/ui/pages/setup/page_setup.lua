@@ -11,25 +11,43 @@ local dataLogger = require("data_logger")
 local settings = require("settings")
 local setupExchange = require("setup_exchange")
 local style = require("src.ui.style")
+
 local car = ac.getCar(0)
 
 local carStatusActive = true
 local setupExchangeActive = true
-local setupAppsActive = false
 
 local vec2Temp1 = vec2()
 
 sm = SetupManager()
 
 local function setupItemWindow()
-        cui.pushWindow("car_setup_items_window", ui.windowWidth() * 0.25, 0, ui.windowWidth() * 0.5, ui.windowHeight())
+        cui.pushContentWindow(
+                "car_setup_items_window",
+                ui.windowWidth() * 0.22 + 15 * cui.scale(),
+                0,
+                ui.windowWidth() * 0.56 - 30 * cui.scale(),
+                ui.windowHeight(),
+                function()
+                        ui.setCursor(0)
 
-        if setupAppsActive then
-        else
-                car_setup(sm)
-        end
+                        local title = sm.setupTabs[app.state.setupTab].name
 
-        cui.popWindow()
+                        ui.dwriteTextAligned(
+                                title,
+                                style.main.font.header.size,
+                                ui.Alignment.Center,
+                                ui.Alignment.Center,
+                                ui.windowSize()
+                        )
+                end,
+                nil,
+                true
+        )
+
+        car_setup(sm)
+
+        cui.popContentWindow()
 end
 
 local function helpWindow()

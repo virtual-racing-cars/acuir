@@ -103,7 +103,7 @@ local settings = {
                 {
                         key = "uiColorBackgroundShade",
                         label = "Background Shade Color",
-                        default = rgbm(0.15, 0.15, 0.16, 1),
+                        default = rgbm(0.15, 0.15, 0.16, 0.75),
                         widget = 1,
                 },
                 { key = "uiColorText", label = "Text Color", default = rgbm.colors.white, widget = 1 },
@@ -112,7 +112,7 @@ local settings = {
                 {
                         key = "uiColorPrimaryShade",
                         label = "Primay Shade Color",
-                        default = rgbm.new("#5c5966"),
+                        default = rgbm.new("#5c5966") * 0.75,
                         widget = 1,
                 },
                 {

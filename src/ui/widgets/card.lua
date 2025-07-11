@@ -201,7 +201,7 @@ function card:draw(xPos, yPos, width, height)
         ui.setCursorX(0)
         ui.setCursorY(ui.windowHeight() - managePlayerButtonHeight)
 
-        if false then --not sim.isOnlineRace or spectatedCar.index == 0 then
+        if not sim.isOnlineRace or spectatedCar.index == 0 then
                 cui.popWindow()
                 cui.popWindow()
                 return

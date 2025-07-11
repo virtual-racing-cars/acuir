@@ -33,9 +33,9 @@ local function drawSlider(id, name, width, height, value, sliderParams, noScroll
         local grabberSize = math.max(width / (steps + 1), barSize * 2)
 
         ui.setCursorX(p1.x)
-        ui.invisibleButton("slider" .. id, vec2Temp1:set(width, barSize))
+        ui.dummy(vec2Temp1:set(width, barSize))
         local r1, r2 = ui.itemRect()
-        ui.drawRectFilled(r1, r2, settings.Appearance.uiColorBackground * 0.2, 6 * scale.get())
+        ui.drawRectFilled(r1, r2, settings.Appearance.uiColorBackground, 6 * scale.get())
 
         local active = ui.itemActive() or (itemHeld == id and ui.mouseDown(ui.MouseButton.Left))
         local hovered = ui.rectHovered(r1, r2)
@@ -82,14 +82,6 @@ local function drawSlider(id, name, width, height, value, sliderParams, noScroll
         ui.drawRectFilledMultiColor(
                 vec2Temp1:set(sliderFill + grabberSize * 0.5, r1.y),
                 vec2Temp2:set(r1.x, r2.y),
-                settings.Appearance.uiColorBackground * 0.25,
-                rgbm.colors.transparent,
-                rgbm.colors.transparent,
-                settings.Appearance.uiColorBackground * 0.25
-        )
-        ui.drawRectFilledMultiColor(
-                vec2Temp1:set(sliderFill + grabberSize * 0.5, r1.y),
-                r2,
                 settings.Appearance.uiColorBackground * 0.25,
                 rgbm.colors.transparent,
                 rgbm.colors.transparent,
@@ -208,6 +200,7 @@ function slider.slider(id, name, width, height, locked, value, sliderParams, noS
 end
 
 function slider.spinner(id, name, width, height, locked, value, sliderParams, noScroll)
+        height = style.main.font.header.space * 2
         local p1 = ui.getCursor()
         local p2 = p1 + vec2(width, height)
         local value = value
@@ -226,31 +219,34 @@ function slider.spinner(id, name, width, height, locked, value, sliderParams, no
                 sliderNameText = sliderNameText .. "*"
         end
 
-        local p3 = ui.getCursor()
+        ui.setCursorY(ui.getCursorY() + height * 0.5)
+
+        value, changed, active = drawSlider(id, name, width, style.main.font.header.size, value, sliderParams, noScroll)
+
+        ui.setCursor(p1)
         cursor.snap()
         ui.dwriteTextAligned(
                 sliderNameText,
                 style.main.font.header.size,
                 ui.Alignment.Start,
                 ui.Alignment.Start,
-                vec2Temp1:set(width, style.main.font.header.space),
+                vec2Temp1:set(width, height),
                 false,
                 rgbm.colors.white
         )
-        ui.setCursor(p3)
+        ui.sameLine()
+        ui.setCursorX(p1.x)
         cursor.snap()
         ui.dwriteTextAligned(
                 string.format(format, value * multiplier + offset, unit),
                 style.main.font.header.size,
                 ui.Alignment.End,
                 ui.Alignment.Start,
-                vec2Temp1:set(width, style.main.font.header.space),
+                vec2Temp1:set(width, height),
                 false,
                 rgbm.colors.white
         )
-        ui.setCursorX(p3.x)
-
-        value, changed, active = drawSlider(id, name, width, style.main.font.header.size, value, sliderParams, noScroll)
+        ui.setCursorX(p1.x)
 
         return value, changed, active, hovered
 end

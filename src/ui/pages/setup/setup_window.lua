@@ -63,8 +63,6 @@ local function linkButton(name, size, linked)
         local clicked = ui.invisibleButton("##linkButton" .. name, size)
         local r1, r2 = ui.itemRect()
         local hovered = ui.itemHovered() and not callback.dialog
-        ui.drawRectFilled(r1, r2, settings.Appearance.uiColorPrimary)
-        ui.drawRectFilled(r1, r2, settings.Appearance.uiColorBackground)
 
         local color = settings.Appearance.uiColorPrimary * 1.5
 
@@ -83,7 +81,7 @@ end
 
 local function drawSetupSpinner(si)
         local spinnerWidth = ui.windowWidth() * 0.42
-        local spinnerHeight = style.main.font.title.size * 2.5
+        local spinnerHeight = style.main.font.header.space * 3
 
         if si.child or si.repair then return end
 
@@ -96,7 +94,7 @@ local function drawSetupSpinner(si)
         }
 
         local xPos = positions[si.xPos]
-        local yPos = (si.yPos * 1.2 * spinnerHeight / cui.scale()) * cui.scale()
+        local yPos = (si.yPos * spinnerHeight / cui.scale()) * cui.scale()
                 + (ui.windowHeight() - spinnerHeight * 10) * 0.5
 
         if si.items then
@@ -105,61 +103,21 @@ local function drawSetupSpinner(si)
 
         local cornerFlags = ui.CornerFlags.All
 
+        local xBackgroundStartPos = xPos - 15 * cui.scale()
+        local xBackgroundEndPos = xPos + spinnerWidth + 15 * cui.scale()
+
         if (si.mirror or si.mirrorAvailable) and not si.fixed then
                 if si.xPos < 0.5 then
                         cornerFlags = ui.CornerFlags.Left
+                        xBackgroundEndPos = ui.windowWidth() * 0.5
                 elseif si.xPos > 0.5 then
                         cornerFlags = ui.CornerFlags.Right
+                        xBackgroundStartPos = ui.windowWidth() * 0.5
                 end
         end
 
         ui.setCursorX(xPos)
         ui.setCursorY(yPos)
-        ui.drawRectFilled(
-                vec2(xPos, yPos - spinnerHeight * 0.18),
-                vec2(xPos + spinnerWidth, yPos + spinnerHeight * 1.18),
-                settings.Appearance.uiColorBackground,
-                6 * cui.scale(),
-                cornerFlags
-        )
-
-        -- ui.drawRectFilledMultiColor(
-        --         vec2(xPos, yPos),
-        --         vec2(xPos + spinnerWidth, yPos + spinnerHeight * 0.7),
-        --         settings.Appearance.uiColorBackground * 0.2,
-        --         settings.Appearance.uiColorBackground * 0.2,
-        --         rgbm.colors.transparent,
-        --         rgbm.colors.transparent
-        -- )
-
-        -- if si.xPos < 0.5 then
-        --         ui.drawRectFilledMultiColor(
-        --                 vec2(xPos, yPos + spinnerHeight * 0),
-        --                 vec2(xPos + spinnerWidth, yPos + spinnerHeight),
-        --                 settings.Appearance.uiColorBackground * 0.2,
-        --                 rgbm.colors.transparent,
-        --                 rgbm.colors.transparent,
-        --                 settings.Appearance.uiColorBackground * 0.2
-        --         )
-        -- elseif si.xPos > 0.5 then
-        --         ui.drawRectFilledMultiColor(
-        --                 vec2(xPos, yPos + spinnerHeight * 0),
-        --                 vec2(xPos + spinnerWidth, yPos + spinnerHeight),
-        --                 rgbm.colors.transparent,
-        --                 settings.Appearance.uiColorBackground * 0.2,
-        --                 settings.Appearance.uiColorBackground * 0.2,
-        --                 rgbm.colors.transparent
-        --         )
-        -- else
-        --         ui.drawRectFilledMultiColor(
-        --                 vec2(xPos, yPos + spinnerHeight * 0),
-        --                 vec2(xPos + spinnerWidth, yPos + spinnerHeight),
-        --                 rgbm.colors.transparent,
-        --                 rgbm.colors.transparent,
-        --                 settings.Appearance.uiColorBackground * 0.2,
-        --                 settings.Appearance.uiColorBackground * 0.2
-        --         )
-        -- end
 
         local value, changed, active, hovered =
                 cui.spinner(si.id, si.name, spinnerWidth, spinnerHeight, si.fixed, si.value, si, false)
@@ -169,18 +127,10 @@ local function drawSetupSpinner(si)
         -- sm.activeHelpString = sm.activeHelpString == "" and si.help or sm.activeHelpString
 
         if si.mirrorAvailable and not si.fixed then
-                ui.setCursorX(xPos + spinnerWidth)
-                ui.setCursorY(yPos - spinnerHeight * 0.18)
-                if
-                        linkButton(
-                                si.name,
-                                vec2Temp1:set(
-                                        ((ui.windowWidth() - spinnerWidth) - 40 * cui.scale()) - ui.getCursorX(),
-                                        spinnerHeight * 1.36
-                                ),
-                                si.mirrored
-                        )
-                then
+                local linkButtonWidth = ((ui.windowWidth() - spinnerWidth) - 40 * cui.scale()) - ui.getCursorX()
+                ui.setCursorX(ui.windowWidth() * 0.5 - linkButtonWidth * 0.5)
+                ui.offsetCursorY(-spinnerHeight * 0.6)
+                if linkButton(si.name, vec2Temp1:set(linkButtonWidth, spinnerHeight), si.mirrored) then
                         si.mirrored = not si.mirrored
                 end
         end

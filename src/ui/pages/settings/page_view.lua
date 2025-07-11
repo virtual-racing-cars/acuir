@@ -3,6 +3,7 @@ local page = {}
 local cui = require("ui.cui")
 local pages = require("ui.pages.pages")
 local settings = require("settings")
+local style = require("src.ui.style")
 local sim = ac.getSim()
 local firstPersonCameraFOV = sim.firstPersonCameraFOV
 
@@ -161,30 +162,32 @@ function page:draw()
 
         topSubBar("View")
 
-        cui.pushWindow("settings_view_window", 0, 180 * cui.scale(), ui.windowWidth(), ui.windowHeight() * 0.8, false)
-
-        ui.drawRectFilled(
-                vec2(0, 0),
-                vec2(ui.windowWidth(), ui.windowHeight() * 0.3),
-                settings.Appearance.uiColorPrimary * 0.2,
-                12 * cui.scale()
+        cui.pushContentWindow(
+                "settings_view_window",
+                0,
+                180 * cui.scale(),
+                ui.windowWidth(),
+                style.main.font.header.space * 8,
+                nil,
+                function() end,
+                true
         )
 
         local onboardParams = ac.getOnboardCameraParams(0)
 
-        cui.setCursorY(10)
+        ui.setCursorY(style.main.font.header.space * 0.25)
         for i, viewSetting in ipairs(views) do
                 if i % 2 == 0 then
                         ui.sameLine()
-                        ui.setCursorX(ui.windowWidth() * 0.5)
+                        ui.setCursorX(ui.windowWidth() * 0.5 + 30 * cui.scale())
                 else
-                        ui.setCursorX(0)
+                        cui.setCursorX(30)
                 end
 
                 local value, changed = cui.spinner(
                         "##" .. viewSetting.id,
                         viewSetting.label,
-                        ui.windowWidth() * 0.5,
+                        ui.windowWidth() * 0.5 - 60 * cui.scale(),
                         95 * cui.scale(),
                         false,
                         viewSetting.get(onboardParams),
@@ -207,7 +210,7 @@ function page:draw()
 
         -- bottomBarButtons[2].enabled = ac.areOnboardCameraParamsNeedSaving()
 
-        cui.popWindow()
+        cui.popContentWindow()
         bottomBar(bottomBarButtons)
         cui.popWindow()
 

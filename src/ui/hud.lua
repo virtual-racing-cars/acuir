@@ -78,7 +78,7 @@ ui.onExclusiveHUD(function(mode)
         -- pages:goToSettingsAudio()
         -- pages:goToSettingsView()
         -- pages:goToTelemetry()
-        pages:goToSettings()
+        -- pages:goToSettings()
 
         camera.windowHovered = ui.getHoveredID() ~= 0
 
