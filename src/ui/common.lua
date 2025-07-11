@@ -9,9 +9,11 @@ local pedalsWidget = require("ui.widgets.pedals")
 local replayWidget = require("ui.widgets.replay")
 local settings = require("settings")
 local simutils = require("simutils")
+local style = require("src.ui.style")
 local tracesWidget = require("ui.widgets.traces")
 
 local acLogo = ac.getFolder(ac.FolderID.Root) .. "\\launcher\\themes\\default\\graphics\\btn_AC_logo.png"
+-- local acLogo = ac.getFolder(ac.FolderID.ScriptOrigin) .. "\\assets\\img\\vrc_logo.png"
 local acLogoSize = ui.imageSize(acLogo) * cui.scale()
 
 local topBarHeight = 200 * cui.scale()
@@ -67,12 +69,12 @@ function bottomBar(buttons)
 end
 
 function topSubBar(path)
-        ui.setCursorX(ui.windowWidth() / 65)
-        ui.setCursorY(topBarHeight / 2 - acLogoSize.y / 2)
+        ui.setCursorX(topBarHeight * 0.75 - acLogoSize.x * 0.5)
+        ui.setCursorY(topBarHeight * 0.5 - acLogoSize.y * 0.5)
         ui.image(acLogo, acLogoSize)
 
         cui.setCursorX(180)
-        ui.setCursorY(topBarHeight / 2 - (100 * cui.scale()) / 2)
+        ui.setCursorY(topBarHeight * 0.5 - (100 * cui.scale()) * 0.5)
 
         if not path then return end
         local pathString = path == "" and "" or " / " .. path
@@ -89,6 +91,7 @@ end
 function topBar(path)
         local driveButtonWidth = 550 * cui.scale()
         local driveButtonHeight = 70 * cui.scale()
+        local buttonWidth = 120 * cui.scale()
 
         -- ui.drawSimpleLine(
         --         vec2(ui.windowWidth() * 0.5, 0),
@@ -136,7 +139,7 @@ function topBar(path)
 
                         ui.dwriteTextAligned(
                                 simutils.raceSessionTypeString .. " " .. simutils.sessionTotalTimeString,
-                                22 * cui.scale(),
+                                style.main.font.header.size,
                                 ui.Alignment.End,
                                 ui.Alignment.Center,
                                 vec2(300 * cui.scale(), ui.windowHeight())
@@ -147,7 +150,7 @@ function topBar(path)
 
                         ui.dwriteTextAligned(
                                 simutils.sessionTimeLeftString,
-                                22 * cui.scale(),
+                                style.main.font.header.size,
                                 ui.Alignment.Start,
                                 ui.Alignment.Center,
                                 vec2(600 * cui.scale(), ui.windowHeight())
@@ -160,15 +163,14 @@ function topBar(path)
 
         topSubBar(path)
 
-        ui.setCursorY(topBarHeight / 2 - driveButtonHeight / 2)
-        cui.setCursorX(210)
-        ui.offsetCursorY(-driveButtonHeight * 0.2)
+        ui.setCursorY(0)
+        ui.setCursorX(topBarHeight * 1.5)
         if
-                cui.iconButton(
+                cui.iconTopBarButton(
                         "Session",
                         ui.Icons.Info,
-                        driveButtonHeight,
-                        driveButtonHeight * 1.5,
+                        buttonWidth,
+                        topBarHeight,
                         ui.ButtonFlags.None,
                         false,
                         nil,
@@ -182,14 +184,13 @@ function topBar(path)
                 end
         end
         ui.sameLine()
-        ui.offsetCursorX(driveButtonHeight * 0.75)
 
         if
-                cui.iconButton(
+                cui.iconTopBarButton(
                         "Laps",
                         ui.Icons.List,
-                        driveButtonHeight,
-                        driveButtonHeight * 1.5,
+                        buttonWidth,
+                        topBarHeight,
                         ui.ButtonFlags.None,
                         false,
                         nil,
@@ -203,14 +204,13 @@ function topBar(path)
                 end
         end
         ui.sameLine()
-        ui.offsetCursorX(driveButtonHeight * 0.75)
 
         if
-                cui.iconButton(
+                cui.iconTopBarButton(
                         "Telemetry",
                         ui.Icons.Barcode,
-                        driveButtonHeight,
-                        driveButtonHeight * 1.5,
+                        buttonWidth,
+                        topBarHeight,
                         ui.ButtonFlags.None,
                         false,
                         nil,
@@ -225,8 +225,8 @@ function topBar(path)
         end
         ui.sameLine()
 
-        ui.setCursorX(ui.windowWidth() / 2 - driveButtonWidth / 2)
-        ui.offsetCursorY(driveButtonHeight * 0.2)
+        ui.setCursorX(ui.windowWidth() * 0.5 - driveButtonWidth * 0.5)
+        ui.setCursorY(topBarHeight * 0.5 - driveButtonHeight * 0.5)
 
         local readyToDriveState = simutils.readyToDriveState
         local readyToDrive, driveButtonText, reason, driveButtonColor =
@@ -247,15 +247,15 @@ function topBar(path)
         end
         ui.sameLine()
 
-        ui.setCursorX(ui.windowWidth() - (ui.windowWidth() / 65) - driveButtonHeight * 4.75)
-        ui.offsetCursorY(-driveButtonHeight * 0.2)
+        ui.setCursorX(ui.windowWidth() - buttonWidth * 3 - 50 * cui.scale())
+        ui.setCursorY(0)
 
         if
-                cui.iconButton(
+                cui.iconTopBarButton(
                         "Garage",
                         ui.Icons.Wrench,
-                        driveButtonHeight,
-                        driveButtonHeight * 1.5,
+                        buttonWidth,
+                        topBarHeight,
                         ui.ButtonFlags.None,
                         false,
                         nil,
@@ -269,23 +269,13 @@ function topBar(path)
                 end
         end
         ui.sameLine()
-        ui.offsetCursorX(driveButtonHeight * 0.75)
 
-        if
-                cui.iconButton(
-                        "Settings",
-                        ui.Icons.Settings,
-                        driveButtonHeight,
-                        driveButtonHeight * 1.5,
-                        ui.ButtonFlags.None
-                )
-        then
+        if cui.iconTopBarButton("Settings", ui.Icons.Settings, buttonWidth, topBarHeight, ui.ButtonFlags.None) then
                 pages:goToSettings()
         end
         ui.sameLine()
-        ui.offsetCursorX(driveButtonHeight * 0.75)
 
-        if cui.iconButton("Quit", ui.Icons.Leave, driveButtonHeight, driveButtonHeight * 1.5, ui.ButtonFlags.None) then
+        if cui.iconTopBarButton("Quit", ui.Icons.Leave, buttonWidth, topBarHeight, ui.ButtonFlags.None) then
                 cui.promptShutdownACDialog()
         end
 end
@@ -322,6 +312,8 @@ function settingsMenuCommon(path, bottomBarButtons)
 end
 
 function updateCommon()
-        acLogoSize = ui.imageSize(acLogo) * 0.85 * cui.scale()
+        local imageSize = ui.imageSize(acLogo)
+        local scale = imageSize.y / (topBarHeight * 0.78)
+        acLogoSize = imageSize / scale
         topBarHeight = 130 * cui.scale()
 end

@@ -382,10 +382,12 @@ function trackMapWidget:footer()
         local height = ui.windowHeight() * 0.65
 
         map.isShowingCars = drawCheckbox("##mapisShowingCars", "Cars", height, map.isShowingCars)
-        ui.sameLine(ui.windowWidth() * 0.5 - height * 4)
+        ui.sameLine()
+        cui.offsetCursorX(30)
 
         map.isShowingSectors, changed = drawCheckbox("##mapisShowingSectors", "Sectors", height, map.isShowingSectors)
-        ui.sameLine(ui.windowWidth() * 0.75)
+        ui.sameLine()
+        cui.offsetCursorX(30)
 
         map.isShowingWeather = drawCheckbox("##mapisShowingWeather", "Weather", height, map.isShowingWeather)
 

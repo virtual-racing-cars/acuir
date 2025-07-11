@@ -8,18 +8,17 @@ local sim = ac.getSim()
 local sessionControlWidget = Widget("Session Control")
 
 function sessionControlWidget:body()
-        local driveButtonHeight = ui.windowHeight() * 0.8
-
-        ui.setCursorX(driveButtonHeight * 1.5)
-        ui.setCursorY(ui.windowHeight() * 0.1)
+        local driveButtonHeight = ui.windowHeight()
 
         if
-                cui.iconButton(
+                cui.iconTopBarButton(
                         sim.isOnlineRace and "Vote Restart" or "Restart",
                         ui.Icons.Reset,
+                        ui.windowWidth() * 0.5,
                         driveButtonHeight,
-                        driveButtonHeight,
-                        simutils.sessionRestartable and ui.ButtonFlags.None or ui.ButtonFlags.Disabled
+                        simutils.sessionRestartable and ui.ButtonFlags.None or ui.ButtonFlags.Disabled,
+                        false,
+                        0.15
                 )
         then
                 if sim.isOnlineRace then
@@ -30,15 +29,16 @@ function sessionControlWidget:body()
         end
         ui.sameLine()
 
-        ui.setCursorX(ui.windowWidth() - driveButtonHeight * 2.5)
-
+        ui.setCursorY(0)
         if
-                cui.iconButton(
+                cui.iconTopBarButton(
                         sim.isOnlineRace and "Vote Skip Session" or "Skip",
                         ui.Icons.Skip,
+                        ui.windowWidth() * 0.5,
                         driveButtonHeight,
-                        driveButtonHeight,
-                        simutils.sessionSkippable and ui.ButtonFlags.None or ui.ButtonFlags.Disabled
+                        simutils.sessionSkippable and ui.ButtonFlags.None or ui.ButtonFlags.Disabled,
+                        false,
+                        0.15
                 )
         then
                 if sim.isOnlineRace then

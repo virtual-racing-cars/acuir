@@ -105,8 +105,8 @@ function window.pushContent(id, x, y, width, height, headerFunc, footerFunc, hid
                         0,
                         ui.windowSize(),
                         settings.Appearance.uiColorBackground,
-                        noCorners and 0 or 6 * scale.get(),
-                        ui.CornerFlags.All
+                        noCorners and 0 or 12 * scale.get(),
+                        ui.CornerFlags.Bottom
                 )
         end
 end

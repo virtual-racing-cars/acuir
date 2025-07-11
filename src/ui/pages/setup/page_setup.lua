@@ -265,8 +265,12 @@ function page:draw()
         setupItemWindow()
         carStatusWindow()
         dataLoggingWindow()
-        setupIoWindow()
-        helpWindow()
+
+        if sm.activeHelpString == "" then
+                setupIoWindow()
+        else
+                helpWindow()
+        end
 
         return app.state.setupTab > 1 and "finalize" or "apps"
 end

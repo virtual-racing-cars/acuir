@@ -101,7 +101,7 @@ local function drawSlider(id, name, width, height, value, sliderParams, noScroll
         ui.drawRectFilled(
                 vec2(sliderFill, r1.y),
                 vec2(sliderFill + grabberSize, r2.y),
-                settings.Appearance.uiColorPrimary,
+                settings.Appearance.uiColorSecondary,
                 6 * scale.get()
         )
         if active then
@@ -117,7 +117,7 @@ local function drawSlider(id, name, width, height, value, sliderParams, noScroll
                         vec2(sliderFill, r1.y),
                         vec2(sliderFill, r2.y),
                         active and settings.Appearance.uiColorSecondary or settings.Appearance.uiColorAccent,
-                        active and settings.Appearance.uiColorSecondary or settings.Appearance.uiColorPrimary * 1.2,
+                        active and settings.Appearance.uiColorSecondary or rgbm.colors.gray,
                         true
                 )
         end
@@ -248,9 +248,7 @@ function slider.spinner(id, name, width, height, locked, value, sliderParams, no
                 false,
                 rgbm.colors.white
         )
-        ui.setCursor(p3)
-
-        ui.setCursorY(p1.y + height * 0.5)
+        ui.setCursorX(p3.x)
 
         value, changed, active = drawSlider(id, name, width, style.main.font.header.size, value, sliderParams, noScroll)
 

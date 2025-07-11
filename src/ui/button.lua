@@ -60,19 +60,18 @@ function button.settings(label, sizeX, sizeY, flags, icon)
         local r1, r2 = ui.itemRect()
 
         local buttonColor = settings.Appearance.uiColorPrimary
+        local borderColor = settings.Appearance.uiColorAccent
         local fontColor = settings.Appearance.uiColorText
 
         if hovered and not disabled then buttonColor = settings.Appearance.uiColorSecondary end
-        if disabled then fontColor = settings.Appearance.uiColorTextDim end
-
-        ui.drawRectFilled(r1, r2, buttonColor, 12 * scale.get())
-
-        ui.addIcon(icon, vec2Temp1:set(sizeY / 4, sizeY / 4), vec2Temp2:set(0.5, 0.25), fontColor)
-
-        if not ui.itemHovered() or disabled then
-                ui.drawRect(r1, r2, disabled and rgbm.colors.gray or rgbm.colors.white, 12 * scale.get())
+        if disabled then
+                fontColor = settings.Appearance.uiColorTextDim
+                borderColor = settings.Appearance.uiColorTextDim
         end
 
+        ui.drawRectFilled(r1, r2, buttonColor, 12 * scale.get())
+        ui.addIcon(icon, vec2Temp1:set(sizeY / 4, sizeY / 4), vec2Temp2:set(0.5, 0.25), fontColor)
+        ui.drawRect(r1, r2, borderColor, 12 * scale.get())
         ui.setCursor(tempCursor)
 
         style:pushFontBold()
@@ -239,7 +238,6 @@ function button.windowTab(label, size, flags, active)
 
         local sizeX, sizeY, buttonSize, fontSize
 
-        size = size * scale.get()
         sizeY = size
         fontSize = style.main.font.body.size
         buttonSize = vec2Temp1:set(
@@ -256,19 +254,16 @@ function button.windowTab(label, size, flags, active)
         local fontColor = settings.Appearance.uiColorText
 
         if flags == ui.ButtonFlags.Disabled then
-                fontColor = rgbm(0.6, 0.6, 0.6, 1)
+                fontColor = rgbm.colors.black
         elseif hovered then
-                fontColor = settings.Appearance.uiColorSecondary
-        elseif active then
                 buttonColor = settings.Appearance.uiColorSecondary
-                fontColor = settings.Appearance.uiColorText
+        elseif active then
+                buttonColor = settings.Appearance.uiColorBackground
         end
 
-        if active then buttonColor = settings.Appearance.uiColorSecondary end
+        ui.drawRectFilled(r1, r2, buttonColor, 12 * scale.get(), ui.CornerFlags.Top)
 
-        -- fontColor = settings.Appearance.uiColorSecondary
-
-        ui.drawRectFilled(vec2(r1.x, r1.y + size * 0.9), r2, buttonColor, 6, ui.CornerFlags.Top)
+        if active then ui.drawRectFilled(vec2(r1.x, r1.y + size * 0.9), r2, settings.Appearance.uiColorAccent) end
 
         ui.setCursor(tempCursor)
         cursor.snap()
@@ -610,6 +605,68 @@ function button.modern(label, sizeX, sizeY, flags, icon)
         return clicked and not (flags == ui.ButtonFlags.Disabled)
 end
 
+function button.iconTopBar(label, icon, sizeX, sizeY, flags, flipped, iconScale, active)
+        if not iconScale then iconScale = 0.3 end
+
+        local disabled = false
+        if bit.band(flags, ui.ButtonFlags.Disabled) ~= 0 then disabled = true end
+
+        local hasLabel = not label:startsWith("##")
+
+        local p = ui.getCursor()
+        local clicked = ui.invisibleButton("##" .. label, vec2(sizeX, sizeY))
+        local hovered = ui.itemHovered() and not callback.dialog
+
+        local buttonColor = rgbm.colors.transparent
+        local fontColor = settings.Appearance.uiColorText
+
+        if disabled then
+                fontColor = settings.Appearance.uiColorTextDim
+        elseif hovered then
+                buttonColor = settings.Appearance.uiColorSecondary
+        elseif active then
+                buttonColor = settings.Appearance.uiColorAccent
+                fontColor = rgbm.colors.black
+        end
+
+        local r1, r2 = ui.itemRect()
+        ui.drawRectFilled(r1, r2, buttonColor)
+
+        if hovered and not disabled then ui.drawRect(r1, r2, settings.Appearance.uiColorAccent) end
+
+        local iconSize = vec2(sizeX, sizeX)
+        if flipped then iconSize = vec2(-sizeX, sizeX) end
+
+        ui.addIcon(icon, iconSize * iconScale, vec2(0.5, hasLabel and 0.3 or 0.5), fontColor, 0)
+
+        if hasLabel then
+                ui.setCursor(p)
+
+                local labelWidth = ui.measureDWriteText(label, style.main.font.header.size).x
+
+                ui.offsetCursorX(sizeX * 0.5 - labelWidth * 0.5)
+                ui.offsetCursorY(sizeY * 0.5)
+
+                cursor.snap()
+                style:pushFontBold()
+                ui.dwriteTextAligned(
+                        label,
+                        style.main.font.header.size,
+                        ui.Alignment.Center,
+                        ui.Alignment.Center,
+                        vec2(labelWidth, sizeY * 0.5),
+                        false,
+                        fontColor
+                )
+                ui.popDWriteFont()
+        end
+
+        ui.setCursor(p)
+        ui.dummy(vec2(sizeX, sizeY))
+
+        return clicked and not disabled
+end
+
 function button.icon(label, icon, sizeX, sizeY, flags, flipped, iconScale, active)
         if not iconScale then iconScale = 0.5 end
 
@@ -630,9 +687,9 @@ function button.icon(label, icon, sizeX, sizeY, flags, flipped, iconScale, activ
         if disabled then
                 iconColor = rgbm(0.3, 0.3, 0.3, 0.8)
         elseif hovered then
-                iconColor = settings.Appearance.uiColorSecondary * 2
-        elseif active then
                 iconColor = settings.Appearance.uiColorSecondary
+        elseif active then
+                iconColor = settings.Appearance.uiColorSecondary / 2
         end
 
         if hovered and active then ui.beginOutline() end
@@ -647,7 +704,7 @@ function button.icon(label, icon, sizeX, sizeY, flags, flipped, iconScale, activ
         if hasLabel then
                 ui.setCursor(p)
 
-                local labelWidth = ui.measureDWriteText(label, style.main.font.header.size).x
+                local labelWidth = ui.measureDWriteText(label, style.main.font.body.size).x
 
                 ui.offsetCursorX(sizeX * 0.5 - labelWidth * 0.5)
                 ui.offsetCursorY(sizeY * 0.5)
@@ -656,7 +713,7 @@ function button.icon(label, icon, sizeX, sizeY, flags, flipped, iconScale, activ
                 style:pushFontBold()
                 ui.dwriteTextAligned(
                         label,
-                        style.main.font.header.size,
+                        style.main.font.body.size,
                         ui.Alignment.Center,
                         ui.Alignment.Center,
                         vec2(labelWidth, sizeY * 0.5),

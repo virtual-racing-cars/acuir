@@ -9,7 +9,7 @@ local checkboxValue = false
 local sliderValue = 5
 
 function testUI(dt)
-        ui.drawRectFilled(0, ui.windowSize(), rgbm(0.05, 0.05, 0.05, 1))
+        ui.drawRectFilled(0, ui.windowSize(), rgbm(0.1, 0.1, 0.1, 1))
         cui.pushFittedWindow("full_window")
 
         ui.bringWindowToFront()
@@ -101,15 +101,12 @@ function testUI(dt)
         )
         cui.popContentWindow()
 
-        cui.pushContentWindow(
-                "test_window3",
-                ui.windowWidth() * 0.5,
-                width * 2.3,
-                width,
-                width,
-                function() cui.windowTabButton("Header + Footer", ui.windowHeight(), ui.ButtonFlags.None, true) end,
-                function() end
-        )
+        cui.pushContentWindow("test_window3", ui.windowWidth() * 0.5, width * 2.3, width, width, function()
+                cui.windowTabButton("Header + Footer", ui.windowHeight(), ui.ButtonFlags.None, true)
+                ui.sameLine()
+
+                cui.windowTabButton("Header", ui.windowHeight(), ui.ButtonFlags.None, false)
+        end, function() end)
         cui.popContentWindow()
 
         ui.popAllowKeyboardFocus()

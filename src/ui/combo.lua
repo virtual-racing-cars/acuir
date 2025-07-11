@@ -59,7 +59,7 @@ function combo.box(id, size, previewValue, previewAlignment, openDown, contentSi
                         ui.bringWindowToFront()
                         ui.setCursor(0)
 
-                        ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiColorBackground, 6 * scale.get())
+                        ui.drawRectFilled(0, ui.windowSize(), rgbm.colors.black, 6 * scale.get())
                         window.push(
                                 id .. "scroll_window",
                                 0,
