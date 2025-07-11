@@ -42,7 +42,7 @@ function page.draw()
                 ui.windowHeight() - 303 * cui.scale(),
                 function() tweaksWindow:drawHeader() end,
                 nil,
-                true
+                false
         )
 
         tweaksWindow:draw()

@@ -3,6 +3,12 @@ local scale = require("src.ui.scale")
 local cursor = {}
 
 function cursor.set(x, y)
+        if type(x) == "number" then
+                ui.setCursorX(x * scale.get())
+                ui.setCursorY(x * scale.get())
+                return
+        end
+
         ui.setCursorX(x * scale.get())
         ui.setCursorY(y * scale.get())
 end

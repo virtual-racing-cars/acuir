@@ -286,7 +286,7 @@ function button.binding(name, label, binder, size, flags)
         local r1, r2 = ui.itemRect()
         local hovered = ui.itemHovered() and not callback.dialog
 
-        local buttonColor = settings.Appearance.uiColorBackgroundShade
+        local buttonColor = settings.Appearance.uiColorPrimary
         local textColor = settings.Appearance.uiColorText
 
         if hovered then

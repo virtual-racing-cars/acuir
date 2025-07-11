@@ -254,12 +254,14 @@ local function bindingDialog(button, name)
 end
 
 local function bindingBoxes(binding, name, label, button, bind, yOffset)
+        cui.setCursorX(15)
+
         if
                 cui.bindingButton(
                         name,
                         label,
                         button,
-                        vec2(ui.windowWidth() - 15 * cui.scale(), 64 * cui.scale()),
+                        vec2(ui.availableSpaceX() - 15 * cui.scale(), 64 * cui.scale()),
                         ui.ButtonFlags.None or ui.ButtonFlags.None
                 )
         then
@@ -270,12 +272,14 @@ local function bindingBoxes(binding, name, label, button, bind, yOffset)
 end
 
 local function axisBoxes(binding, name, label, button, bind, yOffset)
+        cui.setCursorX(15)
+
         if
                 cui.bindingAxleButton(
                         name,
                         label,
                         button,
-                        vec2(ui.windowWidth() - 15 * cui.scale(), 64 * cui.scale()),
+                        vec2(ui.availableSpaceX() - 15 * cui.scale(), 64 * cui.scale()),
                         ui.ButtonFlags.None or ui.ButtonFlags.None
                 )
         then
@@ -364,6 +368,9 @@ function bindings:draw()
                 false
         )
 
+        ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiColorBackground, 12 * cui.scale())
+
+        cui.setCursor(15)
         local textInputWidth = ui.windowWidth() * 0.25
         local r1, r2 = ui.getCursor(), ui.getCursor() + vec2(textInputWidth, 36 * cui.scale())
         ui.drawRectFilled(r1, r2, settings.Appearance.uiColorBackground * 0.25, 6 * cui.scale())
@@ -379,11 +386,11 @@ function bindings:draw()
 
         ui.setCursorX(r2.x - ui.windowHeight() / 22)
         ui.setCursorY(0)
-        ui.icon(ui.Icons.ZoomIn, 36 * cui.scale(), rgbm.colors.gray, 36 * cui.scale() * 0.5)
+        ui.addIcon(ui.Icons.ZoomIn, 18 * cui.scale(), vec2(1, 0.5), rgbm.colors.gray)
 
         ui.sameLine()
         cui.offsetCursorX(30)
-        cui.offsetCursorY(9)
+        cui.setCursorY(25)
         settings.General.showMPSBinds = drawCheckbox(
                 "##mapisShowingWeather",
                 "Show MPS Binds",
@@ -394,7 +401,7 @@ function bindings:draw()
         cui.pushWindow(
                 "settings_button_binds_window3",
                 0,
-                ui.windowHeight() / 22,
+                60 * cui.scale(),
                 ui.windowWidth(),
                 ui.windowHeight() - ui.windowHeight() / 22,
                 true
@@ -439,6 +446,8 @@ function bindings:draw()
                         end
                 end
         end
+
+        cui.offsetCursorY(30)
 
         cui.popWindow(true)
         cui.popWindow()

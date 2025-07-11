@@ -202,7 +202,7 @@ function tweaks:draw()
                 local value, changed, active, hovered = cui.spinner(
                         "CAR.FFB",
                         "Car FFB Gain",
-                        ui.windowWidth() * 0.98,
+                        ui.availableSpaceX() - 15 * cui.scale(),
                         80 * cui.scale(),
                         false,
                         ac.getCar(0).ffbMultiplier,
@@ -250,7 +250,7 @@ function tweaks:draw()
                         local value, changed, active, hovered = cui.spinner(
                                 tweak.section .. tweak.id,
                                 tweak.label,
-                                ui.windowWidth() * 0.98,
+                                ui.availableSpaceX() - 15 * cui.scale(),
                                 80 * cui.scale(),
                                 false,
                                 oldValue,
@@ -299,7 +299,7 @@ function tweaks:draw()
                 local value, changed, active, hovered = cui.spinner(
                         "GYRO.GYRO",
                         "Range compression",
-                        ui.windowWidth() * 0.98,
+                        ui.availableSpaceX() - 15 * cui.scale(),
                         80 * cui.scale(),
                         false,
                         currentGyroMode,
@@ -337,7 +337,7 @@ function tweaks:draw()
                 local value, changed, active, hovered = cui.spinner(
                         "POSTPROCESSING.RANGE_COMPRESSION",
                         "Range compression",
-                        ui.windowWidth() * 0.98,
+                        ui.availableSpaceX() - 15 * cui.scale(),
                         80 * cui.scale(),
                         false,
                         configs.FFBTWEAKS:get("POSTPROCESSING", "RANGE_COMPRESSION"),
@@ -362,7 +362,7 @@ function tweaks:draw()
                         local value, changed, active, hovered = cui.spinner(
                                 "POSTPROCESSING.RANGE_COMPRESSION_ASSIST",
                                 "Use Car Steer Assist",
-                                ui.windowWidth() * 0.98,
+                                ui.availableSpaceX() - 15 * cui.scale(),
                                 80 * cui.scale(),
                                 false,
                                 configs.FFBTWEAKS:get("POSTPROCESSING", "RANGE_COMPRESSION_ASSIST"),
@@ -397,7 +397,7 @@ function tweaks:draw()
                 local value, changed, active, hovered = cui.spinner(
                         "PP.MODE",
                         "Post-Process Mode",
-                        ui.windowWidth() * 0.98,
+                        ui.availableSpaceX() - 15 * cui.scale(),
                         80 * cui.scale(),
                         false,
                         currentPPMode,
@@ -428,7 +428,7 @@ function tweaks:draw()
                         local value, changed, active, hovered = cui.spinner(
                                 "PP.GAMMA.VALUE",
                                 "Gamma",
-                                ui.windowWidth() * 0.98,
+                                ui.availableSpaceX() - 15 * cui.scale(),
                                 80 * cui.scale(),
                                 false,
                                 configs.FFPOSTPROCESS:get("GAMMA", "VALUE"),
@@ -490,7 +490,7 @@ function tweaks:draw()
                         local value, changed, active, hovered = cui.spinner(
                                 "LUT.CURVES",
                                 "Curves ( %s )" % #curves,
-                                ui.windowWidth() * 0.98,
+                                ui.availableSpaceX() - 15 * cui.scale(),
                                 80 * cui.scale(),
                                 false,
                                 currentCurveIndex,
