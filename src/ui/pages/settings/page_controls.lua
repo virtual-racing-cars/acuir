@@ -1,10 +1,10 @@
 local page = {}
 
-local bindindWindow = require("ui.pages.settings.controls.bindings")
+local configs = require("configs")
+local controllerTweaks = require("controller_tweaks")
 local cui = require("ui.cui")
 local pages = require("ui.pages.pages")
 local settings = require("settings")
-local tweaksWindow = require("ui.pages.settings.controls.tweaks")
 
 local bottomBarButtons = {
         {
@@ -14,40 +14,31 @@ local bottomBarButtons = {
         },
 }
 
+local WidgetWindow = require("src.classes.WidgetWindow")
+
+local bindingWindow = WidgetWindow("binding_window")
+bindingWindow:addWidget("Bindings", require("ui.widgets.control_bindings"))
+
+local tweaksWidget = require("ui.widgets.control_tweaks")
+local tweaksWindow = WidgetWindow("tweaks_window")
+for i, tab in ipairs(controllerTweaks[configs.CONTROLS.ini:get("HEADER", "INPUT_METHOD", "WHEEL")]) do
+        tweaksWindow:addWidget(tab.label, tweaksWidget)
+end
+
 function page.draw()
         ui.drawRectFilled(vec2(0, 0), ui.windowSize(), settings.Appearance.uiColorBackgroundShade * 0.75)
 
         cui.pushFittedWindow("settings_controls_main_window")
         topSubBar("Controls")
 
-        cui.pushContentWindow(
-                "settings_controls_window",
-                0,
-                180 * cui.scale(),
-                ui.windowWidth() * 0.7 - 7.5 * cui.scale(),
-                ui.windowHeight() - 303 * cui.scale(),
-                function() bindindWindow:drawHeader() end,
-                nil,
-                true
-        )
+        bindingWindow:setPosition(0, 180 * cui.scale())
+        bindingWindow:setSize(ui.windowWidth() * 0.7 - 7.5 * cui.scale(), ui.windowHeight() - 303 * cui.scale())
+        bindingWindow:draw()
 
-        bindindWindow:draw()
-        cui.popContentWindow()
-
-        cui.pushContentWindow(
-                "settings_controls_window_tweaks",
-                ui.windowWidth() * 0.7 + 7.5 * cui.scale(),
-                180 * cui.scale(),
-                ui.windowWidth() * 0.3 - 7.5 * cui.scale(),
-                ui.windowHeight() - 303 * cui.scale(),
-                function() tweaksWindow:drawHeader() end,
-                nil,
-                false
-        )
-
+        tweaksWindow:setPosition(ui.windowWidth() * 0.7 + 7.5 * cui.scale(), 180 * cui.scale())
+        tweaksWindow:setSize(ui.windowWidth() * 0.3 - 7.5 * cui.scale(), ui.windowHeight() - 303 * cui.scale())
         tweaksWindow:draw()
-
-        cui.popContentWindow()
+        tweaksWidget.section = tweaksWindow.activeWidgetIndex
 
         bottomBar(bottomBarButtons)
         cui.popWindow()

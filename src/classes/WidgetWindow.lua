@@ -50,7 +50,7 @@ function WidgetWindow:draw(dt)
                 end
         end, activeWidget.drawFooter, false)
 
-        activeWidget.body()
+        activeWidget.body(dt)
 
         cui.popContentWindow()
 end

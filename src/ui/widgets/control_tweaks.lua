@@ -4,7 +4,7 @@ local cui = require("src.ui.cui")
 local settings = require("settings")
 local sim = ac.getSim()
 
-local tweaks = {}
+local controlTweaks = { section = 1 }
 
 -- The following curve based stuff was written originally by Ilja for Controller Tweaks
 local function drawCurveBase(size)
@@ -182,27 +182,20 @@ local function reloadCurves()
 end
 reloadCurves()
 
-local currentSection = 1
-
-function tweaks:drawHeader()
-        local deviceTabs = controllerTweaks[configs.CONTROLS.ini:get("HEADER", "INPUT_METHOD", "WHEEL")]
-        for i, tab in ipairs(deviceTabs) do
-                if cui.windowTabButton(tab.label, 36, ui.ButtonFlags.None, currentSection == i and #deviceTabs > 1) then
-                        currentSection = i
-                end
-                ui.sameLine()
-        end
-end
-
-function tweaks:draw()
+function controlTweaks:body()
         cui.pushWindow("settings_controls_ffb", 0, 0, ui.windowWidth(), ui.windowHeight(), true)
+        ui.setCursor(0)
 
-        if currentSection == 2 then
-                ui.setCursorX(ui.windowWidth() * 0.01)
+        local itemWidth = ui.availableSpaceX() - 60 * cui.scale()
+
+        cui.offsetCursorY(15)
+
+        if controlTweaks.section == 2 then
+                cui.setCursorX(30)
                 local value, changed, active, hovered = cui.spinner(
                         "CAR.FFB",
                         "Car FFB Gain",
-                        ui.availableSpaceX() - 15 * cui.scale(),
+                        itemWidth,
                         80 * cui.scale(),
                         false,
                         ac.getCar(0).ffbMultiplier,
@@ -228,7 +221,7 @@ function tweaks:draw()
 
         for _, tweakSection in
                 ipairs(
-                        controllerTweaks[configs.CONTROLS.ini:get("HEADER", "INPUT_METHOD", "WHEEL")][currentSection].content
+                        controllerTweaks[configs.CONTROLS.ini:get("HEADER", "INPUT_METHOD", "WHEEL")][controlTweaks.section].content
                 )
         do
                 ui.setCursorX(0)
@@ -241,7 +234,7 @@ function tweaks:draw()
                 )
 
                 for _, tweak in ipairs(tweakSection.tweaks) do
-                        ui.setCursorX(ui.windowWidth() * 0.01)
+                        cui.setCursorX(30)
 
                         local oldValue = tweak.cfg:get(tweak.section, tweak.id)
 
@@ -250,7 +243,7 @@ function tweaks:draw()
                         local value, changed, active, hovered = cui.spinner(
                                 tweak.section .. tweak.id,
                                 tweak.label,
-                                ui.availableSpaceX() - 15 * cui.scale(),
+                                itemWidth,
                                 80 * cui.scale(),
                                 false,
                                 oldValue,
@@ -277,7 +270,7 @@ function tweaks:draw()
                 end
         end
 
-        if currentSection == 2 then
+        if controlTweaks.section == 2 then
                 ui.setCursorX(0)
                 ui.dwriteTextAligned(
                         "FFB Gyro",
@@ -295,11 +288,11 @@ function tweaks:draw()
                 local gyroStrings = configs.FFBTWEAKS.data.BASIC.ENABLED and { "None", "Standard", "FFB Tweaks" }
                         or { "None", "Standard" }
 
-                ui.setCursorX(ui.windowWidth() * 0.01)
+                cui.setCursorX(30)
                 local value, changed, active, hovered = cui.spinner(
                         "GYRO.GYRO",
                         "Range compression",
-                        ui.availableSpaceX() - 15 * cui.scale(),
+                        itemWidth,
                         80 * cui.scale(),
                         false,
                         currentGyroMode,
@@ -323,7 +316,7 @@ function tweaks:draw()
                 end
         end
 
-        if configs.FFBTWEAKS.data.BASIC.ENABLED and currentSection == 2 then
+        if configs.FFBTWEAKS.data.BASIC.ENABLED and controlTweaks.section == 2 then
                 ui.setCursorX(0)
                 ui.dwriteTextAligned(
                         "FFB Post-Processing",
@@ -333,11 +326,11 @@ function tweaks:draw()
                         vec2(ui.windowWidth(), 36 * cui.scale())
                 )
 
-                ui.setCursorX(ui.windowWidth() * 0.01)
+                cui.setCursorX(30)
                 local value, changed, active, hovered = cui.spinner(
                         "POSTPROCESSING.RANGE_COMPRESSION",
                         "Range compression",
-                        ui.availableSpaceX() - 15 * cui.scale(),
+                        itemWidth,
                         80 * cui.scale(),
                         false,
                         configs.FFBTWEAKS:get("POSTPROCESSING", "RANGE_COMPRESSION"),
@@ -358,11 +351,11 @@ function tweaks:draw()
                 if changed then configs.FFBTWEAKS:set("POSTPROCESSING", "RANGE_COMPRESSION", value) end
 
                 if configs.FFBTWEAKS.data.POSTPROCESSING.RANGE_COMPRESSION ~= 1 then
-                        ui.setCursorX(ui.windowWidth() * 0.01)
+                        cui.setCursorX(30)
                         local value, changed, active, hovered = cui.spinner(
                                 "POSTPROCESSING.RANGE_COMPRESSION_ASSIST",
                                 "Use Car Steer Assist",
-                                ui.availableSpaceX() - 15 * cui.scale(),
+                                itemWidth,
                                 80 * cui.scale(),
                                 false,
                                 configs.FFBTWEAKS:get("POSTPROCESSING", "RANGE_COMPRESSION_ASSIST"),
@@ -387,21 +380,15 @@ function tweaks:draw()
                 end
         end
 
-        if false then --currentSection == 2 then
+        if false then --controlTweaks.section == 2 then
                 local currentPPMode = configs.FFPOSTPROCESS.data.HEADER.ENABLED
                                 and (configs.FFPOSTPROCESS.data.HEADER.TYPE == "GAMMA" and 2 or 3)
                         or 1
 
                 local ppModeStrings = { "Disabled", "Gamma", "LUT" }
-                ui.setCursorX(ui.windowWidth() * 0.01)
-                local value, changed, active, hovered = cui.spinner(
-                        "PP.MODE",
-                        "Post-Process Mode",
-                        ui.availableSpaceX() - 15 * cui.scale(),
-                        80 * cui.scale(),
-                        false,
-                        currentPPMode,
-                        {
+                cui.setCursorX(30)
+                local value, changed, active, hovered =
+                        cui.spinner("PP.MODE", "Post-Process Mode", itemWidth, 80 * cui.scale(), false, currentPPMode, {
                                 min = 1,
                                 max = #ppModeStrings,
                                 step = 1,
@@ -411,9 +398,7 @@ function tweaks:draw()
                                 format = ppModeStrings[currentPPMode],
                                 unit = "%",
                                 help = "",
-                        },
-                        true
-                )
+                        }, true)
 
                 if changed then
                         currentPPMode = value
@@ -424,11 +409,11 @@ function tweaks:draw()
                 end
 
                 if currentPPMode == 2 then
-                        ui.setCursorX(ui.windowWidth() * 0.01)
+                        cui.setCursorX(30)
                         local value, changed, active, hovered = cui.spinner(
                                 "PP.GAMMA.VALUE",
                                 "Gamma",
-                                ui.availableSpaceX() - 15 * cui.scale(),
+                                itemWidth,
                                 80 * cui.scale(),
                                 false,
                                 configs.FFPOSTPROCESS:get("GAMMA", "VALUE"),
@@ -486,11 +471,11 @@ function tweaks:draw()
                                 if curves[i] == currentCurve then currentCurveIndex = i end
                         end
 
-                        ui.setCursorX(ui.windowWidth() * 0.01)
+                        cui.setCursorX(30)
                         local value, changed, active, hovered = cui.spinner(
                                 "LUT.CURVES",
                                 "Curves ( %s )" % #curves,
-                                ui.availableSpaceX() - 15 * cui.scale(),
+                                itemWidth,
                                 80 * cui.scale(),
                                 false,
                                 currentCurveIndex,
@@ -522,4 +507,4 @@ function tweaks:draw()
         cui.popWindow(true)
 end
 
-return tweaks
+return controlTweaks

@@ -13,7 +13,7 @@ local inputModeStringKeys = {
         "KEY",
 }
 
-local bindings = {}
+local controlBindings = {}
 
 local margin = 20
 
@@ -346,12 +346,7 @@ local function buttonBinder(controlBinding)
         end
 end
 
-function bindings:drawHeader()
-        if cui.windowTabButton("Bindings", 36, ui.ButtonFlags.None, false) then
-        end
-end
-
-function bindings:draw()
+function controlBindings:body()
         cui.pushWindow("settings_button_bind_tabbar", 0, 0, ui.windowWidth() * 0.2, ui.windowHeight(), false)
         ui.setCursor(0)
         ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiColorBackground, 6 * cui.scale())
@@ -453,4 +448,4 @@ function bindings:draw()
         cui.popWindow()
 end
 
-return bindings
+return controlBindings
