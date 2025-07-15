@@ -376,7 +376,7 @@ function trackMapWidget:body()
         )
 end
 
-function trackMapWidget:footer()
+function trackMapWidget:drawFooter()
         local changed = false
         local height = ui.windowHeight() * 0.65
 

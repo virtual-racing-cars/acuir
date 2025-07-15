@@ -62,8 +62,8 @@ local function likeButtons(path, item, likedList, dislikedList, itemID, contextT
         if likeClicked then
                 if liked then
                         item.statLikes = item.statLikes - 1
-                        table.removeItem(likedSetups, itemID)
-                        rest("PATCH", path .. "/" .. itemID, contextTable)
+                        table.removeItem(setupExchangeAPI.likedSetups, itemID)
+                        setupExchangeAPI:rest("PATCH", path .. "/" .. itemID, contextTable)
                 else
                         item.statLikes = item.statLikes + 1
                         table.insert(setupExchangeAPI.likedSetups, itemID)
