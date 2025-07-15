@@ -88,31 +88,12 @@ local function drawSlider(id, name, width, height, value, sliderParams, noScroll
                 settings.Appearance.uiColorBackground * 0.25
         )
 
-        ui.beginGradientShade()
-
         ui.drawRectFilled(
                 vec2(sliderFill, r1.y),
                 vec2(sliderFill + grabberSize, r2.y),
-                settings.Appearance.uiColorSecondary,
+                active and settings.Appearance.uiColorSecondary or settings.Appearance.uiColorAccent,
                 6 * scale.get()
         )
-        if active then
-                ui.endGradientShade(
-                        vec2(sliderFill, r2.y),
-                        vec2(sliderFill, r1.y),
-                        settings.Appearance.uiColorSecondary,
-                        settings.Appearance.uiColorSecondary * 4,
-                        true
-                )
-        else
-                ui.endGradientShade(
-                        vec2(sliderFill, r1.y),
-                        vec2(sliderFill, r2.y),
-                        active and settings.Appearance.uiColorSecondary or settings.Appearance.uiColorAccent,
-                        active and settings.Appearance.uiColorSecondary or rgbm.colors.gray,
-                        true
-                )
-        end
 
         ui.drawRect(
                 vec2(sliderFill, r1.y),

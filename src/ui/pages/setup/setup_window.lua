@@ -99,6 +99,11 @@ local function drawSetupSpinner(si)
         return changed
 end
 
+local WidgetWindow = require("src.classes.WidgetWindow")
+
+local gearSpeedsWindow = WidgetWindow("gear_speeds")
+gearSpeedsWindow:addWidget("Max Speeds", gearSpeedsWidget)
+
 local currentQuickPitPreset = 0
 function car_setup(sm)
         sm.activeHelpString = ""
@@ -107,10 +112,9 @@ function car_setup(sm)
         local tab = sm.setupTabs[tonumber(app.state.setupTab)]
 
         if tab.name == "GEARS" then
-                gearSpeedsWidget:setPosition(ui.windowWidth() * 0.05, 0)
-
-                gearSpeedsWidget:setSize(ui.windowWidth() * 0.9, ui.windowWidth() * 0.3)
-                gearSpeedsWidget:draw()
+                gearSpeedsWindow:setPosition(ui.windowWidth() * 0.05, 0)
+                gearSpeedsWindow:setSize(ui.windowWidth() * 0.9, ui.windowWidth() * 0.3)
+                gearSpeedsWindow:draw()
 
                 -- gearWindow(#tab.setupSpinners) end
         end

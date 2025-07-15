@@ -60,7 +60,7 @@ function setupTabBar.body()
 
         cui.popWindow(true)
 
-        return currentApp + 1
+        app.state.setupTab = currentApp + 1
 end
 
 return setupTabBar
