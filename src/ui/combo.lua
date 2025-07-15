@@ -13,7 +13,8 @@ function combo.box(id, size, previewValue, previewAlignment, openDown, contentSi
         local clicked = ui.invisibleButton("##comboCurrentCamera", size)
         local hovered = ui.itemHovered() --and not callback.dialog
         local r1, r2 = ui.itemRect()
-        local color = settings.Appearance.uiColorText * 0.75
+        local color = settings.Appearance.uiColorPrimary
+        local borderColor = settings.Appearance.uiColorTextDim
         local open = state.loadStoredBool(id, false)
         local closedIcon = openDown and ui.Icons.Down or ui.Icons.Up
         local openIcon = openDown and ui.Icons.Up or ui.Icons.Down
@@ -22,14 +23,17 @@ function combo.box(id, size, previewValue, previewAlignment, openDown, contentSi
 
         if previewAlignment == ui.Alignment.End then iconAlignemnt = 0.02 end
 
-        if hovered then color = settings.Appearance.uiColorSecondary end
+        if hovered then
+                color = settings.Appearance.uiColorSecondary
+                borderColor = settings.Appearance.uiColorText
+        end
         if clicked then
                 state.storeBool(id, not open)
                 if not open then justOpened = true end
         end
 
-        ui.drawRectFilled(r1, r2, settings.Appearance.uiColorPrimary, 6 * scale.get())
-        ui.drawRect(r1, r2, color, 6 * scale.get())
+        ui.drawRectFilled(r1, r2, color, 6 * scale.get())
+        ui.drawRect(r1, r2, borderColor, 6 * scale.get())
         ui.addIcon(
                 open and openIcon or closedIcon,
                 vec2(size.y, size.y) * 0.35,

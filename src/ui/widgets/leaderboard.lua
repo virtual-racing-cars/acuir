@@ -5,7 +5,7 @@ local settings = require("settings")
 local style = require("ui.style")
 local sim = ac.getSim()
 
-local function drawTimeIndicator(width, height, color)
+local function drawIndicator(width, height, color)
         if not color then color = rgbm(0, 0.75, 0, 1) end
 
         ui.drawRectFilled(
@@ -56,7 +56,7 @@ local entryLayout = {
                 label = "Best",
                 value = function(car, width, height)
                         if car.bestLapTimeMs > 0 and car.bestLapTimeMs <= race.fastestLapTimeMs then
-                                drawTimeIndicator(width, height, rgbm(0.5, 0.2, 1, 1))
+                                drawIndicator(width, height, rgbm(0.5, 0.2, 1, 1))
                         end
 
                         return ac.lapTimeToString(car.bestLapTimeMs)
@@ -120,13 +120,7 @@ local entryLayout = {
                                 statusText = ac.getTyresName(car.index, car.status.compoundIndex)
                         end
 
-                        if altStatus then
-                                ui.drawRectFilled(
-                                        vec2(ui.getCursorX(), ui.getCursorY()),
-                                        vec2(ui.getCursorX() + width, ui.getCursorY() + height),
-                                        settings.Appearance.uiColorAccent
-                                )
-                        end
+                        if altStatus then drawIndicator(width, height, settings.Appearance.uiColorAccent) end
 
                         return statusText, altStatus and settings.Appearance.uiColorBackground or rgbm.colors.white
                 end,
@@ -137,9 +131,12 @@ local entryLayout = {
 
 local leaderboard = { isShowingDisconnected = false }
 
+local width
+
 local function leaderboardBanner(yPos, height)
-        local width = ui.windowWidth()
         local fontSize = height * 0.5
+
+        if not width then width = ui.availableSpaceX() end
 
         ui.setCursorX(height * 0.2)
         ui.setCursorY(yPos)
@@ -154,8 +151,9 @@ local function leaderboardBanner(yPos, height)
 end
 
 function leaderboardEntryButton(car, yPos, height)
+        ui.setCursorX(0)
         local xPos = 0
-        local width = ui.windowWidth()
+        width = ui.availableSpaceX()
 
         ui.setCursorX(xPos)
         ui.setCursorY(yPos)

@@ -250,9 +250,12 @@ local entryLayout = {
         },
 }
 
+local width
+
 local function timetableBanner(yPos, height)
-        local width = ui.windowWidth()
         local fontSize = height * 0.5
+
+        if not width then width = ui.availableSpaceX() end
 
         ui.setCursorX(height * 0.2)
         ui.setCursorY(yPos)
@@ -267,8 +270,9 @@ local function timetableBanner(yPos, height)
 end
 
 function timetableEntryButton(car, yPos, height)
+        ui.setCursorX(0)
         local xPos = 0
-        local width = ui.windowWidth()
+        width = ui.availableSpaceX()
 
         ui.setCursorX(xPos)
         ui.setCursorY(yPos)

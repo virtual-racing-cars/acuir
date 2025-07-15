@@ -18,7 +18,7 @@ local sessionInfo = {}
 local sessionInfoTable = {
 
         {
-                label = "Grip",
+                label = "Track Grip",
                 value = function() return string.format("%.1f %% (%s)", sim.roadGrip * 100, simutils.trackGripString) end,
         },
         {
@@ -32,7 +32,7 @@ local sessionInfoTable = {
                 end,
         },
         {
-                label = "Air Temp",
+                label = "Ambient Temp",
                 value = function()
                         return string.format(
                                 "%.1f %s",
