@@ -1,6 +1,6 @@
 local page = {}
 
-require("ui.pages.setup.setup_window")
+require("ui.pages.setup_window")
 require("classes.SetupManager")
 local app = require("app")
 local cui = require("ui.cui")

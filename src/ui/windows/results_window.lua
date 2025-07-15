@@ -6,7 +6,7 @@ local cui = require("ui.cui")
 local pages = require("ui.pages.pages")
 local settings = require("settings")
 local style = require("ui.style")
-pages.manager:registerPage("ResultsMenu", require("ui.pages.results.page_results_home"))
+pages.manager:registerPage("ResultsMenu", require("ui.pages.page_results_home"))
 
 function ResultsMenuWindow(dt)
         local exclusiveHudMode = ""
