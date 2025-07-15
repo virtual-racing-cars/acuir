@@ -62,7 +62,8 @@ local pauseButtons = {
         {
                 label = "Restart Session",
                 enabled = true,
-                condition = function() return not simutils.sessionRestartable end,
+                condition = function() return true end,
+                -- return not simutils.sessionRestartable end,
                 func = function()
                         ac.tryToPause(false)
                         ac.tryToRestartSession()
@@ -78,7 +79,7 @@ local pauseButtons = {
 
 function page.draw(dt)
         local childWindowWith = (500 * cui.scale())
-        local childWindowHeight = (750 * cui.scale())
+        local childWindowHeight = (680 * cui.scale())
         local mainWindowFlags = ui.WindowFlags.NoScrollbar + ui.WindowFlags.NoScrollWithMouse
 
         if callback.dialog then
@@ -121,18 +122,19 @@ function page.draw(dt)
                                 if menuButton.condition() then hidden = true end
 
                                 if
-                                        not hidden
-                                        and cui.menuButton(
+                                        cui.menuButton(
                                                 menuButton.label,
                                                 menuButtonSize,
                                                 ui.Alignment.Center,
                                                 ui.Alignment.Center,
-                                                enabled and ui.ButtonFlags.None or ui.ButtonFlags.Disabled
+                                                (not hidden and enabled) and ui.ButtonFlags.None
+                                                        or ui.ButtonFlags.Disabled
                                         )
                                 then
                                         menuButton.func()
                                 end
-                                cui.offsetCursorY(10)
+
+                                cui.offsetCursorY(5)
                         end
 
                         ui.popStyleColor(1)

@@ -6,7 +6,7 @@ local cui = require("ui.cui")
 local pages = require("ui.pages")
 local settings = require("settings")
 local style = require("ui.cui.style")
-pages.manager:registerPage("PauseMenu", require("ui.pages.page_pause_home"))
+pages.manager:registerPage("PauseMenu", require("ui.pages.page_pause"))
 
 function PauseMenuWindow(dt)
         local exclusiveHudMode = ""

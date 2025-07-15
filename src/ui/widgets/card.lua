@@ -122,7 +122,7 @@ function card:draw(xPos, yPos, width, height)
                         ac.getCarSkinID(spectatedCar.index)
                 ),
                 p,
-                p + vec2(fontSpace, fontSpace),
+                p + vec2(fontSpace, fontSpace) * 2,
                 6 * cui.scale()
         )
 
@@ -130,7 +130,7 @@ function card:draw(xPos, yPos, width, height)
         driverName = isempty(driverName) and "Driver %s" % sim.focusedCar or driverName
 
         ui.setCursor(0)
-        ui.setCursorX(fontSpace + 10 * cui.scale())
+        ui.setCursorX(fontSpace * 2 + 10 * cui.scale())
         cui.snapCursor()
         ui.dwriteTextAligned(
                 driverName,
@@ -140,21 +140,7 @@ function card:draw(xPos, yPos, width, height)
                 vec2(ui.windowWidth(), fontSpace)
         )
 
-        local p = ui.getCursor()
-
-        ui.drawImageRounded(
-                string.format(
-                        "%s\\%s\\skins\\%s\\livery.png",
-                        ac.getFolder(ac.FolderID.ContentCars),
-                        ac.getCarID(spectatedCar.index),
-                        ac.getCarSkinID(spectatedCar.index)
-                ),
-                p,
-                p + vec2(fontSpace, fontSpace),
-                6 * cui.scale()
-        )
-
-        ui.setCursorX(fontSpace + 10 * cui.scale())
+        ui.setCursorX(fontSpace * 2 + 10 * cui.scale())
         ui.dwriteTextAligned(
                 ac.getCarName(spectatedCar.index),
                 fontSize,
@@ -220,7 +206,7 @@ function card:draw(xPos, yPos, width, height)
         ui.setCursorX(0)
         ui.setCursorY(ui.windowHeight() - managePlayerButtonHeight)
 
-        if false then --not sim.isOnlineRace or spectatedCar.index == 0 then
+        if not sim.isOnlineRace or spectatedCar.index == 0 then
                 cui.popWindow()
                 cui.popWindow()
                 return
