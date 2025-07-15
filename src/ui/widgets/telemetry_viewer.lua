@@ -13,8 +13,10 @@ local telemetryViewer = {
 
 local function drawTelemetryGraphs()
         local channelsCount = #telemetry.lastLap.channels
-        local graphHeight = (ui.windowHeight() / channelsCount) - 10 * cui.scale()
+        local graphHeight = (ui.windowHeight() / channelsCount) - 20 * cui.scale()
         local graphWidth = ui.windowWidth()
+        local fontSize = style.main.font.body.size
+        local fontSpace = style.main.font.body.space
 
         for i, _ in ipairs(telemetry.lastLap.channels) do
                 local bestLapChannel = telemetry.bestLap.channels[i]
@@ -30,18 +32,21 @@ local function drawTelemetryGraphs()
                 local r1, r2 = ui.itemRect()
                 ui.drawRectFilled(
                         r1,
-                        vec2Temp1:set(r2.x, r1.y + 40 * cui.scale()),
+                        vec2Temp1:set(r2.x, r1.y + fontSpace),
                         settings.Appearance.uiColorBackground * 0.2
                 )
 
                 ui.setCursor(r1)
 
                 cui.offsetCursorX(10)
-                cui.offsetCursorY(5)
                 cui.snapCursor()
-                ui.dwriteText(
+                ui.dwriteTextAligned(
                         string.format("%s %s", lastLapChannel.label, lastLapChannel.units),
-                        25 * cui.scale(),
+                        fontSize,
+                        -1,
+                        0,
+                        vec2(ui.windowWidth(), fontSpace),
+                        false,
                         rgbm.colors.white
                 )
 
@@ -50,7 +55,7 @@ local function drawTelemetryGraphs()
                         cui.snapCursor()
                         ui.dwriteTextAligned(
                                 "NO DATA",
-                                50 * cui.scale(),
+                                style.main.font.title.size,
                                 ui.Alignment.Center,
                                 ui.Alignment.Center,
                                 vec2Temp1:set(graphWidth, r2.y - ui.getCursorY()),
@@ -61,8 +66,8 @@ local function drawTelemetryGraphs()
 
                 ui.setCursor(r2)
 
-                r1.y = r1.y + 40 * cui.scale()
-                r2.y = r2.y - 40 * cui.scale()
+                r1.y = r1.y + fontSpace
+                r2.y = r2.y - fontSpace
 
                 local height = r2.y - r1.y
                 local yMin = math.max(bestLapChannel.max, lastLapChannel.max)
@@ -174,7 +179,7 @@ local function drawTelemetrySlice()
         if ui.windowHovered() then
                 ui.tooltip(function()
                         local fontSize = style.main.font.body.size
-                        local textBoxSize = vec2Temp1:set(100 * cui.scale(), 24 * cui.scale())
+                        local textBoxSize = vec2Temp1:set(100 * cui.scale(), style.main.font.body.space)
 
                         cui.snapCursor()
                         ui.dwriteTextAligned(
@@ -320,7 +325,7 @@ function telemetryViewer:drawFooter()
         telemetryViewer.isShowingBest =
                 drawCheckbox("##telemetryViewerIsShowingBest", "Best Lap", height, telemetryViewer.isShowingBest)
         ui.sameLine()
-        cui.setCursorX(200)
+        cui.offsetCursorX(30)
 
         telemetryViewer.isShowingLast =
                 drawCheckbox("##telemetryViewerIsShowingLast", "Last Lap", height, telemetryViewer.isShowingLast)
