@@ -778,13 +778,19 @@ local function timeAgo(timestamp)
         return string.format("%s %s%s ago", timeNum, timeUnit, timeNum > 1 and "s" or "")
 end
 
-function button.small(id, label, size)
-        local clicked = ui.invisibleButton(id, size)
+function button.small(id, label, size, flags)
+        flags = flags or 0
+        local clicked = ui.invisibleButton(id, size, flags)
         local hovered = ui.itemHovered()
         local color = settings.Appearance.uiColorPrimary
         local r1, r2 = ui.itemRect()
+        local disabled = bit.band(flags, ui.ButtonFlags.Disabled) ~= 0
 
-        if hovered then color = settings.Appearance.uiColorSecondary end
+        if disabled then
+                color = rgbm.colors.transparent
+        elseif hovered then
+                color = settings.Appearance.uiColorSecondary
+        end
 
         ui.drawRectFilled(r1, r2, color, 6 * scale.get())
 
@@ -800,7 +806,7 @@ function button.small(id, label, size)
                 settings.Appearance.uiColorText
         )
 
-        return clicked
+        return clicked and not disabled
 end
 
 function button.smallIcon(id, icon, size)

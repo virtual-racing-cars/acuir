@@ -198,6 +198,7 @@ local statsLayout = {
 }
 
 local lapTimes = {
+        sessionIndex = 0,
         sessionLaps = nil,
 }
 
@@ -217,7 +218,7 @@ local function lapTimeBanner(yPos, height)
         end
 end
 
-local function noEntryBanner(yPos, height)
+local function noEntryBanner(height)
         local width = ui.windowWidth()
         local fontSize = height * 0.5
 
@@ -285,14 +286,14 @@ function lapTimes:body()
                 true
         )
 
-        lapTimes.sessionLaps = laps[session]
+        lapTimes.sessionLaps = laps[lapTimes.sessionIndex]
 
         if lapTimes.sessionLaps and #lapTimes.sessionLaps > 0 then
                 for lapIndex, lap in ipairs(lapTimes.sessionLaps) do
                         lapTimeEntryButton(race.cars[0], lap, (lapIndex - 1) * height, height)
                 end
         else
-                noEntryBanner(yPos, height)
+                noEntryBanner(height)
         end
 
         cui.dummy(height, height)

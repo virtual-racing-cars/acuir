@@ -1,6 +1,7 @@
 local carSetup = require("src.car_setup")
 local cui = require("ui.cui")
 local settings = require("settings")
+local setupExchangeAPI = require("setup_exchange")
 local style = require("src.ui.style")
 
 local vec2Temp1 = vec2()
@@ -77,7 +78,7 @@ function saveSetupWidget:body()
         local groupBegin = (ui.windowWidth() / 24)
 
         cui.setCursorX(10)
-        cui.offsetCursorY(10)
+        cui.offsetCursorY(15)
         cui.combo(
                 "##save_setup_track",
                 vec2(buttonWidth, iconButtonHeight),
@@ -96,7 +97,7 @@ function saveSetupWidget:body()
         )
 
         cui.setCursorX(10)
-        cui.offsetCursorY(10)
+        cui.offsetCursorY(15)
 
         ui.drawRect(
                 ui.getCursor(),
@@ -131,7 +132,7 @@ function saveSetupWidget:body()
         ui.sameLine()
         ui.newLine()
 
-        cui.offsetCursorY(5)
+        cui.offsetCursorY(15)
 
         local setupFileExists = false
         if carSetup.input.name ~= "" then
@@ -139,7 +140,7 @@ function saveSetupWidget:body()
                 setupFileExists = io.fileExists(carSetup.input.path)
         end
 
-        cui.offsetCursorY(10)
+        cui.offsetCursorY(15)
         cui.setCursorX(10)
 
         -- if
@@ -179,26 +180,34 @@ function saveSetupWidget:body()
                         vec2Temp1:set(buttonWidth, iconButtonHeight),
                         0,
                         0,
-                        carSetup.input.name ~= "" and ui.ButtonFlags.None or ui.ButtonFlags.Disabled
+                        (carSetup.input.name and #carSetup.input.name:trim() > 0) and ui.ButtonFlags.None
+                                or ui.ButtonFlags.Disabled
                 )
         then
                 if setupFileExists then
                         promptOverwriteSetup(sm)
                 else
+                        carSetup.input.name = carSetup.input.name:trim()
                         carSetup:save(sm)
-                        cui.menuBanner("Saved Setup", nil, rgbm.colors.green)
+                        cui.menuBanner("Setup Saved", nil, rgbm.colors.green)
                 end
         end
 
-        cui.offsetCursorY(10)
+        cui.offsetCursorY(15)
         cui.setCursorX(10)
-        if cui.menuButton("Share", vec2Temp1:set(buttonWidth, iconButtonHeight), 0, 0, ui.ButtonFlags.Disabled) then
-                if setupFileExists then
-                        promptOverwriteSetup(sm)
-                else
-                        carSetup:save(sm)
-                        cui.menuBanner("Saved Setup", nil, rgbm.colors.green)
-                end
+        if
+                cui.menuButton(
+                        "Share on Setup Exchange",
+                        vec2Temp1:set(buttonWidth, iconButtonHeight),
+                        0,
+                        0,
+                        (carSetup.input.name and #carSetup.input.name:trim() > 0 and setupExchangeAPI.session.id ~= nil)
+                                        and 0
+                                or ui.ButtonFlags.Disabled
+                )
+        then
+                setupExchangeAPI:shareSetup(carSetup.input.name:trim())
+                cui.menuBanner("Setup Shared", nil, rgbm.colors.green)
         end
 
         buttonWidth = buttonWidth + 10 * cui.scale()

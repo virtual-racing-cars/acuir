@@ -1,3 +1,5 @@
+local cui = require("src.ui.cui")
+
 if not string.urlEncode then
         string.urlEncode = function(str)
                 str = string.gsub(str, "([^%w%.%- ])", function(c) return string.format("%%%02X", string.byte(c)) end)
@@ -9,10 +11,10 @@ end
 local setupExchangeAPI = {
         searchFilter = "",
         authorUsernameFilter = "",
-        listOfSetups = {},
-        listOfComments = {},
-        listOfSetupsPrev = {},
-        listOfCommentsPrev = {},
+        listOfSetups = nil,
+        listOfComments = nil,
+        listOfSetupsPrev = nil,
+        listOfCommentsPrev = nil,
         downloadedSetups = {},
         setupTooltips = {},
         likedSetups = {},
@@ -21,6 +23,8 @@ local setupExchangeAPI = {
         dislikedSetups = {},
         discussingItem = nil,
         discussingComments = {},
+        likedComments = {},
+        dislikedComments = {},
         listOfSetupsContinuation = nil,
         setupsTotalCount = 0,
         listOfCommentsContinuation = nil,
@@ -247,6 +251,25 @@ function setupExchangeAPI:rest(method, url, data, callback, errorHandler)
         )
 end
 
+function setupExchangeAPI:initialLoading()
+        if self.initializing then return end
+        self.initializing = true
+        self:rest("GET", "user", {
+                carID = mainCarID,
+                carName = ac.getCarName(0),
+                trackID = ac.getTrackID(),
+                trackName = ac.getTrackName(),
+        }, function(response)
+                self.ownUserID = response.userID or error("UserID is missing")
+                ac.log("My user ID: " .. self.ownUserID)
+        end, function(err) ac.warn("Failed to get own user ID: " .. err) end)
+        self:rest("GET", "likes", { carID = mainCarID }, function(data)
+                for _, v in ipairs(data) do
+                        table.insert(v.direction == 1 and self.likedSetups or self.dislikedSetups, v.setupID)
+                end
+        end)
+end
+
 function setupExchangeAPI:shareSetup(name)
         ac.saveCurrentSetup(temporaryName)
         self:rest("POST", "setups", {
@@ -266,11 +289,11 @@ function setupExchangeAPI:removeSetup(id, withUndo)
         self.removingIDs[id] = true
         self:rest("DELETE", "setups/" .. id, nil, function()
                 ui.toast(ui.Icons.Delete, "Shared setup removed", withUndo and function()
-                        rest(
+                        self:rest(
                                 "POST",
                                 "setups-restore/" .. id,
                                 nil,
-                                function() listOfSetups = nil end,
+                                function() self.listOfSetups = nil end,
                                 function(err) ui.toast(ui.Icons.Warning, "Failed to restore setup: " .. err) end
                         )
                 end or nil)
@@ -389,6 +412,30 @@ function setupExchangeAPI:loadMoreSetups()
         then
                 self.listOfSetupsContinuation[2]()
         end
+end
+
+function setupExchangeAPI:applySetup(setup)
+        local applied = false
+
+        self.selectedSetup = setup
+        self.currentlyApplying = true
+        self:getSetupData(self.selectedSetup, true, function(err, data)
+                self.currentlyApplying = false
+                if err then
+                        cui.menuBanner("Failed to load setup", nil, rgbm.colors.red)
+                else
+                        ac.saveCurrentSetup(temporaryBackupName)
+
+                        io.save(temporaryName, data)
+                        ac.loadSetup(temporaryName)
+
+                        cui.menuBanner("Setup applied", nil, rgbm.colors.green)
+
+                        applied = true
+                end
+        end)
+
+        return applied
 end
 
 function setupExchangeAPI:refreshComments()

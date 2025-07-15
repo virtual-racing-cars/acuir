@@ -32,7 +32,7 @@ function WidgetWindow:setSize(x, y)
 end
 
 function WidgetWindow:draw(dt)
-        if self.id == "car_setup_window" then self.activeWidgetIndex = 3 end
+        -- if self.id == "car_setup_window" then self.activeWidgetIndex = 3 end
 
         local activeWidget = self.widgets[self.activeWidgetIndex].widget
         local isCollapsed = self.isCollapsed

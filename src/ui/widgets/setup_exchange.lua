@@ -42,7 +42,7 @@ local function likeButtons(path, item, likedList, dislikedList, itemID, contextT
                 ui.invisibleButton("##vote_zone_setup_exchange", actionBlockSize, ui.ButtonFlags.Disabled)
         local r1, r2 = ui.itemRect()
 
-        ui.drawRectFilled(r1, r2, settings.Appearance.uiColorBackgroundShade, 6 * cui.scale())
+        ui.drawRectFilled(r1, r2, settings.Appearance.uiColorPrimary, 6 * cui.scale())
 
         local likeDelta = item.statLikes - item.statDislikes
         -- ui.setCursor(p)
@@ -274,7 +274,7 @@ local function commentsBlock()
                                                         vec2(actionBlockSize.x * 0.75, actionBlockSize.y)
                                                 )
                                         then
-                                                removeComment(v.commentID, true)
+                                                setupExchangeAPI:removeComment(v.commentID, true)
                                                 item.statComments = item.statComments - 1
                                         end
                                         local r1, r2 = ui.itemRect()
@@ -356,41 +356,6 @@ local function commentsBlock()
         setupExchangeAPI.discussingComments[item.setupID] = comment
 end
 
--- local function userControls()
---         ui.sameLine(0, 4)
---         if ui.button("…") then
---                 ui.popup(function()
---                         ui.text("Your name: " .. stored.userName)
---                         if ui.selectable("Change name", false) then
---                                 ui.modalPrompt("Change name", "New name:", stored.userName, function(newName)
---                                         if not newName or #newName:trim() == 0 then return end
---                                         rest(
---                                                 "POST",
---                                                 "user",
---                                                 { userName = newName:trim() },
---                                                 function()
---                                                         ui.toast(ui.Icons.Confirm, "Name changed")
---                                                         stored.userName = newName:trim()
---                                                         listOfSetups = nil
---                                                 end,
---                                                 function(err)
---                                                         ui.toast(ui.Icons.Warning, "Couldn’t change name: " .. err)
---                                                 end
---                                         )
---                                 end)
---                         end
---                         if ui.itemHovered() then
---                                 ui.setTooltip("Changing name would also change it for all published content")
---                         end
---                         ui.separator()
---                         if ui.selectable("Your setups…") then
---                                 authorUsernameFilter = stored.userName
---                                 listOfSetups = nil
---                         end
---                 end, { position = ui.windowPos() + ui.itemRectMin() + vec2(0, 20) })
---         end
--- end
-
 local function drawSetupItem(i, v)
         local fontSize = style.main.font.small.size
         local fontSpace = style.main.font.small.space
@@ -408,29 +373,12 @@ local function drawSetupItem(i, v)
         local buttonColor = settings.Appearance.uiColorPrimary
         local fontColor = settings.Appearance.uiColorText
         local subFontColor = settings.Appearance.uiColorText
-        local borderThickness = 1 * cui.scale()
+        local borderThickness = 3 * cui.scale()
 
         if clicked then setupExchangeAPI.selectedSetup = v end
         local active = setupExchangeAPI.selectedSetup and v.setupID == setupExchangeAPI.selectedSetup.setupID
 
-        if hovered and ui.mouseDoubleClicked(ui.MouseButton.Left) then
-                setupExchangeAPI.selectedSetup = v
-
-                setupExchangeAPI.currentlyApplying = true
-                setupExchangeAPI:getSetupData(setupExchangeAPI.selectedSetup, true, function(err, data)
-                        currentlyApplying = false
-                        if err then
-                                cui.menuBanner("Failed to load setup", nil, rgbm.colors.red)
-                        else
-                                ac.saveCurrentSetup(temporaryBackupName)
-
-                                io.save(temporaryName, data)
-                                ac.loadSetup(temporaryName)
-
-                                cui.menuBanner("Setup applied", nil, rgbm.colors.green)
-                        end
-                end)
-        end
+        if hovered and ui.mouseDoubleClicked(ui.MouseButton.Left) then setupExchangeAPI:applySetup(v) end
 
         -- active = true
 
@@ -442,7 +390,6 @@ local function drawSetupItem(i, v)
                 buttonColor = settings.Appearance.uiColorSecondary
         end
 
-        ui.drawRectFilled(r1, r2, settings.Appearance.uiColorPrimary, 6 * cui.scale(), ui.CornerFlags.All)
         ui.drawRect(r1, r2, buttonColor, 6 * cui.scale(), ui.CornerFlags.All, borderThickness)
 
         ui.setCursor(r1)
@@ -532,16 +479,11 @@ local function drawSetupItem(i, v)
         cui.offsetCursorX(5)
 
         local hasComments = v.statComments > 0
-        local commentsClicked = ui.invisibleButton("##setup_exchange_comments_" .. v.setupID, actionBlockSize)
-        local commentsColor = rgbm.colors.gray * 0.7
-        local r1, r2 = ui.itemRect()
-        ui.drawRectFilled(r1, r2, settings.Appearance.uiColorBackgroundShade, 6 * cui.scale())
-
-        if ui.itemHovered() then
-                commentsColor = settings.Appearance.uiColorSecondary
-        elseif hasComments then
-                commentsColor = settings.Appearance.uiColorText
-        end
+        local commentsClicked = cui.smallButton(
+                "##setup_exchange_comments_" .. v.setupID,
+                formatNumber(v.statComments) .. " Comments",
+                actionBlockSize
+        )
 
         if commentsClicked then
                 if setupExchangeAPI.discussingItem == v then
@@ -550,83 +492,42 @@ local function drawSetupItem(i, v)
                         setupExchangeAPI.discussingItem = v
                         setupExchangeAPI.listOfComments = nil
                         setupExchangeAPI.listOfCommentsPrev = nil
-                        local closeCounter = 0
-
-                        -- ui.popup(function()
-                        --         if discussingItem ~= v or closeCounter > 1 then
-                        --                 ui.closePopup()
-                        --                 return
-                        --         end
-                        --         commentsBlock()
-                        -- end, {
-                        --         size = { initial = vec2(400, ui.windowHeight()) },
-                        --         position = ui.windowPos() + vec2(ui.windowWidth() + 20),
-                        --         padding = vec2(12, 0),
-                        --         title = "Comments (" .. v.name:trim() .. " by " .. v.userName .. ")",
-                        --         backgroundColor = settings.Appearance.uiColorBackgroundShade,
-                        --         flags = bit.bor(ui.WindowFlags.NoCollapse, ui.WindowFlags.NoResize),
-                        --         onClose = function()
-                        --                 if discussingItem == v then discussingItem = nil end
-                        --         end,
-                        -- })
                 end
         end
 
-        ui.setCursor(r1)
-        cui.snapCursor()
-        ui.dwriteTextAligned(
-                formatNumber(v.statComments) .. " Comments",
-                style.main.font.small.size,
-                ui.Alignment.Center,
-                ui.Alignment.Center,
-                actionBlockSize,
-                false,
-                hasComments and settings.Appearance.uiColorText or settings.Appearance.uiColorTextDim
-        )
         ui.sameLine()
-        ui.offsetCursorX(actionBlockSize.x)
-        cui.offsetCursorX(5)
+
+        if active and v.userID == setupExchangeAPI.ownUserID then
+                ui.offsetCursorX(actionBlockSize.x - actionBlockSize.y - 5 * cui.scale())
+
+                if
+                        cui.smallIconButton(
+                                "##delete_setup_" .. v.setupID,
+                                ui.Icons.Trash,
+                                vec2(actionBlockSize.y, actionBlockSize.y)
+                        )
+                then
+                        setupExchangeAPI:removeSetup(v.setupID, false)
+                end
+                ui.sameLine()
+                cui.offsetCursorX(5)
+        else
+                ui.offsetCursorX(actionBlockSize.x)
+        end
 
         if active then
-                local applyAvailable = ac.isSetupAvailableToEdit() and v.carID == mainCarID and not currentlyApplying
-                local applyClicked = ui.invisibleButton(
+                local applyAvailable = ac.isSetupAvailableToEdit()
+                        and v.carID == mainCarID
+                        and not setupExchangeAPI.currentlyApplying
+
+                local applyClicked = cui.smallButton(
                         "##download_setup_" .. v.setupID,
+                        "Apply Setup",
                         actionBlockSize,
                         applyAvailable and 0 or ui.ButtonFlags.Disabled
                 )
-                local r1, r2 = ui.itemRect()
-                ui.drawRectFilled(r1, r2, settings.Appearance.uiColorBackgroundShade, 6 * cui.scale())
 
-                ui.setCursor(r1)
-                cui.snapCursor()
-                ui.dwriteTextAligned(
-                        "Apply Setup",
-                        style.main.font.small.size,
-                        ui.Alignment.Center,
-                        ui.Alignment.Center,
-                        actionBlockSize,
-                        false,
-                        applyAvailable and settings.Appearance.uiColorText or settings.Appearance.uiColorTextDim
-                )
-
-                if applyClicked then
-                        setupExchangeAPI.selectedSetup = v
-
-                        setupExchangeAPI.currentlyApplying = true
-                        setupExchangeAPI:getSetupData(setupExchangeAPI.selectedSetup, true, function(err, data)
-                                currentlyApplying = false
-                                if err then
-                                        cui.menuBanner("Failed to load setup", nil, rgbm.colors.red)
-                                else
-                                        ac.saveCurrentSetup(temporaryBackupName)
-
-                                        io.save(temporaryName, data)
-                                        ac.loadSetup(temporaryName)
-
-                                        cui.menuBanner("Setup applied", nil, rgbm.colors.green)
-                                end
-                        end)
-                end
+                if applyClicked then setupExchangeAPI:applySetup(v) end
         else
                 ui.dummy(actionBlockSize)
         end
@@ -678,68 +579,6 @@ local function setupsListWindow(setups)
                         math.max(setupExchangeAPI.setupsTotalCount, #setups) * setupItemHeight + 20 * cui.scale()
                 )
         end)
-end
-
-local function shareSetupButton()
-        local iconButtonHeight = 32 * cui.scale()
-        local buttonWidth = ui.windowWidth() * 0.99
-        local groupBegin = (ui.windowWidth() / 24)
-        local fontSize = style.main.font.body.size
-
-        cui.offsetCursorY(100)
-
-        -- if ac.isSetupAvailableToEdit() and setupExchangeAPI.selectedSetup and setupExchangeAPI.selectedSetup.carID == mainCarID then
-        --         ui.setCursorX(ui.windowWidth() * 0.005)
-        --         if
-        --                 cui.menuButton(
-        --                         "Download Setup",
-        --                         vec2(buttonWidth * 0.49, iconButtonHeight),
-        --                         nil,
-        --                         nil,
-        --                         (setupExchangeAPI.selectedSetup and downloadedAsFiles[setupExchangeAPI.selectedSetup.setupID]) and ui.ButtonFlags.Active
-        --                                 or not currentlyApplying and 0
-        --                                 or ui.ButtonFlags.Disabled,
-        --                         false,
-        --                         false
-        --                 )
-        --         then
-        --                 downloadSetupAsFile(setupExchangeAPI.selectedSetup)
-        --         end
-
-        -- else
-        --         ui.setCursorX(ui.windowWidth() * 0.005)
-        --         if
-        --                 cui.menuButton(
-        --                         "Download Setup",
-        --                         vec2(buttonWidth, iconButtonHeight),
-        --                         nil,
-        --                         nil,
-        --                         (setupExchangeAPI.selectedSetup and currentlyApplying) and 0 or ui.ButtonFlags.Disabled,
-        --                         false,
-        --                         false
-        --                 )
-        --         then
-        --                 downloadSetupAsFile(setupExchangeAPI.selectedSetup)
-        --         end
-        -- end
-
-        ui.setCursorX(ui.windowWidth() * 0.005)
-        if
-                cui.menuButton(
-                        "Share Current Setup",
-                        vec2(buttonWidth, iconButtonHeight),
-                        0,
-                        0,
-                        sessionID ~= nil and 0 or ui.ButtonFlags.Disabled
-                )
-        then
-                ui.modalPrompt("Share setup", "Name the setup:", nil, "Share", "Cancel", nil, nil, function(name)
-                        if name and #name:trim() > 0 then shareSetup(name:trim()) end
-                end)
-        end
-        if ui.itemHovered() and setupExchangeAPI.session.id == nil then
-                ui.setTooltip(setupExchangeAPI.session.error or "Connecting…")
-        end
 end
 
 local function failureBlock(setups)
@@ -837,7 +676,7 @@ function setupExchangeBrowser.body()
         local setups = setupExchangeAPI:refreshSetups()
         if not setups then
                 ui.drawLoadingSpinner(ui.windowSize() / 2 - 20, ui.windowSize() / 2 + 20)
-                setupExchangeAPI:refreshSetups()
+                setupExchangeAPI:initialLoading()
                 return
         end
 
