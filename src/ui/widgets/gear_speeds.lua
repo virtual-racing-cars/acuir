@@ -1,4 +1,3 @@
-local Widget = require("src.classes.Widget")
 local cui = require("src.ui.cui")
 local settings = require("settings")
 local simutils = require("simutils")
@@ -9,7 +8,7 @@ local sim = ac.getSim()
 local uis = ac.getUI()
 local car = ac.getCar(0)
 
-local gearSpeedsWidget = Widget("Max Gear Speeds")
+local gearSpeedsWidget = {}
 
 local function getGearMaxSpeed(gear) return math.round(units:speed(ac.getCarMaxSpeedWithGear(0, gear))) end
 

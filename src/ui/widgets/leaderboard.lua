@@ -250,7 +250,7 @@ end
 
 local isLeaderboardShowingDisconnected = false
 
-function leaderboard:draw(xPos, yPos, width, height)
+function leaderboard:body()
         local height = style.main.font.body.size * 2
         leaderboardBanner(0, height)
 

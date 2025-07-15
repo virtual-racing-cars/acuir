@@ -9,56 +9,6 @@ local style = require("src.ui.style")
 
 local vec2Temp1 = vec2()
 
-local currentApp = app.state.setupTab - 1
-
-local function tabItem(index, title)
-        if
-                cui.treeNodeChildButton(
-                        title,
-                        vec2(ui.availableSpaceX() - 20 * cui.scale(), style.main.font.header.space),
-                        currentApp == index,
-                        true
-                )
-        then
-                currentApp = index
-        end
-        cui.offsetCursorY(5)
-
-        if currentApp == index then ui.setScrollY((index - 5) * 48 * cui.scale()) end
-end
-
-local scrollDelayTimer = 0
-
-function toCapitalCase(str)
-        return (str:gsub("(%a)([%w_']*)", function(first, rest) return first:upper() .. rest:lower() end))
-end
-
-function setupTabBar(tabs)
-        if ui.windowHovered() and scrollDelayTimer < os.clock() then
-                if ui.mouseWheel() > 0 then
-                        currentApp = currentApp == 0 and #tabs - 1 or currentApp - 1
-                        audio:trigger()
-                        scrollDelayTimer = os.clock() + settings.UI.scrollDelayTimeMs / 1000
-                elseif ui.mouseWheel() < 0 then
-                        currentApp = currentApp >= #tabs - 1 and 0 or currentApp + 1
-                        audio:trigger()
-                        scrollDelayTimer = os.clock() + settings.UI.scrollDelayTimeMs / 1000
-                end
-        end
-
-        cui.offsetCursorY(10)
-        ui.pushStyleColor(ui.StyleColor.Button, settings.Appearance.uiColorPrimary)
-        for i in ipairs(tabs) do
-                ui.setCursorX(0)
-
-                tabItem(i - 1, toCapitalCase(tabs[i].name))
-        end
-
-        ui.popStyleColor(1)
-
-        return currentApp + 1
-end
-
 local function linkButton(name, size, linked)
         local clicked = ui.invisibleButton("##linkButton" .. name, size)
         local r1, r2 = ui.itemRect()
@@ -129,7 +79,7 @@ local function drawSetupSpinner(si)
         if si.mirrorAvailable and not si.fixed then
                 local linkButtonWidth = ((ui.windowWidth() - spinnerWidth) - 40 * cui.scale()) - ui.getCursorX()
                 ui.setCursorX(ui.windowWidth() * 0.5 - linkButtonWidth * 0.5)
-                ui.offsetCursorY(-spinnerHeight * 0.6)
+                ui.offsetCursorY(-spinnerHeight * 0.75)
                 if linkButton(si.name, vec2Temp1:set(linkButtonWidth, spinnerHeight), si.mirrored) then
                         si.mirrored = not si.mirrored
                 end
@@ -182,7 +132,7 @@ function car_setup(sm)
                 if v.yPos > -2 then
                         if v.tab == "GEARS" and #tab.setupSpinners == 1 then
                                 v.xPos = 0.5
-                                v.yPos = 3
+                                v.yPos = 4
                         end
 
                         if drawSetupSpinner(v) then changed = true end

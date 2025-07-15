@@ -7,47 +7,26 @@ local sim = ac.getSim()
 
 local vec2Temp1 = vec2()
 
-local genericButtonHeight = 50
-
 local lapTimeSession = 0
 
 ac.onSessionStart(function(sessionIndex, restarted) lapTimeSession = sessionIndex end)
 
 function page.update() end
 
+local WidgetWindow = require("src.classes.WidgetWindow")
+
+local lapTimeWindow = WidgetWindow("lap_times")
+
+for i = 1, sim.sessionsCount do
+        lapTimeWindow:addWidget(simutils.sessionTypeStrings[ac.getSession(i - 1).type], lapTimeWidget)
+end
+
 function page.draw()
-        local genericButtonHeight = 40 * cui.scale()
+        lapTimeSession = lapTimeWindow.activeWidgetIndex - 1
 
-        cui.pushContentWindow(
-                "lap_times_window",
-                0,
-                0,
-                ui.windowWidth() * 0.5,
-                ui.windowHeight() - 255 * cui.scale(),
-                function()
-                        ui.setCursor(0)
-
-                        for i = 1, sim.sessionsCount do
-                                if
-                                        cui.windowTabButton(
-                                                simutils.sessionTypeStrings[ac.getSession(i - 1).type],
-                                                36,
-                                                sim.currentSessionIndex + 1 >= i and ui.ButtonFlags.None
-                                                        or ui.ButtonFlags.Disabled,
-                                                sim.sessionsCount > 1 and lapTimeSession == i - 1
-                                        )
-                                then
-                                        lapTimeSession = i - 1
-                                end
-                                ui.sameLine()
-                        end
-                end,
-                function() lapTimeWidget:drawFooter() end
-        )
-
-        lapTimeWidget:draw(0, 0, ui.windowWidth(), ui.windowHeight(), ac.getSession(lapTimeSession).type)
-
-        cui.popContentWindow()
+        lapTimeWindow:setPosition(0, 0)
+        lapTimeWindow:setSize(ui.windowWidth() * 0.5, ui.windowHeight() - 255 * cui.scale())
+        lapTimeWindow:draw(ac.getSession(lapTimeSession).type)
 
         bottomWidgetBar()
 

@@ -1,5 +1,15 @@
 ## ACUIR Changelog
 *Requires minimum CSP version 0.2.11 (3465)*
+### 0.9.4.2
+
+Features:
+- More work on Setup Exchange frontend.
+- Slight general style redesign (some elements still awaiting update to modular system)
+- Added ability to cycle through all available cameras via buttons next to the camera combo box
+
+Fixes:
+- Fixed a bunch of little shit
+
 ### 0.9.3.7 (unreleased)
 
 Features:

@@ -269,7 +269,7 @@ function lapTimeEntryButton(car, lap, yPos, height)
         end
 end
 
-function lapTimes:draw(xPos, yPos, width, height, session)
+function lapTimes:body()
         ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiColorPrimary * 0.25)
         ui.setCursor(0)
 

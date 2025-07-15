@@ -1,4 +1,3 @@
-local Widget = require("src.classes.Widget")
 local cui = require("src.ui.cui")
 local settings = require("settings")
 local simutils = require("simutils")
@@ -9,7 +8,7 @@ local sim = ac.getSim()
 local uis = ac.getUI()
 local car = ac.getCar(0)
 
-local sessionInfoWidget = Widget("Session Info")
+local sessionInfoWidget = {}
 
 local assistsINI = ac.INIConfig.load(ac.getFolder(ac.FolderID.Cfg) .. "\\assists.ini")
 local raceINI = ac.INIConfig.raceConfig()

@@ -5,6 +5,8 @@ local uis = ac.getUI()
 
 local round = math.round
 
+local carStatusWidget = {}
+
 local car = ac.getCar(0)
 local carINI = ac.INIConfig.carData(0, "car.ini")
 local kgPerL = carINI:get("FUEL_EXT", "KG_PER_LITER", 0.7339)
@@ -121,7 +123,7 @@ local centerStatusInfo = {
         },
 }
 
-function CarStatusWindow()
+function carStatusWidget:body()
         local spaceSize = 34 * cui.scale()
         local fontSize = style.main.font.body.size
 
@@ -401,3 +403,5 @@ function CarStatusWindow()
                 end
         end
 end
+
+return carStatusWidget

@@ -361,7 +361,7 @@ function timetableEntryButton(car, yPos, height)
         end
 end
 
-function timetable:draw(xPos, yPos, width, height)
+function timetable:body()
         local height = style.main.font.body.size * 2
         timetableBanner(0, height)
 

@@ -1,5 +1,6 @@
 local cui = require("ui.cui")
 local settings = require("settings")
+local style = require("src.ui.style")
 local telemetry = require("telemetry")
 local sim = ac.getSim()
 
@@ -307,14 +308,9 @@ local function drawTelemetrySlice()
         end
 end
 
-function telemetryViewer:draw(xPos, yPos, width, height)
-        cui.pushWindow("telemetry_viewer_widget", xPos, yPos, width, height, false)
-        ui.setCursor(0)
-
+function telemetryViewer:body()
         drawTelemetryGraphs()
         drawTelemetrySlice()
-
-        cui.popWindow()
 end
 
 function telemetryViewer:drawFooter()

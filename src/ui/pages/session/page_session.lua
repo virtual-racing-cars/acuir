@@ -1,9 +1,4 @@
-local leaderboardWidget = require("ui.widgets.leaderboard")
-local sessionControlWidget = require("ui.widgets.session_control")
-local sessionInfoWidget = require("ui.widgets.session_info")
 local settings = require("settings")
-local timetableWidget = require("ui.widgets.time_table")
-local trackMapWidget = require("ui.widgets.track_map")
 
 local style = require("src.ui.style")
 local units = require("units")
@@ -61,68 +56,20 @@ local carInfoTable = {
 
 function page.update() end
 
-local function trackMapWindow()
-        trackMapWidget:setPosition(ui.windowWidth() * 0.5 + 7.5 * cui.scale(), 0)
-        trackMapWidget:setSize(ui.windowWidth() / 3 - 15 * cui.scale(), ui.windowHeight())
-        trackMapWidget:draw()
-end
+local WidgetWindow = require("src.classes.WidgetWindow")
 
-local function sessionControlWindow()
-        sessionControlWidget:setPosition((ui.windowWidth() / 6) * 5 + 7.5 * cui.scale(), 0)
-        sessionControlWidget:setSize(
-                (ui.windowWidth() / 6) - 7.5 * cui.scale(),
-                ui.windowHeight() * 0.15 - 7.5 * cui.scale()
-        )
-        sessionControlWidget:draw()
-end
+local entryListWindow = WidgetWindow("entry_list")
+entryListWindow:addWidget("Leaderboard", require("ui.widgets.leaderboard"))
+entryListWindow:addWidget("Time Table", require("ui.widgets.time_table"))
 
-local function modifiersWindow()
-        sessionInfoWidget:setPosition(
-                (ui.windowWidth() / 6) * 5 + 7.5 * cui.scale(),
-                ui.windowHeight() * 0.15 + 7.5 * cui.scale()
-        )
-        sessionInfoWidget:setSize(
-                (ui.windowWidth() / 6) - 7.5 * cui.scale(),
-                ui.windowHeight() * 0.85 - 7.5 * cui.scale()
-        )
-        sessionInfoWidget:draw()
-end
+local trackMapWindow = WidgetWindow("track_map")
+trackMapWindow:addWidget("Track Map", require("ui.widgets.track_map"))
 
-local function leaderboardWindow()
-        cui.pushContentWindow(
-                "home_leaderboard_window",
-                0,
-                0,
-                ui.windowWidth() * 0.5 - 7.5 * cui.scale(),
-                ui.windowHeight(),
-                function()
-                        ui.setCursor(0)
-                        if cui.windowTabButton("LEADERBOARD", 36, ui.ButtonFlags.None, leaderboardActive) then
-                                leaderboardActive = true
-                        end
-                        ui.sameLine()
+local sessionControlWindow = WidgetWindow("session_control")
+sessionControlWindow:addWidget("Session Control", require("ui.widgets.session_control"))
 
-                        if cui.windowTabButton("TIME TABLE", 36, ui.ButtonFlags.None, not leaderboardActive) then
-                                leaderboardActive = false
-                        end
-                end,
-                function()
-                        if leaderboardActive then
-                                leaderboardWidget:drawFooter()
-                        else
-                                timetableWidget:drawFooter()
-                        end
-                end
-        )
-
-        if leaderboardActive then
-                leaderboardWidget:draw(0, 0, ui.windowWidth(), ui.windowHeight())
-        else
-                timetableWidget:draw(0, 0, ui.windowWidth(), ui.windowHeight())
-        end
-
-        cui.popContentWindow()
-end
+local sessionInfoWindow = WidgetWindow("session_info")
+sessionInfoWindow:addWidget("Session Info", require("ui.widgets.session_info"))
 
 function page.draw()
         genericButtonHeight = 40 * cui.scale()
@@ -130,10 +77,30 @@ function page.draw()
 
         cui.pushWindow("session_box_window", 0, 0, ui.windowWidth(), ui.windowHeight() - 255 * cui.scale())
 
-        leaderboardWindow()
-        trackMapWindow()
-        sessionControlWindow()
-        modifiersWindow()
+        entryListWindow:setPosition(0, 0)
+        entryListWindow:setSize(ui.windowWidth() * 0.5 - 7.5 * cui.scale(), ui.windowHeight())
+        entryListWindow:draw()
+
+        trackMapWindow:setPosition(ui.windowWidth() * 0.5 + 7.5 * cui.scale(), 0)
+        trackMapWindow:setSize(ui.windowWidth() / 3 - 15 * cui.scale(), ui.windowHeight())
+        trackMapWindow:draw()
+
+        sessionControlWindow:setPosition((ui.windowWidth() / 6) * 5 + 7.5 * cui.scale(), 0)
+        sessionControlWindow:setSize(
+                (ui.windowWidth() / 6) - 7.5 * cui.scale(),
+                ui.windowHeight() * 0.15 - 7.5 * cui.scale()
+        )
+        sessionControlWindow:draw()
+
+        sessionInfoWindow:setPosition(
+                (ui.windowWidth() / 6) * 5 + 7.5 * cui.scale(),
+                ui.windowHeight() * 0.15 + 7.5 * cui.scale()
+        )
+        sessionInfoWindow:setSize(
+                (ui.windowWidth() / 6) - 7.5 * cui.scale(),
+                ui.windowHeight() * 0.85 - 7.5 * cui.scale()
+        )
+        sessionInfoWindow:draw()
 
         cui.popWindow()
 

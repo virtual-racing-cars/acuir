@@ -1,5 +1,4 @@
 local AISpline = require("ai_spline")
-local Widget = require("src.classes.Widget")
 local cui = require("ui.cui")
 local race = require("race")
 local settings = require("settings")
@@ -10,7 +9,7 @@ local sim = ac.getSim()
 
 local canvasSize = 1024
 
-local trackMapWidget = Widget("Track Map")
+local trackMapWidget = {}
 
 local map = {
         isShowingCars = true,

@@ -1,11 +1,10 @@
-local Widget = require("src.classes.Widget")
 local cui = require("src.ui.cui")
 local settings = require("settings")
 local simutils = require("simutils")
 local style = require("src.ui.style")
 local sim = ac.getSim()
 
-local sessionControlWidget = Widget("Session Control")
+local sessionControlWidget = {}
 
 function sessionControlWidget:body()
         local driveButtonHeight = ui.windowHeight()
