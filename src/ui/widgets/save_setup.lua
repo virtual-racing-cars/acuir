@@ -2,7 +2,7 @@ local carSetup = require("car_setup")
 local cui = require("ui.cui")
 local settings = require("settings")
 local setupExchangeAPI = require("setup_exchange")
-local style = require("ui.style")
+local style = require("ui.cui.style")
 
 local vec2Temp1 = vec2()
 local vec2Temp2 = vec2()

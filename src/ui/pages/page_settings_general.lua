@@ -2,7 +2,7 @@ local page = { tab = 1 }
 
 local app = require("app")
 local cui = require("ui.cui")
-local pages = require("ui.pages.pages")
+local pages = require("ui.pages")
 local settings = require("settings")
 
 local WindowWidget = require("classes.WidgetWindow")

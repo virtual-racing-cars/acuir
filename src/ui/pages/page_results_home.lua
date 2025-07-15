@@ -2,7 +2,7 @@ local page = {}
 
 local callback = require("callback")
 local cui = require("ui.cui")
-local pages = require("ui.pages.pages")
+local pages = require("ui.pages")
 local replay = require("replay")
 local settings = require("settings")
 local simutils = require("simutils")

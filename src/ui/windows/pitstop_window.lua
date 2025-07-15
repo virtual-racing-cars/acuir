@@ -2,7 +2,7 @@ local app = require("app")
 local cui = require("ui.cui")
 local pitstop = require("pitstop")
 local settings = require("settings")
-local style = require("ui.style")
+local style = require("ui.cui.style")
 local sim = ac.getSim()
 
 local activeItemIndex = 0

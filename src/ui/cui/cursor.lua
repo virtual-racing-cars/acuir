@@ -1,4 +1,4 @@
-local scale = require("ui.scale")
+local scale = require("ui.cui.scale")
 
 local cursor = {}
 

@@ -1,6 +1,6 @@
-local button = require("ui.button")
+local button = require("ui.cui.button")
 local callback = require("callback")
-local scale = require("ui.scale")
+local scale = require("ui.cui.scale")
 
 local dialog = {}
 

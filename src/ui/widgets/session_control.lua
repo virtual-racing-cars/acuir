@@ -1,7 +1,7 @@
 local cui = require("ui.cui")
 local settings = require("settings")
 local simutils = require("simutils")
-local style = require("ui.style")
+local style = require("ui.cui.style")
 local sim = ac.getSim()
 
 local sessionControlWidget = {}

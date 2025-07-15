@@ -3,7 +3,7 @@ local page = {}
 local configs = require("configs")
 local controllerTweaks = require("controller_tweaks")
 local cui = require("ui.cui")
-local pages = require("ui.pages.pages")
+local pages = require("ui.pages")
 local settings = require("settings")
 
 local bottomBarButtons = {

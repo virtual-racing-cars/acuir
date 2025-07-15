@@ -2,10 +2,10 @@ local page = {}
 
 local callback = require("callback")
 local cui = require("ui.cui")
-local pages = require("ui.pages.pages")
+local pages = require("ui.pages")
 local settings = require("settings")
 local simutils = require("simutils")
-local style = require("ui.style")
+local style = require("ui.cui.style")
 local sim = ac.getSim()
 local car = ac.getCar(0)
 

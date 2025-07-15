@@ -2,7 +2,7 @@ require("classes.Checkbox")
 local cui = require("ui.cui")
 local race = require("race")
 local settings = require("settings")
-local style = require("ui.style")
+local style = require("ui.cui.style")
 local sim = ac.getSim()
 
 local function drawIndicator(width, height, color)

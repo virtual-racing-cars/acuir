@@ -3,9 +3,9 @@ require("ui.common")
 local app = require("app")
 local csp = require("csp")
 local cui = require("ui.cui")
-local pages = require("ui.pages.pages")
+local pages = require("ui.pages")
 local settings = require("settings")
-local style = require("ui.style")
+local style = require("ui.cui.style")
 local sim = ac.getSim()
 
 if settings.AppData.shownOnboarding == false then

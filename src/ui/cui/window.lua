@@ -1,6 +1,6 @@
-local scale = require("ui.scale")
+local scale = require("ui.cui.scale")
 local settings = require("settings")
-local style = require("ui.style")
+local style = require("ui.cui.style")
 
 local vec2Temp1 = vec2()
 

@@ -5,7 +5,7 @@ require("classes.SetupManager")
 local app = require("app")
 local cui = require("ui.cui")
 local settings = require("settings")
-local style = require("ui.style")
+local style = require("ui.cui.style")
 
 local car = ac.getCar(0)
 

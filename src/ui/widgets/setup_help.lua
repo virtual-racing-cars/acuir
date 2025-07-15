@@ -1,6 +1,6 @@
 local cui = require("ui.cui")
 local settings = require("settings")
-local style = require("ui.style")
+local style = require("ui.cui.style")
 
 local setupHelpWidget = {}
 

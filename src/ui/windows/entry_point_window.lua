@@ -2,7 +2,7 @@ local app = require("app")
 local csp = require("csp")
 local cui = require("ui.cui")
 local settings = require("settings")
-local style = require("ui.style")
+local style = require("ui.cui.style")
 
 ac.setWindowOpen("entryWindow", true)
 

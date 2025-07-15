@@ -1,9 +1,9 @@
-local cursor = require("ui.cursor")
-local scale = require("ui.scale")
+local cursor = require("ui.cui.cursor")
+local scale = require("ui.cui.scale")
 local settings = require("settings")
-local state = require("ui.state")
-local style = require("ui.style")
-local window = require("ui.window")
+local state = require("ui.cui.state")
+local style = require("ui.cui.style")
+local window = require("ui.cui.window")
 
 local combo = {}
 

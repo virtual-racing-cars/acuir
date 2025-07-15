@@ -1,6 +1,6 @@
 local settings = require("settings")
 
-local style = require("ui.style")
+local style = require("ui.cui.style")
 local units = require("units")
 local weather = require("weather")
 local car = ac.getCar(0)

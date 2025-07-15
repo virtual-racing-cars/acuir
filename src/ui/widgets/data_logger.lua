@@ -2,7 +2,7 @@ local cui = require("ui.cui")
 local dataLogger = require("data_logger")
 local race = require("race")
 local settings = require("settings")
-local style = require("ui.style")
+local style = require("ui.cui.style")
 local units = require("units")
 
 local car = ac.getCar(0)

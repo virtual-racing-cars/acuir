@@ -5,7 +5,7 @@ local callback = require("callback")
 local cui = require("ui.cui")
 local gearSpeedsWidget = require("ui.widgets.gear_speeds")
 local settings = require("settings")
-local style = require("ui.style")
+local style = require("ui.cui.style")
 
 local vec2Temp1 = vec2()
 
