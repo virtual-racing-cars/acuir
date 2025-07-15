@@ -5,12 +5,12 @@ local cui = require("ui.cui")
 local pages = require("ui.pages.pages")
 local settings = require("settings")
 
-local WindowWidget = require("src.classes.WidgetWindow")
+local WindowWidget = require("classes.WidgetWindow")
 
 local generalSettingsWindow = WindowWidget("settings_general")
 
-generalSettingsWindow:addWidget("General", require("src.ui.widgets.settings_general"))
-generalSettingsWindow:addWidget("UI", require("src.ui.widgets.settings_ui"))
+generalSettingsWindow:addWidget("General", require("ui.widgets.settings_general"))
+generalSettingsWindow:addWidget("UI", require("ui.widgets.settings_ui"))
 
 local bottomBarButtons = {
         {

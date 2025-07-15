@@ -1,4 +1,4 @@
-local cui = require("src.ui.cui")
+local cui = require("ui.cui")
 
 local WidgetWindow = class("WidgetWindow")
 

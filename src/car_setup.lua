@@ -1,5 +1,5 @@
 local app = require("app")
-local settings = require("src.settings")
+local settings = require("settings")
 local sim = ac.getSim()
 
 local setup = {

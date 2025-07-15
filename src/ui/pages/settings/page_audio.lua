@@ -1,12 +1,12 @@
 local page = {}
 
-local WidgetWindow = require("src.classes.WidgetWindow")
+local WidgetWindow = require("classes.WidgetWindow")
 local cui = require("ui.cui")
 local pages = require("ui.pages.pages")
 local settings = require("settings")
 
 local audioWindow = WidgetWindow("audio")
-audioWindow:addWidget("Audio", require("src.ui.widgets.audio_levels"))
+audioWindow:addWidget("Audio", require("ui.widgets.audio_levels"))
 
 local bottomBarButtons = {
         {

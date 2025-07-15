@@ -1,8 +1,8 @@
 local sim = ac.getSim()
 
-local ControlBinding = require("src.classes.ControlBinding")
-local ControlTab = require("src.classes.ControlTab")
-local MappedConfig = require("src.classes.MappedConfig")
+local ControlBinding = require("classes.ControlBinding")
+local ControlTab = require("classes.ControlTab")
+local MappedConfig = require("classes.MappedConfig")
 
 local configs = require("configs")
 

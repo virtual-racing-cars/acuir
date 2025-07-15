@@ -1,9 +1,9 @@
 local app = require("app")
 local audio = require("audio")
-local carSetup = require("src.car_setup")
+local carSetup = require("car_setup")
 local cui = require("ui.cui")
 local settings = require("settings")
-local style = require("src.ui.style")
+local style = require("ui.style")
 
 local vec2Temp1 = vec2()
 local vec2Temp2 = vec2()

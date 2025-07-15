@@ -3,7 +3,7 @@ local page = {}
 local cui = require("ui.cui")
 local pages = require("ui.pages.pages")
 local settings = require("settings")
-local style = require("src.ui.style")
+local style = require("ui.style")
 local sim = ac.getSim()
 local firstPersonCameraFOV = sim.firstPersonCameraFOV
 

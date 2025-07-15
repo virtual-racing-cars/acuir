@@ -1,7 +1,7 @@
 local audio = require("audio")
 local cui = require("ui.cui")
 local settings = require("settings")
-local style = require("src.ui.style")
+local style = require("ui.style")
 
 local TabBar = class("TabBar")
 

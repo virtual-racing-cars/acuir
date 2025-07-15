@@ -1,7 +1,7 @@
-local cursor = require("src.ui.cursor")
-local scale = require("src.ui.scale")
+local cursor = require("ui.cursor")
+local scale = require("ui.scale")
 local settings = require("settings")
-local style = require("src.ui.style")
+local style = require("ui.style")
 
 local vec2Temp1 = vec2()
 

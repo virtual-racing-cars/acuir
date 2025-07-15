@@ -2,9 +2,9 @@ local setupExchangeAPI = require("setup_exchange")
 
 local setupExchangeBrowser = {}
 
-local cui = require("src.ui.cui")
+local cui = require("ui.cui")
 local settings = require("settings")
-local style = require("src.ui.style")
+local style = require("ui.style")
 
 local mainCarID = ac.getCarID(0)
 

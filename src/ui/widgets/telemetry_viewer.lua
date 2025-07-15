@@ -1,6 +1,6 @@
 local cui = require("ui.cui")
 local settings = require("settings")
-local style = require("src.ui.style")
+local style = require("ui.style")
 local telemetry = require("telemetry")
 local sim = ac.getSim()
 

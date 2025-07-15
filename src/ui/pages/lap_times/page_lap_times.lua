@@ -1,8 +1,8 @@
 local page = {}
 
-local WidgetWindow = require("src.classes.WidgetWindow")
+local WidgetWindow = require("classes.WidgetWindow")
 local cui = require("ui.cui")
-local lapTimeWidget = require("src.ui.widgets.lap_times")
+local lapTimeWidget = require("ui.widgets.lap_times")
 local simutils = require("simutils")
 local lapTimeWindow = WidgetWindow("lap_times")
 

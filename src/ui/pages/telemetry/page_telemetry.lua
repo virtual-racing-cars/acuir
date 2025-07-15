@@ -1,9 +1,9 @@
 local page = {}
 
-local WidgetWindow = require("src.classes.WidgetWindow")
+local WidgetWindow = require("classes.WidgetWindow")
 
 local telemetryWindow = WidgetWindow("telemetry")
-telemetryWindow:addWidget("Telemetry", require("src.ui.widgets.telemetry_viewer"))
+telemetryWindow:addWidget("Telemetry", require("ui.widgets.telemetry_viewer"))
 
 function page:draw(dt)
         telemetryWindow:setPosition(0, 0)

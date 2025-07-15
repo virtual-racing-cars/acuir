@@ -14,7 +14,7 @@ local bottomBarButtons = {
         },
 }
 
-local WidgetWindow = require("src.classes.WidgetWindow")
+local WidgetWindow = require("classes.WidgetWindow")
 
 local bindingWindow = WidgetWindow("binding_window")
 bindingWindow:addWidget("Bindings", require("ui.widgets.control_bindings"))

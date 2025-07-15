@@ -1,6 +1,6 @@
 local configs = require("configs")
 local controllerTweaks = require("controller_tweaks")
-local cui = require("src.ui.cui")
+local cui = require("ui.cui")
 local settings = require("settings")
 local sim = ac.getSim()
 

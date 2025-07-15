@@ -5,7 +5,7 @@ require("classes.SetupManager")
 local app = require("app")
 local cui = require("ui.cui")
 local settings = require("settings")
-local style = require("src.ui.style")
+local style = require("ui.style")
 
 local car = ac.getCar(0)
 
@@ -42,7 +42,7 @@ local function setupItemWindow()
         cui.popContentWindow()
 end
 
-local WidgetWindow = require("src.classes.WidgetWindow")
+local WidgetWindow = require("classes.WidgetWindow")
 
 local setupHelpWidget = WidgetWindow("setup_help")
 setupHelpWidget:addWidget("Help", require("ui.widgets.setup_help"))

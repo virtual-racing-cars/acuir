@@ -1,5 +1,5 @@
 local sim = ac.getSim()
-local Car = require("src.classes.Car")
+local Car = require("classes.Car")
 
 local session = {
         leaderboard = table.new(sim.carsCount, 0),

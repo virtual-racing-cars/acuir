@@ -1,4 +1,4 @@
-local MappedConfig = require("src.classes.MappedConfig")
+local MappedConfig = require("classes.MappedConfig")
 
 local configs = {
         CM = ac.INIConfig.load(ac.dirname() .. "\\cfg\\cm_controls.ini"),

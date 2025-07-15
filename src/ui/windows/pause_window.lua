@@ -5,7 +5,7 @@ local callback = require("callback")
 local cui = require("ui.cui")
 local pages = require("ui.pages.pages")
 local settings = require("settings")
-local style = require("src.ui.style")
+local style = require("ui.style")
 pages.manager:registerPage("PauseMenu", require("ui.pages.pause.page_pause_home"))
 
 function PauseMenuWindow(dt)

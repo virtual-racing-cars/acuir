@@ -1,11 +1,11 @@
-require("src.classes.Slider")
+require("classes.Slider")
 local app = require("app")
 local audio = require("audio")
 local callback = require("callback")
 local cui = require("ui.cui")
-local gearSpeedsWidget = require("src.ui.widgets.gear_speeds")
+local gearSpeedsWidget = require("ui.widgets.gear_speeds")
 local settings = require("settings")
-local style = require("src.ui.style")
+local style = require("ui.style")
 
 local vec2Temp1 = vec2()
 
@@ -99,7 +99,7 @@ local function drawSetupSpinner(si)
         return changed
 end
 
-local WidgetWindow = require("src.classes.WidgetWindow")
+local WidgetWindow = require("classes.WidgetWindow")
 
 local gearSpeedsWindow = WidgetWindow("gear_speeds")
 gearSpeedsWindow:addWidget("Max Speeds", gearSpeedsWidget)

@@ -1,6 +1,6 @@
 local audio = require("audio")
-local cursor = require("src.ui.cursor")
-local scale = require("src.ui.scale")
+local cursor = require("ui.cursor")
+local scale = require("ui.scale")
 local settings = require("settings")
 
 local vec2Temp1 = vec2()

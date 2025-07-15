@@ -1,8 +1,8 @@
-require("src.classes.Checkbox")
+require("classes.Checkbox")
 local cui = require("ui.cui")
 local race = require("race")
 local settings = require("settings")
-local style = require("src.ui.style")
+local style = require("ui.style")
 local sim = ac.getSim()
 
 local function drawTimeIndicator(width, height, color)

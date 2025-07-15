@@ -1,6 +1,6 @@
 local settings = require("settings")
 
-local style = require("src.ui.style")
+local style = require("ui.style")
 local units = require("units")
 local weather = require("weather")
 local car = ac.getCar(0)
@@ -56,7 +56,7 @@ local carInfoTable = {
 
 function page.update() end
 
-local WidgetWindow = require("src.classes.WidgetWindow")
+local WidgetWindow = require("classes.WidgetWindow")
 
 local entryListWindow = WidgetWindow("entry_list")
 entryListWindow:addWidget("Leaderboard", require("ui.widgets.leaderboard"))

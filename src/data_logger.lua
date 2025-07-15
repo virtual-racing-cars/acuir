@@ -1,4 +1,4 @@
-local cui = require("src.ui.cui")
+local cui = require("ui.cui")
 local motec = require("shared\\sim\\motec")
 local settings = require("settings")
 local validCar = ac.getCar(0).extendedPhysics

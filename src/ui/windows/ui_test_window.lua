@@ -1,8 +1,8 @@
 local app = require("app")
 local csp = require("csp")
-local cui = require("src.ui.cui")
+local cui = require("ui.cui")
 local settings = require("settings")
-local style = require("src.ui.style")
+local style = require("ui.style")
 
 local inputTextString = ""
 local checkboxValue = false

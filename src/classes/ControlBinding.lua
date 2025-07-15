@@ -1,5 +1,5 @@
-local ControlAxis = require("src.classes.ControlAxis")
-local ControlButton = require("src.classes.ControlButton")
+local ControlAxis = require("classes.ControlAxis")
+local ControlButton = require("classes.ControlButton")
 local configs = require("configs")
 local settings = require("settings")
 

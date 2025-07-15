@@ -1,7 +1,7 @@
 local cui = require("ui.cui")
 local messages = require("messages")
 local settings = require("settings")
-local style = require("src.ui.style")
+local style = require("ui.style")
 local sim = ac.getSim()
 
 local chat = {

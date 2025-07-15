@@ -1,5 +1,5 @@
 local callback = require("callback")
-local scale = require("src.ui.scale")
+local scale = require("ui.scale")
 
 local banner = {}
 

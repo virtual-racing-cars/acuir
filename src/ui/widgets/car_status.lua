@@ -1,5 +1,5 @@
 local cui = require("ui.cui")
-local style = require("src.ui.style")
+local style = require("ui.style")
 local units = require("units")
 local uis = ac.getUI()
 

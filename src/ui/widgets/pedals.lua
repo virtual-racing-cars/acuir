@@ -1,7 +1,7 @@
 local cui = require("ui.cui")
 local race = require("race")
 local settings = require("settings")
-local style = require("src.ui.style")
+local style = require("ui.style")
 local units = require("units")
 local sim = ac.getSim()
 

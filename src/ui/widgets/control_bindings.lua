@@ -4,7 +4,7 @@ local controls = require("controls")
 local cui = require("ui.cui")
 local keys = require("keys")
 local settings = require("settings")
-local style = require("src.ui.style")
+local style = require("ui.style")
 local sim = ac.getSim()
 
 local inputModeStringKeys = {

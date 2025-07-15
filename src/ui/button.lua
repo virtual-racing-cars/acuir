@@ -1,9 +1,9 @@
 local callback = require("callback")
-local cursor = require("src.ui.cursor")
-local scale = require("src.ui.scale")
+local cursor = require("ui.cursor")
+local scale = require("ui.scale")
 local settings = require("settings")
-local state = require("src.ui.state")
-local style = require("src.ui.style")
+local state = require("ui.state")
+local style = require("ui.style")
 local sim = ac.getSim()
 
 local vec2Temp1 = vec2()
