@@ -84,6 +84,9 @@ local function getDriverTags(carIndex) return ac.DriverTags(ac.getDriverName(car
 local comboActive = false
 
 function card:draw(xPos, yPos, width, height)
+        local fontSize = style.main.font.body.size
+        local fontSpace = style.main.font.body.space
+
         cui.pushWindow("card_widget_window", xPos, yPos, width, height, false)
         local border = style.main.margins.innerSize
         local buttonHeight = style.main.font.body.size * 2
@@ -108,32 +111,60 @@ function card:draw(xPos, yPos, width, height)
                 false
         )
 
-        local fontSize = style.main.font.body.size
+        ui.setCursor(0)
+
+        local p = ui.getCursor()
+        ui.drawImageRounded(
+                string.format(
+                        "%s\\%s\\skins\\%s\\livery.png",
+                        ac.getFolder(ac.FolderID.ContentCars),
+                        ac.getCarID(spectatedCar.index),
+                        ac.getCarSkinID(spectatedCar.index)
+                ),
+                p,
+                p + vec2(fontSpace, fontSpace),
+                6 * cui.scale()
+        )
 
         local driverName = ac.getDriverName(sim.focusedCar)
         driverName = isempty(driverName) and "Driver %s" % sim.focusedCar or driverName
 
         ui.setCursor(0)
+        ui.setCursorX(fontSpace + 10 * cui.scale())
         cui.snapCursor()
         ui.dwriteTextAligned(
                 driverName,
                 fontSize,
                 ui.Alignment.Start,
                 ui.Alignment.Center,
-                vec2(ui.windowWidth(), fontSize * 1.2)
+                vec2(ui.windowWidth(), fontSpace)
         )
 
-        cui.setCursorX(0)
-        cui.textWriteBodyAligned(
+        local p = ui.getCursor()
+
+        ui.drawImageRounded(
+                string.format(
+                        "%s\\%s\\skins\\%s\\livery.png",
+                        ac.getFolder(ac.FolderID.ContentCars),
+                        ac.getCarID(spectatedCar.index),
+                        ac.getCarSkinID(spectatedCar.index)
+                ),
+                p,
+                p + vec2(fontSpace, fontSpace),
+                6 * cui.scale()
+        )
+
+        ui.setCursorX(fontSpace + 10 * cui.scale())
+        ui.dwriteTextAligned(
                 ac.getCarName(spectatedCar.index),
-                ui.windowWidth(),
-                nil,
+                fontSize,
                 ui.Alignment.Start,
-                ui.Alignment.End
+                ui.Alignment.End,
+                vec2(ui.windowWidth(), fontSpace)
         )
 
         cui.setCursorX(0)
-        cui.offsetCursorY(20)
+        cui.offsetCursorY(15)
         if
                 cui.iconButton(
                         "##previous_driver",
@@ -184,24 +215,12 @@ function card:draw(xPos, yPos, width, height)
                 nextCamera(spectatedCar)
         end
 
-        local skin = string.format(
-                "%s\\%s\\skins\\%s\\livery.png",
-                ac.getFolder(ac.FolderID.ContentCars),
-                ac.getCarID(spectatedCar.index),
-                ac.getCarSkinID(spectatedCar.index)
-        )
-        local skinImageSize = fontSize * 3
-
-        ui.setCursorX(ui.windowWidth() - skinImageSize)
-        ui.setCursorY(0)
-        ui.drawImageRounded(skin, ui.getCursor(), ui.getCursor() + vec2(skinImageSize, skinImageSize), 6 * cui.scale())
-
         local managePlayerButtonWidth = buttonHeight
         local managePlayerButtonHeight = managePlayerButtonWidth * 2
         ui.setCursorX(0)
         ui.setCursorY(ui.windowHeight() - managePlayerButtonHeight)
 
-        if not sim.isOnlineRace or spectatedCar.index == 0 then
+        if false then --not sim.isOnlineRace or spectatedCar.index == 0 then
                 cui.popWindow()
                 cui.popWindow()
                 return
