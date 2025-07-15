@@ -21,7 +21,6 @@ function dataLoggerWidget:body()
                         false,
                         settings.Appearance.uiColorTextDim
                 )
-                cui.popContentWindow()
                 return
         end
 

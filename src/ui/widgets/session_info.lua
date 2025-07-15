@@ -113,13 +113,15 @@ function sessionInfoWidget:body()
 
         cui.setCursorX(0)
         cui.snapCursor()
+        style:pushFontBold()
         ui.dwriteTextAligned(
                 "Sessions",
-                headerFontSize,
+                bodyFontSize,
                 ui.Alignment.Center,
                 ui.Alignment.Center,
-                vec2(ui.windowWidth(), headerFontSpace)
+                vec2(ui.windowWidth(), bodyFontSpace)
         )
+        ui.popDWriteFont()
 
         for sessionIndex = 0, sim.sessionsCount - 1 do
                 local session = ac.getSession(sessionIndex)
@@ -183,13 +185,15 @@ function sessionInfoWidget:body()
 
         cui.setCursorX(0)
         cui.snapCursor()
+        style:pushFontBold()
         ui.dwriteTextAligned(
                 "Conditions",
-                headerFontSize,
+                bodyFontSize,
                 ui.Alignment.Center,
                 ui.Alignment.Center,
-                vec2(ui.windowWidth(), headerFontSpace)
+                vec2(ui.windowWidth(), bodyFontSpace)
         )
+        ui.popDWriteFont()
 
         for _, weatherInfo in ipairs(sessionInfoTable) do
                 cui.setCursorX(0)
@@ -218,13 +222,15 @@ function sessionInfoWidget:body()
 
         cui.setCursorX(0)
         cui.snapCursor()
+        style:pushFontBold()
         ui.dwriteTextAligned(
                 "Modifiers",
-                headerFontSize,
+                bodyFontSize,
                 ui.Alignment.Center,
                 ui.Alignment.Center,
-                vec2(ui.windowWidth(), headerFontSpace)
+                vec2(ui.windowWidth(), bodyFontSpace)
         )
+        ui.popDWriteFont()
 
         for _, assist in ipairs(assists) do
                 cui.setCursorX(0)

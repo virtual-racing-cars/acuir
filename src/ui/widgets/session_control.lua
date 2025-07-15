@@ -47,8 +47,14 @@ function sessionControlWidget:body()
                 end
         end
 
-        if not ac.canCastVote() and sim.isOnlineRace then
-                ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiColorSecondary * 0.9, 6)
+        if not ac.canCastVote("restart") and sim.isOnlineRace then
+                ui.drawRectFilled(
+                        0,
+                        ui.windowSize(),
+                        settings.Appearance.uiColorSecondary * 0.9,
+                        6 * cui.scale(),
+                        ui.CornerFlags.Bottom
+                )
                 ui.setCursor(0)
                 ui.dwriteTextAligned(
                         "Voting Cooldown %.0f s" % ac.timeToNextVote(),

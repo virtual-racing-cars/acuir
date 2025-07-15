@@ -271,7 +271,6 @@ function card:draw(xPos, yPos, width, height)
                 ac.castVote("kick", true, spectatedCar.index)
         end
         ui.sameLine()
-        cui.offsetCursorX(30)
 
         local pingColor = rgbm.colors.green
 
@@ -283,18 +282,18 @@ function card:draw(xPos, yPos, width, height)
                 pingColor = rgbm.colors.yellow
         end
 
-        cui.offsetCursorY(-20)
-        cui.textWriteBodyAligned(
-                string.format("Ping %s ms", spectatedCar.ping),
-                120 * cui.scale(),
-                nil,
-                ui.Alignment.Start,
+        cui.offsetCursorX(30)
+        ui.dwriteTextAligned(
+                string.format("Ping\n%s ms", spectatedCar.ping),
+                style.main.font.body.size,
                 ui.Alignment.Center,
+                ui.Alignment.Center,
+                vec2(managePlayerButtonWidth * 2, managePlayerButtonHeight),
+                false,
                 pingColor
         )
 
         cui.popWindow()
-
         cui.popWindow()
 end
 

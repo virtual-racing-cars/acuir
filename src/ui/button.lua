@@ -296,8 +296,8 @@ function button.binding(name, label, binder, size, flags)
 
         if binder._button:down() then buttonColor = settings.Appearance.uiColorSecondary end
 
-        -- if hovered and ui.mouseClicked(ui.MouseButton.Right) then button:unbind(i) end
         ui.drawRectFilled(r1, r2, buttonColor, 6 * scale.get())
+
         ui.setCursor(r1)
 
         ui.itemPopup("##unbinding" .. binder.bind, ui.MouseButton.Right, function()
@@ -525,6 +525,8 @@ function button.bindingAxle(name, label, binder, size, flags)
                 textColor
         )
         ui.sameLine()
+
+        if hovered then ui.drawRect(r1, r2, settings.Appearance.uiColorAccent, 6 * scale.get()) end
 
         return clicked and not (flags == ui.ButtonFlags.Disabled)
 end
