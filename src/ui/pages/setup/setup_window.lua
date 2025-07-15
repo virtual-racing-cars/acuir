@@ -113,7 +113,7 @@ function car_setup(sm)
 
         if tab.name == "GEARS" then
                 gearSpeedsWindow:setPosition(ui.windowWidth() * 0.05, 0)
-                gearSpeedsWindow:setSize(ui.windowWidth() * 0.9, ui.windowWidth() * 0.3)
+                gearSpeedsWindow:setSize(ui.windowWidth() * 0.9, ui.windowWidth() * 0.25)
                 gearSpeedsWindow:draw()
 
                 -- gearWindow(#tab.setupSpinners) end

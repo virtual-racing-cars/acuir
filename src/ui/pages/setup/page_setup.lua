@@ -9,6 +9,8 @@ local style = require("ui.style")
 
 local car = ac.getCar(0)
 
+local helpWindowDelay = 0
+
 local vec2Temp1 = vec2()
 
 sm = SetupManager()
@@ -64,7 +66,9 @@ local dataLoggerWindow = WidgetWindow("data_logger")
 dataLoggerWindow:addWidget("CSP Data Logger", require("ui.widgets.data_logger"))
 
 function page:draw()
-        if sm.activeHelpString == "" then
+        if sm.activeHelpString == "" then helpWindowDelay = os.clock() + 0.3 end
+
+        if helpWindowDelay > os.clock() then
                 carSetupWindow:setPosition(0, 0)
                 carSetupWindow:setSize(ui.windowWidth() * 0.22, ui.windowHeight() * 0.75 - 7.5 * cui.scale())
                 carSetupWindow:draw()
@@ -80,13 +84,13 @@ function page:draw()
 
         setupItemWindow()
 
-        dataLoggerWindow:setPosition(ui.windowWidth() * 0.78, 0)
-        dataLoggerWindow:setSize(ui.windowWidth() * 0.22, ui.windowHeight() * 0.16 - 7.5 * cui.scale())
-        dataLoggerWindow:draw()
-
-        carStatusWindow:setPosition(ui.windowWidth() * 0.78, ui.windowHeight() * 0.16 + 7.5 * cui.scale())
+        carStatusWindow:setPosition(ui.windowWidth() * 0.78, 0)
         carStatusWindow:setSize(ui.windowWidth() * 0.22, ui.windowHeight() * 0.84 - 7.5 * cui.scale())
         carStatusWindow:draw()
+
+        dataLoggerWindow:setPosition(ui.windowWidth() * 0.78, ui.windowHeight() * 0.84 + 7.5 * cui.scale())
+        dataLoggerWindow:setSize(ui.windowWidth() * 0.22, ui.windowHeight() * 0.16 - 7.5 * cui.scale())
+        dataLoggerWindow:draw()
 
         return app.state.setupTab > 1 and "finalize" or "apps"
 end

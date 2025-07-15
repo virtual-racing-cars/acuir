@@ -126,7 +126,7 @@ function gearSpeedsWidget:body()
         maxSpeed = getGearMaxSpeed(car.gearCount)
 end
 
-function gearSpeedsWidget:footer()
+function gearSpeedsWidget:drawFooter()
         showLabels = drawCheckbox("GEARSPEED.labels", "Show Labels", style.main.font.body.size, showLabels)
 
         if not gearSpeedWarning then return end
