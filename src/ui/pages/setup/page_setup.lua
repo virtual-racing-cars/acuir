@@ -4,15 +4,10 @@ require("ui.pages.setup.setup_window")
 require("classes.SetupManager")
 local app = require("app")
 local cui = require("ui.cui")
-local dataLogger = require("data_logger")
 local settings = require("settings")
-local setupExchange = require("setup_exchange")
 local style = require("src.ui.style")
 
 local car = ac.getCar(0)
-
-local carStatusActive = true
-local setupExchangeActive = true
 
 local vec2Temp1 = vec2()
 
@@ -56,6 +51,7 @@ local carSetupWindow = WidgetWindow("car_setup")
 
 carSetupWindow:addWidget("Car Setup", require("ui.widgets.setup_tab_bar"))
 carSetupWindow:addWidget("Local Setups", require("ui.widgets.local_setups"))
+carSetupWindow:addWidget("Setup Exchange", require("ui.widgets.setup_exchange"))
 -- carSetupWindow:addWidget("Setup Exchange", function() setupExchange:draw() end)
 
 local saveSetupWindow = WidgetWindow("save_setup")

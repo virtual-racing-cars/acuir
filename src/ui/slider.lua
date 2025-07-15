@@ -118,6 +118,7 @@ local function drawSlider(id, name, width, height, value, sliderParams, noScroll
 end
 
 function slider.slider(id, name, width, height, locked, value, sliderParams, noScroll)
+        height = style.main.font.header.space * 2
         local p1 = ui.getCursor()
         local p2 = p1 + vec2(width, height)
         local value = value

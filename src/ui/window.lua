@@ -49,21 +49,18 @@ function window.pop(scroll, flags)
         ui.popStyleVar(1)
 end
 
-function window.pushContent(id, x, y, width, height, headerFunc, footerFunc, hideBackground, noCorners)
-        window.push(id .. "_background", x, y, width, height)
-
+function window.pushContent(id, x, y, width, height, headerFunc, footerFunc, hideBackground, isCollapsed)
         local headerSize = style.main.font.body.space
         local footerSize = headerSize
         local marginSize = 10 * scale.get()
         local innerCurve = 6 * scale.get()
 
+        if isCollapsed then height = headerSize end
+
+        window.push(id .. "_background", x, y, width, height)
+
         ui.beginGradientShade()
-        ui.drawRectFilled(
-                0,
-                ui.windowSize(),
-                settings.Appearance.uiColorPrimary,
-                noCorners and 0 or marginSize + innerCurve
-        )
+        ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiColorPrimary, marginSize + innerCurve)
         ui.endGradientShade(
                 vec2Temp1:set(ui.windowWidth(), 0),
                 ui.windowSize(),
@@ -88,7 +85,7 @@ function window.pushContent(id, x, y, width, height, headerFunc, footerFunc, hid
                 y = y + headerSize
         end
 
-        if footerFunc then
+        if footerFunc and not isCollapsed then
                 height = height - footerSize
 
                 ui.setCursor(0)
@@ -98,21 +95,23 @@ function window.pushContent(id, x, y, width, height, headerFunc, footerFunc, hid
                 window.pop()
         end
 
-        window.push(id .. "_content", x, y, width, height)
+        if not isCollapsed then
+                window.push(id .. "_content", x, y, width, height)
 
-        if not hideBackground then
-                ui.drawRectFilled(
-                        0,
-                        ui.windowSize(),
-                        settings.Appearance.uiColorBackground,
-                        noCorners and 0 or 12 * scale.get(),
-                        ui.CornerFlags.Bottom
-                )
+                if not hideBackground then
+                        ui.drawRectFilled(
+                                0,
+                                ui.windowSize(),
+                                settings.Appearance.uiColorBackground,
+                                12 * scale.get(),
+                                ui.CornerFlags.Bottom
+                        )
+                end
         end
 end
 
-function window.popContent()
-        window.pop()
+function window.popContent(isCollapsed)
+        if not isCollapsed then window.pop() end
         window.pop()
 end
 

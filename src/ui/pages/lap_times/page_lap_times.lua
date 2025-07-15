@@ -25,7 +25,7 @@ function page.draw()
         lapTimeSession = lapTimeWindow.activeWidgetIndex - 1
 
         lapTimeWindow:setPosition(0, 0)
-        lapTimeWindow:setSize(ui.windowWidth() * 0.5, ui.windowHeight() - 255 * cui.scale())
+        lapTimeWindow:setSize(ui.windowWidth() * 0.5 - 7.5 * cui.scale(), ui.windowHeight() - 255 * cui.scale())
         lapTimeWindow:draw(ac.getSession(lapTimeSession).type)
 
         bottomWidgetBar()

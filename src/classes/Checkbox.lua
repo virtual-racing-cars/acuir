@@ -26,9 +26,11 @@ function drawCheckbox(id, name, height, value, flags)
         local hovered = ui.rectHovered(r1, r2)
 
         local fillColor = settings.Appearance.uiColorSecondary
+        local fontColor = settings.Appearance.uiColorText
 
         if disabled then
                 fillColor = settings.Appearance.uiColorTextDim
+                fontColor = settings.Appearance.uiColorTextDim
         elseif ui.itemClicked() then
                 value = not value
                 changed = true
@@ -36,7 +38,7 @@ function drawCheckbox(id, name, height, value, flags)
 
         ui.setCursor(r1)
         cui.snapCursor()
-        ui.dwriteTextAligned(name, fontSize, ui.Alignment.End, 0, vec2Temp1:set(width, height))
+        ui.dwriteTextAligned(name, fontSize, ui.Alignment.End, 0, vec2Temp1:set(width, height), false, fontColor)
 
         ui.drawRectFilled(
                 r1,

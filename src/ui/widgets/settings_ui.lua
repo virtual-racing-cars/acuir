@@ -6,7 +6,7 @@ local settingsGeneral = {}
 
 function settingsGeneral:body()
         ui.setCursor(0)
-        local itemWidth = ui.availableSpaceX() * 0.5 - 60 * cui.scale()
+        local itemWidth = ui.availableSpaceX() - 60 * cui.scale()
         cui.offsetCursorY(15)
 
         cui.setCursorY(100)
@@ -24,9 +24,9 @@ function settingsGeneral:body()
                 elseif v.widget == 2 then
                         local changed = false
 
-                        ui.setCursorX(ui.windowWidth() * 0.25)
+                        ui.setCursorX(ui.windowWidth() * 0.5 - itemWidth * 0.5)
                         settings.UI[v.key], changed =
-                                cui.spinner(v.label, v.label, itemWidth, 95 * cui.scale(), false, settings.UI[v.key], {
+                                cui.slider(v.label, v.label, itemWidth, 95 * cui.scale(), false, settings.UI[v.key], {
                                         section = "SETTINGS",
                                         id = v.label,
                                         label = v.label,

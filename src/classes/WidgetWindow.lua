@@ -32,9 +32,15 @@ function WidgetWindow:setSize(x, y)
 end
 
 function WidgetWindow:draw(dt)
+        if self.id == "car_setup_window" then self.activeWidgetIndex = 3 end
+
         local activeWidget = self.widgets[self.activeWidgetIndex].widget
+        local isCollapsed = self.isCollapsed
 
         cui.pushContentWindow(self.id, self.position.x, self.position.y, self.size.x, self.size.y, function()
+                -- if ui.button("Collapse") then isCollapsed = not isCollapsed end
+                -- ui.sameLine()
+
                 for i, v in ipairs(self.widgets) do
                         if
                                 cui.windowTabButton(
@@ -48,11 +54,13 @@ function WidgetWindow:draw(dt)
                         end
                         ui.sameLine()
                 end
-        end, activeWidget.drawFooter, false)
+        end, activeWidget.drawFooter, false, self.isCollapsed)
 
-        activeWidget.body(dt)
+        if not self.isCollapsed then activeWidget.body(dt) end
 
-        cui.popContentWindow()
+        cui.popContentWindow(self.isCollapsed)
+
+        self.isCollapsed = isCollapsed
 end
 
 return WidgetWindow

@@ -9,14 +9,12 @@ ac.setWindowOpen("entryWindow", true)
 function script.entryWindow(dt)
         style:pushFontRegular()
 
-        local windowSize = vec2(300, 350) * cui.scale()
-
         cui.pushContentWindow(
                 "entry_point_window",
                 0,
                 0,
-                windowSize.x,
-                windowSize.y,
+                300 * cui.scale(),
+                350 * cui.scale(),
                 function()
                         ui.dwriteTextAligned(
                                 app.name,
@@ -42,11 +40,10 @@ function script.entryWindow(dt)
         ui.setCursor(0)
 
         if csp.versionAllowed then
-                ui.newLine()
+                cui.offsetCursorY(15)
+                local height = style.main.font.body.size
                 for i, v in ipairs(settings.Modules) do
-                        local height = style.main.font.body.size
-
-                        ui.setCursorX(ui.windowWidth() * 0.5 - height * 7)
+                        cui.setCursorX(15)
 
                         local newValue, changed = drawCheckbox(
                                 v.label,
@@ -55,16 +52,16 @@ function script.entryWindow(dt)
                                 settings.Modules[v.key],
                                 i > 3 and ui.ButtonFlags.Disabled or ui.ButtonFlags.None
                         )
-                        ui.newLine()
-                        ui.newLine()
+                        cui.offsetCursorY(5)
 
                         if changed then settings.Modules[v.key] = newValue end
                 end
 
+                cui.setCursorX(15)
                 if
                         cui.menuButton(
-                                app.state.appOpen and "Disable HUD" or "Enable HUD",
-                                vec2(ui.windowWidth(), 36 * cui.scale())
+                                app.state.appOpen and "Disabled" or "Enabled",
+                                vec2(ui.windowWidth() - 30 * cui.scale(), height * 2)
                         )
                 then
                         settings.Modules.autoStart = not app.state.appOpen

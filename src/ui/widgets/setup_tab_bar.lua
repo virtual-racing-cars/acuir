@@ -39,6 +39,8 @@ function setupTabBar.body()
 
         cui.pushWindow("setup_tab_scroll_window", 0, 0, ui.windowWidth(), ui.windowHeight(), true, ui.ButtonFlags.None)
 
+        cui.offsetCursorY(10)
+
         if ui.windowHovered() and scrollDelayTimer < os.clock() then
                 if ui.mouseWheel() > 0 then
                         currentApp = currentApp == 0 and #tabs - 1 or currentApp - 1
@@ -58,7 +60,9 @@ function setupTabBar.body()
                 tabItem(i - 1, toCapitalCase(tabs[i].name))
         end
 
-        cui.popWindow(true)
+        cui.offsetCursorY(15)
+
+        cui.popWindow(false)
 
         app.state.setupTab = currentApp + 1
 end

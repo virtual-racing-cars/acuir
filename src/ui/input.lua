@@ -59,17 +59,20 @@ function input.text(label, size, stringPrefix, stringInput, stringDefault, filte
         local utf8Chars = {}
         local i = 1
         local xOffset = 0
-        while i <= #stringInput do
-                local cp, len = stringInput:codePointAt(i)
-                if not cp then break end
-                local char = stringInput:sub(i, i + len - 1)
-                utf8Chars[#utf8Chars + 1] = char
-                local displayChar = (char == " ") and "." or char
-                local w = ui.measureDWriteText(displayChar, fontSize).x
-                charSizes[#charSizes + 1] = w
-                charPositions[#charPositions + 1] = xOffset
-                xOffset = xOffset + w
-                i = i + len
+
+        if stringInput then
+                while i <= #stringInput do
+                        local cp, len = stringInput:codePointAt(i)
+                        if not cp then break end
+                        local char = stringInput:sub(i, i + len - 1)
+                        utf8Chars[#utf8Chars + 1] = char
+                        local displayChar = (char == " ") and "." or char
+                        local w = ui.measureDWriteText(displayChar, fontSize).x
+                        charSizes[#charSizes + 1] = w
+                        charPositions[#charPositions + 1] = xOffset
+                        xOffset = xOffset + w
+                        i = i + len
+                end
         end
 
         local cursorOffset = measureUTF8PrefixWidth(utf8Chars, inputTextBoxCursorIndex, fontSize)
