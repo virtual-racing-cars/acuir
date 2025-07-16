@@ -75,4 +75,6 @@ function pages:goToSettingsAi() pages.manager:setPage("SettingsAiPage") end
 
 function pages:goToTelemetry() pages.manager:setPage("TelemetryPage") end
 
+function pages:goToAbout() pages.manager:setPage("AboutPage") end
+
 return pages

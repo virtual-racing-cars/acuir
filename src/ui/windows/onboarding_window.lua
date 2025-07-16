@@ -15,52 +15,75 @@ end
 
 local onboardingAcknowledged = false
 
+local vrcLogoFullImage = "assets\\img\\vrc_logo_full.png"
+local acuirLogoFullImage = "assets\\img\\acuir_logo_full.png"
+
 local function onboardingBody()
         cui.pushWindow(
                 "onboarding_window",
                 0,
-                ui.windowHeight() * 0.3,
+                ui.windowHeight() * 0.2,
                 ui.windowWidth(),
-                ui.windowHeight() * 0.4,
+                ui.windowHeight() * 0.6,
                 false
         )
 
         ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiColorBackgroundShade * 0.5)
+        ui.drawRect(vec2(-20, 0), ui.windowSize() + vec2(20), settings.Appearance.uiColorAccent * 0.5)
 
         ui.setCursor(0)
-        cui.snapCursor()
-        ui.dwriteTextAligned(
-                "ACUIR",
-                style.main.font.huge.size,
-                ui.Alignment.Center,
-                ui.Alignment.Center,
-                vec2(ui.windowWidth(), ui.windowHeight() * 0.35)
-        )
 
-        ui.setCursor(0)
-        cui.snapCursor()
-        ui.dwriteTextAligned(
-                "Developed by Virtual Racing Cars (VRC)",
-                style.main.font.title.size,
-                ui.Alignment.Center,
-                ui.Alignment.End,
-                vec2(ui.windowWidth(), ui.windowHeight() * 0.35)
-        )
+        cui.offsetCursorY(50)
 
-        ui.setCursorY(ui.windowHeight() * 0.8)
+        local acuirLogoFullImageSize = ui.imageSize(acuirLogoFullImage) * cui.scale() * 0.5
+
+        ui.setCursorX(ui.windowWidth() * 0.5 - acuirLogoFullImageSize.x * 0.5)
+        ui.image(acuirLogoFullImage, acuirLogoFullImageSize)
+        cui.offsetCursorY(65)
+
+        for i, v in ipairs(settings.Modules) do
+                local height = style.main.font.body.size
+
+                ui.setCursorX(ui.windowWidth() * 0.5 - 100)
+
+                local label = v.label
+
+                if i > 3 then label = label .. " (WIP)" end
+
+                local newValue, changed = drawCheckbox(
+                        v.label,
+                        label,
+                        height,
+                        settings.Modules[v.key],
+                        i > 3 and ui.ButtonFlags.Disabled or ui.ButtonFlags.None
+                )
+                ui.newLine()
+                ui.newLine()
+
+                if changed then settings.Modules[v.key] = newValue end
+        end
+
+        cui.offsetCursorY(15)
+        ui.setCursorX(ui.windowWidth() * 0.5 - ui.windowWidth() * 0.5)
         if cui.menuButton("Continue", vec2(ui.windowWidth(), 60 * cui.scale())) then
                 onboardingAcknowledged = true
                 app.state.screenTransition = os.clock() + 0.5
                 setTimeout(function() settings.AppData.shownOnboarding = true end, 0.25, "onboarding_acknowledge")
         end
 
-        ui.setCursor(0)
+        local vrcLogoFullImageSize = ui.imageSize(vrcLogoFullImage) * cui.scale() * 0.2
+
+        ui.setCursorX(ui.windowWidth() * 0.5 - vrcLogoFullImageSize.x * 0.5)
+        ui.offsetCursorY(ui.availableSpaceY() * 0.5 - vrcLogoFullImageSize.y * 0.5)
+        ui.image(vrcLogoFullImage, vrcLogoFullImageSize)
+        cui.offsetCursorY(30)
+
         ui.dwriteTextAligned(
                 app.fullInfo,
                 style.main.font.body.size,
                 ui.Alignment.Center,
-                ui.Alignment.End,
-                ui.windowSize(),
+                ui.Alignment.Center,
+                vec2(ui.windowWidth(), style.main.font.body.space),
                 false,
                 settings.Appearance.uiColorTextDim
         )

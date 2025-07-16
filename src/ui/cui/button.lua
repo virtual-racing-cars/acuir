@@ -632,9 +632,9 @@ function button.iconTopBar(label, icon, sizeX, sizeY, flags, flipped, iconScale,
         end
 
         local r1, r2 = ui.itemRect()
-        ui.drawRectFilled(r1, r2, buttonColor)
+        ui.drawRectFilled(r1, r2, buttonColor, 6 * scale.get())
 
-        if hovered and not disabled then ui.drawRect(r1, r2, settings.Appearance.uiColorAccent) end
+        if hovered and not disabled then ui.drawRect(r1, r2, settings.Appearance.uiColorAccent, 6 * scale.get()) end
 
         local iconSize = vec2(sizeX, sizeX)
         if flipped then iconSize = vec2(-sizeX, sizeX) end

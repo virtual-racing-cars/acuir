@@ -26,6 +26,7 @@ pages.manager:registerPage("TelemetryPage", require("ui.pages.page_telemetry"))
 pages.manager:registerPage("PauseMenu", require("ui.pages.page_pause"))
 pages.manager:registerPage("ResultsMenu", require("ui.pages.page_results_home"))
 pages.manager:registerPage("GamePage", require("ui.pages.page_game"))
+pages.manager:registerPage("AboutPage", require("ui.pages.page_about"))
 
 local fadingTimer = ui.FadingElement(function()
         cui.pushFullWindow("overlay_window_full")
@@ -33,7 +34,7 @@ local fadingTimer = ui.FadingElement(function()
         cui.popWindow()
 end)
 
-settings.AppData.shownOnboarding = false
+-- settings.AppData.shownOnboarding = false
 
 local exclusiveHudMode = ""
 
@@ -125,6 +126,7 @@ ui.onExclusiveHUD(function(mode)
         -- pages:goToSettingsView()
         -- pages:goToTelemetry()
         -- pages:goToSettings()
+        -- pages:goToAbout()
 
         camera.windowHovered = ui.getHoveredID() ~= 0
         style:pushStyleMain()

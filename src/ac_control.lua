@@ -8,8 +8,8 @@ local appControlButton =
         ac.ControlButton("ACUIR_TOGGLE_APP", { keyboard = { key = ui.KeyIndex.F5, ctrl = true, alt = true } })
 
 appControlButton:onPressed(function()
-        settings.General.autoStart = not app.state.appOpen
         app.state.appOpen = not app.state.appOpen
+        settings.General.autoStart = app.state.appOpen
 end)
 
 local waitTimeMs = sim.resultScreenTime * 1000
@@ -20,6 +20,9 @@ function accontrol:step()
         if app.state.appOpen and sim.isInMainMenu then
                 ac.tryToOpenRaceMenu(nil)
                 ac.tryToOpenRaceMenu("setup")
+                ac.setWindowOpen("entryWindow", false)
+        elseif sim.isInMainMenu then
+                ac.setWindowOpen("entryWindow", true)
         end
 
         local allCarsInPIts = true

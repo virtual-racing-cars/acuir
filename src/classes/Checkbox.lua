@@ -29,7 +29,7 @@ function drawCheckbox(id, name, height, value, flags)
         local fontColor = settings.Appearance.uiColorText
 
         if disabled then
-                fillColor = settings.Appearance.uiColorTextDim
+                fillColor = settings.Appearance.uiColorBackgroundShade
                 fontColor = settings.Appearance.uiColorTextDim
         elseif ui.itemClicked() then
                 value = not value

@@ -60,12 +60,12 @@ function script.entryWindow(dt)
                 cui.setCursorX(15)
                 if
                         cui.menuButton(
-                                app.state.appOpen and "Disabled" or "Enabled",
+                                app.state.appOpen and "Disable" or "Enable",
                                 vec2(ui.windowWidth() - 30 * cui.scale(), height * 2)
                         )
                 then
-                        settings.Modules.autoStart = not app.state.appOpen
                         app.state.appOpen = not app.state.appOpen
+                        settings.Modules.autoStart = app.state.appOpen
                 end
         else
                 ui.dwriteTextAligned(

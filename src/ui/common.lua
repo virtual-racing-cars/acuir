@@ -184,6 +184,7 @@ function topBar(path)
                 end
         end
         ui.sameLine()
+        cui.offsetCursorX(5)
 
         if
                 cui.iconTopBarButton(
@@ -204,6 +205,7 @@ function topBar(path)
                 end
         end
         ui.sameLine()
+        cui.offsetCursorX(5)
 
         if
                 cui.iconTopBarButton(
@@ -221,6 +223,27 @@ function topBar(path)
                         pages:goToMainMenu()
                 else
                         pages:goToTelemetry()
+                end
+        end
+        ui.sameLine()
+        cui.offsetCursorX(5)
+
+        if
+                cui.iconTopBarButton(
+                        "Garage",
+                        ui.Icons.Wrench,
+                        buttonWidth,
+                        topBarHeight,
+                        ui.ButtonFlags.None,
+                        false,
+                        nil,
+                        pages.manager.currentPageName == "SetupPage"
+                )
+        then
+                if pages.manager.currentPageName == "SetupPage" then
+                        pages:goToMainMenu()
+                else
+                        pages:goToSetup()
                 end
         end
         ui.sameLine()
@@ -247,19 +270,19 @@ function topBar(path)
         end
         ui.sameLine()
 
-        ui.setCursorX(ui.windowWidth() - buttonWidth * 3 - 50 * cui.scale())
+        ui.setCursorX(ui.windowWidth() - buttonWidth * 4 - 5 * cui.scale() * 3 - 20 * cui.scale())
         ui.setCursorY(0)
 
         if
                 cui.iconTopBarButton(
-                        "Garage",
-                        ui.Icons.Wrench,
+                        "Store",
+                        ui.Icons.Shopping,
                         buttonWidth,
                         topBarHeight,
-                        ui.ButtonFlags.None,
+                        ui.ButtonFlags.Disabled,
                         false,
                         nil,
-                        pages.manager.currentPageName == "SetupPage"
+                        pages.manager.currentPageName == "StorePage"
                 )
         then
                 if pages.manager.currentPageName == "SetupPage" then
@@ -269,11 +292,34 @@ function topBar(path)
                 end
         end
         ui.sameLine()
+        cui.offsetCursorX(5)
+
+        if
+                cui.iconTopBarButton(
+                        "About",
+                        ui.Icons.Question,
+                        buttonWidth,
+                        topBarHeight,
+                        ui.ButtonFlags.None,
+                        false,
+                        nil,
+                        pages.manager.currentPageName == "AboutPage"
+                )
+        then
+                if pages.manager.currentPageName == "AboutPage" then
+                        pages:goToMainMenu()
+                else
+                        pages:goToAbout()
+                end
+        end
+        ui.sameLine()
+        cui.offsetCursorX(5)
 
         if cui.iconTopBarButton("Settings", ui.Icons.Settings, buttonWidth, topBarHeight, ui.ButtonFlags.None) then
                 pages:goToSettings()
         end
         ui.sameLine()
+        cui.offsetCursorX(5)
 
         if cui.iconTopBarButton("Quit", ui.Icons.Leave, buttonWidth, topBarHeight, ui.ButtonFlags.None) then
                 cui.promptShutdownACDialog()
