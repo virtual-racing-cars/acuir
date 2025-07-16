@@ -1,96 +1,84 @@
-local sim = ac.getSim()
+-- if true then return end
 
-UI_SCALE_X = sim.windowWidth / 2560 * 100
-UI_SCALE_Y = sim.windowHeight / 1440 * 100
+function isempty(str) return str == nil or str == "" end
 
-MenuPages = {
-	Setup = 0,
-	Notes = 1,
-	TimeTable = 2,
-	Apps = 3,
-	Manual = 4,
-	Settings = 5,
-}
+function toCapitalCase(str)
+        return (str:gsub("(%a)([%w_']*)", function(first, rest) return first:upper() .. rest:lower() end))
+end
 
-MenuPagesString = {
-	[-1] = "",
-	[0] = "Setup",
-	[1] = "Notes",
-	[2] = "Time Table",
-	[3] = "Apps",
-	[4] = "Settings",
-}
+ac.lapTimeToString = function(time, allowHours)
+        allowHours = allowHours == true
+        time = tonumber(time)
 
-storage = ac.storage({
-	appOpen = false,
-	hasAppOpened = false,
-	setupTab = "SETUP I/O",
-	settingsTab = "GENERAL",
-	helpOpen = false,
-	page = MenuPages.Setup,
-})
+        if not time or time <= 0 or math.abs(time) == math.huge then return "--:--.---" end
 
--- storage.setupTab = "SETUP I/O"
-storage.settingsTab = "GENERAL"
+        local totalSeconds = math.floor(time / 1000)
+        local ms = time % 1000
+        local seconds = totalSeconds % 60
+        local minutes = math.floor(totalSeconds / 60)
+        local hours = math.floor(minutes / 60)
+        minutes = minutes % 60
 
-settings = ac.storage({
-	autoStart = true,
-	showVersions = true,
-	autoLoadLastSetup = true,
-	hideOtherTrackSetups = true,
-	uiHideonIdleTime = 150,
-	uiPrimaryColor = rgbm(0.1, 0.1, 0.1, 0.75),
-	uiSecondaryColor = rgbm(1, 0, 0, 1),
-})
-
-storage.appOpen = false
-storage.hasAppOpened = false
+        if allowHours and hours > 0 then
+                local centiseconds = math.floor(ms / 10 + 0.5)
+                return string.format("%d:%d:%02d.%02d", hours, minutes, seconds, centiseconds)
+        elseif allowHours then
+                local centiseconds = math.floor(ms / 10 + 0.5)
+                return string.format("%d:%02d.%02d", minutes, seconds, centiseconds)
+        else
+                return string.format("%d:%02d.%03d", math.floor(totalSeconds / 60), seconds, ms)
+        end
+end
 
 package.add("src")
-require("init")
-require("classes\\button")
-require("utils\\utils_scale")
-require("ui\\styles")
-require("ui\\main\\main_window")
-cui = require("utils\\utils_cui")
+require("audio")
+require("laps")
+require("controllers")
+require("ui.hud")
+require("ui.windows.entry_point_window")
+local acc = require("ac_control")
+local app = require("app")
+local callback = require("callback")
+local camera = require("camera")
+local carSetup = require("car_setup")
+local configs = require("configs")
+local controls = require("controls")
+local pitstop = require("pitstop")
+local race = require("race")
+local settings = require("settings")
+local telemetry = require("telemetry")
+local voting = require("voting")
 
-ui.onExclusiveHUD(function(mode)
-	if mode == "menu" then
-		return MainWindow(sim)
-	end
-end)
+controls:initialize()
 
-ac.setWindowOpen("main", true)
+app.state.appOpen = settings.General.autoStart
+app.state.hasAppOpened = false
 
-function script.main()
-	if not storage.hasAppOpened then
-		storage.hasAppOpened = true
-	end
-
-	setCursorX(0)
-	setCursorY(0)
-
-	if
-		ui.modernButtonAdvanced(
-			storage.appOpen and "Deactivate Advanced Setup" or "Activate Advanced Setup",
-			vec2(300, 50),
-			ui.ButtonFlags.None
-		)
-	then
-		storage.appOpen = not storage.appOpen
-	end
+for _, v in pairs(settings.Appearance) do
+        settings.Appearance[v.key] = v.default
 end
 
 function script.update(dt)
-	if
-		sim.isInMainMenu
-		and settings.autoStart
-		and not storage.hasAppOpened
-		and not storage.appOpen
-		and ac.isWindowOpen("main")
-	then
-		-- ac.tryToOpenRaceMenu("race")
-		-- ac.tryToOpenRaceMenu("setup")
-		storage.appOpen = settings.autoStart
-	end
+        if ac.getLastError() and not app.state.debug then
+                app.state.open = false
+                ui.toast(ui.Icons.Warning, "ACUIR ERROR!!! Open Lua Debug for more info\n\n" .. ac.getLastError())
+                        :button(ui.Icons.RestartWarning, "Attempt Reload", function() ac.restartApp() end)
+                return
+        end
+
+        acc:step()
+
+        if not app.state.appOpen then return end
+
+        voting:step()
+        camera:step()
+        carSetup:step()
+        race:step()
+        pitstop:step(dt)
+
+        -- replay:step(dt)
+
+        if callback.sim then
+                if callback.sim() then callback.sim = nil end
+        end
 end
