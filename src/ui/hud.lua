@@ -2,6 +2,7 @@ require("ui.windows.main_menu_window")
 require("ui.windows.pause_window")
 require("ui.windows.pitstop_window")
 require("ui.windows.results_window")
+require("ui.windows.game_window")
 require("ui.windows.settings_window")
 require("ui.windows.onboarding_window")
 require("ui.windows.ui_test_window")
@@ -21,7 +22,7 @@ local fadingTimer = ui.FadingElement(function()
 end)
 
 local hudModes = {
-        game = function(dt) pages:setParentMainMenu() end,
+        game = function(dt) pages:setParentGameMenu() end,
         menu = function(dt)
                 if not settings.AppData.shownOnboarding then return OnboardingWindow(dt) end
 

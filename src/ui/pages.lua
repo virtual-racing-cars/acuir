@@ -44,7 +44,14 @@ function pages:setParentResultsMenu()
         pages:goToResults()
 end
 
+function pages:setParentGameMenu()
+        pages.manager:setParentPageName("GameMenu")
+        pages:goToGame()
+end
+
 function pages:goToParent() pages.manager:setPage(pages.manager.parentName) end
+
+function pages:goToGame() pages.manager:setPage("GamePage") end
 
 function pages:goToSession() pages.manager:setPage("SessionPage") end
 
