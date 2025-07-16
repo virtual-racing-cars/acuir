@@ -136,7 +136,28 @@ ui.onExclusiveHUD(function(mode)
 
         app.state.blockEscapeButton = false
 
-        if not settings.AppData.shownOnboarding then
+        if callback.update then
+                ui.transparentWindow("dialog_window", 0, ui.windowSize(), true, true, function()
+                        ui.bringWindowToFront()
+                        ui.drawRectFilled(vec2(0, 0), ui.windowSize(), rgbm.colors.black * 0.75)
+                        ui.drawRectFilled(vec2(0, 0), ui.windowSize(), settings.Appearance.uiColorPrimary)
+
+                        local childWindowWith = ui.windowWidth() / 5
+                        local childWindowHeight = ui.windowHeight() / 5
+                        cui.pushWindow(
+                                "callback_subwindow",
+                                (ui.windowWidth() - childWindowWith) / 2,
+                                (ui.windowHeight() - childWindowHeight) / 2,
+                                childWindowWith,
+                                childWindowHeight
+                        )
+
+                        ui.bringWindowToFront()
+                        ui.setCursor(0)
+                        ui.dwriteTextAligned("UPDATING", 30, 0, 0, ui.windowSize())
+                        cui.popWindow()
+                end)
+        elseif not settings.AppData.shownOnboarding then
                 exclusiveHudMode = OnboardingWindow()
         elseif callback.dialog then
                 if mode == "settings" then app.state.blockEscapeButton = true end

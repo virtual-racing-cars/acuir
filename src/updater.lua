@@ -86,8 +86,6 @@ function mod:installUpdate(id, name, reason, downloadURL, cleanInstall)
                 end
 
                 io.scanDirRecursive(remoteAppDir, nil, function(fileName, fileAttributes, callbackData)
-                        -- ac.log(fileName)
-
                         if fileName ~= "manifest.ini" then table.insert(filesToUpdate, fileName) end
                 end, function() end)
 
@@ -102,6 +100,8 @@ function mod:installUpdate(id, name, reason, downloadURL, cleanInstall)
                         end
 
                         local fileToUpdate = filesToUpdate[1]
+
+                        ac.log("Updating %s: %s" % { id, fileToUpdate })
 
                         io.createFileDir(localAppDir .. "\\" .. fileToUpdate)
                         io.copyFile(remoteAppDir .. "\\" .. fileToUpdate, localAppDir .. "\\" .. fileToUpdate, false)
