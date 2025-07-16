@@ -11,7 +11,7 @@ local function findModRootDir(initialDir, targetDir)
         io.scanDir(initialDir, "*", function(fileName, fileAttributes, callbackData)
                 local recurFolder = initialDir .. "\\" .. fileName
                 if io.dirExists(recurFolder) then
-                        if fileName == targetDir then
+                        if fileName == targetDir or fileName == targetDir .. "-beta" then
                                 foundDir = recurFolder
                                 return
                         else
@@ -49,14 +49,24 @@ local function getFilesList(directory)
         return filesList
 end
 
+function io.scanDirRecursive(baseDir, mask, callback, data, relPath)
+        relPath = relPath or ""
+        local currentDir = relPath == "" and baseDir or (baseDir .. "/" .. relPath)
+        return io.scanDir(currentDir, mask or "*", function(name, attr)
+                local newRelPath = relPath == "" and name or (relPath .. "/" .. name)
+                local fullPath = baseDir .. "/" .. newRelPath
+                if attr.isDirectory then
+                        local result = io.scanDirRecursive(baseDir, mask, callback, data, newRelPath)
+                        if result ~= nil then return result end
+                else
+                        local result = callback(newRelPath, attr, fullPath, data)
+                        if result ~= nil then return result end
+                end
+        end, data)
+end
+
 function mod:installUpdate(id, name, reason, downloadURL, cleanInstall)
         local localAppDir = string.format("%s\\%s", ac.getFolder(ac.FolderID.ACAppsLua), id)
-
-        if not cleanInstall and io.dirExists(localAppDir) then
-                table.insert(self.list, id)
-                ac.log("%s already installed" % name)
-                return
-        end
 
         web.loadRemoteAssets(downloadURL, function(err, remoteDir)
                 if err then
@@ -72,28 +82,38 @@ function mod:installUpdate(id, name, reason, downloadURL, cleanInstall)
                 end
 
                 signing.verify(getFilesList(remoteAppDir), function(downloadedFingerprint)
-                        if localAppDir then ac.uninstallApp(id) end
-                        io.move(remoteAppDir, localAppDir)
+                        io.scanDirRecursive(remoteAppDir, nil, function(fileName, fileAttributes, callbackData)
+                                -- ac.log(fileName)
 
-                        signing.verify(getFilesList(localAppDir), function(installedFingerprint)
-                                if downloadedFingerprint == installedFingerprint then
-                                        ac.log("%s app installed" % name)
-                                        deleteRemoteDir(remoteDir)
-                                        ac.noticeNewApp(id)
-                                else
-                                        ac.warn("%s app failed to install properly" % id)
+                                if
+                                        fileName ~= "manifest.ini"
+                                        and fileName ~= "src/updater.lua"
+                                        and fileName ~= "acuir.lua"
+                                then
+                                        io.createFileDir(localAppDir .. "\\" .. fileName)
+
+                                        io.copyFile(
+                                                remoteAppDir .. "\\" .. fileName,
+                                                localAppDir .. "\\" .. fileName,
+                                                false
+                                        )
                                 end
-                        end)
+                        end, function() end)
+
+                        -- io.move(remoteAppDir .. "\\" .. "manifest.ini", localAppDir .. "\\" .. "manifest.ini", true)
+
+                        ac.log("%s ACUIR updated successfully" % id)
+                        deleteRemoteDir(remoteDir)
                 end)
         end)
 end
 
--- mod:installMod(
---         "acuir",
---         "ACUIR",
---         "Update",
---         "https://github.com/virtual-racing-cars/adv_setup/archive/refs/tags/beta.zip",
---         true
--- )
+mod:installUpdate(
+        "acuir",
+        "ACUIR",
+        "Update",
+        "https://github.com/virtual-racing-cars/adv_setup/archive/refs/tags/beta.zip",
+        true
+)
 
 return mod

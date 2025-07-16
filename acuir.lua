@@ -47,6 +47,7 @@ local pitstop = require("pitstop")
 local race = require("race")
 local settings = require("settings")
 local telemetry = require("telemetry")
+local updater = require("updater")
 local voting = require("voting")
 
 controls:initialize()
