@@ -33,6 +33,8 @@ local fadingTimer = ui.FadingElement(function()
         cui.popWindow()
 end)
 
+settings.AppData.shownOnboarding = false
+
 local exclusiveHudMode = ""
 
 local hudModes = {
@@ -41,7 +43,6 @@ local hudModes = {
                 exclusiveHudMode = nil
         end,
         menu = function(dt)
-                if not settings.AppData.shownOnboarding then exclusiveHudMode = OnboardingWindow(dt) end
                 if not settings.Modules.newMainMenu then return end
 
                 pages:setParentMainMenu()
@@ -89,6 +90,8 @@ local hudModes = {
                 pages:setParentResultsMenu()
         end,
         settings = function(dt)
+                exclusiveHudMode = ""
+
                 updateCommon()
 
                 cui.pushFullWindow(
@@ -103,7 +106,7 @@ local hudModes = {
 
 ui.onExclusiveHUD(function(mode)
         if ac.getLastError() or not app.state.appOpen then return end
-        exclusiveHudMode = ""
+        exclusiveHudMode = nil
 
         -- if true then
         --         style:pushStyleMain()
@@ -133,7 +136,9 @@ ui.onExclusiveHUD(function(mode)
 
         app.state.blockEscapeButton = false
 
-        if callback.dialog then
+        if not settings.AppData.shownOnboarding then
+                exclusiveHudMode = OnboardingWindow()
+        elseif callback.dialog then
                 if mode == "settings" then app.state.blockEscapeButton = true end
 
                 ui.transparentWindow("dialog_window", 0, ui.windowSize(), true, true, function()
