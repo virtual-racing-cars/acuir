@@ -92,17 +92,12 @@ end
 function OnboardingWindow(dt)
         local exclusiveHudMode = ""
 
-        style:pushStyleMain()
-        local mainWindowFlags = ui.WindowFlags.NoScrollbar + ui.WindowFlags.NoScrollWithMouse
-
         cui.pushFullWindow("onboarding_window_full")
         ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiColorBackground * 0.85)
 
         if not onboardingAcknowledged then onboardingBody() end
 
         cui.popWindow()
-
-        style:popStyleMain()
 
         return app.state.debug and "debug" or exclusiveHudMode
 end

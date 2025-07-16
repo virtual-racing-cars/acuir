@@ -594,7 +594,7 @@ function button.drive(label, size, horizontalAligment, verticalAlignment, color,
                 ui.dwriteTextAligned(label, fontSize, horizontalAligment, verticalAlignment, buttonSize, false)
         end
 
-        if not locked then ui.glowRectFilled(r1, r2, color) end
+        if not locked and not callback.dialog then ui.glowRectFilled(r1, r2, color) end
 
         ui.popDWriteFont()
 
