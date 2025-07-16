@@ -115,7 +115,7 @@ local function likeButtons(path, item, likedList, dislikedList, itemID, contextT
                         )
                         if liked then
                                 item.statLikes = item.statLikes - 1
-                                table.removeItem(likedSetups, itemID)
+                                table.removeItem(setupExchangeAPI.likedSetups, itemID)
                         end
                 end
         end

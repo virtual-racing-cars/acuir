@@ -47,7 +47,7 @@ local strokeWidths = {
         trackPitEdge = 3 * strokeMult,
         trackPit = 2 * strokeMult,
         splitLine = 1.5 * strokeMult,
-        carDot = 2 * strokeMult,
+        carDot = 2.5 * strokeMult,
 }
 local colors = {
         drs = rgbm(0.4, 1, 0.4, 1),
@@ -199,10 +199,10 @@ local function drawMapCanvas()
 end
 
 local carPositionColors = {
-        leader = rgbm.colors.red,
-        focused = rgbm.colors.aqua,
+        leader = settings.Appearance.uiColorGold,
+        focused = rgbm.colors.red,
         ahead = rgbm.colors.orange,
-        behind = rgbm.colors.green,
+        behind = rgbm.colors.aqua,
         blueFlag = rgbm.colors.blue,
 }
 
@@ -214,10 +214,10 @@ local function drawCarDot(car, position)
         local screenPos = position + localPos
 
         local dotSize = strokeWidths.carDot
-        local textSize = dotSize * 2
+        local textSize = dotSize * 1.5 * cui.scale()
 
         local carColor = carPositionColors.behind
-        local backColor = settings.Appearance.uiColorBackground
+        local backColor = rgbm.colors.black
 
         local leaderboardPosition = race:getLeaderboardPosition(car.index)
 
@@ -235,14 +235,18 @@ local function drawCarDot(car, position)
                 carColor = carPositionColors.blueFlag
         end
 
-        if car.index ~= spectatedCar.index and car.speedKmh < 5 then
-                carColor = carColor:clone()
-                carColor.mult = 0.5
-                backColor = rgbm.colors.transparent
+        if car.speedKmh < 4 then
+                dotSize = dotSize * 0.5
+        elseif car.isInPitlane then
+                dotSize = dotSize * 0.75
         end
 
-        ui.drawCircleFilled(screenPos, dotSize * 1.2 * cui.scale(), backColor, 20 * cui.scale())
+        if car.drsActive and not car.isInPitlane then backColor = rgbm(0, 0.75, 0, 1) end
+
+        ui.drawCircleFilled(screenPos, dotSize * 1.4 * cui.scale(), backColor, 20 * cui.scale())
+        ui.drawCircleFilled(screenPos, dotSize * 1.2 * cui.scale(), rgbm.colors.black, 20 * cui.scale())
         ui.drawCircleFilled(screenPos, dotSize * cui.scale(), carColor, 20 * cui.scale())
+
         ui.setCursor(screenPos - vec2(dotSize * cui.scale(), dotSize * cui.scale()))
         if
                 ui.invisibleButton(
@@ -254,16 +258,26 @@ local function drawCarDot(car, position)
                 if car.isConnected then ac.focusCar(car.index) end
         end
 
-        ui.setCursor(screenPos - vec2(textSize, textSize) * cui.scale())
-        ui.dwriteTextAligned(
-                leaderboardPosition,
-                textSize * cui.scale(),
-                0,
-                0,
-                vec2(textSize, textSize) * 2 * cui.scale(),
-                false,
-                spectatedCar.index == car.index and settings.Appearance.uiColorBackground or rgbm.colors.white
-        )
+        ui.setCursor(screenPos - vec2(textSize, textSize))
+
+        if leaderboardPosition < 9 then
+                cui.offsetCursorX(4)
+        elseif leaderboardPosition == 9 then
+                cui.offsetCursorX(5)
+        elseif leaderboardPosition == 11 then
+                cui.offsetCursorX(4)
+        elseif leaderboardPosition < 20 then
+                cui.offsetCursorX(8)
+        else
+                cui.offsetCursorX(9)
+        end
+
+        if car.speedKmh < 4 then return end
+
+        cui.offsetCursorY(9)
+        style:pushFontBold()
+        ui.dwriteTextAligned(leaderboardPosition, textSize, 1, 0, vec2(textSize, textSize), false, rgbm.colors.black)
+        ui.popDWriteFont()
 end
 
 local function drawWeather()
@@ -321,9 +335,20 @@ local function getTrackLocation()
                 print(path .. "ui_track.json")
                 local city = JSON.parse(io.load(path .. "ui_track.json")).city
                 local country = JSON.parse(io.load(path .. "ui_track.json")).country
-                trackLocation = string.reggsub(city, [[\t|</?br\s*/?\s*>]], "")
-                        .. ", "
-                        .. string.reggsub(country, [[\t|</?br\s*/?\s*>]], "")
+
+                ac.log(city, country)
+
+                if city and country then
+                        trackLocation = string.reggsub(city, [[\t|</?br\s*/?\s*>]], "")
+                                .. ", "
+                                .. string.reggsub(country, [[\t|</?br\s*/?\s*>]], "")
+                elseif city then
+                        trackLocation = string.reggsub(city, [[\t|</?br\s*/?\s*>]], "")
+                elseif country then
+                        trackLocation = string.reggsub(country, [[\t|</?br\s*/?\s*>]], "")
+                else
+                        trackLocation = ""
+                end
         end
         return trackLocation
 end
