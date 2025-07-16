@@ -112,16 +112,6 @@ function sessionInfoWidget:body()
         local headerFontSpace = style.main.font.header.space
 
         cui.setCursorX(0)
-        cui.snapCursor()
-        style:pushFontBold()
-        ui.dwriteTextAligned(
-                "Sessions",
-                bodyFontSize,
-                ui.Alignment.Center,
-                ui.Alignment.Center,
-                vec2(ui.windowWidth(), bodyFontSpace)
-        )
-        ui.popDWriteFont()
 
         for sessionIndex = 0, sim.sessionsCount - 1 do
                 local session = ac.getSession(sessionIndex)

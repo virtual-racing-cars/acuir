@@ -13,6 +13,7 @@ local style = {
                 },
                 font = {
                         type = ui.DWriteFont("Rajdhani", ac.dirname() .. "\\assets\\fonts\\"),
+                        huge = { size = 60, space = 100 },
                         title = { size = 30, space = 40 },
                         header = { size = 20, space = 36 },
                         body = { size = 18, space = 34 },
@@ -21,15 +22,8 @@ local style = {
                 corners = { innerSize = 6, outerSize = 16 },
                 margins = { innerSize = 10, outerSize = 15 },
         },
+        -- title = { font = { type = ui.DWriteFont("GoodTimesRg-Regular", ac.dirname() .. "\\assets\\fonts\\") } },
 }
-
--- function refreshScale()
---         uiScale = math.min(sim.windowHeight / defaultHeight, sim.windowWidth / defaultWidth)
---                 / guiINI:get("NEW_UI", "UI_SCALE", 1)
---                 * settings.UI.mainMenuScale
-
---         style:refresh(uiScale)
--- end
 
 function style:refresh(scale)
         style.main = {
@@ -44,6 +38,7 @@ function style:refresh(scale)
                 },
                 font = {
                         type = ui.DWriteFont("Rajdhani", ac.dirname() .. "\\assets\\fonts\\"),
+                        huge = { size = 100 * scale, space = 100 * scale },
                         title = { size = 30 * scale, space = 40 * scale },
                         header = { size = 20 * scale, space = 36 * scale },
                         body = { size = 18 * scale, space = 34 * scale },

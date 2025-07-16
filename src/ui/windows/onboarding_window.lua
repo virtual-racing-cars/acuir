@@ -31,7 +31,7 @@ local function onboardingBody()
         cui.snapCursor()
         ui.dwriteTextAligned(
                 "ACUIR",
-                100 * cui.scale(),
+                style.main.font.huge.size,
                 ui.Alignment.Center,
                 ui.Alignment.Center,
                 vec2(ui.windowWidth(), ui.windowHeight() * 0.35)
@@ -40,33 +40,12 @@ local function onboardingBody()
         ui.setCursor(0)
         cui.snapCursor()
         ui.dwriteTextAligned(
-                "Quick Setup",
-                30 * cui.scale(),
+                "Developed by Virtual Racing Cars (VRC)",
+                style.main.font.title.size,
                 ui.Alignment.Center,
                 ui.Alignment.End,
                 vec2(ui.windowWidth(), ui.windowHeight() * 0.35)
         )
-
-        ui.setCursorX(0)
-        ui.setCursorY(ui.windowHeight() * 0.475)
-
-        for i, v in ipairs(settings.Modules) do
-                local height = style.main.font.body.size
-
-                ui.setCursorX(ui.windowWidth() * 0.5 - height * 6)
-
-                local newValue, changed = drawCheckbox(
-                        v.label,
-                        v.label,
-                        height,
-                        settings.Modules[v.key],
-                        i > 3 and ui.ButtonFlags.Disabled or ui.ButtonFlags.None
-                )
-                ui.newLine()
-                ui.newLine()
-
-                if changed then settings.Modules[v.key] = newValue end
-        end
 
         ui.setCursorY(ui.windowHeight() * 0.8)
         if cui.menuButton("Continue", vec2(ui.windowWidth(), 60 * cui.scale())) then
@@ -92,17 +71,12 @@ end
 function OnboardingWindow(dt)
         local exclusiveHudMode = ""
 
-        style:pushStyleMain()
-        local mainWindowFlags = ui.WindowFlags.NoScrollbar + ui.WindowFlags.NoScrollWithMouse
-
         cui.pushFullWindow("onboarding_window_full")
         ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiColorBackground * 0.85)
 
         if not onboardingAcknowledged then onboardingBody() end
 
         cui.popWindow()
-
-        style:popStyleMain()
 
         return app.state.debug and "debug" or exclusiveHudMode
 end

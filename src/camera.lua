@@ -40,4 +40,22 @@ function camera:setNextSpectatedCar(focusedCar)
         end
 end
 
+function camera:panZoomController()
+        if sim.cameraMode == ac.CameraMode.OnBoardFree or sim.cameraMode == ac.CameraMode.Free then
+                if ui.mouseClicked(ui.MouseButton.Left) then cui.menuPanAvailable = ui.getHoveredID() == 0 end
+                if ui.mouseReleased(ui.MouseButton.Left) then cui.menuPanAvailable = false end
+
+                cui.menuZoomAvailable = ui.getHoveredID() == 0
+        else
+                cui.menuZoomAvailable = false
+                cui.menuPanAvailable = false
+        end
+
+        ui.setCursor(0)
+        ui.childWindow("##Panner", vec2(10, 10), false, ui.WindowFlags.None, function()
+                if cui.menuPanAvailable then ui.passthroughIMGUI() end
+                ui.drawRectFilled(vec2(0, 0), ui.windowSize(), rgbm.colors.transparent)
+        end)
+end
+
 return camera

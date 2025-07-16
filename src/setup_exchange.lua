@@ -197,6 +197,7 @@ end
 
 setupExchangeAPI:tryRecreateSession()
 
+local retryRestCount = 0
 function setupExchangeAPI:rest(method, url, data, callback, errorHandler)
         if not self.session.id and not self.session.userKey and (method ~= "GET" or url ~= "setups") then
                 setTimeout(function() self:rest(method, url, data, callback, errorHandler) end, 0.5)
@@ -242,7 +243,21 @@ function setupExchangeAPI:rest(method, url, data, callback, errorHandler)
                                 end
                                 err = tostring(err)
                                 if err:sub(1, 7) == "Error: " then err = err:sub(8) end
-                                if err == "Invalid session ID" then self:tryRecreateSession() end
+                                if err == "Invalid session ID" then
+                                        self:tryRecreateSession()
+
+                                        if retryRestCount < 3 then
+                                                setTimeout(
+                                                        function() self:rest(method, url, data, callback, errorHandler) end,
+                                                        0.5,
+                                                        "retryRest"
+                                                )
+                                                retryRestCount = retryRestCount + 1
+                                        end
+                                else
+                                        retryRestCount = 0
+                                end
+
                                 return errorHandler(err)
                         end
 

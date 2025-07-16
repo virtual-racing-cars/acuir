@@ -1,6 +1,29 @@
 ## ACUIR Changelog
 *Requires minimum CSP version 0.2.11 (3465)*
-### 0.9.4.2
+### 0.9.4.5 (unreleased)
+
+Features:
+- Track map now shrinks car dots if they have entered the pitlane
+
+Fixes:
+- Setup Exchange will attempt to create a new session if the session expired, and reexecute the previous rest post
+- Fixed error when a track has no city or country
+- Fixed error when liking/disliking Setup Exchange content
+
+
+### 0.9.4.5 (unreleased)
+
+Fetaures:
+- Setup Exchange got a bit more fleshed out
+  - Can now delete setups you published
+  - Still need to have tracks in the combo box apply to the setup exchange uploads when sharing.
+
+Fixes:
+- General polish around the app, still more to go
+- Fixed a crash online
+- Fixed setup exchange missing a connection occasionally
+
+### 0.9.4.2 (unreleased)
 
 Features:
 - More work on Setup Exchange frontend.

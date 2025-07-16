@@ -3,6 +3,7 @@ local laps = require("laps")
 local race = require("race")
 local settings = require("settings")
 local simutils = require("simutils")
+local style = require("ui.cui.style")
 
 local function drawTimeIndicator(width, height, color)
         if not color then color = rgbm(0, 0.75, 0, 1) end
@@ -204,7 +205,7 @@ local lapTimes = {
 
 local function lapTimeBanner(yPos, height)
         local width = ui.windowWidth()
-        local fontSize = height * 0.5
+        local fontSize = style.main.font.body.size
 
         ui.setCursorX(height * 0.2)
         ui.setCursorY(yPos)
@@ -220,7 +221,7 @@ end
 
 local function noEntryBanner(height)
         local width = ui.windowWidth()
-        local fontSize = height * 0.5
+        local fontSize = style.main.font.body.size
 
         ui.drawRectFilled(vec2(0, 0), vec2(0 + width, height), settings.Appearance.uiColorPrimary * 0.5)
 
@@ -265,16 +266,21 @@ function lapTimeEntryButton(car, lap, yPos, height)
                 cui.snapCursor()
                 local x, y = entry.xShare == -1 and height or tempWidth * entry.xShare, height
                 local value, color = entry.value(car, lap, x, height)
-                ui.dwriteTextAligned(value, height * 0.5, entry.align, ui.Alignment.Center, vec2(x, y), false, color)
+                ui.dwriteTextAligned(
+                        value,
+                        style.main.font.body.size,
+                        entry.align,
+                        ui.Alignment.Center,
+                        vec2(x, y),
+                        false,
+                        color
+                )
                 ui.sameLine()
         end
 end
 
 function lapTimes:body()
-        ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiColorPrimary * 0.25)
-        ui.setCursor(0)
-
-        local height = ui.windowHeight() / 22
+        local height = style.main.font.body.size * 2
         lapTimeBanner(0, height)
 
         cui.pushWindow(

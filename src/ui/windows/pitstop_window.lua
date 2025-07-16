@@ -99,8 +99,7 @@ local function mfdWidgetSpinner(name, height, index, value, format, min, max, it
         ui.invisibleButton("##pswidget" .. name .. index, vec2(ui.windowWidth(), buttonSize))
         local r1, r2 = ui.itemRect()
 
-        local fontSize = math.floor(buttonSize * 0.8)
-        fontSize = (fontSize % 2 == 0) and fontSize + 1 or fontSize
+        local fontSize = style.main.font.body.size
 
         local active = false
         if activeItemIndex == index then
@@ -178,87 +177,101 @@ function script.pitstopWindow(dt)
                 return
         end
 
-        local itemCount = #ac.getPitstopSpinners() <= 9 and #ac.getPitstopSpinners() + 6 or #ac.getPitstopSpinners() + 7
-        local itemHeight = 32 * cui.scale()
+        local itemCount = #ac.getPitstopSpinners() <= 9 and #ac.getPitstopSpinners() + 5 or #ac.getPitstopSpinners() + 6
+        local itemHeight = style.main.font.body.space
         local windowHeight = itemHeight * itemCount
-        local fontSize = math.floor(itemHeight * 0.8)
-        fontSize = (fontSize % 2 == 0) and fontSize + 1 or fontSize
-        local windowSize = vec2(itemHeight * 11, windowHeight)
+        local fontSize = style.main.font.body.size
+        local windowSize = vec2(itemHeight * 9, windowHeight)
 
-        ui.beginToolWindow("toolWindowTest", ui.cursorScreenPos(), windowSize, true, true)
-        style:pushStyleMain()
+        ui.transparentWindow("toolWindowTest", ui.cursorScreenPos(), windowSize, true, function()
+                style:pushStyleMain()
 
-        ui.drawRectFilled(0, ui.availableSpace(), settings.Appearance.uiColorPrimary * 0.65)
-        ui.drawRectFilled(0, vec2(ui.windowWidth(), itemHeight * 1.2), settings.Appearance.uiColorPrimary * 0.65)
+                ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiColorBackground, 12 * cui.scale())
+                ui.drawRectFilled(
+                        0,
+                        vec2(ui.windowWidth(), style.main.font.header.space),
+                        settings.Appearance.uiColorPrimary,
+                        12 * cui.scale(),
+                        ui.CornerFlags.Top
+                )
 
-        ui.setCursor(0)
-        ui.dwriteTextAligned(
-                "PITSTOP",
-                itemHeight,
-                ui.Alignment.Center,
-                ui.Alignment.Center,
-                vec2(ui.windowWidth(), itemHeight * 1.2)
-        )
+                ui.setCursor(0)
+                cui.snapCursor()
+                ui.dwriteTextAligned(
+                        "PITSTOP",
+                        style.main.font.header.size,
+                        ui.Alignment.Center,
+                        ui.Alignment.Center,
+                        vec2(ui.windowWidth(), style.main.font.header.space)
+                )
 
-        local lastSection = ""
-        for _, spinner in ipairs(sm._pitSpinners) do
-                if spinner.preset == -1 then
-                        local value = mfdWidgetSpinner(
-                                spinner.name,
-                                itemHeight,
-                                spinner.index + 1,
-                                spinner.value,
-                                spinner.format,
-                                spinner.min,
-                                spinner.max
-                        )
-                        spinner:setValue(value)
-                elseif spinner.preset == sim.currentQuickPitPreset then
-                        if spinner.tab ~= lastSection and spinner.tab then
-                                lastSection = spinner.tab
-                                ui.setCursorX(0)
-                                ui.drawRectFilled(
-                                        ui.getCursor(),
-                                        ui.getCursor() + vec2(ui.windowWidth(), itemHeight),
-                                        settings.Appearance.uiColorPrimary * 0.65
+                local lastSection = ""
+                for _, spinner in ipairs(sm._pitSpinners) do
+                        if spinner.preset == -1 then
+                                local value = mfdWidgetSpinner(
+                                        spinner.name,
+                                        itemHeight,
+                                        spinner.index + 1,
+                                        spinner.value,
+                                        spinner.format,
+                                        spinner.min,
+                                        spinner.max
                                 )
+                                spinner:setValue(value)
+                        elseif spinner.preset == sim.currentQuickPitPreset then
+                                if spinner.tab ~= lastSection and spinner.tab then
+                                        lastSection = spinner.tab
+                                        ui.setCursorX(0)
+                                        ui.drawRectFilled(
+                                                ui.getCursor(),
+                                                ui.getCursor() + vec2(ui.windowWidth(), itemHeight),
+                                                settings.Appearance.uiColorPrimary * 0.65
+                                        )
 
-                                ui.dwriteTextAligned(
-                                        spinner.tab,
-                                        fontSize,
-                                        ui.Alignment.Center,
-                                        ui.Alignment.Center,
-                                        vec2(ui.windowWidth(), itemHeight)
+                                        cui.snapCursor()
+                                        ui.dwriteTextAligned(
+                                                spinner.tab,
+                                                style.main.font.header.size,
+                                                ui.Alignment.Center,
+                                                ui.Alignment.Center,
+                                                vec2(ui.windowWidth(), itemHeight)
+                                        )
+                                end
+                                local value = mfdWidgetSpinner(
+                                        spinner.nameAlt,
+                                        itemHeight,
+                                        spinner.index,
+                                        spinner.value,
+                                        spinner.format,
+                                        spinner.min,
+                                        spinner.max,
+                                        spinner.items,
+                                        spinner.wingIndex
                                 )
+                                spinner:setValue(value)
                         end
-                        local value = mfdWidgetSpinner(
-                                spinner.nameAlt,
-                                itemHeight,
-                                spinner.index,
-                                spinner.value,
-                                spinner.format,
-                                spinner.min,
-                                spinner.max,
-                                spinner.items,
-                                spinner.wingIndex
-                        )
-                        spinner:setValue(value)
                 end
-        end
 
-        ui.drawRectFilled(ui.getCursor(), ui.windowSize(), settings.Appearance.uiColorPrimary * 0.65)
-        cui.snapCursor()
-        ui.dwriteTextAligned(
-                "Estimated Stop Time: %.1f s" % pitstop:getEstimatedTime(),
-                fontSize,
-                ui.Alignment.Center,
-                ui.Alignment.Center,
-                vec2(ui.windowWidth(), ui.availableSpaceY()),
-                false,
-                rgbm.colors.white
-        )
+                ui.drawRectFilled(
+                        ui.getCursor(),
+                        ui.windowSize(),
+                        settings.Appearance.uiColorPrimary,
+                        12 * cui.scale(),
+                        ui.CornerFlags.Bottom
+                )
+                cui.snapCursor()
+                ui.dwriteTextAligned(
+                        "Estimated Stop Time: %.1f s" % pitstop:getEstimatedTime(),
+                        fontSize,
+                        ui.Alignment.Center,
+                        ui.Alignment.Center,
+                        vec2(ui.windowWidth(), ui.availableSpaceY()),
+                        false,
+                        settings.Appearance.uiColorOrange
+                )
 
-        style:popStyleMain()
-        ui.endToolWindow()
+                style:popStyleMain()
+        end)
+
         ui.setCursor(windowSize)
 end
