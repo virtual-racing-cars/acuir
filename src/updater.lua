@@ -89,11 +89,11 @@ function mod:installUpdate(id, name, reason, downloadURL, cleanInstall)
 end
 
 -- mod:installMod(
---         "telemetrick",
---         "Telemetrick",
---         "Testing",
---         "https://github.com/WilliamGawlik/toolbox/releases/download/v0.0.1/telemetrick.zip",
---         false
+--         "acuir",
+--         "ACUIR",
+--         "Update",
+--         "https://github.com/virtual-racing-cars/adv_setup/archive/refs/tags/beta.zip",
+--         true
 -- )
 
 return mod
