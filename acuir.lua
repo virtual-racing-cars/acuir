@@ -67,6 +67,8 @@ function script.update(dt)
                 return
         end
 
+        if callback.update then callback.update() end
+
         acc:step()
 
         if not app.state.appOpen then return end

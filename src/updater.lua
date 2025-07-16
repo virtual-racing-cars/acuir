@@ -1,3 +1,4 @@
+local callback = require("callback")
 local ioext = require("shared.utils.ioext")
 local signing = require("shared.utils.signing")
 
@@ -65,7 +66,10 @@ function io.scanDirRecursive(baseDir, mask, callback, data, relPath)
         end, data)
 end
 
+local filesToUpdate = {}
+
 function mod:installUpdate(id, name, reason, downloadURL, cleanInstall)
+        filesToUpdate = {}
         local localAppDir = string.format("%s\\%s", ac.getFolder(ac.FolderID.ACAppsLua), id)
 
         web.loadRemoteAssets(downloadURL, function(err, remoteDir)
@@ -81,30 +85,29 @@ function mod:installUpdate(id, name, reason, downloadURL, cleanInstall)
                         return
                 end
 
-                signing.verify(getFilesList(remoteAppDir), function(downloadedFingerprint)
-                        io.scanDirRecursive(remoteAppDir, nil, function(fileName, fileAttributes, callbackData)
-                                -- ac.log(fileName)
+                io.scanDirRecursive(remoteAppDir, nil, function(fileName, fileAttributes, callbackData)
+                        -- ac.log(fileName)
 
-                                if
-                                        fileName ~= "manifest.ini"
-                                        and fileName ~= "src/updater.lua"
-                                        and fileName ~= "acuir.lua"
-                                then
-                                        io.createFileDir(localAppDir .. "\\" .. fileName)
+                        if fileName ~= "manifest.ini" then table.insert(filesToUpdate, fileName) end
+                end, function() end)
 
-                                        io.copyFile(
-                                                remoteAppDir .. "\\" .. fileName,
-                                                localAppDir .. "\\" .. fileName,
-                                                false
-                                        )
-                                end
-                        end, function() end)
+                table.insert(filesToUpdate, "manifest.ini")
 
-                        -- io.move(remoteAppDir .. "\\" .. "manifest.ini", localAppDir .. "\\" .. "manifest.ini", true)
+                callback.update = function()
+                        if #filesToUpdate == 0 then
+                                ac.log("%s updated successfully" % id)
+                                deleteRemoteDir(remoteDir)
+                                callback.update = nil
+                                return
+                        end
 
-                        ac.log("%s ACUIR updated successfully" % id)
-                        deleteRemoteDir(remoteDir)
-                end)
+                        local fileToUpdate = filesToUpdate[1]
+
+                        io.createFileDir(localAppDir .. "\\" .. fileToUpdate)
+                        io.copyFile(remoteAppDir .. "\\" .. fileToUpdate, localAppDir .. "\\" .. fileToUpdate, false)
+
+                        table.remove(filesToUpdate, 1)
+                end
         end)
 end
 
