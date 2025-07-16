@@ -49,7 +49,7 @@ local function getFilesList(directory)
         return filesList
 end
 
-function mod:installMod(id, name, reason, downloadURL, cleanInstall)
+function mod:installUpdate(id, name, reason, downloadURL, cleanInstall)
         local localAppDir = string.format("%s\\%s", ac.getFolder(ac.FolderID.ACAppsLua), id)
 
         if not cleanInstall and io.dirExists(localAppDir) then
