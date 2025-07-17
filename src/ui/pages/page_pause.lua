@@ -62,8 +62,7 @@ local pauseButtons = {
         {
                 label = "Restart Session",
                 enabled = true,
-                condition = function() return true end,
-                -- return not simutils.sessionRestartable end,
+                condition = function() return not simutils.sessionRestartable end,
                 func = function()
                         ac.tryToPause(false)
                         ac.tryToRestartSession()

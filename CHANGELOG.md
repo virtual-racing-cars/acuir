@@ -5,6 +5,10 @@
 Features:
 - Auto-update for beta builds implemented
 
+Fixes:
+- Fixed Restart Session button always being disabled in offline mode
+- Fixed modal dialog buttons for overwriting controls
+
 ### 0.9.5.0
 
 Features:
