@@ -12,6 +12,7 @@ local function findModRootDir(initialDir, targetDir)
 
         io.scanDir(initialDir, "*", function(fileName, fileAttributes, callbackData)
                 local recurFolder = initialDir .. "\\" .. fileName
+                ac.error(targetDir)
                 if io.dirExists(recurFolder) then
                         if fileName == targetDir or fileName == targetDir .. "-beta" then
                                 foundDir = recurFolder
@@ -79,14 +80,7 @@ function mod:installUpdate(id, name, reason, downloadURL, cleanInstall)
                         return
                 end
 
-                local remoteAppDir = findModRootDir(remoteDir, id)
-
-                if not remoteAppDir then
-                        ac.warn("%s app failed to download" % id)
-                        return
-                end
-
-                io.scanDirRecursive(remoteAppDir, nil, function(fileName, fileAttributes, callbackData)
+                io.scanDirRecursive(remoteDir, nil, function(fileName, fileAttributes, callbackData)
                         if fileName ~= "manifest.ini" then table.insert(filesToUpdate, fileName) end
                 end, function() end)
 
@@ -105,7 +99,7 @@ function mod:installUpdate(id, name, reason, downloadURL, cleanInstall)
                         ac.log("Updating %s: %s" % { id, fileToUpdate })
 
                         io.createFileDir(localAppDir .. "\\" .. fileToUpdate)
-                        io.copyFile(remoteAppDir .. "\\" .. fileToUpdate, localAppDir .. "\\" .. fileToUpdate, false)
+                        io.copyFile(remoteDir .. "\\" .. fileToUpdate, localAppDir .. "\\" .. fileToUpdate, false)
 
                         table.remove(filesToUpdate, 1)
                 end
@@ -193,8 +187,8 @@ function mod:checkForUpdate()
                         local zipBeta = "https://github.com/virtual-racing-cars/acuir/archive/refs/tags/"
                                 .. latestBeta
                                 .. ".zip"
-                        ac.log("Latest beta tag: " .. latestBeta)
-                        ac.log("Beta zip URL: " .. zipBeta)
+                        ac.log(latestBeta)
+                        ac.log(zipBeta)
 
                         if string.versionCompare(latestBeta, app.version) > 0 then
                                 ac.log("updateNeeded")
