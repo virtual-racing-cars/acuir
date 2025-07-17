@@ -71,6 +71,8 @@ end
 local filesToUpdate = {}
 
 function mod:installUpdate(id, name, reason, downloadURL, cleanInstall)
+        if app.state.debug then return end
+
         filesToUpdate = {}
         local localAppDir = string.format("%s\\%s", ac.getFolder(ac.FolderID.ACAppsLua), id)
 
