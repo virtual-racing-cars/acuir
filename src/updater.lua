@@ -198,13 +198,7 @@ function mod:checkForUpdate()
 
                         if string.versionCompare(latestBeta, app.version) > 0 then
                                 ac.log("updateNeeded")
-                                mod:installUpdate(
-                                        "acuir",
-                                        "ACUIR",
-                                        "Update",
-                                        "https://github.com/virtual-racing-cars/adv_setup/archive/refs/tags/beta.zip",
-                                        true
-                                )
+                                mod:installUpdate("acuir", "ACUIR", "Update", zipBeta, true)
                         end
                 else
                         ac.warn("No beta tag found")
