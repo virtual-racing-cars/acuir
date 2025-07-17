@@ -156,7 +156,19 @@ ui.onExclusiveHUD(function(mode)
 
                         ui.bringWindowToFront()
                         ui.setCursor(0)
-                        ui.dwriteTextAligned("UPDATING", 30, 0, 0, ui.windowSize())
+                        cui.offsetCursorY(-15)
+                        ui.dwriteTextAligned(
+                                "INSTALLING ACUIR UPDATE...",
+                                30,
+                                0,
+                                ui.Alignment.End,
+                                vec2(ui.windowWidth(), ui.windowHeight() * 0.5)
+                        )
+                        cui.offsetCursorY(30)
+
+                        ui.setCursorX(ui.windowWidth() * 0.5 - 100 * cui.scale() * 0.5)
+                        ui.icon(ui.Icons.LoadingSpinner, vec2(100, 100) * cui.scale())
+
                         cui.popWindow()
                 end)
         elseif not settings.AppData.shownOnboarding then
@@ -200,6 +212,8 @@ ui.onExclusiveHUD(function(mode)
         ui.popAllowKeyboardFocus()
 
         fadingTimer(os.clock() < app.state.screenTransition)
+
+        if app.state.debug then exclusiveHudMode = "debug" end
 
         return exclusiveHudMode
 end)

@@ -3,13 +3,19 @@
 ### 0.9.4.9 (unreleased)
 
 Features:
+- Auto-update for beta builds implemented
+
+### 0.9.4.9 (unreleased)
+
+Features:
 - Updated Onboarding
 - New About tab
-- Auto-updater V0
+- Auto-updater V0 (won't auto-update until after 0.9.5.0)
 
 Fixes:
 - Tweaked slider grab bar size
 - ACUIR entry window doesn't appear in Apps tab anymore
+- Began basic polish pass on code
 
 ### 0.9.4.5 (unreleased)
 
