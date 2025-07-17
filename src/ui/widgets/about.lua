@@ -1,3 +1,5 @@
+local app = require("app")
+local csp = require("csp")
 local cui = require("ui.cui")
 
 local aboutWidget = {}
@@ -26,7 +28,10 @@ Contributions
 - ACUIR Testers: Dan Mezza, Damgam, Flashsacs, airwaves, benjamin00, Underchosen, Nиco, Kody Laurence, KiboOst
 - Assetto Corsa: Kunos Simulazioni
 - Custom Shaders Patch: x4fab, Jackson Papageorge, Dmitrii A, henter, Neoned, Stereo
-]],
+
+ACUIR version: %s
+CSP version: %s
+]] % { app.version, csp.versionNumerical },
                 20 * cui.scale()
         )
 
