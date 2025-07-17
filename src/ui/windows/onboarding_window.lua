@@ -101,5 +101,5 @@ function OnboardingWindow(dt)
 
         cui.popWindow()
 
-        return app.state.debug and "debug" or exclusiveHudMode
+        return exclusiveHudMode
 end

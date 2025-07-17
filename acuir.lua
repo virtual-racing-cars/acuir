@@ -22,7 +22,6 @@ local voting = require("voting")
 controls:initialize()
 
 app.state.appOpen = settings.General.autoStart
-app.state.hasAppOpened = false
 
 for _, v in pairs(settings.Appearance) do
         settings.Appearance[v.key] = v.default

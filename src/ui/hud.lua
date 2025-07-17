@@ -10,6 +10,7 @@ local cui = require("ui.cui")
 local pages = require("ui.pages")
 local settings = require("settings")
 local style = require("ui.cui.style")
+local sim = ac.getSim()
 
 pages.manager:registerPage("EmptyPage", require("ui.pages.page_empty"))
 pages.manager:registerPage("SessionPage", require("ui.pages.page_session"))
@@ -213,7 +214,7 @@ ui.onExclusiveHUD(function(mode)
 
         fadingTimer(os.clock() < app.state.screenTransition)
 
-        if app.state.debug then exclusiveHudMode = "debug" end
+        if app.state.debug and sim.isInMainMenu then exclusiveHudMode = "debug" end
 
         return exclusiveHudMode
 end)
