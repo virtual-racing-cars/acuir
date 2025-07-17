@@ -323,12 +323,12 @@ function telemetryViewer:drawFooter()
         local height = ui.windowHeight() * 0.65
 
         telemetryViewer.isShowingBest =
-                drawCheckbox("##telemetryViewerIsShowingBest", "Best Lap", height, telemetryViewer.isShowingBest)
+                cui.checkbox("##telemetryViewerIsShowingBest", "Best Lap", height, telemetryViewer.isShowingBest)
         ui.sameLine()
         cui.offsetCursorX(30)
 
         telemetryViewer.isShowingLast =
-                drawCheckbox("##telemetryViewerIsShowingLast", "Last Lap", height, telemetryViewer.isShowingLast)
+                cui.checkbox("##telemetryViewerIsShowingLast", "Last Lap", height, telemetryViewer.isShowingLast)
 end
 
 return telemetryViewer

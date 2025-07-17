@@ -68,7 +68,7 @@ function dataLoggerWidget:body()
 end
 
 function dataLoggerWidget:drawFooter()
-        settings.DataLogger.autoStartLogging = drawCheckbox(
+        settings.DataLogger.autoStartLogging = cui.checkbox(
                 "##dataLoggerAutoStart",
                 "Auto-Start",
                 style.main.font.body.size,

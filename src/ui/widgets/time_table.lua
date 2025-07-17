@@ -382,7 +382,7 @@ end
 function timetable:drawFooter()
         if not sim.isOnlineRace then return end
 
-        timetable.isShowingDisconnected = drawCheckbox(
+        timetable.isShowingDisconnected = cui.checkbox(
                 "##isTimetableShowingDisconnected",
                 "Show Disconnected",
                 ui.windowHeight() * 0.65,

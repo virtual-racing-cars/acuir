@@ -50,7 +50,7 @@ local function onboardingBody()
 
                 if i > 3 then label = label .. " (WIP)" end
 
-                local newValue, changed = drawCheckbox(
+                local newValue, changed = cui.checkbox(
                         v.label,
                         label,
                         height,

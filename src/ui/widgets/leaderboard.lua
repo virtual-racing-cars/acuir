@@ -1,4 +1,3 @@
-require("classes.Checkbox")
 local cui = require("ui.cui")
 local race = require("race")
 local settings = require("settings")
@@ -265,7 +264,7 @@ end
 function leaderboard:drawFooter()
         if not sim.isOnlineRace then return end
 
-        leaderboard.isShowingDisconnected = drawCheckbox(
+        leaderboard.isShowingDisconnected = cui.checkbox(
                 "##isLeaderboardShowingDisconnected",
                 "Show Disconnected",
                 ui.windowHeight() * 0.65,

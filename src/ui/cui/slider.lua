@@ -89,19 +89,19 @@ local function drawSlider(id, name, width, height, value, sliderParams, noScroll
         )
 
         ui.drawRectFilled(
-                vec2(sliderFill, r1.y),
-                vec2(sliderFill + grabberSize, r2.y),
+                vec2(sliderFill, r1.y - 2 * scale.get()),
+                vec2(sliderFill + grabberSize, r2.y + 2 * scale.get()),
                 active and settings.Appearance.uiColorSecondary or settings.Appearance.uiColorAccent,
                 6 * scale.get()
         )
 
         ui.drawRect(
-                vec2(sliderFill, r1.y),
-                vec2(sliderFill + grabberSize, r2.y),
+                vec2(sliderFill, r1.y - 2 * scale.get()),
+                vec2(sliderFill + grabberSize, r2.y + 2 * scale.get()),
                 settings.Appearance.uiColorBackground,
                 6 * scale.get(),
                 ui.CornerFlags.All,
-                2 * scale.get()
+                3 * scale.get()
         )
 
         local value = valueStep * step + min

@@ -638,7 +638,7 @@ local function searchFilters()
                         cui.offsetCursorY(15)
                         local showTracksChanged = false
                         local showTracksValue = not setupExchangeAPI.stored.setupsFilterTrack
-                        showTracksValue, showTracksChanged = drawCheckbox(
+                        showTracksValue, showTracksChanged = cui.checkbox(
                                 "##setup_exchange_show_current_track",
                                 "Show All Tracks",
                                 style.main.font.small.size,

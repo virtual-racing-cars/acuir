@@ -64,7 +64,7 @@ function testUI(dt)
         ui.dwriteText("Input Text")
         inputTextString = cui.inputText("Test2222", vec2(width, height), "", inputTextString, "Test", "[%w_ .;,><%-]")
 
-        checkboxValue = drawCheckbox("Checkbox", "Checkbox", height * 0.5, checkboxValue, ui.ButtonFlags.None)
+        checkboxValue = cui.checkbox("Checkbox", "Checkbox", height * 0.5, checkboxValue, ui.ButtonFlags.None)
 
         sliderValue = cui.slider("Slider_Test", "Slider", width, height * 2, false, sliderValue, {
                 min = 0,

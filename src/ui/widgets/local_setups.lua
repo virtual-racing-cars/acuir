@@ -70,7 +70,7 @@ local function drawLocalSetupFilters()
         cui.offsetCursorX(20)
         cui.offsetCursorY(10)
         local hideChanged = false
-        settings.General.hideOtherTrackSetups, hideChanged = drawCheckbox(
+        settings.General.hideOtherTrackSetups, hideChanged = cui.checkbox(
                 "##isSetupIOHidingOtherTracks",
                 "Show Other Tracks",
                 style.main.font.body.size,
@@ -82,7 +82,7 @@ local function drawLocalSetupFilters()
 
         cui.setCursorX(250)
         local sortChanged = false
-        settings.General.sortTrackSetupsAZ, sortChanged = drawCheckbox(
+        settings.General.sortTrackSetupsAZ, sortChanged = cui.checkbox(
                 "##isSetupIOSortingAlpha",
                 "Sort A-Z",
                 20 * cui.scale(),

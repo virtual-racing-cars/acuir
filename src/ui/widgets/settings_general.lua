@@ -16,7 +16,7 @@ function settingsGeneral:body()
                 if v.widget == 1 then
                         ui.setCursorX(ui.windowWidth() * 0.5 - height * 7)
 
-                        local newValue, changed = drawCheckbox(v.label, v.label, height, settings.General[v.key])
+                        local newValue, changed = cui.checkbox(v.label, v.label, height, settings.General[v.key])
                         ui.newLine()
                         ui.newLine()
 

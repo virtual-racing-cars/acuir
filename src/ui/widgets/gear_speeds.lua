@@ -127,7 +127,7 @@ function gearSpeedsWidget:body()
 end
 
 function gearSpeedsWidget:drawFooter()
-        showLabels = drawCheckbox("GEARSPEED.labels", "Show Labels", style.main.font.body.size, showLabels)
+        showLabels = cui.checkbox("GEARSPEED.labels", "Show Labels", style.main.font.body.size, showLabels)
 
         if not gearSpeedWarning then return end
 

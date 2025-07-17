@@ -1,9 +1,14 @@
 ## ACUIR Changelog
 *Requires minimum CSP version 0.2.11 (3465)*
-### 0.9.4.7 (unreleased)
+### 0.9.4.8 (unreleased)
 
 Features:
-- Preparing for auto-updater
+- Updated Onboarding
+- New About tab
+- Auto-updater V0
+
+Fixes:
+- ACUIR entry window doesn't appear in Apps tab anymore
 
 ### 0.9.4.5 (unreleased)
 

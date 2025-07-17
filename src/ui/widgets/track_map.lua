@@ -405,15 +405,15 @@ function trackMapWidget:drawFooter()
         local changed = false
         local height = ui.windowHeight() * 0.65
 
-        map.isShowingCars = drawCheckbox("##mapisShowingCars", "Cars", height, map.isShowingCars)
+        map.isShowingCars = cui.checkbox("##mapisShowingCars", "Cars", height, map.isShowingCars)
         ui.sameLine()
         cui.offsetCursorX(30)
 
-        map.isShowingSectors, changed = drawCheckbox("##mapisShowingSectors", "Sectors", height, map.isShowingSectors)
+        map.isShowingSectors, changed = cui.checkbox("##mapisShowingSectors", "Sectors", height, map.isShowingSectors)
         ui.sameLine()
         cui.offsetCursorX(30)
 
-        map.isShowingWeather = drawCheckbox("##mapisShowingWeather", "Weather", height, map.isShowingWeather)
+        map.isShowingWeather = cui.checkbox("##mapisShowingWeather", "Weather", height, map.isShowingWeather)
 
         if changed then drawMapCanvas() end
 end

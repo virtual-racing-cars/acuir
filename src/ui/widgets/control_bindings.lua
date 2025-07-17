@@ -386,7 +386,7 @@ function controlBindings:body()
         ui.sameLine()
         cui.offsetCursorX(30)
         cui.setCursorY(25)
-        settings.General.showMPSBinds = drawCheckbox(
+        settings.General.showMPSBinds = cui.checkbox(
                 "##mapisShowingWeather",
                 "Show MPS Binds",
                 style.main.font.body.size,

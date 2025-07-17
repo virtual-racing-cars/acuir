@@ -1,4 +1,3 @@
-require("classes.Slider")
 local app = require("app")
 local audio = require("audio")
 local callback = require("callback")

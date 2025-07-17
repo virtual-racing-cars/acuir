@@ -1,16 +1,22 @@
-local cui = require("ui.cui")
+local cursor = require("ui.cui.cursor")
+local scale = require("ui.cui.scale")
 local settings = require("settings")
+local state = require("ui.cui.state")
+local style = require("ui.cui.style")
+local window = require("ui.cui.window")
+
+local checkbox = {}
 
 local vec2Temp1 = vec2()
 local vec2Temp2 = vec2()
 
-function drawCheckbox(id, name, height, value, flags)
+function checkbox.checkbox(id, name, height, value, flags)
         local disabled = false
 
         if flags == ui.ButtonFlags.Disabled then disabled = true end
 
         local fontSize = height
-        local width = ui.measureDWriteText(name, fontSize).x + height + 10 * cui.scale()
+        local width = ui.measureDWriteText(name, fontSize).x + height + 10 * scale.get()
 
         local p1 = ui.getCursor()
         local p2 = p1 + vec2(width, height)
@@ -37,23 +43,25 @@ function drawCheckbox(id, name, height, value, flags)
         end
 
         ui.setCursor(r1)
-        cui.snapCursor()
+        cursor.snap()
         ui.dwriteTextAligned(name, fontSize, ui.Alignment.End, 0, vec2Temp1:set(width, height), false, fontColor)
 
         ui.drawRectFilled(
                 r1,
                 vec2Temp2:set(r1.x + height, r2.y),
                 (value or disabled) and fillColor or settings.Appearance.uiColorBackground,
-                4 * cui.scale()
+                4 * scale.get()
         )
         ui.drawRect(
                 r1,
                 vec2Temp2:set(r1.x + height, r2.y),
                 value and settings.Appearance.uiColorText or settings.Appearance.uiColorTextDim,
-                4 * cui.scale(),
+                4 * scale.get(),
                 ui.CornerFlags.All,
-                2 * cui.scale()
+                2 * scale.get()
         )
 
         return value, changed
 end
+
+return checkbox

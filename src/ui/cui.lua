@@ -2,6 +2,7 @@ local audio = require("audio")
 local banner = require("ui.cui.banner")
 local button = require("ui.cui.button")
 local callback = require("callback")
+local checkbox = require("ui.cui.checkbox")
 local combo = require("ui.cui.combo")
 local cursor = require("ui.cui.cursor")
 local dialog = require("ui.cui.dialog")
@@ -56,6 +57,8 @@ cui.textWriteBodyAligned = text.writeBodyAligned
 cui.inputText = input.text
 
 cui.combo = combo.box
+
+cui.checkbox = checkbox.checkbox
 
 cui.spinner = slider.spinner
 cui.slider = slider.slider

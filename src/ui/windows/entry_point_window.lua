@@ -45,7 +45,7 @@ function script.entryWindow(dt)
                 for i, v in ipairs(settings.Modules) do
                         cui.setCursorX(15)
 
-                        local newValue, changed = drawCheckbox(
+                        local newValue, changed = cui.checkbox(
                                 v.label,
                                 v.label,
                                 height,
