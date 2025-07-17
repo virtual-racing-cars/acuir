@@ -1,11 +1,16 @@
 ## ACUIR Changelog
 *Requires minimum CSP version 0.2.11 (3465)*
-### 0.9.4.9 (unreleased)
+### 0.9.5.2 (unreleased)
 
 Features:
 - Auto-update for beta builds implemented
 
-### 0.9.4.9 (unreleased)
+### 0.9.5.0
+
+Features:
+- Auto-update for beta builds implemented
+
+### 0.9.4.9
 
 Features:
 - Updated Onboarding
@@ -17,7 +22,7 @@ Fixes:
 - ACUIR entry window doesn't appear in Apps tab anymore
 - Began basic polish pass on code
 
-### 0.9.4.5 (unreleased)
+### 0.9.4.5
 
 Features:
 - Track map now shrinks car dots if they have entered the pitlane
@@ -27,7 +32,7 @@ Fixes:
 - Fixed error when a track has no city or country
 - Fixed error when liking/disliking Setup Exchange content
 
-### 0.9.4.5 (unreleased)
+### 0.9.4.5
 
 Fetaures:
 - Setup Exchange got a bit more fleshed out
@@ -39,7 +44,7 @@ Fixes:
 - Fixed a crash online
 - Fixed setup exchange missing a connection occasionally
 
-### 0.9.4.2 (unreleased)
+### 0.9.4.2
 
 Features:
 - More work on Setup Exchange frontend.
@@ -49,7 +54,7 @@ Features:
 Fixes:
 - Fixed a bunch of little shit
 
-### 0.9.3.7 (unreleased)
+### 0.9.3.7
 
 Features:
 - Added basic onboarding
