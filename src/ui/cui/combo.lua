@@ -54,7 +54,7 @@ function combo.box(id, size, previewValue, previewAlignment, openDown, contentSi
                 settings.Appearance.uiColorText
         )
 
-        local comboOpenPosition = openDown and sp1 + vec2(0, size.y - 5 * scale.get())
+        local comboOpenPosition = openDown and sp1 + vec2(0, size.y + 5 * scale.get())
                 or sp1 - vec2(0, contentSize.y + 5 * scale.get())
 
         if open then
