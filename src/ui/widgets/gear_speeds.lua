@@ -31,8 +31,6 @@ function gearSpeedsWidget:body()
         local height = yMax - yMin
         if not maxSpeed or maxSpeed == 0 then maxSpeed = getGearMaxSpeed(car.gearCount) end
 
-        ui.drawRectFilled(vec2(xMin, yMin), vec2(xMax, yMax), rgbm(0, 0, 0, 0.5))
-
         ui.pathLineTo(vec2(xMin, yMax))
         ui.pathLineTo(vec2(xMin + width, yMax))
         ui.pathStroke(rgbm(0.4, 0.4, 0.4, 1), false, 3)
@@ -95,11 +93,13 @@ function gearSpeedsWidget:body()
                 ui.pathStroke(settings.Appearance.uiColorSecondary, false, 4)
 
                 if showLabels then
+                        local labelYPos = yMax - 10 * cui.scale() - (height / car.gearCount * 0.8) * i
+
                         ui.pathLineTo(p2)
-                        ui.pathLineTo(vec2(p2.x, yMax - (height / car.gearCount * 0.8) * i + labelHeight))
+                        ui.pathLineTo(vec2(p2.x, labelYPos + labelHeight))
                         ui.pathStroke(rgbm(1, 1, 1, 0.1), false, 3)
 
-                        ui.setCursor(vec2(p2.x - labelWidth, yMax - (height / car.gearCount * 0.8) * i))
+                        ui.setCursor(vec2(p2.x - labelWidth, labelYPos))
                         -- ui.drawRectFilled(
                         --         ui.getCursor(),
                         --         ui.getCursor() + vec2(labelWidth, labelHeight),
