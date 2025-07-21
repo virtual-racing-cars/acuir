@@ -97,7 +97,7 @@ function saveSetupWidget:body()
         )
 
         cui.setCursorX(10)
-        cui.offsetCursorY(15)
+        cui.offsetCursorY(10)
 
         ui.drawRect(
                 ui.getCursor(),
@@ -132,7 +132,7 @@ function saveSetupWidget:body()
         ui.sameLine()
         ui.newLine()
 
-        cui.offsetCursorY(15)
+        cui.offsetCursorY(10)
 
         local setupFileExists = false
         if carSetup.input.name ~= "" then
@@ -140,39 +140,10 @@ function saveSetupWidget:body()
                 setupFileExists = io.fileExists(carSetup.input.path)
         end
 
-        cui.offsetCursorY(15)
+        ui.setCursorY(ui.windowHeight() - iconButtonHeight * 2 - 15 * 2 * cui.scale())
+
+        cui.offsetCursorY(10)
         cui.setCursorX(10)
-
-        -- if
-        --         cui.menuButton(
-        --                 "Load Setup",
-        --                 vec2Temp1:set(buttonWidth * 0.5 - 5 * cui.scale(), iconButtonHeight),
-        --                 nil,
-        --                 nil,
-        --                 setupFileExists and ui.ButtonFlags.None or ui.ButtonFlags.Disabled,
-        --                 false,
-        --                 false
-        --         )
-        -- then
-        --         cui.menuBanner("Loaded Setup", nil, rgbm.colors.green)
-        --         sm:LoadStuff(carSetup.selected.path)
-        --         carSetup.current = carSetup.selected.track .. "/" .. carSetup.selected.name
-        -- end
-        -- ui.sameLine()
-        -- ui.offsetCursorX(10)
-
-        -- if
-        --         cui.menuButton(
-        --                 "Delete Setup",
-        --                 vec2Temp1:set(buttonWidth / 2, iconButtonHeight),
-        --                 nil,
-        --                 nil,
-        --                 setupFileExists and ui.ButtonFlags.None or ui.ButtonFlags.Disabled
-        --         )
-        -- then
-        --         if #carSetup.selected.name > 0 then promptDeleteSetup() end
-        -- end
-        -- ui.sameLine()
 
         if
                 cui.menuButton(
@@ -193,7 +164,7 @@ function saveSetupWidget:body()
                 end
         end
 
-        cui.offsetCursorY(15)
+        cui.offsetCursorY(10)
         cui.setCursorX(10)
         if
                 cui.menuButton(

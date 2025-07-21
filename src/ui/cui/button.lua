@@ -121,6 +121,7 @@ function button.modal(label, sizeX, sizeY, flags)
         ui.setCursor(tempCursor)
 
         style:pushFontBold()
+        cursor.snap()
         ui.dwriteTextAligned(
                 string.upper(label),
                 fontSize,
@@ -727,6 +728,55 @@ function button.icon(label, icon, sizeX, sizeY, flags, flipped, iconScale, activ
 
         ui.setCursor(p)
         ui.dummy(vec2(sizeX, sizeY))
+
+        return clicked and not disabled
+end
+
+function button.iconInline(label, icon, sizeX, sizeY, flags, flipped, active)
+        local disabled = false
+        if bit.band(flags, ui.ButtonFlags.Disabled) ~= 0 then disabled = true end
+
+        local clicked = ui.invisibleButton("##" .. label, vec2(sizeX, sizeY))
+        local hovered = ui.itemHovered() and not callback.dialog
+
+        local r1, r2 = ui.itemRect()
+
+        local buttonColor = settings.Appearance.uiColorPrimary
+        local iconColor = settings.Appearance.uiColorAccent
+
+        if disabled then
+                iconColor = rgbm(0.3, 0.3, 0.3, 0.8)
+        elseif hovered then
+                buttonColor = settings.Appearance.uiColorSecondary
+        elseif active then
+                buttonColor = settings.Appearance.uiColorSecondary / 2
+        end
+
+        if hovered and active then ui.beginOutline() end
+
+        local iconSize = vec2(sizeX, sizeX)
+        if flipped then iconSize = vec2(-sizeX, sizeX) end
+
+        ui.drawRectFilled(r1, r2, buttonColor, 6 * scale.get())
+        ui.drawRect(r1, r2, settings.Appearance.uiColorAccent * 0.5, 6 * scale.get())
+
+        ui.addIcon(icon, iconSize * 0.15, vec2(0.1, 0.5), iconColor, 0)
+
+        if hovered and active then ui.endOutline(settings.Appearance.uiColorAccent, 1) end
+
+        ui.setCursor(r1)
+        cursor.snap()
+        style:pushFontBold()
+        ui.dwriteTextAligned(
+                label,
+                style.main.font.body.size,
+                ui.Alignment.Center,
+                ui.Alignment.Center,
+                vec2(sizeX, sizeY),
+                false,
+                iconColor
+        )
+        ui.popDWriteFont()
 
         return clicked and not disabled
 end

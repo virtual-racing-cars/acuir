@@ -181,7 +181,7 @@ function slider.slider(id, name, width, height, locked, value, sliderParams, noS
         return value, changed, active, hovered
 end
 
-function slider.spinner(id, name, width, height, locked, value, sliderParams, noScroll)
+function slider.spinner(id, name, width, height, locked, value, sliderParams, noScroll, labelBackground)
         height = style.main.font.header.space * 2
         local p1 = ui.getCursor()
         local p2 = p1 + vec2(width, height)
@@ -201,8 +201,16 @@ function slider.spinner(id, name, width, height, locked, value, sliderParams, no
                 sliderNameText = sliderNameText .. "*"
         end
 
-        ui.setCursorY(ui.getCursorY() + height * 0.5)
+        if labelBackground then
+                ui.drawRectFilled(
+                        p1 - vec2Temp1:set(10 * scale.get(), 5 * scale.get()),
+                        p1 + vec2Temp2:set(width + 10 * scale.get(), height),
+                        settings.Appearance.uiColorPrimary,
+                        6 * scale.get()
+                )
+        end
 
+        ui.setCursorY(ui.getCursorY() + height * 0.5)
         value, changed, active = drawSlider(id, name, width, style.main.font.header.size, value, sliderParams, noScroll)
 
         ui.setCursor(p1)

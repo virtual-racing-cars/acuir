@@ -214,7 +214,7 @@ ui.onExclusiveHUD(function(mode)
 
         fadingTimer(os.clock() < app.state.screenTransition)
 
-        if app.state.debug and sim.isInMainMenu then exclusiveHudMode = "debug" end
+        -- if app.state.debug and sim.isInMainMenu then exclusiveHudMode = "debug" end
 
         return exclusiveHudMode
 end)

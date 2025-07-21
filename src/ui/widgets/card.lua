@@ -113,6 +113,7 @@ function card:draw(xPos, yPos, width, height)
 
         ui.setCursor(0)
 
+        ui.setCursorX(ui.windowWidth() * 0.5 - fontSpace)
         local p = ui.getCursor()
         ui.drawImageRounded(
                 string.format(
@@ -125,32 +126,23 @@ function card:draw(xPos, yPos, width, height)
                 p + vec2(fontSpace, fontSpace) * 2,
                 6 * cui.scale()
         )
+        ui.newLine()
 
         local driverName = ac.getDriverName(sim.focusedCar)
         driverName = isempty(driverName) and "Driver %s" % sim.focusedCar or driverName
 
-        ui.setCursor(0)
-        ui.setCursorX(fontSpace * 2 + 10 * cui.scale())
+        cui.setCursorY(fontSpace * 2 + 10 * cui.scale())
         cui.snapCursor()
         ui.dwriteTextAligned(
-                driverName,
+                string.format("%s\n%s", driverName, ac.getCarName(spectatedCar.index)),
                 fontSize,
-                ui.Alignment.Start,
                 ui.Alignment.Center,
-                vec2(ui.windowWidth(), fontSpace)
+                ui.Alignment.Center,
+                vec2(ui.windowWidth(), fontSpace * 1.5)
         )
 
-        ui.setCursorX(fontSpace * 2 + 10 * cui.scale())
-        ui.dwriteTextAligned(
-                ac.getCarName(spectatedCar.index),
-                fontSize,
-                ui.Alignment.Start,
-                ui.Alignment.End,
-                vec2(ui.windowWidth(), fontSpace)
-        )
+        cui.offsetCursorY(5)
 
-        cui.setCursorX(0)
-        cui.offsetCursorY(15)
         if
                 cui.iconButton(
                         "##previous_driver",
@@ -201,85 +193,20 @@ function card:draw(xPos, yPos, width, height)
                 nextCamera(spectatedCar)
         end
 
-        local managePlayerButtonWidth = buttonHeight
-        local managePlayerButtonHeight = managePlayerButtonWidth * 2
-        ui.setCursorX(0)
-        ui.setCursorY(ui.windowHeight() - managePlayerButtonHeight)
-
-        if not sim.isOnlineRace or spectatedCar.index == 0 then
-                cui.popWindow()
-                cui.popWindow()
-                return
-        end
-
-        local driverTags = getDriverTags(spectatedCar.index)
-
-        if
-                cui.iconButton(
-                        "Add",
-                        ui.Icons.Befriend,
-                        managePlayerButtonWidth,
-                        managePlayerButtonHeight,
-                        ui.ButtonFlags.None,
-                        false,
-                        1
-                )
-        then
-                driverTags.friend = not driverTags.friend
-        end
-
-        ui.sameLine()
-        cui.offsetCursorX(30)
-
-        if
-                cui.iconButton(
-                        "Tag",
-                        ui.Icons.Tag,
-                        managePlayerButtonWidth,
-                        managePlayerButtonHeight,
-                        ui.ButtonFlags.None,
-                        false,
-                        1
-                )
-        then
-        end
-        ui.sameLine()
-        cui.offsetCursorX(30)
-
-        if
-                cui.iconButton(
-                        "Mute",
-                        ui.Icons.Ban,
-                        managePlayerButtonWidth,
-                        managePlayerButtonHeight,
-                        ui.ButtonFlags.None,
-                        false,
-                        1
-                )
-        then
-                driverTags.mute = not driverTags.mute
-        end
-        ui.sameLine()
-        cui.offsetCursorX(30)
-
-        if
-                cui.iconButton(
-                        "Kick",
-                        ui.Icons.Kick,
-                        managePlayerButtonWidth,
-                        managePlayerButtonHeight,
-                        ui.ButtonFlags.None,
-                        false,
-                        1
-                )
-        then
-                ac.castVote("kick", true, spectatedCar.index)
-        end
-        ui.sameLine()
-
         local pingColor = rgbm.colors.green
+        local pingText = "Ping %s ms"
+        local ping = spectatedCar.ping
 
-        if spectatedCar.ping > 300 then
+        if not sim.isOnlineRace then
+                if spectatedCar.index == 0 then
+                        pingColor = settings.Appearance.uiColorText
+                        pingText = ""
+                elseif spectatedCar.isAIControlled then
+                        pingColor = settings.Appearance.uiColorRed
+                        pingText = "AI - %.1f"
+                        ping = spectatedCar.aiLevel * 100
+                end
+        elseif spectatedCar.ping > 300 then
                 pingColor = rgbm.colors.red
         elseif spectatedCar.ping > 250 then
                 pingColor = rgbm.colors.orange
@@ -287,16 +214,109 @@ function card:draw(xPos, yPos, width, height)
                 pingColor = rgbm.colors.yellow
         end
 
-        cui.offsetCursorX(30)
+        ui.setCursorY(0)
+        cui.offsetCursorX(15)
         ui.dwriteTextAligned(
-                string.format("Ping\n%s ms", spectatedCar.ping),
+                string.format(pingText, ping),
                 style.main.font.body.size,
+                ui.Alignment.Start,
                 ui.Alignment.Center,
-                ui.Alignment.Center,
-                vec2(managePlayerButtonWidth * 2, managePlayerButtonHeight),
+                vec2(ui.windowWidth(), buttonHeight),
                 false,
                 pingColor
         )
+
+        ui.setCursorY(0)
+        ui.setCursorX(ui.windowWidth() - buttonHeight)
+        if
+                cui.iconButton(
+                        "##manage_player",
+                        ui.Icons.Ellipsis,
+                        buttonHeight,
+                        buttonHeight,
+                        ui.ButtonFlags.None,
+                        true,
+                        0.5
+                )
+        then
+        end
+
+        ui.pushStyleColor(ui.StyleColor.PopupBg, rgbm.colors.transparent)
+        ui.itemPopup("##manage_player_" .. spectatedCar.index, ui.MouseButton.Left, function()
+                ui.setCursor(0)
+                local popupButtonSize = vec2(165, 30) * cui.scale()
+                local managePlayerButtonWidth = 150 - 20 * cui.scale()
+                local managePlayerButtonHeight = buttonHeight
+
+                ui.drawRectFilled(0, ui.windowSize(), rgbm.colors.black, 12 * cui.scale())
+                ui.drawRect(0, ui.windowSize(), settings.Appearance.uiColorAccent * 0.5, 12 * cui.scale())
+
+                local driverTags = getDriverTags(spectatedCar.index)
+                cui.offsetCursorX(15)
+                cui.offsetCursorY(15)
+
+                if
+                        cui.iconInlineButton(
+                                "Add",
+                                ui.Icons.Befriend,
+                                managePlayerButtonWidth,
+                                managePlayerButtonHeight,
+                                ui.ButtonFlags.None,
+                                false
+                        )
+                then
+                        driverTags.friend = not driverTags.friend
+                end
+                cui.offsetCursorX(15)
+                cui.offsetCursorY(5)
+
+                if
+                        cui.iconInlineButton(
+                                "Tag",
+                                ui.Icons.Tag,
+                                managePlayerButtonWidth,
+                                managePlayerButtonHeight,
+                                ui.ButtonFlags.None,
+                                false
+                        )
+                then
+                end
+                cui.offsetCursorX(15)
+                cui.offsetCursorY(5)
+
+                if
+                        cui.iconInlineButton(
+                                "Mute",
+                                ui.Icons.Ban,
+                                managePlayerButtonWidth,
+                                managePlayerButtonHeight,
+                                ui.ButtonFlags.None,
+                                false
+                        )
+                then
+                        driverTags.mute = not driverTags.mute
+                end
+                cui.offsetCursorX(15)
+                cui.offsetCursorY(5)
+
+                if
+                        cui.iconInlineButton(
+                                "Kick",
+                                ui.Icons.Kick,
+                                managePlayerButtonWidth,
+                                managePlayerButtonHeight,
+                                ui.ButtonFlags.None,
+                                false
+                        )
+                then
+                        ac.castVote("kick", true, spectatedCar.index)
+                end
+                cui.offsetCursorX(15)
+                cui.offsetCursorY(15)
+
+                ui.setCursor(popupButtonSize)
+        end)
+        ui.popStyleColor(1)
 
         cui.popWindow()
         cui.popWindow()

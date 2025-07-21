@@ -50,7 +50,7 @@ function window.pop(scroll, flags)
 end
 
 function window.pushContent(id, x, y, width, height, headerFunc, footerFunc, hideBackground, isCollapsed)
-        local headerSize = style.main.font.body.space
+        local headerSize = style.main.font.header.space
         local footerSize = headerSize
         local marginSize = 10 * scale.get()
         local innerCurve = 6 * scale.get()

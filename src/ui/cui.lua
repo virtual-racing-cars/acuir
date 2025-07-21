@@ -41,6 +41,7 @@ cui.bindingButton = button.binding
 cui.bindingAxleButton = button.bindingAxle
 cui.driveButton = button.drive
 cui.iconButton = button.icon
+cui.iconInlineButton = button.iconInline
 cui.iconTopBarButton = button.iconTopBar
 cui.emojiButton = button.emoji
 cui.smallButton = button.small

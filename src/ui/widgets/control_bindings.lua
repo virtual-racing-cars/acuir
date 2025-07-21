@@ -68,7 +68,7 @@ local function bindingInUseDialog(button, name, inputMode, inUseBinds)
                         vec2(ui.windowWidth(), textBoxHeight)
                 )
 
-                local buttonWidth = ui.windowWidth() / 3.25
+                local buttonWidth = 170 * cui.scale()
                 ui.setCursorX(ui.windowWidth() / 2 - buttonWidth * 1.5 - 5 * cui.scale())
                 if cui.modalButton("Cancel", buttonWidth, 50 * cui.scale(), ui.ButtonFlags.None) then
                         button:clearAssign()

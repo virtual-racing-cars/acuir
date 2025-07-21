@@ -1,6 +1,6 @@
 ## ACUIR Changelog
 *Requires minimum CSP version 0.2.11 (3465)*
-### 0.9.5.2 (unreleased)
+### 0.9.5.2
 
 Features:
 - Auto-update for beta builds implemented

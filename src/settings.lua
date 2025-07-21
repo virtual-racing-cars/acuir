@@ -97,22 +97,22 @@ local settings = {
                 {
                         key = "uiColorBackground",
                         label = "Background Color",
-                        default = rgbm(0.09, 0.09, 0.11, 0.75),
+                        default = rgbm(0.09, 0.09, 0.11, 0.85),
                         widget = 1,
                 },
                 {
                         key = "uiColorBackgroundShade",
                         label = "Background Shade Color",
-                        default = rgbm(0.15, 0.15, 0.16, 0.75),
+                        default = rgbm(0.15, 0.15, 0.16, 0.85),
                         widget = 1,
                 },
                 { key = "uiColorText", label = "Text Color", default = rgbm.colors.white, widget = 1 },
                 { key = "uiColorTextDim", label = "Text Dim Color", default = rgbm.new("#707070"), widget = 1 },
-                { key = "uiColorPrimary", label = "Primay Color", default = rgbm.new("#3e3c46") * 0.75, widget = 1 },
+                { key = "uiColorPrimary", label = "Primay Color", default = rgbm.new("#3e3c46") * 0.85, widget = 1 },
                 {
                         key = "uiColorPrimaryShade",
                         label = "Primay Shade Color",
-                        default = rgbm.new("#5c5966") * 0.75,
+                        default = rgbm.new("#5c5966") * 0.85,
                         widget = 1,
                 },
                 {

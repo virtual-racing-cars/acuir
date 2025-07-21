@@ -22,7 +22,6 @@ local style = {
                 corners = { innerSize = 6, outerSize = 16 },
                 margins = { innerSize = 10, outerSize = 15 },
         },
-        -- title = { font = { type = ui.DWriteFont("GoodTimesRg-Regular", ac.dirname() .. "\\assets\\fonts\\") } },
 }
 
 function style:refresh(scale)
@@ -40,9 +39,9 @@ function style:refresh(scale)
                         type = ui.DWriteFont("Rajdhani", ac.dirname() .. "\\assets\\fonts\\"),
                         huge = { size = 100 * scale, space = 100 * scale },
                         title = { size = 30 * scale, space = 40 * scale },
-                        header = { size = 20 * scale, space = 36 * scale },
-                        body = { size = 18 * scale, space = 34 * scale },
-                        small = { size = 16 * scale, space = 32 * scale },
+                        header = { size = 22 * scale, space = 42 * scale },
+                        body = { size = 20 * scale, space = 40 * scale },
+                        small = { size = 18 * scale, space = 38 * scale },
                 },
                 corners = { innerSize = 6 * scale, outerSize = 16 * scale },
                 margins = { innerSize = 10 * scale, outerSize = 15 * scale },

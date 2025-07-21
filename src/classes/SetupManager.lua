@@ -14,9 +14,9 @@ local setupFixed = io.lastWriteTime(setupFixedFile) > os.time() - 10
 local gearSetupSpinners = {}
 local function createGearDefaults()
         for i = 1, ac.getCar(0).gearCount do
-                gearSetupSpinners["INTERNAL_GEAR_" .. i] = { xPos = 0.5, yPos = 3 + i - 1, zeroDefault = false }
+                gearSetupSpinners["INTERNAL_GEAR_" .. i] = { xPos = 0.5, yPos = 2.75 + i - 1, zeroDefault = false }
         end
-        gearSetupSpinners["FINAL_RATIO"] = { xPos = 0.5, yPos = 3 + ac.getCar(0).gearCount, zeroDefault = false }
+        gearSetupSpinners["FINAL_RATIO"] = { xPos = 0.5, yPos = 2.75 + ac.getCar(0).gearCount, zeroDefault = false }
 end
 
 local electronicsDefaults = {}

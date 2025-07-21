@@ -29,12 +29,12 @@ local function linkButton(name, size, linked)
 end
 
 local function drawSetupSpinner(si)
-        local spinnerWidth = ui.windowWidth() * 0.42
-        local spinnerHeight = style.main.font.header.space * 3
-
         if si.child or si.repair then return end
 
         si:run(true)
+
+        local spinnerWidth = ui.windowWidth() * 0.42
+        local spinnerHeight = style.main.font.header.space * 2.5
 
         local positions = {
                 [0] = 40 * cui.scale(),
@@ -43,8 +43,8 @@ local function drawSetupSpinner(si)
         }
 
         local xPos = positions[si.xPos]
-        local yPos = (si.yPos * spinnerHeight / cui.scale()) * cui.scale()
-                + (ui.windowHeight() - spinnerHeight * 10) * 0.5
+        local yPos = ((si.yPos + 1) * spinnerHeight / cui.scale()) * cui.scale()
+                + (ui.windowHeight() - spinnerHeight * 11) * 0.5
 
         if si.items then
                 if #si.items > 0 then si.format = si.items[si.value + 1] end
@@ -69,11 +69,9 @@ local function drawSetupSpinner(si)
         ui.setCursorY(yPos)
 
         local value, changed, active, hovered =
-                cui.spinner(si.id, si.name, spinnerWidth, spinnerHeight, si.fixed, si.value, si, false)
+                cui.spinner(si.id, si.name, spinnerWidth, spinnerHeight, si.fixed, si.value, si, false, true)
 
         if hovered and si.help and si.help ~= "NULL" and si.help ~= "" then sm.activeHelpString = si.help end
-
-        -- sm.activeHelpString = sm.activeHelpString == "" and si.help or sm.activeHelpString
 
         if si.mirrorAvailable and not si.fixed then
                 local linkButtonWidth = ((ui.windowWidth() - spinnerWidth) - 40 * cui.scale()) - ui.getCursorX()
@@ -112,10 +110,8 @@ function car_setup(sm)
 
         if tab.name == "GEARS" then
                 gearSpeedsWindow:setPosition(ui.windowWidth() * 0.05, 0)
-                gearSpeedsWindow:setSize(ui.windowWidth() * 0.9, ui.windowWidth() * 0.25)
+                gearSpeedsWindow:setSize(ui.windowWidth() * 0.9, ui.windowWidth() * 0.3)
                 gearSpeedsWindow:draw()
-
-                -- gearWindow(#tab.setupSpinners) end
         end
 
         if tab.name == "PITSTOP STRATEGY" then
@@ -135,7 +131,7 @@ function car_setup(sm)
                 if v.yPos > -2 then
                         if v.tab == "GEARS" and #tab.setupSpinners == 1 then
                                 v.xPos = 0.5
-                                v.yPos = 4
+                                v.yPos = 2.75
                         end
 
                         if drawSetupSpinner(v) then changed = true end
