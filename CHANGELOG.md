@@ -1,5 +1,16 @@
 ## ACUIR Changelog
 *Requires minimum CSP version 0.2.11 (3465)*
+### 0.9.5.4
+
+Features:
+- Larger font sizes
+
+Fixes:
+- Fixed player card style
+- Fixed chat input filter for online chat
+- Fixed Garage style a bit
+- Increased opacity for default theme a bit
+
 ### 0.9.5.2
 
 Features:
