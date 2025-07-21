@@ -131,17 +131,17 @@ function card:draw(xPos, yPos, width, height)
         local driverName = ac.getDriverName(sim.focusedCar)
         driverName = isempty(driverName) and "Driver %s" % sim.focusedCar or driverName
 
-        cui.setCursorY(fontSpace * 2 + 10 * cui.scale())
+        ui.setCursor(0)
         cui.snapCursor()
         ui.dwriteTextAligned(
                 string.format("%s\n%s", driverName, ac.getCarName(spectatedCar.index)),
                 fontSize,
                 ui.Alignment.Center,
                 ui.Alignment.Center,
-                vec2(ui.windowWidth(), fontSpace * 1.5)
+                ui.windowSize()
         )
 
-        cui.offsetCursorY(5)
+        ui.setCursorY(ui.windowHeight() - buttonHeight - 15 * cui.scale())
 
         if
                 cui.iconButton(
@@ -226,19 +226,21 @@ function card:draw(xPos, yPos, width, height)
                 pingColor
         )
 
-        ui.setCursorY(0)
-        ui.setCursorX(ui.windowWidth() - buttonHeight)
-        if
-                cui.iconButton(
-                        "##manage_player",
-                        ui.Icons.Ellipsis,
-                        buttonHeight,
-                        buttonHeight,
-                        ui.ButtonFlags.None,
-                        true,
-                        0.5
-                )
-        then
+        if sim.isOnlineRace and spectatedCar.index ~= 0 then
+                ui.setCursorY(0)
+                ui.setCursorX(ui.windowWidth() - buttonHeight)
+                if
+                        cui.iconButton(
+                                "##manage_player",
+                                ui.Icons.Ellipsis,
+                                buttonHeight,
+                                buttonHeight,
+                                ui.ButtonFlags.None,
+                                true,
+                                0.5
+                        )
+                then
+                end
         end
 
         ui.pushStyleColor(ui.StyleColor.PopupBg, rgbm.colors.transparent)

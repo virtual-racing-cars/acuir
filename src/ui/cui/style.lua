@@ -40,7 +40,7 @@ function style:refresh(scale)
                         huge = { size = 100 * scale, space = 100 * scale },
                         title = { size = 30 * scale, space = 40 * scale },
                         header = { size = 22 * scale, space = 42 * scale },
-                        body = { size = 20 * scale, space = 40 * scale },
+                        body = { size = 20 * scale, space = 32 * scale },
                         small = { size = 18 * scale, space = 38 * scale },
                 },
                 corners = { innerSize = 6 * scale, outerSize = 16 * scale },

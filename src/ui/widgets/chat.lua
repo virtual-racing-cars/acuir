@@ -104,12 +104,12 @@ local function chatInput(height)
         ui.setCursorY(ui.windowHeight() - height)
 
         messages.input, chatActive = cui.inputText(
-                "##chatInput",
+                "##chat_input",
                 vec2(ui.windowWidth() * 0.75, height),
                 "",
                 messages.input,
-                "",
-                "Type message..."
+                "Type message...",
+                "[%g ]"
         )
         ui.drawRect(
                 vec2(3, ui.windowHeight() - height),
