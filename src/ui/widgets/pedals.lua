@@ -80,7 +80,7 @@ function card:draw(xPos, yPos, width, height)
 
         cui.snapCursor()
         ui.dwriteTextAligned(
-                ac.lapTimeToString(spectatedCar.bestLapTimeMs),
+                ac.lapTimeToString(spectatedCar.previousLapTimeMs),
                 32 * cui.scale(),
                 ui.Alignment.Start,
                 ui.Alignment.Center,
