@@ -41,17 +41,6 @@ local function deleteRemoteDir(remoteRootDir)
         io.deleteDir(remoteRootDir)
 end
 
-local function getFilesList(directory)
-        local filesList = {}
-
-        ioext.scanDirRec(directory, "*", function(relativeFilename, attrs)
-                local fileAbsolutePath = directory .. "/" .. relativeFilename
-                if io.fileExists(fileAbsolutePath) then table.insert(filesList, relativeFilename) end
-        end)
-
-        return filesList
-end
-
 function io.scanDirRecursive(baseDir, mask, callback, data, relPath)
         relPath = relPath or ""
         local currentDir = relPath == "" and baseDir or (baseDir .. "/" .. relPath)
@@ -70,6 +59,8 @@ end
 
 local filesToUpdate = {}
 
+local function removeBeforeSlash(str) return str:match("^.-/(.*)") or str end
+
 function mod:installUpdate(id, name, reason, downloadURL, cleanInstall)
         if app.state.debug then return end
 
@@ -82,9 +73,10 @@ function mod:installUpdate(id, name, reason, downloadURL, cleanInstall)
                         return
                 end
 
-                io.scanDirRecursive(remoteDir, nil, function(fileName, fileAttributes, callbackData)
-                        if fileName ~= "manifest.ini" then table.insert(filesToUpdate, fileName) end
-                end, function() end)
+                ioext.scanDirRec(remoteDir, "*", function(relativeFilename, attrs)
+                        local fileAbsolutePath = remoteDir .. "/" .. relativeFilename
+                        if io.fileExists(fileAbsolutePath) then table.insert(filesToUpdate, relativeFilename) end
+                end)
 
                 table.insert(filesToUpdate, "manifest.ini")
 
@@ -97,11 +89,10 @@ function mod:installUpdate(id, name, reason, downloadURL, cleanInstall)
                         end
 
                         local fileToUpdate = filesToUpdate[1]
+                        local fileToUpdateNewPath = localAppDir .. "\\" .. removeBeforeSlash(fileToUpdate)
 
-                        ac.log("Updating %s: %s" % { id, fileToUpdate })
-
-                        io.createFileDir(localAppDir .. "\\" .. fileToUpdate)
-                        io.copyFile(remoteDir .. "\\" .. fileToUpdate, localAppDir .. "\\" .. fileToUpdate, false)
+                        io.createFileDir(fileToUpdateNewPath)
+                        io.copyFile(remoteDir .. "\\" .. fileToUpdate, fileToUpdateNewPath, false)
 
                         table.remove(filesToUpdate, 1)
                 end
@@ -193,7 +184,7 @@ function mod:checkForUpdate()
                         ac.log(zipBeta)
 
                         if string.versionCompare(latestBeta, app.version) > 0 then
-                                ac.log("updateNeeded")
+                                ac.log("Update required")
                                 mod:installUpdate("acuir", "ACUIR", "Update", zipBeta, true)
                         end
                 else
