@@ -3,11 +3,11 @@ local callback = require("callback")
 local ioext = require("shared.utils.ioext")
 local signing = require("shared.utils.signing")
 
-local mod = {
+local updater = {
         list = {},
 }
 
-local function findModRootDir(initialDir, targetDir)
+local function findupdaterRootDir(initialDir, targetDir)
         local foundDir = nil
 
         io.scanDir(initialDir, "*", function(fileName, fileAttributes, callbackData)
@@ -18,7 +18,7 @@ local function findModRootDir(initialDir, targetDir)
                                 foundDir = recurFolder
                                 return
                         else
-                                foundDir = findModRootDir(recurFolder, targetDir)
+                                foundDir = findupdaterRootDir(recurFolder, targetDir)
 
                                 if foundDir then return end
                         end
@@ -61,7 +61,7 @@ local filesToUpdate = {}
 
 local function removeBeforeSlash(str) return str:match("^.-/(.*)") or str end
 
-function mod:installUpdate(id, name, reason, downloadURL, cleanInstall)
+function updater:installUpdate(id, name, reason, downloadURL, cleanInstall)
         if app.state.debug then return end
 
         filesToUpdate = {}
@@ -102,7 +102,7 @@ end
 local endpoint = "https://api.github.com"
 
 local retryRestCount = 0
-function mod:rest(method, url, data, callback, errorHandler)
+function updater:rest(method, url, data, callback, errorHandler)
         if method == "GET" and data then
                 local f = true
                 for k, v in pairs(data) do
@@ -163,8 +163,8 @@ function mod:rest(method, url, data, callback, errorHandler)
         )
 end
 
-function mod:checkForUpdate()
-        mod:rest("GET", "repos/virtual-racing-cars/acuir/tags", nil, function(tags)
+function updater:checkForUpdate()
+        updater:rest("GET", "repos/virtual-racing-cars/acuir/tags", nil, function(tags)
                 local latestBeta, latestRelease = nil, nil
 
                 for _, tag in ipairs(tags) do
@@ -180,12 +180,9 @@ function mod:checkForUpdate()
                         local zipBeta = "https://github.com/virtual-racing-cars/acuir/archive/refs/tags/"
                                 .. latestBeta
                                 .. ".zip"
-                        ac.log(latestBeta)
-                        ac.log(zipBeta)
 
-                        if string.versionCompare(latestBeta, app.version) > 0 then
-                                ac.log("Update required")
-                                mod:installUpdate("acuir", "ACUIR", "Update", zipBeta, true)
+                        if string.versionCompare(latestBeta, app.version .. "-beta") > 0 then
+                                updater:installUpdate("acuir", "ACUIR", "Update", zipBeta, true)
                         end
                 else
                         ac.warn("No beta tag found")
@@ -195,14 +192,12 @@ function mod:checkForUpdate()
                         local zipRelease = "https://github.com/virtual-racing-cars/acuir/archive/refs/tags/"
                                 .. latestRelease
                                 .. ".zip"
-                        ac.log("Latest release tag: " .. latestRelease)
-                        ac.log("Release zip URL: " .. zipRelease)
                 else
                         ac.warn("No release tag found")
                 end
         end, function(err) ac.warn("Failed to fetch tags: " .. err) end)
 end
 
-mod:checkForUpdate()
+updater:checkForUpdate()
 
-return mod
+return updater
