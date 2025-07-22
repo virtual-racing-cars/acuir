@@ -90,7 +90,7 @@ function card:draw(xPos, yPos, width, height)
 
         cui.pushWindow("telem_card", 0, ui.windowHeight() * 0.45, ui.windowWidth(), ui.windowHeight() * 0.5, true)
 
-        cui.setCursorX(10)
+        cui.setCursorX(0)
         cui.setCursorY(0)
         cui.snapCursor()
         ui.dwriteTextAligned(
@@ -98,12 +98,12 @@ function card:draw(xPos, yPos, width, height)
                 40 * cui.scale(),
                 ui.Alignment.Center,
                 ui.Alignment.Center,
-                vec2(80 * cui.scale(), ui.windowHeight())
+                vec2(100 * cui.scale(), ui.windowHeight())
         )
 
         local barPosition = ui.windowHeight() / 20 * 4
-        local barWidth = 290 * cui.scale()
         local barStart = 100 * cui.scale()
+        local barWidth = ui.availableSpaceX() - barStart - 15 * cui.scale()
 
         local steer = math.round(math.clamp(spectatedCar.steer / spectatedCar.steerLock, -1, 1), 3)
 
@@ -164,7 +164,6 @@ function card:draw(xPos, yPos, width, height)
         )
 
         cui.popWindow()
-
         cui.popWindow()
 end
 
