@@ -112,6 +112,7 @@ function sessionInfoWidget:body()
         local headerFontSpace = style.main.font.header.space
 
         cui.setCursorX(0)
+        cui.offsetCursorY(10)
 
         for sessionIndex = 0, sim.sessionsCount - 1 do
                 local session = ac.getSession(sessionIndex)

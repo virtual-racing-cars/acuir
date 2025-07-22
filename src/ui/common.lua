@@ -338,16 +338,16 @@ function bottomWidgetBar()
                 true
         )
 
-        local border = 3 * cui.scale()
+        local border = 6 * cui.scale()
 
         local widgetYPos = 0
-        local widgetWidth = ui.windowWidth() / 3 - border * 2
+        local widgetWidth = (ui.windowWidth() - border * 3) / 5
         local widgetHeight = ui.windowHeight()
 
-        cardWidget:draw(0, widgetYPos, widgetWidth * 0.5 - border * 2, widgetHeight)
-        pedalsWidget:draw(widgetWidth * 0.5 + border, widgetYPos, widgetWidth * 0.5 - border, widgetHeight)
-        tracesWidget:draw(ui.windowWidth() * 0.5 - widgetWidth * 0.5, widgetYPos, widgetWidth, widgetHeight)
-        chatWidget:draw(ui.windowWidth() - widgetWidth, widgetYPos, widgetWidth, widgetHeight)
+        cardWidget:draw(0, widgetYPos, widgetWidth, widgetHeight)
+        pedalsWidget:draw(widgetWidth + border, widgetYPos, widgetWidth, widgetHeight)
+        tracesWidget:draw((widgetWidth + border) * 2, widgetYPos, widgetWidth, widgetHeight)
+        chatWidget:draw((widgetWidth + border) * 3, widgetYPos, widgetWidth * 2, widgetHeight)
 
         cui.popContentWindow()
 end
