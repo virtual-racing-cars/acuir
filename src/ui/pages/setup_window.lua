@@ -33,7 +33,7 @@ local function drawSetupSpinner(si)
 
         si:run(true)
 
-        local spinnerWidth = ui.windowWidth() * 0.42
+        local spinnerWidth = ui.windowWidth() * 0.5 - 100 * cui.scale()
         local spinnerHeight = style.main.font.header.space * 2.5
 
         local positions = {
@@ -74,7 +74,7 @@ local function drawSetupSpinner(si)
         if hovered and si.help and si.help ~= "NULL" and si.help ~= "" then sm.activeHelpString = si.help end
 
         if si.mirrorAvailable and not si.fixed then
-                local linkButtonWidth = ((ui.windowWidth() - spinnerWidth) - 40 * cui.scale()) - ui.getCursorX()
+                local linkButtonWidth = 100 * cui.scale()
                 ui.setCursorX(ui.windowWidth() * 0.5 - linkButtonWidth * 0.5)
                 ui.offsetCursorY(-spinnerHeight * 0.75)
                 if linkButton(si.name, vec2Temp1:set(linkButtonWidth, spinnerHeight), si.mirrored) then
