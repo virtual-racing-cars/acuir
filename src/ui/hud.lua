@@ -46,6 +46,18 @@ local hudModes = {
                 exclusiveHudMode = nil
         end,
         menu = function(dt)
+                if sm then
+                        for _, spinner in ipairs(sm._setupSpinners) do
+                                if spinner.child or spinner.repair then return end
+                                spinner:run(true)
+                        end
+
+                        for _, spinner in ipairs(sm._pitSpinners) do
+                                if spinner.child or spinner.repair then return end
+                                spinner:run(true)
+                        end
+                end
+
                 if not settings.Modules.newMainMenu then return end
 
                 pages:setParentMainMenu()
