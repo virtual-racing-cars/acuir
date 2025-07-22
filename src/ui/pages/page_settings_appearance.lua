@@ -1,8 +1,11 @@
-local page = {}
-
 local cui = require("ui.cui")
 local pages = require("ui.pages")
 local settings = require("settings")
+
+local vec2Temp1 = vec2()
+local vec2Temp2 = vec2()
+
+local page = {}
 
 local bottomBarButtons = {
         {
@@ -27,14 +30,14 @@ local secondaryActive = false
 local tertiaryActive = false
 
 function page.draw()
-        ui.drawRectFilled(vec2(0, 0), ui.windowSize(), settings.Appearance.uiColorPrimary / 1.1)
+        ui.drawRectFilled(vec2Temp1:set(0, 0), ui.windowSize(), settings.Appearance.uiColorPrimary / 1.1)
 
         cui.pushFittedWindow("settings_appearance_window")
 
         topSubBar("/Settings/UI")
 
-        ui.drawRectFilled(vec2(0, 0), ui.windowSize(), settings.Appearance.uiColorPrimary / 1.1)
-        ui.drawRectFilled(vec2(0, 2), ui.windowSize(), rgbm(0, 0, 0, 0.2))
+        ui.drawRectFilled(vec2Temp1:set(0, 0), ui.windowSize(), settings.Appearance.uiColorPrimary / 1.1)
+        ui.drawRectFilled(vec2Temp1:set(0, 2), ui.windowSize(), rgbm(0, 0, 0, 0.2))
 
         ui.setCursorY(60)
         ui.setCursorX(50)

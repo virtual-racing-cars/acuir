@@ -5,6 +5,7 @@ local telemetry = require("telemetry")
 local sim = ac.getSim()
 
 local vec2Temp1 = vec2()
+local vec2Temp2 = vec2()
 
 local telemetryViewer = {
         isShowingBest = true,
@@ -45,7 +46,7 @@ local function drawTelemetryGraphs()
                         fontSize,
                         -1,
                         0,
-                        vec2(ui.windowWidth(), fontSpace),
+                        vec2Temp1:set(ui.windowWidth(), fontSpace),
                         false,
                         rgbm.colors.white
                 )
@@ -142,7 +143,11 @@ local function drawTelemetrySlice()
                 return
         end
 
-        ui.drawSimpleLine(vec2(mousePos.x, 0), vec2(mousePos.x, ui.windowHeight()), rgbm.colors.yellow)
+        ui.drawSimpleLine(
+                vec2Temp1:set(mousePos.x, 0),
+                vec2Temp2:set(mousePos.x, ui.windowHeight()),
+                rgbm.colors.yellow
+        )
 
         local pointData = {
                 {

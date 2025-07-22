@@ -4,6 +4,10 @@ local cui = require("ui.cui")
 local settings = require("settings")
 local style = require("ui.cui.style")
 
+local vec2Temp1 = vec2()
+local vec2Temp2 = vec2()
+local vec2Temp3 = vec2()
+
 local inputTextString = ""
 local checkboxValue = false
 local sliderValue = 5
@@ -19,12 +23,20 @@ function testUI(dt)
         local height = 50 * cui.scale()
 
         ui.dwriteText("Combo Box")
-        cui.combo("test", vec2(width, height), "Test", ui.Alignment.Center, true, vec2(width, height), function() end)
+        cui.combo(
+                "test",
+                vec2Temp1:set(width, height),
+                "Test",
+                ui.Alignment.Center,
+                true,
+                vec2Temp2:set(width, height),
+                function() end
+        )
 
         ui.newLine()
         ui.dwriteText("Menu Button")
-        cui.menuButton("Test", vec2(width, height))
-        cui.menuButton("Test", vec2(width, height))
+        cui.menuButton("Test", vec2Temp1:set(width, height))
+        cui.menuButton("Test", vec2Temp1:set(width, height))
 
         ui.newLine()
         ui.dwriteText("Icon Button")
@@ -41,14 +53,14 @@ function testUI(dt)
 
         ui.newLine()
         ui.dwriteText("Tree Node Button")
-        cui.treeNodeChildButton("Test", vec2(width, height), false, false, 0, false)
-        cui.treeNodeChildButton("Test", vec2(width, height), true, true, 0, false)
+        cui.treeNodeChildButton("Test", vec2Temp1:set(width, height), false, false, 0, false)
+        cui.treeNodeChildButton("Test", vec2Temp1:set(width, height), true, true, 0, false)
 
         ui.newLine()
         ui.dwriteText("Drive Button")
         cui.driveButton(
                 "Drive",
-                vec2(width, height),
+                vec2Temp1:set(width, height),
                 ui.Alignment.Center,
                 ui.Alignment.Center,
                 rgbm.colors.green,
@@ -62,7 +74,8 @@ function testUI(dt)
 
         ui.newLine()
         ui.dwriteText("Input Text")
-        inputTextString = cui.inputText("Test2222", vec2(width, height), "", inputTextString, "Test", "[%w_ .;,><%-]")
+        inputTextString =
+                cui.inputText("Test2222", vec2Temp1:set(width, height), "", inputTextString, "Test", "[%w_ .;,><%-]")
 
         checkboxValue = cui.checkbox("Checkbox", "Checkbox", height * 0.5, checkboxValue, ui.ButtonFlags.None)
 

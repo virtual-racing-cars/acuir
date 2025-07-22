@@ -89,15 +89,15 @@ local function drawSlider(id, name, width, height, value, sliderParams, noScroll
         )
 
         ui.drawRectFilled(
-                vec2(sliderFill, r1.y - 2 * scale.get()),
-                vec2(sliderFill + grabberSize, r2.y + 2 * scale.get()),
+                vec2Temp1:set(sliderFill, r1.y - 2 * scale.get()),
+                vec2Temp2:set(sliderFill + grabberSize, r2.y + 2 * scale.get()),
                 active and settings.Appearance.uiColorSecondary or settings.Appearance.uiColorAccent,
                 6 * scale.get()
         )
 
         ui.drawRect(
-                vec2(sliderFill, r1.y - 2 * scale.get()),
-                vec2(sliderFill + grabberSize, r2.y + 2 * scale.get()),
+                vec2Temp1:set(sliderFill, r1.y - 2 * scale.get()),
+                vec2Temp2:set(sliderFill + grabberSize, r2.y + 2 * scale.get()),
                 settings.Appearance.uiColorBackground,
                 6 * scale.get(),
                 ui.CornerFlags.All,
@@ -120,7 +120,7 @@ end
 function slider.slider(id, name, width, height, locked, value, sliderParams, noScroll)
         height = style.main.font.header.space * 2
         local p1 = ui.getCursor()
-        local p2 = p1 + vec2(width, height)
+        local p2 = p1 + vec2Temp2:set(width, height)
         local value = value
         local active = false
         local changed = false
@@ -184,7 +184,7 @@ end
 function slider.spinner(id, name, width, height, locked, value, sliderParams, noScroll, labelBackground)
         height = style.main.font.header.space * 2
         local p1 = ui.getCursor()
-        local p2 = p1 + vec2(width, height)
+        local p2 = p1 + vec2Temp2:set(width, height)
         local value = value
         local active = false
         local changed = false

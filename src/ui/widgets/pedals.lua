@@ -5,19 +5,31 @@ local style = require("ui.cui.style")
 local units = require("units")
 local sim = ac.getSim()
 
+local vec2Temp1 = vec2()
+local vec2Temp2 = vec2()
+
+local round = math.round
+
 local card = {}
 
 local function progressBar(progress, xPos, yPos, width, color, thickness)
-        ui.drawSimpleLine(vec2(xPos, yPos), vec2(xPos + width, yPos), rgbm(0.3, 0.3, 0.3, 1), thickness)
-        ui.drawSimpleLine(vec2(xPos, yPos), vec2(xPos + width * progress, yPos), color, thickness)
+        ui.drawSimpleLine(
+                vec2Temp1:set(xPos, yPos),
+                vec2Temp2:set(xPos + width, yPos),
+                rgbm(0.3, 0.3, 0.3, 1),
+                thickness
+        )
+        ui.drawSimpleLine(vec2Temp1:set(xPos, yPos), vec2Temp2:set(xPos + width * progress, yPos), color, thickness)
 end
 
 function card:draw(xPos, yPos, width, height)
         local border = 20 * cui.scale()
+        vec2Temp1:set(ui.windowWidth() / 3, 32 * cui.scale())
+        local textBoxSize = vec2Temp1
 
         cui.pushWindow("pedals_widget_window", xPos, yPos, width, height, false)
         ui.drawRectFilled(
-                vec2(0, 0),
+                0,
                 ui.windowSize(),
                 settings.Appearance.uiColorBackground,
                 6 * cui.scale(),
@@ -28,13 +40,7 @@ function card:draw(xPos, yPos, width, height)
         cui.setCursorX(15)
         cui.setCursorY(50)
         cui.snapCursor()
-        ui.dwriteTextAligned(
-                "SPEED",
-                style.main.font.body.size,
-                ui.Alignment.Start,
-                ui.Alignment.Center,
-                vec2(ui.windowWidth() / 3, 32 * cui.scale())
-        )
+        ui.dwriteTextAligned("SPEED", style.main.font.body.size, ui.Alignment.Start, ui.Alignment.Center, textBoxSize)
         ui.sameLine()
 
         cui.snapCursor()
@@ -43,7 +49,7 @@ function card:draw(xPos, yPos, width, height)
                 style.main.font.body.size,
                 ui.Alignment.Start,
                 ui.Alignment.Center,
-                vec2(ui.windowWidth() / 3, 32 * cui.scale())
+                textBoxSize
         )
         ui.sameLine()
 
@@ -53,18 +59,18 @@ function card:draw(xPos, yPos, width, height)
                 style.main.font.body.size,
                 ui.Alignment.Start,
                 ui.Alignment.Center,
-                vec2(ui.windowWidth() / 3, 32 * cui.scale())
+                textBoxSize
         )
 
         cui.setCursorX(15)
         cui.setCursorY(15)
         cui.snapCursor()
         ui.dwriteTextAligned(
-                math.round(units:speed(spectatedCar.speedKmh)),
+                round(units:speed(spectatedCar.speedKmh)),
                 32 * cui.scale(),
                 ui.Alignment.Start,
                 ui.Alignment.Center,
-                vec2(ui.windowWidth() / 3, 32 * cui.scale())
+                textBoxSize
         )
         ui.sameLine()
 
@@ -74,7 +80,7 @@ function card:draw(xPos, yPos, width, height)
                 32 * cui.scale(),
                 ui.Alignment.Start,
                 ui.Alignment.Center,
-                vec2(ui.windowWidth() / 3, 32 * cui.scale())
+                textBoxSize
         )
         ui.sameLine()
 
@@ -84,7 +90,7 @@ function card:draw(xPos, yPos, width, height)
                 32 * cui.scale(),
                 ui.Alignment.Start,
                 ui.Alignment.Center,
-                vec2(ui.windowWidth() / 3, 32 * cui.scale())
+                textBoxSize
         )
         ui.sameLine()
 
@@ -98,7 +104,7 @@ function card:draw(xPos, yPos, width, height)
                 40 * cui.scale(),
                 ui.Alignment.Center,
                 ui.Alignment.Center,
-                vec2(100 * cui.scale(), ui.windowHeight())
+                vec2Temp1:set(100 * cui.scale(), ui.windowHeight())
         )
 
         local barPosition = ui.windowHeight() / 20 * 4

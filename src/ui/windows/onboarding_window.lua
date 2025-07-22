@@ -8,6 +8,9 @@ local settings = require("settings")
 local style = require("ui.cui.style")
 local sim = ac.getSim()
 
+local vec2Temp1 = vec2()
+local vec2Temp2 = vec2()
+
 if settings.AppData.shownOnboarding == false then
         app.appOpen = true
         settings.General.autoStart = true
@@ -29,7 +32,7 @@ local function onboardingBody()
         )
 
         ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiColorBackgroundShade * 0.5)
-        ui.drawRect(vec2(-20, 0), ui.windowSize() + vec2(20), settings.Appearance.uiColorAccent * 0.5)
+        ui.drawRect(vec2Temp1:set(-20, 0), ui.windowSize() + vec2Temp2:set(20), settings.Appearance.uiColorAccent * 0.5)
 
         ui.setCursor(0)
 
@@ -65,7 +68,7 @@ local function onboardingBody()
 
         cui.offsetCursorY(15)
         ui.setCursorX(ui.windowWidth() * 0.5 - ui.windowWidth() * 0.5)
-        if cui.menuButton("Continue", vec2(ui.windowWidth(), 60 * cui.scale())) then
+        if cui.menuButton("Continue", vec2Temp1:set(ui.windowWidth(), 60 * cui.scale())) then
                 onboardingAcknowledged = true
                 app.state.screenTransition = os.clock() + 0.5
                 setTimeout(function() settings.AppData.shownOnboarding = true end, 0.25, "onboarding_acknowledge")
@@ -83,7 +86,7 @@ local function onboardingBody()
                 style.main.font.body.size,
                 ui.Alignment.Center,
                 ui.Alignment.Center,
-                vec2(ui.windowWidth(), style.main.font.body.space),
+                vec2Temp1:set(ui.windowWidth(), style.main.font.body.space),
                 false,
                 settings.Appearance.uiColorTextDim
         )

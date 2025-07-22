@@ -6,7 +6,6 @@ local settings = require("settings")
 local style = require("ui.cui.style")
 
 local vec2Temp1 = vec2()
-local vec2Temp2 = vec2()
 
 local setupTabBar = {}
 
@@ -20,7 +19,7 @@ local function tabItem(index, title)
         if
                 cui.treeNodeChildButton(
                         title,
-                        vec2(ui.availableSpaceX() - 20 * cui.scale(), style.main.font.header.space),
+                        vec2Temp1:set(ui.availableSpaceX() - 20 * cui.scale(), style.main.font.header.space),
                         currentApp == index,
                         true
                 )

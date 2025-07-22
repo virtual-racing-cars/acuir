@@ -4,6 +4,9 @@ local settings = require("settings")
 local style = require("ui.cui.style")
 local sim = ac.getSim()
 
+local vec2Temp1 = vec2()
+local vec2Temp2 = vec2()
+
 local chat = {
         autoScroll = true,
         emojisOpen = false,
@@ -30,7 +33,7 @@ local function logWindow(height)
                                 fontSize,
                                 ui.Alignment.End,
                                 ui.Alignment.Center,
-                                vec2(ui.windowWidth() * 0.98, chatLineSize * cui.scale()),
+                                vec2Temp1:set(ui.windowWidth() * 0.98, chatLineSize * cui.scale()),
                                 false,
                                 rgbm.colors.gray
                         )
@@ -42,7 +45,7 @@ local function logWindow(height)
                                 fontSize,
                                 ui.Alignment.End,
                                 ui.Alignment.Center,
-                                vec2(ui.windowWidth() * 0.98, chatLineSize * cui.scale()),
+                                vec2Temp1:set(ui.windowWidth() * 0.98, chatLineSize * cui.scale()),
                                 false,
                                 rgbm.colors.gray
                         )
@@ -71,7 +74,7 @@ local function logWindow(height)
                                         fontSize,
                                         ui.Alignment.Start,
                                         ui.Alignment.Center,
-                                        vec2(ui.windowWidth() * 0.98, chatLineSize * cui.scale()),
+                                        vec2Temp1:set(ui.windowWidth() * 0.98, chatLineSize * cui.scale()),
                                         false,
                                         line.color
                                 )
@@ -105,15 +108,15 @@ local function chatInput(height)
 
         messages.input, chatActive = cui.inputText(
                 "##chat_input",
-                vec2(ui.windowWidth() * 0.75, height),
+                vec2Temp1:set(ui.windowWidth() * 0.75, height),
                 "",
                 messages.input,
                 "Type message...",
                 "[%g ]"
         )
         ui.drawRect(
-                vec2(3, ui.windowHeight() - height),
-                ui.windowSize() - vec2(3, 0),
+                vec2Temp1:set(3, ui.windowHeight() - height),
+                ui.windowSize() - vec2Temp2:set(3, 0),
                 settings.Appearance.uiColorPrimary * 2,
                 6 * cui.scale(),
                 ui.CornerFlags.All,
@@ -153,8 +156,8 @@ local function chatInput(height)
                 )
 
                 ui.drawRectFilled(
-                        vec2(0, 0),
-                        vec2(ui.windowWidth(), 2000 * cui.scale()),
+                        vec2Temp1:set(0, 0),
+                        vec2Temp2:set(ui.windowWidth(), 2000 * cui.scale()),
                         settings.Appearance.uiColorBackground
                 )
                 ui.setCursorX(ui.windowWidth() * 0.02)
@@ -164,7 +167,7 @@ local function chatInput(height)
                         22 * cui.scale(),
                         ui.Alignment.Start,
                         ui.Alignment.Center,
-                        vec2(ui.windowWidth() * 0.98, 24 * cui.scale())
+                        vec2Temp1:set(ui.windowWidth() * 0.98, 24 * cui.scale())
                 )
 
                 ui.setCursorY(38 * cui.scale())
@@ -249,7 +252,7 @@ function chat:draw(xPos, yPos, width, height)
         local chatInputHeight = 40 * cui.scale()
 
         cui.pushWindow("chat_widget_window", xPos, yPos, width, height, false)
-        ui.drawRectFilled(vec2(0, 0), ui.windowSize(), settings.Appearance.uiColorBackground, 6 * cui.scale())
+        ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiColorBackground, 6 * cui.scale())
 
         logWindow(height - chatInputHeight)
         chatInput(chatInputHeight)

@@ -7,6 +7,9 @@ local settings = require("settings")
 local style = require("ui.cui.style")
 local sim = ac.getSim()
 
+local vec2Temp1 = vec2()
+local vec2Temp2 = vec2()
+
 local inputModeStringKeys = {
         "BUTTON",
         "XBOXBUTTON",
@@ -27,26 +30,15 @@ local function bindingInUseDialog(button, name, inputMode, inUseBinds)
         cui.modalDialog(function()
                 ui.pushStyleVar(ui.StyleVar.ItemSpacing, 0)
                 local textBoxHeight = ui.windowHeight() / 5
+                local itemWidth = vec2Temp1:set(ui.windowWidth(), textBoxHeight)
 
                 ui.setCursor(0)
                 cui.snapCursor()
-                ui.dwriteTextAligned(
-                        "Already In Use!",
-                        textBoxHeight * 0.5,
-                        nil,
-                        nil,
-                        vec2(ui.windowWidth(), textBoxHeight)
-                )
+                ui.dwriteTextAligned("Already In Use!", textBoxHeight * 0.5, nil, nil, itemWidth)
 
                 ui.setCursorX(0)
                 cui.snapCursor()
-                ui.dwriteTextAligned(
-                        "This bind is already being used by:",
-                        textBoxHeight * 0.3,
-                        nil,
-                        nil,
-                        vec2(ui.windowWidth(), textBoxHeight)
-                )
+                ui.dwriteTextAligned("This bind is already being used by:", textBoxHeight * 0.3, nil, nil, itemWidth)
 
                 local inUseString = ""
                 for i, bind in ipairs(inUseBinds) do
@@ -60,13 +52,7 @@ local function bindingInUseDialog(button, name, inputMode, inUseBinds)
                 ui.setCursorX(0)
 
                 cui.snapCursor()
-                ui.dwriteTextAligned(
-                        inUseString,
-                        textBoxHeight * 0.3,
-                        nil,
-                        ui.Alignment.Start,
-                        vec2(ui.windowWidth(), textBoxHeight)
-                )
+                ui.dwriteTextAligned(inUseString, textBoxHeight * 0.3, nil, ui.Alignment.Start, itemWidth)
 
                 local buttonWidth = 170 * cui.scale()
                 ui.setCursorX(ui.windowWidth() / 2 - buttonWidth * 1.5 - 5 * cui.scale())
@@ -112,35 +98,19 @@ local function bindingDialog(button, name)
                 local textBoxHeight = ui.windowHeight() / 5
 
                 local inputPromptString = "Press a Button or Key"
+                local itemWidth = vec2Temp1:set(ui.windowWidth(), textBoxHeight)
+
                 ui.setCursor(0)
                 cui.snapCursor()
-                ui.dwriteTextAligned(
-                        inputPromptString,
-                        textBoxHeight * 0.5,
-                        nil,
-                        nil,
-                        vec2(ui.windowWidth(), textBoxHeight)
-                )
+                ui.dwriteTextAligned(inputPromptString, textBoxHeight * 0.5, nil, nil, itemWidth)
 
                 ui.setCursorX(0)
                 cui.snapCursor()
-                ui.dwriteTextAligned(
-                        "This will assign a control bind for:",
-                        textBoxHeight * 0.3,
-                        nil,
-                        nil,
-                        vec2(ui.windowWidth(), textBoxHeight)
-                )
+                ui.dwriteTextAligned("This will assign a control bind for:", textBoxHeight * 0.3, nil, nil, itemWidth)
 
                 ui.setCursorX(0)
                 cui.snapCursor()
-                ui.dwriteTextAligned(
-                        name,
-                        textBoxHeight * 0.4,
-                        nil,
-                        ui.Alignment.Start,
-                        vec2(ui.windowWidth(), textBoxHeight)
-                )
+                ui.dwriteTextAligned(name, textBoxHeight * 0.4, nil, ui.Alignment.Start, itemWidth)
 
                 ui.setCursorX(0)
                 cui.snapCursor()
@@ -149,7 +119,7 @@ local function bindingDialog(button, name)
                         textBoxHeight * 0.4,
                         nil,
                         ui.Alignment.Start,
-                        vec2(ui.windowWidth(), textBoxHeight),
+                        itemWidth,
                         false,
                         rgbm.colors.red
                 )
@@ -261,7 +231,7 @@ local function bindingBoxes(binding, name, label, button, bind, yOffset)
                         name,
                         label,
                         button,
-                        vec2(ui.availableSpaceX() - 15 * cui.scale(), 64 * cui.scale()),
+                        vec2Temp1:set(ui.availableSpaceX() - 15 * cui.scale(), 64 * cui.scale()),
                         ui.ButtonFlags.None or ui.ButtonFlags.None
                 )
         then
@@ -279,7 +249,7 @@ local function axisBoxes(binding, name, label, button, bind, yOffset)
                         name,
                         label,
                         button,
-                        vec2(ui.availableSpaceX() - 15 * cui.scale(), 64 * cui.scale()),
+                        vec2Temp1:set(ui.availableSpaceX() - 15 * cui.scale(), 64 * cui.scale()),
                         ui.ButtonFlags.None or ui.ButtonFlags.None
                 )
         then
@@ -367,12 +337,12 @@ function controlBindings:body()
 
         cui.setCursor(15)
         local textInputWidth = ui.windowWidth() * 0.25
-        local r1, r2 = ui.getCursor(), ui.getCursor() + vec2(textInputWidth, 36 * cui.scale())
+        local r1, r2 = ui.getCursor(), ui.getCursor() + vec2Temp1:set(textInputWidth, 36 * cui.scale())
         ui.drawRectFilled(r1, r2, settings.Appearance.uiColorBackground * 0.25, 6 * cui.scale())
 
         settingsSearchInput, settingsSearchActive = cui.inputText(
                 "##controlsSearcher",
-                vec2(textInputWidth, 36 * cui.scale()),
+                vec2Temp1:set(textInputWidth, 36 * cui.scale()),
                 "",
                 settingsSearchInput,
                 "Search Controls...",
@@ -381,14 +351,14 @@ function controlBindings:body()
 
         ui.setCursorX(r2.x - ui.windowHeight() / 22)
         ui.setCursorY(0)
-        ui.addIcon(ui.Icons.ZoomIn, 18 * cui.scale(), vec2(1, 0.5), rgbm.colors.gray)
+        ui.addIcon(ui.Icons.ZoomIn, 18 * cui.scale(), vec2Temp1:set(1, 0.5), rgbm.colors.gray)
 
         ui.sameLine()
         cui.offsetCursorX(30)
         cui.setCursorY(25)
         settings.General.showMPSBinds = cui.checkbox(
                 "##mapisShowingWeather",
-                "Show MPS Binds",
+                "Show Multi-Position Switch Binds",
                 style.main.font.body.size,
                 settings.General.showMPSBinds
         )
@@ -421,7 +391,7 @@ function controlBindings:body()
                                         style.main.font.body.size,
                                         ui.Alignment.Start,
                                         ui.Alignment.Center,
-                                        vec2(ui.windowWidth(), 32 * cui.scale())
+                                        vec2Temp1:set(ui.windowWidth(), 32 * cui.scale())
                                 )
                         end
 

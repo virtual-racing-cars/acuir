@@ -1,10 +1,13 @@
+local cui = require("ui.cui")
+local settings = require("settings")
 local setupExchangeAPI = require("setup_exchange")
+local style = require("ui.cui.style")
 
 local setupExchangeBrowser = {}
 
-local cui = require("ui.cui")
-local settings = require("settings")
-local style = require("ui.cui.style")
+local vec2Temp1 = vec2()
+local vec2Temp2 = vec2()
+local vec2Temp3 = vec2()
 
 local mainCarID = ac.getCarID(0)
 
@@ -36,7 +39,7 @@ end
 local function likeButtons(path, item, likedList, dislikedList, itemID, contextTable)
         local fontSize = style.main.font.small.size
         local fontSpace = style.main.font.small.space
-        local actionBlockSize = vec2(ui.availableSpaceX() / 4 - 10 * cui.scale(), fontSpace)
+        local actionBlockSize = vec2Temp3:set(ui.availableSpaceX() / 4 - 10 * cui.scale(), fontSpace)
         cui.offsetCursorY(fontSpace / 6)
         local voteZoneButton =
                 ui.invisibleButton("##vote_zone_setup_exchange", actionBlockSize, ui.ButtonFlags.Disabled)
@@ -52,12 +55,12 @@ local function likeButtons(path, item, likedList, dislikedList, itemID, contextT
 
         ui.setCursor(r1)
         local likeClicked =
-                ui.invisibleButton("##setup_exchange_like_" .. itemID, vec2(actionBlockSize.x / 3, fontSpace))
+                ui.invisibleButton("##setup_exchange_like_" .. itemID, vec2Temp1:set(actionBlockSize.x / 3, fontSpace))
         local likeSize = ui.itemRectSize()
         local likeColor = rgbm.colors.gray * 0.7
 
         if ui.itemHovered() or liked then likeColor = rgbm.colors.green end
-        ui.addIcon(ui.Icons.Up, likeSize * 0.5, vec2(0.5, 0.5), likeColor, 0)
+        ui.addIcon(ui.Icons.Up, likeSize * 0.5, vec2Temp1:set(0.5, 0.5), likeColor, 0)
 
         if likeClicked then
                 if liked then
@@ -86,19 +89,21 @@ local function likeButtons(path, item, likedList, dislikedList, itemID, contextT
                 style.main.font.small.size,
                 ui.Alignment.Center,
                 ui.Alignment.Center,
-                vec2(actionBlockSize.x / 3, fontSpace),
+                vec2Temp1:set(actionBlockSize.x / 3, fontSpace),
                 false,
                 settings.Appearance.uiColorText
         )
         ui.sameLine()
 
-        local dislikeClicked =
-                ui.invisibleButton("##setup_exchange_dislike_" .. itemID, vec2(actionBlockSize.x / 3, fontSpace))
+        local dislikeClicked = ui.invisibleButton(
+                "##setup_exchange_dislike_" .. itemID,
+                vec2Temp1:set(actionBlockSize.x / 3, fontSpace)
+        )
         local dislikeSize = ui.itemRectSize()
         local dislikeColor = rgbm.colors.gray * 0.7
 
         if ui.itemHovered() or disliked then dislikeColor = rgbm.colors.red end
-        ui.addIcon(ui.Icons.Down, dislikeSize * 0.5, vec2(0.5, 0.5), dislikeColor, 0)
+        ui.addIcon(ui.Icons.Down, dislikeSize * 0.5, vec2Temp1:set(0.5, 0.5), dislikeColor, 0)
 
         if dislikeClicked then
                 if disliked then
@@ -176,7 +181,7 @@ local function commentsBlock()
                 local fontSize = style.main.font.small.size
                 local fontSpace = style.main.font.small.space
                 local setupItemWidth = ui.windowWidth() - 10 * cui.scale()
-                local actionBlockSize = vec2(ui.availableSpaceX() / 4 - 10 * cui.scale(), fontSpace)
+                local actionBlockSize = vec2Temp3:set(ui.availableSpaceX() / 4 - 10 * cui.scale(), fontSpace)
 
                 cui.offsetCursorY(15)
                 if #comments == 0 then
@@ -187,7 +192,7 @@ local function commentsBlock()
                                 fontSize,
                                 ui.Alignment.Start,
                                 ui.Alignment.Center,
-                                vec2(setupItemWidth, fontSpace),
+                                vec2Temp1:set(setupItemWidth, fontSpace),
                                 false,
                                 settings.Appearance.uiColorTextDim
                         )
@@ -206,7 +211,7 @@ local function commentsBlock()
                                         fontSize,
                                         ui.Alignment.Start,
                                         ui.Alignment.Center,
-                                        vec2(setupItemWidth, fontSpace),
+                                        vec2Temp1:set(setupItemWidth, fontSpace),
                                         false,
                                         v.userID == setupExchangeAPI.ownUserID and settings.Appearance.uiColorYellow
                                                 or settings.Appearance.uiColorText
@@ -219,7 +224,7 @@ local function commentsBlock()
                                         fontSize,
                                         ui.Alignment.Start,
                                         ui.Alignment.Start,
-                                        vec2(setupItemWidth, fontSpace),
+                                        vec2Temp1:set(setupItemWidth, fontSpace),
                                         true
                                 )
 
@@ -243,7 +248,7 @@ local function commentsBlock()
                                 if
                                         ui.invisibleButton(
                                                 "##reply_setup_exchange_" .. (v.commmentID or ""),
-                                                vec2(actionBlockSize.x * 0.75, actionBlockSize.y)
+                                                vec2Temp1:set(actionBlockSize.x * 0.75, actionBlockSize.y)
                                         )
                                 then
                                         comment = "@" .. v.userName .. " " .. comment
@@ -251,7 +256,11 @@ local function commentsBlock()
                                 local r1, r2 = ui.itemRect()
 
                                 ui.drawRectFilled(r1, r2, settings.Appearance.uiColorBackgroundShade, 6 * cui.scale())
-                                ui.addIcon(ui.Icons.Chat, vec2(10 * cui.scale(), 10 * cui.scale()), vec2(0.5, 0.5))
+                                ui.addIcon(
+                                        ui.Icons.Chat,
+                                        vec2Temp1:set(10 * cui.scale(), 10 * cui.scale()),
+                                        vec2Temp2:set(0.5, 0.5)
+                                )
 
                                 ui.setCursor(r1)
                                 cui.snapCursor()
@@ -260,7 +269,7 @@ local function commentsBlock()
                                         fontSize,
                                         ui.Alignment.Center,
                                         ui.Alignment.Center,
-                                        vec2(actionBlockSize.x * 0.75, actionBlockSize.y),
+                                        vec2Temp1:set(actionBlockSize.x * 0.75, actionBlockSize.y),
                                         true
                                 )
 
@@ -271,7 +280,7 @@ local function commentsBlock()
                                         if
                                                 ui.invisibleButton(
                                                         "##delete_setup_exchange_" .. (v.commmentID or ""),
-                                                        vec2(actionBlockSize.x * 0.75, actionBlockSize.y)
+                                                        vec2Temp1:set(actionBlockSize.x * 0.75, actionBlockSize.y)
                                                 )
                                         then
                                                 setupExchangeAPI:removeComment(v.commentID, true)
@@ -287,8 +296,8 @@ local function commentsBlock()
                                         )
                                         ui.addIcon(
                                                 ui.Icons.Delete,
-                                                vec2(10 * cui.scale(), 10 * cui.scale()),
-                                                vec2(0.5, 0.5)
+                                                vec2Temp1:set(10 * cui.scale(), 10 * cui.scale()),
+                                                vec2Temp2:set(0.5, 0.5)
                                         )
 
                                         ui.setCursor(r1)
@@ -298,7 +307,7 @@ local function commentsBlock()
                                                 fontSize,
                                                 ui.Alignment.Center,
                                                 ui.Alignment.Center,
-                                                vec2(actionBlockSize.x * 0.75, actionBlockSize.y),
+                                                vec2Temp1:set(actionBlockSize.x * 0.75, actionBlockSize.y),
                                                 true
                                         )
                                 end
@@ -325,8 +334,11 @@ local function commentsBlock()
                 and setupExchangeAPI.session.id ~= nil
         if
                 (
-                        ui.button("Send", vec2(ui.availableSpaceX(), 0), canSend and 0 or ui.ButtonFlags.Disabled)
-                        or submitted
+                        ui.button(
+                                "Send",
+                                vec2Temp1:set(ui.availableSpaceX(), 0),
+                                canSend and 0 or ui.ButtonFlags.Disabled
+                        ) or submitted
                 ) and canSend
         then
                 setupExchangeAPI.currentlySubmittingComment = true
@@ -366,7 +378,7 @@ local function drawSetupItem(i, v)
         ui.pushID(v.setupID)
 
         local p = ui.getCursor()
-        ui.dummy(vec2(setupItemWidth, setupItemHeight))
+        ui.dummy(vec2Temp1:set(setupItemWidth, setupItemHeight))
         local clicked = ui.itemClicked()
         local hovered = ui.itemHovered()
         local r1, r2 = ui.itemRect()
@@ -402,7 +414,7 @@ local function drawSetupItem(i, v)
                 fontSize,
                 ui.Alignment.Start,
                 ui.Alignment.Center,
-                vec2(setupItemWidth - 10 * cui.scale(), fontSpace),
+                vec2Temp1:set(setupItemWidth - 10 * cui.scale(), fontSpace),
                 false,
                 fontColor
         )
@@ -411,7 +423,7 @@ local function drawSetupItem(i, v)
         cui.offsetCursorY(fontSpace / 6)
         cui.setCursorX(20)
         local usernameButtonSize =
-                vec2(ui.measureDWriteText(string.format("%s....", v.userName), fontSize).x, fontSpace)
+                vec2Temp3:set(ui.measureDWriteText(string.format("%s....", v.userName), fontSize).x, fontSpace)
 
         local usernameClicked = ui.invisibleButton("##username_button_" .. v.userName, usernameButtonSize)
         local r1, r2 = ui.itemRect()
@@ -444,7 +456,7 @@ local function drawSetupItem(i, v)
                 style.main.font.small.size,
                 ui.Alignment.Start,
                 ui.Alignment.Center,
-                vec2(ui.availableSpaceX() - 10 * cui.scale(), fontSpace),
+                vec2Temp1:set(ui.availableSpaceX() - 10 * cui.scale(), fontSpace),
                 false,
                 subFontColor
         )
@@ -458,12 +470,12 @@ local function drawSetupItem(i, v)
                 style.main.font.small.size,
                 ui.Alignment.End,
                 ui.Alignment.Center,
-                vec2(setupItemWidth, fontSpace),
+                vec2Temp1:set(setupItemWidth, fontSpace),
                 false,
                 subFontColor
         )
 
-        local actionBlockSize = vec2(ui.availableSpaceX() / 4 - 10 * cui.scale(), fontSpace)
+        local actionBlockSize = vec2Temp3:set(ui.availableSpaceX() / 4 - 10 * cui.scale(), fontSpace)
         cui.setCursorX(20)
 
         likeButtons(
@@ -504,7 +516,7 @@ local function drawSetupItem(i, v)
                         cui.smallIconButton(
                                 "##delete_setup_" .. v.setupID,
                                 ui.Icons.Trash,
-                                vec2(actionBlockSize.y, actionBlockSize.y)
+                                vec2Temp1:set(actionBlockSize.y, actionBlockSize.y)
                         )
                 then
                         setupExchangeAPI:removeSetup(v.setupID, false)
@@ -554,7 +566,7 @@ local function setupsListWindow(setups)
                                 style.main.font.body.size,
                                 ui.Alignment.Start,
                                 ui.Alignment.Center,
-                                vec2(ui.windowWidth(), 28 * cui.scale()),
+                                vec2Temp1:set(ui.windowWidth(), 28 * cui.scale()),
                                 false,
                                 settings.Appearance.uiColorTextDim
                         )
@@ -586,7 +598,7 @@ local function failureBlock(setups)
         ui.text("Failed to load setups:")
         ui.text(setups)
         ui.setNextItemIcon(ui.Icons.Restart)
-        if ui.button("Try again", vec2(-0.1, 0)) then listOfSetups = nil end
+        if ui.button("Try again", vec2Temp1:set(-0.1, 0)) then listOfSetups = nil end
         ui.popAlignment()
 end
 
@@ -597,7 +609,7 @@ local function searchFilters()
         local buttonWidth = ui.windowWidth() * 0.99
         local groupBegin = (ui.windowWidth() / 24)
         local fontSize = style.main.font.body.size
-        local comboSize = vec2((ui.windowWidth() - 20 * cui.scale()) * 0.5, 32 * cui.scale())
+        local comboSize = vec2Temp3:set((ui.windowWidth() - 20 * cui.scale()) * 0.5, 32 * cui.scale())
 
         ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiColorBackgroundShade, 6 * cui.scale())
 
@@ -632,7 +644,7 @@ local function searchFilters()
                 setupExchangeAPI.setupsOrder[setupExchangeAPI.stored.setupsOrder][1],
                 ui.Alignment.Start,
                 true,
-                vec2(comboSize.x, comboSize.y * (#setupExchangeAPI.setupsOrder + 3)),
+                vec2Temp1:set(comboSize.x, comboSize.y * (#setupExchangeAPI.setupsOrder + 3)),
                 function()
                         cui.offsetCursorX(25)
                         cui.offsetCursorY(15)
@@ -657,7 +669,7 @@ local function searchFilters()
                                 if
                                         cui.menuButton(
                                                 v[1],
-                                                vec2(ui.windowWidth() - 30 * cui.scale(), comboSize.y),
+                                                vec2Temp1:set(ui.windowWidth() - 30 * cui.scale(), comboSize.y),
                                                 ui.Alignment.Center
                                         )
                                 then

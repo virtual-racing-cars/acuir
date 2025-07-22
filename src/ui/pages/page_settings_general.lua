@@ -21,7 +21,7 @@ local bottomBarButtons = {
 }
 
 function page.draw()
-        ui.drawRectFilled(vec2(0, 0), ui.windowSize(), settings.Appearance.uiColorBackgroundShade * 0.75)
+        ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiColorBackgroundShade * 0.75)
 
         cui.pushFittedWindow("general_page_window")
 

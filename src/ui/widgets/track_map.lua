@@ -7,6 +7,9 @@ local weather = require("weather")
 local car = ac.getCar(0)
 local sim = ac.getSim()
 
+local vec2Temp1 = vec2()
+local vec2Temp2 = vec2()
+
 local canvasSize = 1024
 
 local trackMapWidget = {}
@@ -97,7 +100,7 @@ local offset = vec2(
         (canvasSize - trackHeight / scale) / 2 - minZ / scale
 )
 
-local function getCanvasPos(worldPos) return vec2(worldPos.x / scale + offset.x, worldPos.z / scale + offset.y) end
+local function getCanvasPos(worldPos) return vec2Temp1:set(worldPos.x / scale + offset.x, worldPos.z / scale + offset.y) end
 
 local function drawSegment(startT, endT, color, thickness)
         local tStep = 1 / mapResolution
@@ -247,18 +250,18 @@ local function drawCarDot(car, position)
         ui.drawCircleFilled(screenPos, dotSize * 1.2 * cui.scale(), rgbm.colors.black, 20 * cui.scale())
         ui.drawCircleFilled(screenPos, dotSize * cui.scale(), carColor, 20 * cui.scale())
 
-        ui.setCursor(screenPos - vec2(dotSize * cui.scale(), dotSize * cui.scale()))
+        ui.setCursor(screenPos - vec2Temp1:set(dotSize * cui.scale(), dotSize * cui.scale()))
         if
                 ui.invisibleButton(
                         "##focuscarmarker" .. car.index,
-                        vec2(dotSize * 2 * cui.scale(), dotSize * 2 * cui.scale()),
+                        vec2Temp1:set(dotSize * 2 * cui.scale(), dotSize * 2 * cui.scale()),
                         ui.ButtonFlags.None
                 )
         then
                 if car.isConnected then ac.focusCar(car.index) end
         end
 
-        ui.setCursor(screenPos - vec2(textSize, textSize))
+        ui.setCursor(screenPos - vec2Temp1:set(textSize, textSize))
 
         if leaderboardPosition < 9 then
                 cui.offsetCursorX(4)
@@ -276,7 +279,15 @@ local function drawCarDot(car, position)
 
         cui.offsetCursorY(9)
         style:pushFontBold()
-        ui.dwriteTextAligned(leaderboardPosition, textSize, 1, 0, vec2(textSize, textSize), false, rgbm.colors.black)
+        ui.dwriteTextAligned(
+                leaderboardPosition,
+                textSize,
+                1,
+                0,
+                vec2Temp1:set(textSize, textSize),
+                false,
+                rgbm.colors.black
+        )
         ui.popDWriteFont()
 end
 
@@ -304,20 +315,25 @@ local function drawWeather()
                 if row % 2 ~= 0 then x = x + xGap end
 
                 ui.beginRotation()
-                ui.drawIcon(ui.Icons.UpAlt, vec2(x, y), vec2(x + size, y + size), rgbm(0.6, 0.7, 0.9, 0.1))
+                ui.drawIcon(
+                        ui.Icons.UpAlt,
+                        vec2Temp1:set(x, y),
+                        vec2Temp2:set(x + size, y + size),
+                        rgbm(0.6, 0.7, 0.9, 0.1)
+                )
                 ui.endRotation(90 - sim.windDirectionDeg)
         end
 
         ui.drawIcon(
                 weather.typeIcon[sim.weatherType],
-                vec2(25 * cui.scale(), ui.windowHeight() - 75 * cui.scale()),
-                vec2(75 * cui.scale(), ui.windowHeight() - 25 * cui.scale())
+                vec2Temp2:set(25 * cui.scale(), ui.windowHeight() - 75 * cui.scale()),
+                vec2Temp1:set(75 * cui.scale(), ui.windowHeight() - 25 * cui.scale())
         )
 
         ui.drawIcon(
                 ui.Icons.Compass,
-                vec2(ui.windowWidth() - 75 * cui.scale(), ui.windowHeight() - 75 * cui.scale()),
-                vec2(ui.windowWidth() - 25 * cui.scale(), ui.windowHeight() - 25 * cui.scale())
+                vec2Temp1:set(ui.windowWidth() - 75 * cui.scale(), ui.windowHeight() - 75 * cui.scale()),
+                vec2Temp2:set(ui.windowWidth() - 25 * cui.scale(), ui.windowHeight() - 25 * cui.scale())
         )
         ui.setCursorX(ui.windowWidth() - 62 * cui.scale())
         ui.setCursorY(ui.windowHeight() - 125 * cui.scale())
@@ -355,7 +371,7 @@ end
 
 function trackMapWidget:body()
         local spectatedCar = ac.getCar(sim.focusedCar)
-        local canvasSizeScaled = vec2(canvasSize, canvasSize) * cui.scale()
+        local canvasSizeScaled = vec2Temp2:set(canvasSize, canvasSize) * cui.scale()
 
         local canvasPos = (ui.windowSize() - canvasSizeScaled) / 2
 
@@ -386,7 +402,7 @@ function trackMapWidget:body()
                         style.main.font.body.size,
                         ui.Alignment.Start,
                         ui.Alignment.Center,
-                        vec2(ui.windowWidth(), style.main.font.body.size * 1.2)
+                        vec2Temp1:set(ui.windowWidth(), style.main.font.body.size * 1.2)
                 )
         end
 
@@ -397,7 +413,7 @@ function trackMapWidget:body()
                 style.main.font.body.size,
                 ui.Alignment.Start,
                 ui.Alignment.Center,
-                vec2(ui.windowWidth(), style.main.font.body.size)
+                vec2Temp1:set(ui.windowWidth(), style.main.font.body.size)
         )
 end
 

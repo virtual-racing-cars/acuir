@@ -8,6 +8,9 @@ local sim = ac.getSim()
 local uis = ac.getUI()
 local car = ac.getCar(0)
 
+local vec2Temp1 = vec2()
+local vec2Temp2 = vec2()
+
 local gearSpeedsWidget = {}
 
 local function getGearMaxSpeed(gear) return math.round(units:speed(ac.getCarMaxSpeedWithGear(0, gear))) end
@@ -31,39 +34,39 @@ function gearSpeedsWidget:body()
         local height = yMax - yMin
         if not maxSpeed or maxSpeed == 0 then maxSpeed = getGearMaxSpeed(car.gearCount) end
 
-        ui.pathLineTo(vec2(xMin, yMax))
-        ui.pathLineTo(vec2(xMin + width, yMax))
+        ui.pathLineTo(vec2Temp1:set(xMin, yMax))
+        ui.pathLineTo(vec2Temp1:set(xMin + width, yMax))
         ui.pathStroke(rgbm(0.4, 0.4, 0.4, 1), false, 3)
-        ui.pathLineTo(vec2(xMin, yMin))
-        ui.pathLineTo(vec2(xMin, yMax))
+        ui.pathLineTo(vec2Temp1:set(xMin, yMin))
+        ui.pathLineTo(vec2Temp1:set(xMin, yMax))
         ui.pathStroke(rgbm(0.4, 0.4, 0.4, 1), false, 3)
 
         for i = 0, 10 do
-                ui.setCursor(vec2(xMin + width / 10 * i - 32, yMax + 10))
+                ui.setCursor(vec2Temp1:set(xMin + width / 10 * i - 32, yMax + 10))
                 cui.snapCursor()
                 ui.dwriteTextAligned(
                         math.round(i / 10 * maxSpeed),
                         style.main.font.body.size,
                         ui.Alignment.Center,
                         ui.Alignment.Center,
-                        vec2(65, 24) * cui.scale()
+                        vec2Temp1:set(65, 24) * cui.scale()
                 )
-                ui.pathLineTo(vec2(xMin + width / 10 * i, yMax))
-                ui.pathLineTo(vec2(xMin + width / 10 * i, yMax - height / 50))
+                ui.pathLineTo(vec2Temp1:set(xMin + width / 10 * i, yMax))
+                ui.pathLineTo(vec2Temp1:set(xMin + width / 10 * i, yMax - height / 50))
                 ui.pathStroke(rgbm(0.4, 0.4, 0.4, 1), false, 3)
 
-                ui.setCursor(vec2(xMin - 70 * cui.scale(), yMin + (yMax - yMin) / 10 * i) - 10 * cui.scale())
+                ui.setCursor(vec2Temp1:set(xMin - 70 * cui.scale(), yMin + (yMax - yMin) / 10 * i) - 10 * cui.scale())
                 cui.snapCursor()
                 ui.dwriteTextAligned(
                         math.round(car.rpmLimiter - (car.rpmLimiter / 10) * i),
                         style.main.font.body.size,
                         ui.Alignment.End,
                         ui.Alignment.Center,
-                        vec2(65, 24) * cui.scale()
+                        vec2Temp1:set(65, 24) * cui.scale()
                 )
 
-                ui.pathLineTo(vec2(xMin, yMin + (yMax - yMin) / 10 * i))
-                ui.pathLineTo(vec2(xMin + height / 50, yMin + (yMax - yMin) / 10 * i))
+                ui.pathLineTo(vec2Temp1:set(xMin, yMin + (yMax - yMin) / 10 * i))
+                ui.pathLineTo(vec2Temp1:set(xMin + height / 50, yMin + (yMax - yMin) / 10 * i))
                 ui.pathStroke(rgbm(0.4, 0.4, 0.4, 1), false, 3)
         end
 
@@ -81,8 +84,9 @@ function gearSpeedsWidget:body()
                 if not gearSpeedWarning then gearSpeedWarning = warning end
 
                 local x1 = xMin + width * (prevGearSpeed / maxSpeed)
-                local p1 = vec2(x1, math.max(yMin + (yMax - yMin) * (1 - (prevGearSpeed / maxGearSpeed)), yMin))
-                local p2 = vec2(math.max(xMin + width * (maxGearSpeed / maxSpeed), x1), yMin)
+                local p1 =
+                        vec2Temp1:set(x1, math.max(yMin + (yMax - yMin) * (1 - (prevGearSpeed / maxGearSpeed)), yMin))
+                local p2 = vec2Temp2:set(math.max(xMin + width * (maxGearSpeed / maxSpeed), x1), yMin)
 
                 local labelWidth = 125 * cui.scale()
                 local labelHeight = 20 * cui.scale()
@@ -96,10 +100,10 @@ function gearSpeedsWidget:body()
                         local labelYPos = yMax - 10 * cui.scale() - (height / car.gearCount * 0.8) * i
 
                         ui.pathLineTo(p2)
-                        ui.pathLineTo(vec2(p2.x, labelYPos + labelHeight))
+                        ui.pathLineTo(vec2Temp1:set(p2.x, labelYPos + labelHeight))
                         ui.pathStroke(rgbm(1, 1, 1, 0.1), false, 3)
 
-                        ui.setCursor(vec2(p2.x - labelWidth, labelYPos))
+                        ui.setCursor(vec2Temp1:set(p2.x - labelWidth, labelYPos))
                         -- ui.drawRectFilled(
                         --         ui.getCursor(),
                         --         ui.getCursor() + vec2(labelWidth, labelHeight),
@@ -114,7 +118,7 @@ function gearSpeedsWidget:body()
                                 fontSize,
                                 1,
                                 0,
-                                vec2(labelWidth, labelHeight),
+                                vec2Temp1:set(labelWidth, labelHeight),
                                 false,
                                 warning and settings.Appearance.uiColorSecondary or settings.Appearance.uiColorText
                         )

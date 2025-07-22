@@ -30,7 +30,7 @@ local traces = {
 local function getMaxDataCount() return traceLifetime * traceFramerate end
 
 for i = 1, getMaxDataCount() do
-        for _, trace in pairs(traces) do
+        for _, trace in ipairs(traces) do
                 trace.data[i] = 0
         end
 end
@@ -75,7 +75,7 @@ local function drawGridLines()
 end
 
 local function drawTraces()
-        for _, trace in pairs(traces) do
+        for _, trace in ipairs(traces) do
                 ui.pathClear()
                 local xSegment = (ui.windowWidth() / (#trace.data + 1))
 

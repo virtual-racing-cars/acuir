@@ -8,6 +8,9 @@ local sim = ac.getSim()
 local uis = ac.getUI()
 local car = ac.getCar(0)
 
+local vec2Temp1 = vec2()
+local vec2Temp2 = vec2()
+
 local sessionInfoWidget = {}
 
 local assistsINI = ac.INIConfig.load(ac.getFolder(ac.FolderID.Cfg) .. "\\assists.ini")
@@ -124,7 +127,7 @@ function sessionInfoWidget:body()
                         bodyFontSize,
                         ui.Alignment.End,
                         ui.Alignment.Center,
-                        vec2(ui.windowWidth() * 0.5 - 15 * cui.scale(), bodyFontSpace),
+                        vec2Temp1:set(ui.windowWidth() * 0.5 - 15 * cui.scale(), bodyFontSpace),
                         false,
                         sim.currentSessionIndex == sessionIndex and settings.Appearance.uiColorSecondary
                                 or settings.Appearance.uiColorText
@@ -140,7 +143,7 @@ function sessionInfoWidget:body()
                                         bodyFontSize,
                                         ui.Alignment.Start,
                                         ui.Alignment.Center,
-                                        vec2(ui.windowWidth(), bodyFontSpace),
+                                        vec2Temp1:set(ui.windowWidth(), bodyFontSpace),
                                         false,
                                         sim.currentSessionIndex == sessionIndex and settings.Appearance.uiColorSecondary
                                                 or settings.Appearance.uiColorText
@@ -152,7 +155,7 @@ function sessionInfoWidget:body()
                                         bodyFontSize,
                                         ui.Alignment.Start,
                                         ui.Alignment.Center,
-                                        vec2(ui.windowWidth(), bodyFontSpace),
+                                        vec2Temp1:set(ui.windowWidth(), bodyFontSpace),
                                         false,
                                         sim.currentSessionIndex == sessionIndex and settings.Appearance.uiColorSecondary
                                                 or settings.Appearance.uiColorText
@@ -165,7 +168,7 @@ function sessionInfoWidget:body()
                                 bodyFontSize,
                                 ui.Alignment.Start,
                                 ui.Alignment.Center,
-                                vec2(ui.windowWidth(), bodyFontSpace),
+                                vec2Temp1:set(ui.windowWidth(), bodyFontSpace),
                                 false,
                                 sim.currentSessionIndex == sessionIndex and settings.Appearance.uiColorSecondary
                                         or settings.Appearance.uiColorText
@@ -182,7 +185,7 @@ function sessionInfoWidget:body()
                 bodyFontSize,
                 ui.Alignment.Center,
                 ui.Alignment.Center,
-                vec2(ui.windowWidth(), bodyFontSpace)
+                vec2Temp1:set(ui.windowWidth(), bodyFontSpace)
         )
         ui.popDWriteFont()
 
@@ -194,7 +197,7 @@ function sessionInfoWidget:body()
                         bodyFontSize,
                         ui.Alignment.End,
                         ui.Alignment.Center,
-                        vec2(ui.windowWidth() * 0.5 - 15 * cui.scale(), bodyFontSpace)
+                        vec2Temp1:set(ui.windowWidth() * 0.5 - 15 * cui.scale(), bodyFontSpace)
                 )
                 ui.sameLine()
                 ui.setCursorX(ui.windowWidth() * 0.5 + 15 * cui.scale())
@@ -205,7 +208,7 @@ function sessionInfoWidget:body()
                         bodyFontSize,
                         ui.Alignment.Start,
                         ui.Alignment.Center,
-                        vec2(ui.windowWidth(), bodyFontSpace)
+                        vec2Temp1:set(ui.windowWidth(), bodyFontSpace)
                 )
         end
 
@@ -219,7 +222,7 @@ function sessionInfoWidget:body()
                 bodyFontSize,
                 ui.Alignment.Center,
                 ui.Alignment.Center,
-                vec2(ui.windowWidth(), bodyFontSpace)
+                vec2Temp1:set(ui.windowWidth(), bodyFontSpace)
         )
         ui.popDWriteFont()
 
@@ -231,7 +234,7 @@ function sessionInfoWidget:body()
                         bodyFontSize,
                         ui.Alignment.End,
                         ui.Alignment.Center,
-                        vec2(ui.windowWidth() * 0.5 - 15 * cui.scale(), bodyFontSpace)
+                        vec2Temp1:set(ui.windowWidth() * 0.5 - 15 * cui.scale(), bodyFontSpace)
                 )
                 ui.sameLine()
                 ui.setCursorX(ui.windowWidth() * 0.5 + 15 * cui.scale())
@@ -241,7 +244,7 @@ function sessionInfoWidget:body()
                         bodyFontSize,
                         ui.Alignment.Start,
                         ui.Alignment.Center,
-                        vec2(ui.windowWidth(), bodyFontSpace)
+                        vec2Temp1:set(ui.windowWidth(), bodyFontSpace)
                 )
         end
 end

@@ -31,10 +31,10 @@ function window.push(id, x, y, width, height, scroll, flags)
 
         ui.pushStyleVar(ui.StyleVar.WindowPadding, 0)
 
-        ui.beginChild(id, vec2(tabWidth, tabHeight), false, windowFlags)
+        ui.beginChild(id, vec2Temp1:set(tabWidth, tabHeight), false, windowFlags)
         ui.setCursor(0)
 
-        if not scroll then ui.pushClipRect(0, vec2(tabWidth, tabHeight)) end
+        if not scroll then ui.pushClipRect(0, vec2Temp1:set(tabWidth, tabHeight)) end
 end
 
 function window.pop(scroll, flags)

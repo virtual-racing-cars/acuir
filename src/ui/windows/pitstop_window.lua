@@ -5,6 +5,10 @@ local settings = require("settings")
 local style = require("ui.cui.style")
 local sim = ac.getSim()
 
+local vec2Temp1 = vec2()
+local vec2Temp2 = vec2()
+local vec2Temp3 = vec2()
+
 local activeItemIndex = 0
 
 local navControlRightButton = ac.ControlButton(
@@ -96,7 +100,7 @@ end)
 local function mfdWidgetSpinner(name, height, index, value, format, min, max, items, wingIndex)
         local buttonSize = height
 
-        ui.invisibleButton("##pswidget" .. name .. index, vec2(ui.windowWidth(), buttonSize))
+        ui.invisibleButton("##pswidget" .. name .. index, vec2Temp1:set(ui.windowWidth(), buttonSize))
         local r1, r2 = ui.itemRect()
 
         local fontSize = style.main.font.body.size
@@ -115,7 +119,7 @@ local function mfdWidgetSpinner(name, height, index, value, format, min, max, it
                 fontSize,
                 ui.Alignment.End,
                 ui.Alignment.Center,
-                vec2((ui.windowWidth() / 5) * 2, buttonSize)
+                vecvec2Temp1:set2((ui.windowWidth() / 5) * 2, buttonSize)
         )
         ui.sameLine()
         ui.setCursorX(ui.windowWidth() / 2 - ui.windowWidth() / 10)
@@ -125,7 +129,7 @@ local function mfdWidgetSpinner(name, height, index, value, format, min, max, it
                 fontSize,
                 ui.Alignment.Center,
                 ui.Alignment.Center,
-                vec2(ui.windowWidth() / 5, buttonSize)
+                vecvec2Temp1:set2(ui.windowWidth() / 5, buttonSize)
         )
 
         local displayValue = items and items[value + 1] or string.format(format, value)
@@ -145,7 +149,7 @@ local function mfdWidgetSpinner(name, height, index, value, format, min, max, it
                 fontSize,
                 ui.Alignment.Center,
                 ui.Alignment.Center,
-                vec2((ui.windowWidth() / 5) * 2, buttonSize)
+                vec2Temp1:set((ui.windowWidth() / 5) * 2, buttonSize)
         )
 
         if not active then return value end
@@ -181,7 +185,7 @@ function script.pitstopWindow(dt)
         local itemHeight = style.main.font.body.space
         local windowHeight = itemHeight * itemCount
         local fontSize = style.main.font.body.size
-        local windowSize = vec2(itemHeight * 9, windowHeight)
+        local windowSize = vec2Temp3:set(itemHeight * 9, windowHeight)
 
         ui.transparentWindow("toolWindowTest", ui.cursorScreenPos(), windowSize, true, function()
                 style:pushStyleMain()
@@ -189,7 +193,7 @@ function script.pitstopWindow(dt)
                 ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiColorBackground, 12 * cui.scale())
                 ui.drawRectFilled(
                         0,
-                        vec2(ui.windowWidth(), style.main.font.header.space),
+                        vec2Temp1:set(ui.windowWidth(), style.main.font.header.space),
                         settings.Appearance.uiColorPrimary,
                         12 * cui.scale(),
                         ui.CornerFlags.Top
@@ -202,7 +206,7 @@ function script.pitstopWindow(dt)
                         style.main.font.header.size,
                         ui.Alignment.Center,
                         ui.Alignment.Center,
-                        vec2(ui.windowWidth(), style.main.font.header.space)
+                        vec2Temp1:set(ui.windowWidth(), style.main.font.header.space)
                 )
 
                 local lastSection = ""
@@ -224,7 +228,7 @@ function script.pitstopWindow(dt)
                                         ui.setCursorX(0)
                                         ui.drawRectFilled(
                                                 ui.getCursor(),
-                                                ui.getCursor() + vec2(ui.windowWidth(), itemHeight),
+                                                ui.getCursor() + vec2Temp1:set(ui.windowWidth(), itemHeight),
                                                 settings.Appearance.uiColorPrimary * 0.65
                                         )
 
@@ -234,7 +238,7 @@ function script.pitstopWindow(dt)
                                                 style.main.font.header.size,
                                                 ui.Alignment.Center,
                                                 ui.Alignment.Center,
-                                                vec2(ui.windowWidth(), itemHeight)
+                                                vec2Temp1:set(ui.windowWidth(), itemHeight)
                                         )
                                 end
                                 local value = mfdWidgetSpinner(
@@ -265,7 +269,7 @@ function script.pitstopWindow(dt)
                         fontSize,
                         ui.Alignment.Center,
                         ui.Alignment.Center,
-                        vec2(ui.windowWidth(), ui.availableSpaceY()),
+                        vec2Temp1:set(ui.windowWidth(), ui.availableSpaceY()),
                         false,
                         settings.Appearance.uiColorOrange
                 )

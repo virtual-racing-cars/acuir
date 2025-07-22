@@ -4,6 +4,8 @@ local cui = require("ui.cui")
 local settings = require("settings")
 local style = require("ui.cui.style")
 
+local vec2Temp1 = vec2()
+
 ac.setWindowOpen("entryWindow", true)
 
 function script.entryWindow(dt)
@@ -61,7 +63,7 @@ function script.entryWindow(dt)
                 if
                         cui.menuButton(
                                 app.state.appOpen and "Disable" or "Enable",
-                                vec2(ui.windowWidth() - 30 * cui.scale(), height * 2)
+                                vec2Temp1:set(ui.windowWidth() - 30 * cui.scale(), height * 2)
                         )
                 then
                         app.state.appOpen = not app.state.appOpen

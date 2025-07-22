@@ -4,12 +4,15 @@ local settings = require("settings")
 local style = require("ui.cui.style")
 local sim = ac.getSim()
 
+local vec2Temp1 = vec2()
+local vec2Temp2 = vec2()
+
 local function drawIndicator(width, height, color)
         if not color then color = rgbm(0, 0.75, 0, 1) end
 
         ui.drawRectFilled(
-                vec2(ui.getCursorX() + width * 0.01, ui.getCursorY() + height * 0.05),
-                vec2(ui.getCursorX() + width * 0.99, ui.getCursorY() + height * 0.95),
+                vec2Temp1:set(ui.getCursorX() + width * 0.01, ui.getCursorY() + height * 0.05),
+                vec2Temp2:set(ui.getCursorX() + width * 0.99, ui.getCursorY() + height * 0.95),
                 color
         )
 end
@@ -144,7 +147,7 @@ local function leaderboardBanner(yPos, height)
                 local tempWidth = width - height - (height * 0.2)
                 cui.snapCursor()
                 local x, y = entry.xShare == -1 and height or tempWidth * entry.xShare, height
-                ui.dwriteTextAligned(entry.label, fontSize, entry.align, ui.Alignment.Center, vec2(x, y))
+                ui.dwriteTextAligned(entry.label, fontSize, entry.align, ui.Alignment.Center, vec2Temp1:set(x, y))
                 ui.sameLine()
         end
 end
@@ -156,7 +159,7 @@ function leaderboardEntryButton(car, yPos, height)
 
         ui.setCursorX(xPos)
         ui.setCursorY(yPos)
-        if ui.invisibleButton("##leaderboardEntryButton" .. car.index, vec2(width, height)) then
+        if ui.invisibleButton("##leaderboardEntryButton" .. car.index, vec2Temp1:set(width, height)) then
                 if car.status.isConnected then ac.focusCar(car.index) end
         end
 
@@ -169,13 +172,17 @@ function leaderboardEntryButton(car, yPos, height)
         elseif car.index == 0 then
                 numberBoxColor = settings.Appearance.uiColorAccent
         end
-        ui.drawRectFilled(vec2(xPos, yPos), vec2(xPos + height, yPos + height), settings.Appearance.uiColorPrimary)
         ui.drawRectFilled(
-                vec2(xPos, yPos),
-                vec2(xPos + width, yPos + height),
+                vec2Temp1:set(xPos, yPos),
+                vec2Temp2:set(xPos + height, yPos + height),
+                settings.Appearance.uiColorPrimary
+        )
+        ui.drawRectFilled(
+                vec2Temp1:set(xPos, yPos),
+                vec2Temp2:set(xPos + width, yPos + height),
                 evenCar and settings.Appearance.uiColorPrimary * 0.15 or settings.Appearance.uiColorPrimary * 0.5
         )
-        ui.drawRectFilled(vec2(xPos, yPos), vec2(xPos + height, yPos + height), numberBoxColor)
+        ui.drawRectFilled(vec2Temp1:set(xPos, yPos), vec2Temp2:set(xPos + height, yPos + height), numberBoxColor)
 
         local positionColor = rgbm.colors.transparent
         if sim.raceSessionType ~= ac.SessionType.Race then
@@ -188,8 +195,8 @@ function leaderboardEntryButton(car, yPos, height)
                 positionColor = rgbm(0.9, 0.4, 0, 1)
         end
         ui.drawRectFilledMultiColor(
-                vec2(xPos + height, yPos),
-                vec2(xPos + height + height * 0.75, yPos + height),
+                vec2Temp1:set(xPos + height, yPos),
+                vec2Temp2:set(xPos + height + height * 0.75, yPos + height),
                 positionColor,
                 rgbm.colors.transparent,
                 rgbm.colors.transparent,
@@ -208,14 +215,14 @@ function leaderboardEntryButton(car, yPos, height)
                 end
 
                 ui.drawRectFilled(
-                        vec2(height * 0.1, yPos),
-                        vec2(0, yPos + height),
+                        vec2Temp1:set(height * 0.1, yPos),
+                        vec2Temp2:set(0, yPos + height),
                         settings.Appearance.uiColorBackground
                 )
 
                 ui.drawRectFilled(
-                        vec2(height * 0.1, yPos + height * math.min(car.status.ping / 400, 0.9)),
-                        vec2(0, yPos + height),
+                        vec2Temp1:set(height * 0.1, yPos + height * math.min(car.status.ping / 400, 0.9)),
+                        vec2Temp2:set(0, yPos + height),
                         pingColor
                 )
         end
@@ -233,7 +240,7 @@ function leaderboardEntryButton(car, yPos, height)
                         style.main.font.body.size,
                         entry.align,
                         ui.Alignment.Center,
-                        vec2(x, y),
+                        vec2Temp1:set(x, y),
                         false,
                         color
                 )
@@ -241,7 +248,11 @@ function leaderboardEntryButton(car, yPos, height)
         end
 
         if not car.status.isConnected then
-                ui.drawRectFilled(vec2(xPos, yPos), vec2(xPos + width, yPos + height), rgbm(0.1, 0.1, 0.1, 0.6))
+                ui.drawRectFilled(
+                        vec2Temp1:set(xPos, yPos),
+                        vec2Temp2:set(xPos + width, yPos + height),
+                        rgbm(0.1, 0.1, 0.1, 0.6)
+                )
         end
 end
 

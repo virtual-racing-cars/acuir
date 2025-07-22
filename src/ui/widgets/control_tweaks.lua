@@ -4,6 +4,10 @@ local cui = require("ui.cui")
 local settings = require("settings")
 local sim = ac.getSim()
 
+local vec2Temp1 = vec2()
+local vec2Temp2 = vec2()
+local vec2Temp3 = vec2()
+
 local controlTweaks = { section = 1 }
 
 -- The following curve based stuff was written originally by Ilja for Controller Tweaks
@@ -25,37 +29,41 @@ local function drawGammaCurve(gamma, joy, axle, min, max, isSteering)
         local ax = math.abs(b)
 
         ui.setCursorX(ui.windowWidth() * 0.1)
-        local f, s = drawCurveBase(vec2(ui.windowWidth() * 0.8, ui.windowWidth() * 0.2))
+        local f, s = drawCurveBase(vec2Temp1:set(ui.windowWidth() * 0.8, ui.windowWidth() * 0.2))
 
         if not isSteering then
                 local ped = ax ^ gamma
 
-                ui.drawLine(f + vec2(0, ped * s.y), f + vec2(s.x, ped * s.y), rgbm.colors.gray)
-                ui.drawLine(f + vec2(b * s.x, 0), f + vec2(b * s.x, s.y), rgbm.colors.gray)
+                ui.drawLine(f + vec2Temp2:set(0, ped * s.y), f + vec2Temp3:set(s.x, ped * s.y), rgbm.colors.gray)
+                ui.drawLine(f + vec2Temp2:set(b * s.x, 0), f + vec2Temp3:set(b * s.x, s.y), rgbm.colors.gray)
 
                 for i = 0, 30 do
                         local x = (i / 30) ^ 2
-                        ui.pathLineTo(f + vec2(x, x ^ gamma) * s)
+                        ui.pathLineTo(f + vec2Temp2:set(x, x ^ gamma) * s)
                 end
                 ui.pathStroke(settings.Appearance.uiColorSecondary, false, 3 * cui.scale())
         else
                 local relSteer = math.clamp(math.sign(b) * (ax ^ gamma), -1, 1)
 
                 ui.drawLine(
-                        f + vec2(0, (0.5 + 0.5 * relSteer) * s.y),
-                        f + vec2(s.x, (0.5 + 0.5 * relSteer) * s.y),
+                        f + vec2Temp2:set(0, (0.5 + 0.5 * relSteer) * s.y),
+                        f + vec2Temp3:set(s.x, (0.5 + 0.5 * relSteer) * s.y),
                         rgbm.colors.gray
                 )
-                ui.drawLine(f + vec2((0.5 + 0.5 * b) * s.x, 0), f + vec2((0.5 + 0.5 * b) * s.x, s.y), rgbm.colors.gray)
+                ui.drawLine(
+                        f + vec2Temp2:set((0.5 + 0.5 * b) * s.x, 0),
+                        f + vec2Temp3:set((0.5 + 0.5 * b) * s.x, s.y),
+                        rgbm.colors.gray
+                )
 
                 for i0 = 0, 1 do
                         for i = 0, 100 do
                                 local x = (i / 100) ^ 2
 
                                 if i0 == 1 then
-                                        ui.pathLineTo(f + vec2(0.5 + 0.5 * x, 0.5 + 0.5 * x ^ gamma) * s)
+                                        ui.pathLineTo(f + vec2Temp2:set(0.5 + 0.5 * x, 0.5 + 0.5 * x ^ gamma) * s)
                                 else
-                                        ui.pathLineTo(f + vec2(0.5 - 0.5 * x, 0.5 - 0.5 * x ^ gamma) * s)
+                                        ui.pathLineTo(f + vec2Temp2:set(0.5 - 0.5 * x, 0.5 - 0.5 * x ^ gamma) * s)
                                 end
                         end
                         ui.pathStroke(settings.Appearance.uiColorSecondary, false, 3 * cui.scale())
@@ -73,7 +81,7 @@ local function drawGamepadGammaCurve()
         if gamma == 0 then gamma = 1 end
 
         ui.setCursorX(ui.windowWidth() * 0.1)
-        local f, s = drawCurveBase(vec2(ui.windowWidth() * 0.8, ui.windowWidth() * 0.2))
+        local f, s = drawCurveBase(vec2Temp1:set(ui.windowWidth() * 0.8, ui.windowWidth() * 0.2))
         local b = ac.getGamepadAxisValue(
                 0,
                 configs.CONTROLS.data.X360.STEER_THUMB == "LEFT" and ac.GamepadAxis.LeftThumbX
@@ -97,22 +105,22 @@ local function drawGamepadGammaCurve()
         steer = steer + clampedDelta
 
         ui.drawLine(
-                f + vec2(0, (0.5 + 0.5 * steer) * s.y),
-                f + vec2(s.x, (0.5 + 0.5 * steer) * s.y),
+                f + vec2Temp2:set(0, (0.5 + 0.5 * steer) * s.y),
+                f + vec2Temp3:set(s.x, (0.5 + 0.5 * steer) * s.y),
                 rgbm.colors.gray,
                 2 * cui.scale()
         )
 
         ui.drawLine(
-                f + vec2((0.5 + 0.5 * b) * s.x, 0),
-                f + vec2((0.5 + 0.5 * b) * s.x, s.y),
+                f + vec2Temp2:set((0.5 + 0.5 * b) * s.x, 0),
+                f + vec2Temp3:set((0.5 + 0.5 * b) * s.x, s.y),
                 rgbm.colors.gray,
                 2 * cui.scale()
         )
 
         ui.drawLine(
-                f + vec2((0.5 + 0.5 * b) * s.x, 0),
-                f + vec2((0.5 + 0.5 * b) * s.x, s.y),
+                f + vec2Temp2:set((0.5 + 0.5 * b) * s.x, 0),
+                f + vec2Temp3:set((0.5 + 0.5 * b) * s.x, s.y),
                 rgbm.colors.gray,
                 2 * cui.scale()
         )
@@ -125,15 +133,15 @@ local function drawGamepadGammaCurve()
 
                         if x >= deadzone then
                                 if i0 == 1 then
-                                        ui.pathLineTo(f + vec2(0.5 + 0.5 * x, 0.5 + 0.5 * norm ^ g) * s)
+                                        ui.pathLineTo(f + vec2Temp2:set(0.5 + 0.5 * x, 0.5 + 0.5 * norm ^ g) * s)
                                 else
-                                        ui.pathLineTo(f + vec2(0.5 - 0.5 * x, 0.5 - 0.5 * norm ^ g) * s)
+                                        ui.pathLineTo(f + vec2Temp2:set(0.5 - 0.5 * x, 0.5 - 0.5 * norm ^ g) * s)
                                 end
                         else
                                 if i0 == 1 then
-                                        ui.pathLineTo(f + vec2(0.5 + 0.5 * x, 0.5 + 0.5 * 0) * s)
+                                        ui.pathLineTo(f + vec2Temp2:set(0.5 + 0.5 * x, 0.5 + 0.5 * 0) * s)
                                 else
-                                        ui.pathLineTo(f + vec2(0.5 - 0.5 * x, 0.5 - 0.5 * 0) * s)
+                                        ui.pathLineTo(f + vec2Temp2:set(0.5 - 0.5 * x, 0.5 - 0.5 * 0) * s)
                                 end
                         end
                 end
@@ -141,8 +149,8 @@ local function drawGamepadGammaCurve()
         end
 
         ui.drawRectFilled(
-                f + vec2(s.x * 0.5 - s.x * deadzone * 0.5, 0),
-                f + vec2(s.x * 0.5 + s.x * deadzone * 0.5, s.y),
+                f + vec2Temp2:set(s.x * 0.5 - s.x * deadzone * 0.5, 0),
+                f + vec2Temp3:set(s.x * 0.5 + s.x * deadzone * 0.5, s.y),
                 rgbm.colors.black * 0.25
         )
 end
@@ -159,9 +167,9 @@ local function drawCurve(curve, label)
                 ui.text("Curve is missing or damaged")
                 return
         end
-        local f, s = drawCurveBase(vec2(ui.windowWidth() * 0.8, ui.windowWidth() * 0.8))
+        local f, s = drawCurveBase(vec2Temp1:set(ui.windowWidth() * 0.8, ui.windowWidth() * 0.8))
         for i = 0, 30 do
-                ui.pathLineTo(f + vec2(i / 30, c:get(i / 30)) * s)
+                ui.pathLineTo(f + vec2Temp2:set(i / 30, c:get(i / 30)) * s)
         end
         ui.pathStroke(settings.Appearance.uiColorSecondary, false, 5)
 end
@@ -230,7 +238,7 @@ function controlTweaks:body()
                         24 * cui.scale(),
                         ui.Alignment.Center,
                         ui.Alignment.Center,
-                        vec2(ui.windowWidth(), 36 * cui.scale())
+                        vec2Temp1:set(ui.windowWidth(), 36 * cui.scale())
                 )
 
                 for _, tweak in ipairs(tweakSection.tweaks) do
@@ -277,7 +285,7 @@ function controlTweaks:body()
                         24 * cui.scale(),
                         ui.Alignment.Center,
                         ui.Alignment.Center,
-                        vec2(ui.windowWidth(), 36 * cui.scale())
+                        vec2Temp1:set(ui.windowWidth(), 36 * cui.scale())
                 )
 
                 local currentGyroMode = (
@@ -323,7 +331,7 @@ function controlTweaks:body()
                         24 * cui.scale(),
                         ui.Alignment.Center,
                         ui.Alignment.Center,
-                        vec2(ui.windowWidth(), 36 * cui.scale())
+                        vec2Temp1:set(ui.windowWidth(), 36 * cui.scale())
                 )
 
                 cui.setCursorX(30)

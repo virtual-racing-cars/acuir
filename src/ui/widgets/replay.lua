@@ -1,7 +1,12 @@
 local cui = require("ui.cui")
 local replay = require("replay")
 local settings = require("settings")
+local style = require("ui.cui.style")
+
 local sim = ac.getSim()
+
+local vec2Temp1 = vec2()
+local vec2Temp2 = vec2()
 
 local replayWidget = {}
 
@@ -96,11 +101,12 @@ local replayButtons = {
 
 function replayWidget:draw(xPos, yPos, width, height)
         cui.pushWindow("replay_widget_window", xPos, yPos, width, height, false)
-        ui.drawRectFilled(vec2(0, 0), ui.windowSize(), settings.Appearance.uiColorPrimary)
+        ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiColorPrimary)
 
         cui.setCursorX(0)
 
         local replayButtonSize = ui.windowWidth() / 11
+        local replayTextBoxSize = vec2Temp1:set(ui.windowWidth() / 3, 36)
 
         -- cui.setCursorY(25)
         -- ui.dummy(replayButtonSize)
@@ -145,7 +151,7 @@ function replayWidget:draw(xPos, yPos, width, height)
                 style.main.font.body.size,
                 ui.Alignment.Center,
                 ui.Alignment.Center,
-                vec2(ui.windowWidth() / 3, 36)
+                replayTextBoxSize
         )
         ui.sameLine()
 
@@ -155,7 +161,7 @@ function replayWidget:draw(xPos, yPos, width, height)
                 style.main.font.body.size,
                 ui.Alignment.Center,
                 ui.Alignment.Center,
-                vec2(ui.windowWidth() / 3, 36)
+                replayTextBoxSize
         )
         ui.sameLine()
 
@@ -165,7 +171,7 @@ function replayWidget:draw(xPos, yPos, width, height)
                 style.main.font.body.size,
                 ui.Alignment.Center,
                 ui.Alignment.Center,
-                vec2(ui.windowWidth() / 3, 36)
+                replayTextBoxSize
         )
 
         cui.setCursorX(0)
@@ -176,7 +182,7 @@ function replayWidget:draw(xPos, yPos, width, height)
                 30 * cui.scale(),
                 ui.Alignment.Center,
                 ui.Alignment.Center,
-                vec2(ui.windowWidth() / 3, 36)
+                replayTextBoxSize
         )
         ui.sameLine()
 
@@ -184,13 +190,7 @@ function replayWidget:draw(xPos, yPos, width, height)
         local playback = sim.isReplayActive and playbackRate or "Live"
 
         cui.snapCursor()
-        ui.dwriteTextAligned(
-                playback,
-                30 * cui.scale(),
-                ui.Alignment.Center,
-                ui.Alignment.Center,
-                vec2(ui.windowWidth() / 3, 36)
-        )
+        ui.dwriteTextAligned(playback, 30 * cui.scale(), ui.Alignment.Center, ui.Alignment.Center, replayTextBoxSize)
         ui.sameLine()
 
         local cameraMode = sim.cameraMode
@@ -222,7 +222,7 @@ function replayWidget:draw(xPos, yPos, width, height)
                 30 * cui.scale(),
                 ui.Alignment.Center,
                 ui.Alignment.Center,
-                vec2(ui.windowWidth() / 3, 36)
+                replayTextBoxSize
         )
         ui.sameLine()
 

@@ -4,6 +4,8 @@ local settings = require("settings")
 local style = require("ui.cui.style")
 local sim = ac.getSim()
 
+local vec2Temp1 = vec2()
+
 local card = {}
 
 local cameraModeString = {
@@ -90,7 +92,7 @@ function card:draw(xPos, yPos, width, height)
         cui.pushWindow("card_widget_window", xPos, yPos, width, height, false)
         local border = style.main.margins.innerSize
         local buttonHeight = style.main.font.body.size * 2
-        local comboSize = vec2(ui.availableSpaceX() - 25 * cui.scale() - buttonHeight * 2, buttonHeight)
+        local comboSize = vec2Temp1:set(ui.availableSpaceX() - 25 * cui.scale() - buttonHeight * 2, buttonHeight)
 
         ui.drawRectFilled(
                 0,
@@ -123,7 +125,7 @@ function card:draw(xPos, yPos, width, height)
                         ac.getCarSkinID(spectatedCar.index)
                 ),
                 p,
-                p + vec2(fontSpace, fontSpace) * 2,
+                p + vec2Temp1:set(fontSpace, fontSpace) * 2,
                 6 * cui.scale()
         )
         ui.newLine()
@@ -165,7 +167,7 @@ function card:draw(xPos, yPos, width, height)
                 string.format("Camera: %s", cameraModeString[sim.cameraMode]()),
                 ui.Alignment.Center,
                 false,
-                vec2(comboSize.x, comboSize.y * 8),
+                vec2Temp1:set(comboSize.x, comboSize.y * 8),
                 function()
                         cui.offsetCursorY(5)
                         for k, v in pairs(cameraModeString) do
@@ -221,7 +223,7 @@ function card:draw(xPos, yPos, width, height)
                 style.main.font.body.size,
                 ui.Alignment.Start,
                 ui.Alignment.Center,
-                vec2(ui.windowWidth(), buttonHeight),
+                vec2Temp1:set(ui.windowWidth(), buttonHeight),
                 false,
                 pingColor
         )
@@ -246,7 +248,7 @@ function card:draw(xPos, yPos, width, height)
         ui.pushStyleColor(ui.StyleColor.PopupBg, rgbm.colors.transparent)
         ui.itemPopup("##manage_player_" .. spectatedCar.index, ui.MouseButton.Left, function()
                 ui.setCursor(0)
-                local popupButtonSize = vec2(165, 30) * cui.scale()
+                local popupButtonSize = vec2Temp1:set(165, 30) * cui.scale()
                 local managePlayerButtonWidth = 150 - 20 * cui.scale()
                 local managePlayerButtonHeight = buttonHeight
 

@@ -7,6 +7,9 @@ local style = require("ui.cui.style")
 local sim = ac.getSim()
 local firstPersonCameraFOV = sim.firstPersonCameraFOV
 
+local vec2Temp1 = vec2()
+local vec2Temp2 = vec2()
+
 local bottomBarButtons = {
         {
                 label = "BACK",
@@ -147,15 +150,15 @@ local views = {
 
 function page:draw()
         ui.drawSimpleLine(
-                vec2(ui.windowWidth() * 0.5, 0),
-                vec2(ui.windowWidth() * 0.5, ui.windowHeight()),
+                vec2Temp1:set(ui.windowWidth() * 0.5, 0),
+                vec2Temp2:set(ui.windowWidth() * 0.5, ui.windowHeight()),
                 settings.Appearance.uiColorSecondary
         )
 
         cui.pushFittedWindow("settings_view_main_window")
         ui.drawRectFilled(
                 0,
-                vec2(ui.windowWidth(), 130 * cui.scale()),
+                vec2Temp1:set(ui.windowWidth(), 130 * cui.scale()),
                 settings.Appearance.uiColorBackground,
                 12 * cui.scale()
         )

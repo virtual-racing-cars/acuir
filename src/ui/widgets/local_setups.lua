@@ -19,7 +19,13 @@ local function promptDeleteSetup()
                 local textBoxHeight = ui.windowHeight() / 4
 
                 ui.setCursor(0)
-                ui.dwriteTextAligned("Delete Setup", textBoxHeight / 2, nil, nil, vec2(ui.windowWidth(), textBoxHeight))
+                ui.dwriteTextAligned(
+                        "Delete Setup",
+                        textBoxHeight / 2,
+                        nil,
+                        nil,
+                        vec2Temp1:set(ui.windowWidth(), textBoxHeight)
+                )
                 local titleTextWidth = ui.measureDWriteText(" Delete Setup ", textBoxHeight / 2).x
 
                 ui.drawSimpleLine(
@@ -35,7 +41,7 @@ local function promptDeleteSetup()
                         textBoxHeight / 4,
                         nil,
                         nil,
-                        vec2(ui.availableSpaceX(), textBoxHeight)
+                        vec2Temp1:set(ui.availableSpaceX(), textBoxHeight)
                 )
 
                 local buttonWidth = ui.windowWidth() / 3
@@ -48,7 +54,7 @@ local function promptDeleteSetup()
                 ui.sameLine()
 
                 if not mouseMoved then
-                        ac.setMousePosition(ui.cursorScreenPos() + vec2(ui.availableSpaceX() / 2, 20))
+                        ac.setMousePosition(ui.cursorScreenPos() + vec2Temp1:set(ui.availableSpaceX() / 2, 20))
                         mouseMoved = true
                 end
 
@@ -96,8 +102,8 @@ local function drawSetupNode(setup, track)
         cui.offsetCursorY(5)
         local setupActive = carSetup.selected.path == setup.path
         local name = string.replace(setup.name, ".ini", "")
-        local buttonSize = vec2(ui.availableSpaceX() - 20 * cui.scale(), style.main.font.header.space)
-        local popupButtonSize = vec2(ui.windowWidth() * 0.3, 32 * cui.scale())
+        local buttonSize = vec2Temp1:set(ui.availableSpaceX() - 20 * cui.scale(), style.main.font.header.space)
+        local popupButtonSize = vec2Temp2:set(ui.windowWidth() * 0.3, 32 * cui.scale())
 
         local clicked, deleteClicked, loadClicked, explorerClicked, hovered =
                 cui.setupSelectButton(track .. " / " .. name, setupActive, setup.lastWriteTime)
@@ -169,7 +175,7 @@ function localSetupsWidget:body()
         drawLocalSetupFilters()
 
         ui.drawRectFilled(
-                vec2(0, 40 * cui.scale()),
+                vec2Temp1:set(0, 40 * cui.scale()),
                 ui.windowSize(),
                 settings.Appearance.uiColorBackground,
                 6 * cui.scale()

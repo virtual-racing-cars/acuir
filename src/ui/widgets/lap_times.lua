@@ -5,12 +5,15 @@ local settings = require("settings")
 local simutils = require("simutils")
 local style = require("ui.cui.style")
 
+local vec2Temp1 = vec2()
+local vec2Temp2 = vec2()
+
 local function drawTimeIndicator(width, height, color)
         if not color then color = rgbm(0, 0.75, 0, 1) end
 
         ui.drawRectFilled(
-                vec2(ui.getCursorX() + width * 0.01, ui.getCursorY() + height * 0.05),
-                vec2(ui.getCursorX() + width * 0.99, ui.getCursorY() + height * 0.95),
+                vec2Temp1:set(ui.getCursorX() + width * 0.01, ui.getCursorY() + height * 0.05),
+                vec2Temp2:set(ui.getCursorX() + width * 0.99, ui.getCursorY() + height * 0.95),
                 color
         )
 end
@@ -19,8 +22,8 @@ local function drawSplitIndicator(width, height, color)
         if not color then color = rgbm(0, 0.75, 0, 1) end
 
         ui.drawRectFilled(
-                vec2(ui.getCursorX() + width * 0.01, ui.getCursorY() + height * 0.85),
-                vec2(ui.getCursorX() + width * 0.99, ui.getCursorY() + height * 0.95),
+                vec2Temp1:set(ui.getCursorX() + width * 0.01, ui.getCursorY() + height * 0.85),
+                vec2Temp2:set(ui.getCursorX() + width * 0.99, ui.getCursorY() + height * 0.95),
                 color
         )
 end
@@ -214,7 +217,7 @@ local function lapTimeBanner(yPos, height)
                 local tempWidth = width - height - (height * 0.2)
                 cui.snapCursor()
                 local x, y = entry.xShare == -1 and height or tempWidth * entry.xShare, height
-                ui.dwriteTextAligned(entry.label, fontSize, entry.align, ui.Alignment.Center, vec2(x, y))
+                ui.dwriteTextAligned(entry.label, fontSize, entry.align, ui.Alignment.Center, vec2Temp1:set(x, y))
                 ui.sameLine()
         end
 end
@@ -223,7 +226,7 @@ local function noEntryBanner(height)
         local width = ui.windowWidth()
         local fontSize = style.main.font.body.size
 
-        ui.drawRectFilled(vec2(0, 0), vec2(0 + width, height), settings.Appearance.uiColorPrimary * 0.5)
+        ui.drawRectFilled(0, vec2Temp1:set(0 + width, height), settings.Appearance.uiColorPrimary * 0.5)
 
         ui.setCursorX(height * 1.2)
         ui.setCursorY(0)
@@ -234,7 +237,7 @@ local function noEntryBanner(height)
                 fontSize,
                 ui.Alignment.Start,
                 ui.Alignment.Center,
-                vec2(ui.windowWidth(), height)
+                vec2Temp1:set(ui.windowWidth(), height)
         )
 end
 
@@ -244,17 +247,21 @@ function lapTimeEntryButton(car, lap, yPos, height)
 
         ui.setCursorX(xPos)
         ui.setCursorY(yPos)
-        if ui.invisibleButton("##lapTimeEntryButton" .. car.index, vec2(width, height)) then
+        if ui.invisibleButton("##lapTimeEntryButton" .. car.index, vec2Temp1:set(width, height)) then
                 if car.status.isConnected then ac.focusCar(car.index) end
         end
 
         local lapNumber = lap.number
         local evenCar = lapNumber % 2 == 0
 
-        ui.drawRectFilled(vec2(xPos, yPos), vec2(xPos + height, yPos + height), settings.Appearance.uiColorPrimary)
         ui.drawRectFilled(
-                vec2(xPos, yPos),
-                vec2(xPos + width, yPos + height),
+                vec2Temp1:set(xPos, yPos),
+                vec2Temp2:set(xPos + height, yPos + height),
+                settings.Appearance.uiColorPrimary
+        )
+        ui.drawRectFilled(
+                vec2Temp1:set(xPos, yPos),
+                vec2Temp2:set(xPos + width, yPos + height),
                 evenCar and settings.Appearance.uiColorPrimary * 0.15 or settings.Appearance.uiColorPrimary * 0.5
         )
 
@@ -271,7 +278,7 @@ function lapTimeEntryButton(car, lap, yPos, height)
                         style.main.font.body.size,
                         entry.align,
                         ui.Alignment.Center,
-                        vec2(x, y),
+                        vec2Temp1:set(x, y),
                         false,
                         color
                 )
@@ -318,7 +325,7 @@ function lapTimes:drawFooter()
                         height * 0.65,
                         entry.align,
                         ui.Alignment.Center,
-                        vec2(x, y),
+                        vec2Temp1:set(x, y),
                         false,
                         color
                 )
@@ -328,7 +335,7 @@ function lapTimes:drawFooter()
         if
                 cui.menuButton(
                         "Export to CSV",
-                        vec2(ui.windowWidth() * 0.2, height),
+                        vec2Temp1:set(ui.windowWidth() * 0.2, height),
                         0,
                         0,
                         (lapTimes.sessionLaps and #lapTimes.sessionLaps > 0) and ui.ButtonFlags.None

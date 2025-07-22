@@ -24,13 +24,13 @@ local function promptOverwriteSetup()
                         textBoxHeight / 2,
                         nil,
                         nil,
-                        vec2(ui.windowWidth(), textBoxHeight)
+                        vec2Temp1:set(ui.windowWidth(), textBoxHeight)
                 )
                 local titleTextWidth = ui.measureDWriteText(" Overwrite Setup ", textBoxHeight / 2).x
 
                 ui.drawSimpleLine(
-                        vec2(ui.windowWidth() / 2 - titleTextWidth / 2, ui.getCursorY()),
-                        vec2(ui.windowWidth() / 2 + titleTextWidth / 2, ui.getCursorY()),
+                        vec2Temp1:set(ui.windowWidth() / 2 - titleTextWidth / 2, ui.getCursorY()),
+                        vec2Temp2:set(ui.windowWidth() / 2 + titleTextWidth / 2, ui.getCursorY()),
                         settings.Appearance.uiColorSecondary,
                         3
                 )
@@ -41,7 +41,7 @@ local function promptOverwriteSetup()
                         textBoxHeight / 4,
                         nil,
                         nil,
-                        vec2(ui.availableSpaceX(), textBoxHeight)
+                        vec2Temp1:set(ui.availableSpaceX(), textBoxHeight)
                 )
 
                 local buttonWidth = ui.windowWidth() / 3
@@ -54,7 +54,7 @@ local function promptOverwriteSetup()
                 ui.sameLine()
 
                 if not mouseMoved then
-                        ac.setMousePosition(ui.cursorScreenPos() + vec2(ui.availableSpaceX() / 2, 20))
+                        ac.setMousePosition(ui.cursorScreenPos() + vec2Temp1:set(ui.availableSpaceX() / 2, 20))
                         mouseMoved = true
                 end
 
@@ -81,11 +81,11 @@ function saveSetupWidget:body()
         cui.offsetCursorY(15)
         cui.combo(
                 "##save_setup_track",
-                vec2(buttonWidth, iconButtonHeight),
+                vec2Temp1:set(buttonWidth, iconButtonHeight),
                 carSetup.input.track,
                 ui.Alignment.Start,
                 false,
-                vec2(buttonWidth, 200),
+                vec2Temp2:set(buttonWidth, 200),
                 function()
                         cui.offsetCursorY(4)
                         for i, v in ipairs(carSetup.trackListAll) do

@@ -9,6 +9,9 @@ local style = require("ui.cui.style")
 local sim = ac.getSim()
 local car = ac.getCar(0)
 
+local vec2Temp1 = vec2()
+local vec2Temp2 = vec2()
+
 local acLogo = ac.getFolder(ac.FolderID.Root) .. "\\launcher\\themes\\default\\graphics\\btn_AC_logo.png"
 local acLogoSize = ui.imageSize(acLogo)
 
@@ -90,26 +93,26 @@ function page.draw(dt)
 
         cui.contentWindow(
                 "pause_window",
-                vec2((ui.windowWidth() - childWindowWith) / 2, (ui.windowHeight() - childWindowHeight) / 2),
-                vec2(childWindowWith, childWindowHeight),
+                vec2Temp1:set((ui.windowWidth() - childWindowWith) / 2, (ui.windowHeight() - childWindowHeight) / 2),
+                vec2Temp2:set(childWindowWith, childWindowHeight),
                 mainWindowFlags,
                 function()
                         ui.setCursor(0)
                         cui.offsetCursorY(30)
 
                         ui.drawRectFilled(
-                                vec2(0, 0),
+                                vec2Temp1:set(0, 0),
                                 ui.windowSize(),
                                 settings.Appearance.uiColorPrimary / 1.5,
                                 12 * cui.scale()
                         )
 
-                        acLogoSize = vec2(ui.windowHeight() * 0.2, ui.windowHeight() * 0.2)
+                        acLogoSize:set(ui.windowHeight() * 0.2, ui.windowHeight() * 0.2)
                         ui.setCursorX(ui.windowWidth() / 2 - acLogoSize.x / 2)
                         ui.image(acLogo, acLogoSize)
                         cui.offsetCursorY(30)
 
-                        local menuButtonSize = vec2(ui.availableSpaceX() - 40 * cui.scale(), 60 * cui.scale())
+                        local menuButtonSize = vec2Temp1:set(ui.availableSpaceX() - 40 * cui.scale(), 60 * cui.scale())
 
                         ui.pushStyleColor(ui.StyleColor.Button, settings.Appearance.uiColorPrimary)
                         for i in ipairs(pauseButtons) do

@@ -8,6 +8,9 @@ local settings = require("settings")
 local simutils = require("simutils")
 local sim = ac.getSim()
 
+local vec2Temp1 = vec2()
+local vec2Temp2 = vec2()
+
 local acLogo = ac.getFolder(ac.FolderID.Root) .. "\\launcher\\themes\\default\\graphics\\btn_AC_logo.png"
 local acLogoSize = ui.imageSize(acLogo)
 
@@ -94,8 +97,8 @@ function page.draw(dt)
                         + ui.WindowFlags.NoFocusOnAppearing
         end
 
-        cui.contentWindow("results_home_window", vec2(0, 0), ui.windowSize(), mainWindowFlags, function()
-                ui.drawRectFilled(vec2(0, 0), ui.windowSize(), settings.Appearance.uiColorPrimary / 4)
+        cui.contentWindow("results_home_window", vec2Temp1:set(0, 0), ui.windowSize(), mainWindowFlags, function()
+                ui.drawRectFilled(vec2Temp1:set(0, 0), ui.windowSize(), settings.Appearance.uiColorPrimary / 4)
 
                 acLogoSize = ui.imageSize(acLogo) * 2 * cui.scale()
                 ui.setCursorX(ui.windowWidth() / 2 - acLogoSize.x / 2)
@@ -110,7 +113,7 @@ function page.draw(dt)
                         70 * cui.scale(),
                         ui.Alignment.Start,
                         ui.Alignment.Center,
-                        vec2(300 * cui.scale(), 140 * cui.scale()),
+                        vec2Temp1:set(300 * cui.scale(), 140 * cui.scale()),
                         false,
                         rgbm.colors.white
                 )

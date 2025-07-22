@@ -26,7 +26,7 @@ for i, tab in ipairs(controllerTweaks[configs.CONTROLS.ini:get("HEADER", "INPUT_
 end
 
 function page.draw()
-        ui.drawRectFilled(vec2(0, 0), ui.windowSize(), settings.Appearance.uiColorBackgroundShade * 0.75)
+        ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiColorBackgroundShade * 0.75)
 
         cui.pushFittedWindow("settings_controls_main_window")
         topSubBar("Controls")
