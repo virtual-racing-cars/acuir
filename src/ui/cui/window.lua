@@ -193,6 +193,31 @@ end
 
 function window.pushFull(id, flags, scroll) window.push(id, 0, 0, ui.windowWidth(), ui.windowHeight(), scroll) end
 
+function window.popup(position, size, content)
+        ui.transparentWindow("custom_popup_window", position, size, true, true, function()
+                style:pushStyleMain()
+                ui.bringWindowToFront()
+                ui.setCursor(0)
+
+                ui.drawRectFilled(0, ui.windowSize(), rgbm.colors.black, 6 * scale.get())
+                window.push(
+                        "custom_popup_window_scroll_window",
+                        0,
+                        10 * scale.get(),
+                        ui.windowWidth(),
+                        ui.windowHeight() - 20 * scale.get(),
+                        true
+                )
+
+                content()
+
+                window.pop(true)
+                style:popStyleMain()
+
+                ui.drawRect(0, ui.windowSize(), settings.Appearance.uiColorText * 0.75, 6 * scale.get())
+        end)
+end
+
 function window.getWindow(windowName)
         local appWindows = ac.getAppWindows()
         local window = nil

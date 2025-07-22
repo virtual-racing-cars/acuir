@@ -77,6 +77,7 @@ cui.pushWidgetWindow = window.pushWidget
 cui.popWidgetWindow = window.popWidget
 cui.pushFullWindow = window.pushFull
 cui.pushFittedWindow = window.pushFitted
+cui.popupWindow = window.popup
 
 cui.menuPanAvailable = false
 cui.menuZoomAvailable = false

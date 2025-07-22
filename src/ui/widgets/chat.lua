@@ -108,7 +108,7 @@ local function chatInput(height)
 
         messages.input, chatActive = cui.inputText(
                 "##chat_input",
-                vec2Temp1:set(ui.windowWidth() * 0.75, height),
+                vec2Temp1:set(ui.windowWidth() - height * 5, height),
                 "",
                 messages.input,
                 "Type message...",
@@ -123,7 +123,8 @@ local function chatInput(height)
                 2
         )
 
-        ui.setCursorX(ui.windowWidth() * 0.75)
+        ui.setCursorX(ui.windowWidth() - height * 5)
+        cui.offsetCursorX(-5)
         ui.setCursorY(ui.windowHeight() - height)
 
         if
@@ -142,63 +143,46 @@ local function chatInput(height)
         ui.sameLine()
 
         if chat.emojisOpen then
-                local tempCursor = ui.getCursor()
-
-                ui.setCursorX(ui.windowWidth() * 0.5)
-                ui.setCursorY(0)
-                cui.pushWindow(
-                        "emoji_window",
-                        ui.windowWidth() * 0.5,
-                        0,
-                        ui.windowWidth() * 0.5,
-                        ui.windowHeight() - 40 * cui.scale(),
-                        true
-                )
-
-                ui.drawRectFilled(
-                        vec2Temp1:set(0, 0),
-                        vec2Temp2:set(ui.windowWidth(), 2000 * cui.scale()),
-                        settings.Appearance.uiColorBackground
-                )
-                ui.setCursorX(ui.windowWidth() * 0.02)
-                ui.setCursorY(10 * cui.scale())
-                ui.dwriteTextAligned(
-                        "Emojis",
-                        22 * cui.scale(),
-                        ui.Alignment.Start,
-                        ui.Alignment.Center,
-                        vec2Temp1:set(ui.windowWidth() * 0.98, 24 * cui.scale())
-                )
-
-                ui.setCursorY(38 * cui.scale())
-                ui.setCursorX(ui.windowWidth() * 0.02)
-
-                for i, emoji in ipairs(messages.emojiList) do
-                        if i > 1 and (i - 1) % 10 == 0 then
-                                ui.newLine()
-                                ui.setCursorX(ui.windowWidth() * 0.02)
-                        end
-
-                        if
-                                cui.emojiButton(
-                                        "emoji" .. emoji.label,
-                                        emoji.icon,
-                                        38 * cui.scale(),
-                                        38 * cui.scale(),
-                                        ui.ButtonFlags.None,
-                                        false
+                cui.popupWindow(
+                        ui.cursorScreenPos() - vec2Temp1:set(160 * cui.scale(), 295 * cui.scale()),
+                        vec2Temp2:set(320 * cui.scale(), 290 * cui.scale()),
+                        function()
+                                cui.setCursorX(10)
+                                ui.dwriteTextAligned(
+                                        "Emojis",
+                                        22 * cui.scale(),
+                                        ui.Alignment.Start,
+                                        ui.Alignment.Center,
+                                        vec2Temp1:set(ui.windowWidth() * 0.98, 24 * cui.scale())
                                 )
-                        then
-                                messages.input = messages.input .. emoji.icon
+
+                                cui.offsetCursorY(10)
+                                ui.setCursorX(ui.windowWidth() * 0.02)
+
+                                for i, emoji in ipairs(messages.emojiList) do
+                                        if i > 1 and (i - 1) % 8 == 0 then
+                                                ui.newLine()
+                                                ui.setCursorX(ui.windowWidth() * 0.02)
+                                        end
+
+                                        if
+                                                cui.emojiButton(
+                                                        "emoji" .. emoji.label,
+                                                        emoji.icon,
+                                                        38 * cui.scale(),
+                                                        38 * cui.scale(),
+                                                        ui.ButtonFlags.None,
+                                                        false
+                                                )
+                                        then
+                                                messages.input = messages.input .. emoji.icon
+                                        end
+                                        ui.sameLine()
+                                end
+
+                                ui.newLine()
                         end
-                        ui.sameLine()
-                end
-
-                ui.newLine()
-                cui.dummy(19, 19)
-
-                cui.popWindow(true)
-                ui.setCursor(tempCursor)
+                )
         end
 
         if
@@ -247,9 +231,7 @@ local function chatInput(height)
 end
 
 function chat:draw(xPos, yPos, width, height)
-        -- if not sim.isOnlineRace then return end
-
-        local chatInputHeight = 40 * cui.scale()
+        local chatInputHeight = style.main.font.header.space
 
         cui.pushWindow("chat_widget_window", xPos, yPos, width, height, false)
         ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiColorBackground, 6 * cui.scale())
