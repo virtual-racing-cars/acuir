@@ -24,6 +24,7 @@ if ($build_code -lt 1000) {
 }
 
 $build_ver = ($build_ver -split '' -ne '') -join '.'
+$build_ver = $build_ver + "-beta"
 $date = Get-Date -Format "yyyy-MM-dd"
 
 $line_iter = 1
