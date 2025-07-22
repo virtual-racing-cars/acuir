@@ -25,7 +25,7 @@ We would also like to thank the early testers of ACUIR for their invaluable feed
 Contributions
 - ACUIR Developer: William Gawlik (Schmawlik)
 - ACUIR Audio: Mike Krybus (imrimike)
-- ACUIR Testers: Dan Mezza, Damgam, Flashsacs, airwaves, benjamin00, Underchosen, Nиco, Kody Laurence, KiboOst
+- ACUIR Testers: Dan Mezza, Damgam, Flashsacs, airwaves, benjamin00, Underchosen, Nиco, Kody Laurence, KiboOst, Max225
 - Assetto Corsa: Kunos Simulazioni
 - Custom Shaders Patch: x4fab, Jackson Papageorge, Dmitrii A, henter, Neoned, Stereo
 
