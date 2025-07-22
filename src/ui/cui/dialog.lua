@@ -2,6 +2,8 @@ local button = require("ui.cui.button")
 local callback = require("callback")
 local scale = require("ui.cui.scale")
 
+local vec2Temp1 = vec2()
+
 local dialog = {}
 
 function dialog.modal(callbackCall) callback.dialog = callbackCall end
@@ -14,7 +16,13 @@ function dialog.promptShutdownAC()
                 local textBoxHeight = ui.windowHeight() / 4
 
                 ui.setCursor(0)
-                ui.dwriteTextAligned("Quit Session", textBoxHeight / 2, nil, nil, vec2(ui.windowWidth(), textBoxHeight))
+                ui.dwriteTextAligned(
+                        "Quit Session",
+                        textBoxHeight / 2,
+                        nil,
+                        nil,
+                        vec2Temp1:set(ui.windowWidth(), textBoxHeight)
+                )
                 local titleTextWidth = ui.measureDWriteText(" Quit Session ", textBoxHeight / 2).x
 
                 if sm:isUndoAvailable() then
@@ -24,7 +32,7 @@ function dialog.promptShutdownAC()
                                 textBoxHeight / 4,
                                 nil,
                                 nil,
-                                vec2(ui.windowWidth(), textBoxHeight / 4),
+                                vec2Temp1:set(ui.windowWidth(), textBoxHeight / 4),
                                 false,
                                 rgbm.colors.orange
                         )
@@ -36,7 +44,7 @@ function dialog.promptShutdownAC()
                         textBoxHeight / 4,
                         nil,
                         nil,
-                        vec2(ui.windowWidth(), textBoxHeight)
+                        vec2Temp1:set(ui.windowWidth(), textBoxHeight)
                 )
 
                 local buttonWidth = ui.windowWidth() / 3

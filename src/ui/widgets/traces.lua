@@ -2,6 +2,9 @@ local cui = require("ui.cui")
 local settings = require("settings")
 local sim = ac.getSim()
 
+local vec2Temp1 = vec2()
+local vec2Temp2 = vec2()
+
 local tracesGraph = {}
 
 local spectatedCarIndexLast = 0
@@ -63,8 +66,8 @@ local function drawGridLines()
 
         for i = 1, 3 do
                 ui.drawSimpleLine(
-                        vec2(0, i * quarterHeight),
-                        vec2(ui.windowWidth(), i * quarterHeight),
+                        vec2Temp1:set(0, i * quarterHeight),
+                        vec2Temp2:set(ui.windowWidth(), i * quarterHeight),
                         rgbm(0.15, 0.15, 0.15, 1),
                         2 * cui.scale()
                 )
@@ -78,7 +81,7 @@ local function drawTraces()
 
                 for x, v in ipairs(trace.data) do
                         ui.pathLineTo(
-                                vec2(
+                                vec2Temp1:set(
                                         xSegment + (x - 1) * xSegment,
                                         ui.windowHeight() * 0.1 + ((1 - v) * ui.windowHeight() * 0.8)
                                 )
@@ -90,7 +93,7 @@ end
 
 function tracesGraph:draw(xPos, yPos, width, height)
         cui.pushWindow("traces_widget_window", xPos, yPos, width, height, false)
-        ui.drawRectFilled(vec2(0, 0), ui.windowSize(), settings.Appearance.uiColorBackground, 6 * cui.scale())
+        ui.drawRectFilled(vec2Temp1:set(0, 0), ui.windowSize(), settings.Appearance.uiColorBackground, 6 * cui.scale())
 
         border = 7.5 * cui.scale()
 

@@ -12,6 +12,11 @@ local simutils = require("simutils")
 local style = require("ui.cui.style")
 local tracesWidget = require("ui.widgets.traces")
 
+local vec2Temp1 = vec2()
+local vec2Temp2 = vec2()
+local vec2Temp3 = vec2()
+local vec2Temp4 = vec2()
+
 local acLogo = ac.getFolder(ac.FolderID.Root) .. "\\launcher\\themes\\default\\graphics\\btn_AC_logo.png"
 -- local acLogo = ac.getFolder(ac.FolderID.ScriptOrigin) .. "\\assets\\img\\vrc_logo.png"
 local acLogoSize = ui.imageSize(acLogo) * cui.scale()
@@ -23,7 +28,7 @@ local versionString = string.format("%s: %s, CSP: %s (%s)", app.name, app.versio
 
 function bottomBar(buttons)
         ui.drawRectFilled(
-                vec2(0, ui.windowHeight() - 56 * cui.scale()),
+                vec2Temp1:set(0, ui.windowHeight() - 56 * cui.scale()),
                 ui.windowSize(),
                 settings.Appearance.uiColorPrimary / 3,
                 6 * cui.scale()
@@ -37,7 +42,7 @@ function bottomBar(buttons)
                         26 * cui.scale(),
                         ui.Alignment.Center,
                         ui.Alignment.End,
-                        ui.availableSpace() - vec2(40, 10) * cui.scale(),
+                        ui.availableSpace() - vec2Temp1:set(40, 10) * cui.scale(),
                         false,
                         rgbm(0.8, 0.8, 0.8, 0.2)
                 )
@@ -83,7 +88,7 @@ function topSubBar(path)
                 50 * cui.scale(),
                 ui.Alignment.Start,
                 ui.Alignment.Center,
-                vec2(600 * cui.scale(), 100 * cui.scale()),
+                vec2Temp1:set(600 * cui.scale(), 100 * cui.scale()),
                 false
         )
 end
@@ -101,15 +106,15 @@ function topBar(path)
 
         ui.drawRectFilled(
                 0,
-                vec2(ui.windowWidth(), topBarHeight),
+                vec2Temp1:set(ui.windowWidth(), topBarHeight),
                 settings.Appearance.uiColorBackground,
                 12 * cui.scale()
         )
 
         cui.contentWindow(
                 "top_bar_banner",
-                vec2(0, topBarHeight),
-                vec2(ui.windowWidth(), 50 * cui.scale()),
+                vec2Temp1:set(0, topBarHeight),
+                vec2Temp1:set(ui.windowWidth(), 50 * cui.scale()),
                 ui.WindowFlags.None,
                 function()
                         local width1 = 200 * cui.scale()
@@ -118,10 +123,10 @@ function topBar(path)
                         local center = ui.windowWidth() * 0.5
 
                         ui.drawQuadFilled(
-                                vec2(center - width2, 0),
-                                vec2(center - width1, height),
-                                vec2(center + width1, height),
-                                vec2(center + width2, 0),
+                                vec2Temp1:set(center - width2, 0),
+                                vec2Temp2:set(center - width1, height),
+                                vec2Temp3:set(center + width1, height),
+                                vec2Temp4:set(center + width2, 0),
                                 settings.Appearance.uiColorBackgroundShade
                         )
 
@@ -142,7 +147,7 @@ function topBar(path)
                                 style.main.font.header.size,
                                 ui.Alignment.End,
                                 ui.Alignment.Center,
-                                vec2(300 * cui.scale(), ui.windowHeight())
+                                vec2Temp1:set(300 * cui.scale(), ui.windowHeight())
                         )
                         ui.sameLine()
                         ui.setCursorX(ui.windowWidth() * 0.5 + 20 * cui.scale())
@@ -153,7 +158,7 @@ function topBar(path)
                                 style.main.font.header.size,
                                 ui.Alignment.Start,
                                 ui.Alignment.Center,
-                                vec2(600 * cui.scale(), ui.windowHeight())
+                                vec2Temp1:set(600 * cui.scale(), ui.windowHeight())
                         )
 
                         if callback.info then callback.info() end
@@ -258,7 +263,7 @@ function topBar(path)
         if
                 cui.driveButton(
                         string.upper(driveButtonText),
-                        vec2(driveButtonWidth, driveButtonHeight),
+                        vec2Temp1:set(driveButtonWidth, driveButtonHeight),
                         ui.Alignment.Center,
                         ui.Alignment.Center,
                         driveButtonColor,

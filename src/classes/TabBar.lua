@@ -3,6 +3,8 @@ local cui = require("ui.cui")
 local settings = require("settings")
 local style = require("ui.cui.style")
 
+local vec2Temp1 = vec2()
+
 local TabBar = class("TabBar")
 
 function TabBar:initialize(id)
@@ -31,7 +33,7 @@ function TabBar:draw(tabs)
                 if
                         cui.treeNodeChildButton(
                                 toCapitalCase(tabs[i].name),
-                                vec2(ui.availableSpaceX() - 20 * cui.scale(), style.main.font.header.space),
+                                vec2Temp1:set(ui.availableSpaceX() - 20 * cui.scale(), style.main.font.header.space),
                                 self.currentTab == i,
                                 true
                         )

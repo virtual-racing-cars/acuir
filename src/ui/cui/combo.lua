@@ -5,6 +5,9 @@ local state = require("ui.cui.state")
 local style = require("ui.cui.style")
 local window = require("ui.cui.window")
 
+local vec2Temp1 = vec2()
+local vec2Temp2 = vec2()
+
 local combo = {}
 
 function combo.box(id, size, previewValue, previewAlignment, openDown, contentSize, content)
@@ -36,8 +39,8 @@ function combo.box(id, size, previewValue, previewAlignment, openDown, contentSi
         ui.drawRect(r1, r2, borderColor, 6 * scale.get())
         ui.addIcon(
                 open and openIcon or closedIcon,
-                vec2(size.y, size.y) * 0.35,
-                vec2(iconAlignemnt, 0.5),
+                vec2Temp1:set(size.y, size.y) * 0.35,
+                vec2Temp2:set(iconAlignemnt, 0.5),
                 settings.Appearance.uiColorText
         )
 
@@ -49,13 +52,13 @@ function combo.box(id, size, previewValue, previewAlignment, openDown, contentSi
                 size.y * 0.5,
                 previewAlignment,
                 ui.Alignment.Center,
-                vec2(size.x - 10 * scale.get(), size.y),
+                vec2Temp1:set(size.x - 10 * scale.get(), size.y),
                 false,
                 settings.Appearance.uiColorText
         )
 
-        local comboOpenPosition = openDown and sp1 + vec2(0, size.y + 5 * scale.get())
-                or sp1 - vec2(0, contentSize.y + 5 * scale.get())
+        local comboOpenPosition = openDown and sp1 + vec2Temp1:set(0, size.y + 5 * scale.get())
+                or sp1 - vec2Temp1:set(0, contentSize.y + 5 * scale.get())
 
         if open then
                 ui.transparentWindow(id, comboOpenPosition, contentSize, true, true, function()
@@ -81,7 +84,7 @@ function combo.box(id, size, previewValue, previewAlignment, openDown, contentSi
                                 not clicked
                                 and open
                                 and ui.mouseReleased(ui.MouseButton.Left)
-                                and not ui.rectHovered(0, vec2(ui.windowWidth(), 10000))
+                                and not ui.rectHovered(0, vec2Temp1:set(ui.windowWidth(), 10000))
                         then
                                 state.storeBool(id, false)
                         end

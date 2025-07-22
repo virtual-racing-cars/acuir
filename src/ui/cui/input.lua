@@ -4,6 +4,7 @@ local scale = require("ui.cui.scale")
 local settings = require("settings")
 
 local vec2Temp1 = vec2()
+local vec2Temp2 = vec2()
 
 local inputTextBoxDragIndex = 0
 local inputTextBoxCursorIndex = 2
@@ -141,8 +142,8 @@ function input.text(label, size, stringPrefix, stringInput, stringDefault, filte
                         - scrollOffsetX
                 if left ~= right then
                         ui.drawRectFilled(
-                                vec2(right, ui.getCursorY()),
-                                vec2(left, ui.getCursorY() + size.y),
+                                vec2Temp1:set(right, ui.getCursorY()),
+                                vec2Temp2:set(left, ui.getCursorY() + size.y),
                                 rgbm.colors.red / 2
                         )
                 end
@@ -157,8 +158,8 @@ function input.text(label, size, stringPrefix, stringInput, stringDefault, filte
         if drawCursor then
                 local pos = r1.x + cursorOffset - scrollOffsetX
                 ui.drawSimpleLine(
-                        vec2(pos, r1.y + 7 * scale.get()),
-                        vec2(pos, r2.y - 7 * scale.get()),
+                        vec2Temp1:set(pos, r1.y + 7 * scale.get()),
+                        vec2Temp2:set(pos, r2.y - 7 * scale.get()),
                         settings.Appearance.uiColorText * 0.75,
                         2 * scale.get()
                 )

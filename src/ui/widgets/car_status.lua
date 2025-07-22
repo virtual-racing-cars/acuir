@@ -3,6 +3,9 @@ local style = require("ui.cui.style")
 local units = require("units")
 local uis = ac.getUI()
 
+local vec2Temp1 = vec2()
+local vec2Temp2 = vec2()
+
 local round = math.round
 
 local carStatusWidget = {}
@@ -124,13 +127,16 @@ local centerStatusInfo = {
 }
 
 function carStatusWidget:body()
-        local spaceSize = 34 * cui.scale()
-        local fontSize = style.main.font.body.size
-
-        style:pushFontBold()
         ui.setCursor(0)
         ui.setCursorX(ui.windowWidth() * 0.3)
+
+        style:pushFontBold()
+
+        local spaceSize = 34 * cui.scale()
+        local fontSize = style.main.font.body.size
         local xSpace = ui.availableSpaceX() / 3
+
+        local infoBlockSize = vec2Temp2:set(xSpace, spaceSize)
 
         for i, v in ipairs(columnHeaders) do
                 ui.setCursorX(ui.windowWidth() * 0.3 + xSpace * (i - 1))
@@ -140,7 +146,7 @@ function carStatusWidget:body()
                         fontSize * 1.2,
                         ui.Alignment.Center,
                         ui.Alignment.Center,
-                        vec2(xSpace, spaceSize * 1.2)
+                        vec2Temp1:set(xSpace, spaceSize * 1.2)
                 )
         end
         ui.popDWriteFont()
@@ -155,7 +161,7 @@ function carStatusWidget:body()
                         fontSize,
                         ui.Alignment.Start,
                         ui.Alignment.Center,
-                        vec2(ui.windowWidth() * 0.3, spaceSize)
+                        vec2Temp1:set(ui.windowWidth() * 0.3, spaceSize)
                 )
                 ui.sameLine()
                 ui.setCursorX(ui.windowWidth() * 0.3)
@@ -168,7 +174,7 @@ function carStatusWidget:body()
                                 fontSize,
                                 ui.Alignment.Center,
                                 ui.Alignment.Center,
-                                vec2(xSpace, spaceSize)
+                                infoBlockSize
                         )
                         ui.sameLine()
 
@@ -178,7 +184,7 @@ function carStatusWidget:body()
                                 fontSize,
                                 ui.Alignment.Center,
                                 ui.Alignment.Center,
-                                vec2(xSpace, spaceSize)
+                                infoBlockSize
                         )
                         ui.sameLine()
 
@@ -188,7 +194,7 @@ function carStatusWidget:body()
                                 fontSize,
                                 ui.Alignment.Center,
                                 ui.Alignment.Center,
-                                vec2(xSpace, spaceSize)
+                                infoBlockSize
                         )
                 elseif infoBlock.value2 then
                         local xSpace = ui.availableSpaceX() / 2
@@ -200,7 +206,7 @@ function carStatusWidget:body()
                                 fontSize,
                                 ui.Alignment.Center,
                                 ui.Alignment.Center,
-                                vec2(xSpace, spaceSize)
+                                infoBlockSize
                         )
                         ui.sameLine()
 
@@ -212,7 +218,7 @@ function carStatusWidget:body()
                                 fontSize,
                                 ui.Alignment.Center,
                                 ui.Alignment.Center,
-                                vec2(xSpace, spaceSize)
+                                infoBlockSize
                         )
                 else
                         local xSpace = ui.availableSpaceX() / 2
@@ -222,7 +228,7 @@ function carStatusWidget:body()
                                 fontSize,
                                 ui.Alignment.Center,
                                 ui.Alignment.Center,
-                                vec2(xSpace, spaceSize)
+                                infoBlockSize
                         )
                         ui.sameLine()
 
@@ -232,7 +238,7 @@ function carStatusWidget:body()
                                 fontSize,
                                 ui.Alignment.Center,
                                 ui.Alignment.Center,
-                                vec2(xSpace, spaceSize)
+                                infoBlockSize
                         )
                 end
         end
@@ -248,7 +254,7 @@ function carStatusWidget:body()
                         fontSize,
                         ui.Alignment.Start,
                         ui.Alignment.Center,
-                        vec2(ui.windowWidth() * 0.3, spaceSize)
+                        vec2Temp1:set(ui.windowWidth() * 0.3, spaceSize)
                 )
                 ui.sameLine()
                 ui.setCursorX(ui.windowWidth() * 0.3)
@@ -261,7 +267,7 @@ function carStatusWidget:body()
                                 fontSize,
                                 ui.Alignment.Center,
                                 ui.Alignment.Center,
-                                vec2(xSpace, spaceSize)
+                                infoBlockSize
                         )
                         ui.sameLine()
 
@@ -271,7 +277,7 @@ function carStatusWidget:body()
                                 fontSize,
                                 ui.Alignment.Center,
                                 ui.Alignment.Center,
-                                vec2(xSpace, spaceSize)
+                                infoBlockSize
                         )
                         ui.sameLine()
 
@@ -281,7 +287,7 @@ function carStatusWidget:body()
                                 fontSize,
                                 ui.Alignment.Center,
                                 ui.Alignment.Center,
-                                vec2(xSpace, spaceSize)
+                                infoBlockSize
                         )
                 else
                         local value = infoBlock.value(0)
@@ -302,7 +308,7 @@ function carStatusWidget:body()
                                 fontSize,
                                 ui.Alignment.Center,
                                 ui.Alignment.Center,
-                                vec2(ui.availableSpaceX(), spaceSize),
+                                vec2Temp1:set(ui.availableSpaceX(), spaceSize),
                                 false,
                                 (infoBlock.warn and infoBlock.warn()) and rgbm.colors.red or rgbm.colors.white
                         )
@@ -321,7 +327,7 @@ function carStatusWidget:body()
                         fontSize,
                         ui.Alignment.Start,
                         ui.Alignment.Center,
-                        vec2(ui.windowWidth() * 0.3, spaceSize)
+                        vec2Temp1:set(ui.windowWidth() * 0.3, spaceSize)
                 )
                 ui.sameLine()
                 ui.setCursorX(ui.windowWidth() * 0.3)
@@ -334,7 +340,7 @@ function carStatusWidget:body()
                                 fontSize,
                                 ui.Alignment.Center,
                                 ui.Alignment.Center,
-                                vec2(xSpace, spaceSize)
+                                infoBlockSize
                         )
                         ui.sameLine()
 
@@ -344,7 +350,7 @@ function carStatusWidget:body()
                                 fontSize,
                                 ui.Alignment.Center,
                                 ui.Alignment.Center,
-                                vec2(xSpace, spaceSize)
+                                infoBlockSize
                         )
                         ui.sameLine()
 
@@ -354,7 +360,7 @@ function carStatusWidget:body()
                                 fontSize,
                                 ui.Alignment.Center,
                                 ui.Alignment.Center,
-                                vec2(xSpace, spaceSize)
+                                infoBlockSize
                         )
                 elseif infoBlock.value2 then
                         local xSpace = ui.availableSpaceX() / 2
@@ -366,7 +372,7 @@ function carStatusWidget:body()
                                 fontSize,
                                 ui.Alignment.Center,
                                 ui.Alignment.Center,
-                                vec2(xSpace, spaceSize)
+                                infoBlockSize
                         )
                         ui.sameLine()
 
@@ -378,7 +384,7 @@ function carStatusWidget:body()
                                 fontSize,
                                 ui.Alignment.Center,
                                 ui.Alignment.Center,
-                                vec2(xSpace, spaceSize)
+                                infoBlockSize
                         )
                 else
                         local xSpace = ui.availableSpaceX() / 2
@@ -388,7 +394,7 @@ function carStatusWidget:body()
                                 fontSize,
                                 ui.Alignment.Center,
                                 ui.Alignment.Center,
-                                vec2(xSpace, spaceSize)
+                                infoBlockSize
                         )
                         ui.sameLine()
 
@@ -398,7 +404,7 @@ function carStatusWidget:body()
                                 fontSize,
                                 ui.Alignment.Center,
                                 ui.Alignment.Center,
-                                vec2(xSpace, spaceSize)
+                                infoBlockSize
                         )
                 end
         end

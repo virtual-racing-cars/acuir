@@ -12,6 +12,9 @@ local settings = require("settings")
 local style = require("ui.cui.style")
 local sim = ac.getSim()
 
+local vec2Temp1 = vec2()
+local vec2Temp2 = vec2()
+
 pages.manager:registerPage("EmptyPage", require("ui.pages.page_empty"))
 pages.manager:registerPage("SessionPage", require("ui.pages.page_session"))
 pages.manager:registerPage("SetupPage", require("ui.pages.page_setup"))
@@ -77,8 +80,11 @@ local hudModes = {
 
                 cui.contentWindow(
                         "pause_window",
-                        vec2((ui.windowWidth() - childWindowWith) / 2, (ui.windowHeight() - childWindowHeight) / 2),
-                        vec2(childWindowWith, childWindowHeight),
+                        vec2Temp1:set(
+                                (ui.windowWidth() - childWindowWith) / 2,
+                                (ui.windowHeight() - childWindowHeight) / 2
+                        ),
+                        vec2Temp2:set(childWindowWith, childWindowHeight),
                         ui.WindowFlags.NoScrollbar + ui.WindowFlags.NoScrollWithMouse,
                         function() exclusiveHudMode = pages.manager:draw() end
                 )
@@ -142,8 +148,8 @@ ui.onExclusiveHUD(function(mode)
         if callback.update then
                 ui.transparentWindow("dialog_window", 0, ui.windowSize(), true, true, function()
                         ui.bringWindowToFront()
-                        ui.drawRectFilled(vec2(0, 0), ui.windowSize(), rgbm.colors.black * 0.75)
-                        ui.drawRectFilled(vec2(0, 0), ui.windowSize(), settings.Appearance.uiColorPrimary)
+                        ui.drawRectFilled(vec2Temp1:set(0, 0), ui.windowSize(), rgbm.colors.black * 0.75)
+                        ui.drawRectFilled(vec2Temp2:set(0, 0), ui.windowSize(), settings.Appearance.uiColorPrimary)
 
                         local childWindowWith = ui.windowWidth() / 5
                         local childWindowHeight = ui.windowHeight() / 5
@@ -163,12 +169,12 @@ ui.onExclusiveHUD(function(mode)
                                 30,
                                 0,
                                 ui.Alignment.End,
-                                vec2(ui.windowWidth(), ui.windowHeight() * 0.5)
+                                vec2Temp1:set(ui.windowWidth(), ui.windowHeight() * 0.5)
                         )
                         cui.offsetCursorY(30)
 
                         ui.setCursorX(ui.windowWidth() * 0.5 - 100 * cui.scale() * 0.5)
-                        ui.icon(ui.Icons.LoadingSpinner, vec2(100, 100) * cui.scale())
+                        ui.icon(ui.Icons.LoadingSpinner, vec2Temp1:set(100, 100) * cui.scale())
 
                         cui.popWindow()
                 end)
@@ -179,8 +185,8 @@ ui.onExclusiveHUD(function(mode)
 
                 ui.transparentWindow("dialog_window", 0, ui.windowSize(), true, true, function()
                         ui.bringWindowToFront()
-                        ui.drawRectFilled(vec2(0, 0), ui.windowSize(), rgbm.colors.black * 0.75)
-                        ui.drawRectFilled(vec2(0, 0), ui.windowSize(), settings.Appearance.uiColorPrimary)
+                        ui.drawRectFilled(vec2Temp1:set(0, 0), ui.windowSize(), rgbm.colors.black * 0.75)
+                        ui.drawRectFilled(vec2Temp1:set(0, 0), ui.windowSize(), settings.Appearance.uiColorPrimary)
 
                         local childWindowWith = ui.windowWidth() / 5
                         local childWindowHeight = ui.windowHeight() / 5

@@ -145,7 +145,7 @@ function button.selectable(label, horizontalAligment)
 
         local fontSize = style.main.font.body.size
         local fontSpace = style.main.font.body.space
-        local size = vec2(ui.availableSpaceX() - 10 * scale.get(), fontSpace)
+        local size = vec2Temp1:set(ui.availableSpaceX() - 10 * scale.get(), fontSpace)
 
         local clicked = ui.invisibleButton("##selectable_" .. label, size, ui.ButtonFlags.None)
         local r1, r2 = ui.itemRect()
@@ -264,7 +264,9 @@ function button.windowTab(label, size, flags, active)
 
         ui.drawRectFilled(r1, r2, buttonColor, 12 * scale.get(), ui.CornerFlags.Top)
 
-        if active then ui.drawRectFilled(vec2(r1.x, r1.y + size * 0.9), r2, settings.Appearance.uiColorAccent) end
+        if active then
+                ui.drawRectFilled(vec2Temp2:set(r1.x, r1.y + size * 0.9), r2, settings.Appearance.uiColorAccent)
+        end
 
         ui.setCursor(tempCursor)
         cursor.snap()
@@ -302,9 +304,9 @@ function button.binding(name, label, binder, size, flags)
         ui.setCursor(r1)
 
         ui.itemPopup("##unbinding" .. binder.bind, ui.MouseButton.Right, function()
-                local popupButtonSize = vec2(200, 30) * scale.get()
+                local popupButtonSize = vec2Temp1:set(200, 30) * scale.get()
 
-                ui.drawRectFilled(0, vec2(200, 30 * 3), rgbm(0.2, 0.2, 0.2, 1))
+                ui.drawRectFilled(0, vec2Temp2:set(200, 30 * 3), rgbm(0.2, 0.2, 0.2, 1))
 
                 ui.setCursor(0)
 
@@ -366,7 +368,7 @@ function button.binding(name, label, binder, size, flags)
                 24 * scale.get(),
                 ui.Alignment.Start,
                 ui.Alignment.Center,
-                vec2(sizeX * 0.4 - 30 * scale.get(), sizeY),
+                vec2Temp1:set(sizeX * 0.4 - 30 * scale.get(), sizeY),
                 false,
                 textColor
         )
@@ -384,7 +386,7 @@ function button.binding(name, label, binder, size, flags)
                         fontSize,
                         ui.Alignment.Center,
                         ui.Alignment.Center,
-                        vec2(sizeX * 0.2, sizeY),
+                        vec2Temp1:set(sizeX * 0.2, sizeY),
                         false,
                         disabled and settings.Appearance.uiColorTextDim or textColor
                 )
@@ -396,7 +398,7 @@ function button.binding(name, label, binder, size, flags)
                         fontSize * 0.5,
                         ui.Alignment.Center,
                         ui.Alignment.End,
-                        vec2(sizeX * 0.2, sizeY),
+                        vec2Temp1:set(sizeX * 0.2, sizeY),
                         false,
                         disabled and settings.Appearance.uiColorTextDim or textColor
                 )
@@ -434,16 +436,16 @@ function button.bindingAxle(name, label, binder, size, flags)
                 local axisValue = binder:getValue()
 
                 ui.drawRectFilled(
-                        vec2(r1.x + size.x * 0.5 + size.x * 0.5 * math.min(axisValue, 0), r1.y),
-                        vec2(r1.x + size.x * 0.5, r2.y),
+                        vec2Temp1:set(r1.x + size.x * 0.5 + size.x * 0.5 * math.min(axisValue, 0), r1.y),
+                        vec2Temp2:set(r1.x + size.x * 0.5, r2.y),
                         settings.Appearance.uiColorSecondary,
                         6 * scale.get(),
                         ui.CornerFlags.Left
                 )
 
                 ui.drawRectFilled(
-                        vec2(r1.x + size.x * 0.5, r1.y),
-                        vec2(r1.x + size.x * 0.5 + size.x * 0.5 * math.max(axisValue, 0), r2.y),
+                        vec2Temp1:set(r1.x + size.x * 0.5, r1.y),
+                        vec2Temp2:set(r1.x + size.x * 0.5 + size.x * 0.5 * math.max(axisValue, 0), r2.y),
                         settings.Appearance.uiColorSecondary,
                         6 * scale.get(),
                         ui.CornerFlags.Right
@@ -453,7 +455,7 @@ function button.bindingAxle(name, label, binder, size, flags)
 
                 ui.drawRectFilled(
                         r1,
-                        vec2(r1.x + size.x * math.max(axisValue, 0), r2.y),
+                        vec2Temp1:set(r1.x + size.x * math.max(axisValue, 0), r2.y),
                         settings.Appearance.uiColorSecondary,
                         6 * scale.get(),
                         ui.CornerFlags.All
@@ -463,9 +465,9 @@ function button.bindingAxle(name, label, binder, size, flags)
         ui.setCursor(r1)
 
         ui.itemPopup("##unbinding" .. binder.bind, ui.MouseButton.Right, function()
-                local popupButtonSize = vec2(200, 30) * scale.get()
+                local popupButtonSize = vec2Temp1:set(200, 30) * scale.get()
 
-                ui.drawRectFilled(0, vec2(200, 30), rgbm(0.2, 0.2, 0.2, 1))
+                ui.drawRectFilled(0, vec2Temp2:set(200, 30), rgbm(0.2, 0.2, 0.2, 1))
 
                 ui.setCursor(0)
 
@@ -493,7 +495,7 @@ function button.bindingAxle(name, label, binder, size, flags)
                 24 * scale.get(),
                 ui.Alignment.Start,
                 ui.Alignment.Center,
-                vec2(sizeX * 0.4 - 30 * scale.get(), sizeY),
+                vec2Temp1:set(sizeX * 0.4 - 30 * scale.get(), sizeY),
                 false,
                 textColor
         )
@@ -509,7 +511,7 @@ function button.bindingAxle(name, label, binder, size, flags)
                 fontSize,
                 ui.Alignment.Center,
                 ui.Alignment.Center,
-                vec2(sizeX * 0.2, sizeY),
+                vec2Temp1:set(sizeX * 0.2, sizeY),
                 false,
                 textColor
         )
@@ -521,7 +523,7 @@ function button.bindingAxle(name, label, binder, size, flags)
                 fontSize * 0.5,
                 ui.Alignment.Center,
                 ui.Alignment.End,
-                vec2(sizeX * 0.2, sizeY),
+                vec2Temp1:set(sizeX * 0.2, sizeY),
                 false,
                 textColor
         )
@@ -603,7 +605,7 @@ function button.drive(label, size, horizontalAligment, verticalAlignment, color,
 end
 
 function button.modern(label, sizeX, sizeY, flags, icon)
-        local clicked = ui.modernButton(label, vec2(sizeX, sizeY) * scale.get(), flags, icon, 16 * scale.get())
+        local clicked = ui.modernButton(label, vec2Temp1:set(sizeX, sizeY) * scale.get(), flags, icon, 16 * scale.get())
         local hovered = ui.itemHovered() and not callback.dialog
         return clicked and not (flags == ui.ButtonFlags.Disabled)
 end
@@ -617,7 +619,7 @@ function button.iconTopBar(label, icon, sizeX, sizeY, flags, flipped, iconScale,
         local hasLabel = not label:startsWith("##")
 
         local p = ui.getCursor()
-        local clicked = ui.invisibleButton("##" .. label, vec2(sizeX, sizeY))
+        local clicked = ui.invisibleButton("##" .. label, vec2Temp1:set(sizeX, sizeY))
         local hovered = ui.itemHovered() and not callback.dialog
 
         local buttonColor = rgbm.colors.transparent
@@ -637,10 +639,10 @@ function button.iconTopBar(label, icon, sizeX, sizeY, flags, flipped, iconScale,
 
         if hovered and not disabled then ui.drawRect(r1, r2, settings.Appearance.uiColorAccent, 6 * scale.get()) end
 
-        local iconSize = vec2(sizeX, sizeX)
-        if flipped then iconSize = vec2(-sizeX, sizeX) end
+        local iconSize = vec2Temp1:set(sizeX, sizeX)
+        if flipped then iconSize = vec2Temp1:set(-sizeX, sizeX) end
 
-        ui.addIcon(icon, iconSize * iconScale, vec2(0.5, hasLabel and 0.3 or 0.5), fontColor, 0)
+        ui.addIcon(icon, iconSize * iconScale, vec2Temp2:set(0.5, hasLabel and 0.3 or 0.5), fontColor, 0)
 
         if hasLabel then
                 ui.setCursor(p)
@@ -657,7 +659,7 @@ function button.iconTopBar(label, icon, sizeX, sizeY, flags, flipped, iconScale,
                         style.main.font.header.size,
                         ui.Alignment.Center,
                         ui.Alignment.Center,
-                        vec2(labelWidth, sizeY * 0.5),
+                        vec2Temp1:set(labelWidth, sizeY * 0.5),
                         false,
                         fontColor
                 )
@@ -665,7 +667,7 @@ function button.iconTopBar(label, icon, sizeX, sizeY, flags, flipped, iconScale,
         end
 
         ui.setCursor(p)
-        ui.dummy(vec2(sizeX, sizeY))
+        ui.dummy(vec2Temp1:set(sizeX, sizeY))
 
         return clicked and not disabled
 end
@@ -679,7 +681,7 @@ function button.icon(label, icon, sizeX, sizeY, flags, flipped, iconScale, activ
         local hasLabel = not label:startsWith("##")
 
         local p = ui.getCursor()
-        local clicked = ui.invisibleButton("##" .. label, vec2(sizeX, sizeY))
+        local clicked = ui.invisibleButton("##" .. label, vec2Temp1:set(sizeX, sizeY))
         local hovered = ui.itemHovered() and not callback.dialog
 
         -- local r1, r2 = ui.itemRect()
@@ -697,10 +699,10 @@ function button.icon(label, icon, sizeX, sizeY, flags, flipped, iconScale, activ
 
         if hovered and active then ui.beginOutline() end
 
-        local iconSize = vec2(sizeX, sizeX)
-        if flipped then iconSize = vec2(-sizeX, sizeX) end
+        local iconSize = vec2Temp1:set(sizeX, sizeX)
+        if flipped then iconSize = vec2Temp1:set(-sizeX, sizeX) end
 
-        ui.addIcon(icon, iconSize * iconScale, vec2(0.5, hasLabel and 0.1 or 0.5), iconColor, 0)
+        ui.addIcon(icon, iconSize * iconScale, vec2Temp2:set(0.5, hasLabel and 0.1 or 0.5), iconColor, 0)
 
         if hovered and active then ui.endOutline(settings.Appearance.uiColorAccent, 1) end
 
@@ -719,7 +721,7 @@ function button.icon(label, icon, sizeX, sizeY, flags, flipped, iconScale, activ
                         style.main.font.body.size,
                         ui.Alignment.Center,
                         ui.Alignment.Center,
-                        vec2(labelWidth, sizeY * 0.5),
+                        vec2Temp1:set(labelWidth, sizeY * 0.5),
                         false,
                         iconColor
                 )
@@ -727,7 +729,7 @@ function button.icon(label, icon, sizeX, sizeY, flags, flipped, iconScale, activ
         end
 
         ui.setCursor(p)
-        ui.dummy(vec2(sizeX, sizeY))
+        ui.dummy(vec2Temp1:set(sizeX, sizeY))
 
         return clicked and not disabled
 end
@@ -736,7 +738,7 @@ function button.iconInline(label, icon, sizeX, sizeY, flags, flipped, active)
         local disabled = false
         if bit.band(flags, ui.ButtonFlags.Disabled) ~= 0 then disabled = true end
 
-        local clicked = ui.invisibleButton("##" .. label, vec2(sizeX, sizeY))
+        local clicked = ui.invisibleButton("##" .. label, vec2Temp1:set(sizeX, sizeY))
         local hovered = ui.itemHovered() and not callback.dialog
 
         local r1, r2 = ui.itemRect()
@@ -754,13 +756,13 @@ function button.iconInline(label, icon, sizeX, sizeY, flags, flipped, active)
 
         if hovered and active then ui.beginOutline() end
 
-        local iconSize = vec2(sizeX, sizeX)
-        if flipped then iconSize = vec2(-sizeX, sizeX) end
+        local iconSize = vec2Temp1:set(sizeX, sizeX)
+        if flipped then iconSize = vec2Temp1:set(-sizeX, sizeX) end
 
         ui.drawRectFilled(r1, r2, buttonColor, 6 * scale.get())
         ui.drawRect(r1, r2, settings.Appearance.uiColorAccent * 0.5, 6 * scale.get())
 
-        ui.addIcon(icon, iconSize * 0.15, vec2(0.1, 0.5), iconColor, 0)
+        ui.addIcon(icon, iconSize * 0.15, vec2Temp2:set(0.1, 0.5), iconColor, 0)
 
         if hovered and active then ui.endOutline(settings.Appearance.uiColorAccent, 1) end
 
@@ -772,7 +774,7 @@ function button.iconInline(label, icon, sizeX, sizeY, flags, flipped, active)
                 style.main.font.body.size,
                 ui.Alignment.Center,
                 ui.Alignment.Center,
-                vec2(sizeX, sizeY),
+                vec2Temp1:set(sizeX, sizeY),
                 false,
                 iconColor
         )
@@ -785,7 +787,7 @@ function button.emoji(label, emoji, sizeX, sizeY, flags, active)
         local disabled = false
         if bit.band(flags, ui.ButtonFlags.Disabled) ~= 0 then disabled = true end
 
-        local clicked = ui.invisibleButton("##" .. label, vec2(sizeX, sizeY))
+        local clicked = ui.invisibleButton("##" .. label, vec2Temp1:set(sizeX, sizeY))
         local hovered = ui.itemHovered() and not callback.dialog
         local r1, r2 = ui.itemRect()
 
@@ -871,7 +873,7 @@ function button.smallIcon(id, icon, size)
 
         ui.drawRectFilled(r1, r2, color, 6 * scale.get())
 
-        ui.addIcon(icon, size * 0.5, vec2(0.5, 0.5), rgbm.colors.white, 0)
+        ui.addIcon(icon, size * 0.5, vec2Temp1:set(0.5, 0.5), rgbm.colors.white, 0)
 
         return clicked
 end
@@ -881,7 +883,7 @@ function button.setupSelect(label, active, createdDate)
 
         local fontSpace = style.main.font.body.space
         local fontSize = style.main.font.body.size
-        local size = vec2(ui.availableSpaceX() - 10 * scale.get(), fontSpace * 2 + 20 * scale.get())
+        local size = vec2Temp1:set(ui.availableSpaceX() - 10 * scale.get(), fontSpace * 2 + 20 * scale.get())
         local fontColor = settings.Appearance.uiColorText
 
         local tempCursor = ui.getCursor()
@@ -916,7 +918,7 @@ function button.setupSelect(label, active, createdDate)
                 fontSize,
                 ui.Alignment.Start,
                 ui.Alignment.Center,
-                vec2(size.x, fontSpace),
+                vec2Temp1:set(size.x, fontSpace),
                 false,
                 hovered and rgbm(1, 1, 1, 1) or fontColor
         )
@@ -928,7 +930,7 @@ function button.setupSelect(label, active, createdDate)
                 fontSize,
                 ui.Alignment.Start,
                 ui.Alignment.Center,
-                vec2(size.x, fontSpace),
+                vec2Temp1,
                 false,
                 hovered and rgbm(1, 1, 1, 1) or fontColor
         )
@@ -942,17 +944,21 @@ function button.setupSelect(label, active, createdDate)
                 local buttonWidth = 100 * scale.get()
 
                 ui.setCursorX(ui.availableSpaceX() - buttonWidth * 2 - fontSpace - 30 * scale.get())
-                deleteClicked = button.small("##delete_setup_" .. label, "Delete", vec2(buttonWidth, fontSpace))
+                deleteClicked =
+                        button.small("##delete_setup_" .. label, "Delete", vec2Temp1:set(buttonWidth, fontSpace))
                 ui.sameLine()
 
                 cursor.offsetX(5)
-                loadClicked = button.small("##load_setup_" .. label, "Load", vec2(buttonWidth, fontSpace))
+                loadClicked = button.small("##load_setup_" .. label, "Load", vec2Temp1:set(buttonWidth, fontSpace))
                 ui.sameLine()
 
                 cursor.offsetX(5)
 
-                explorerClicked =
-                        button.smallIcon("##open_in_explorer_" .. label, ui.Icons.Folder, vec2(fontSpace, fontSpace))
+                explorerClicked = button.smallIcon(
+                        "##open_in_explorer_" .. label,
+                        ui.Icons.Folder,
+                        vec2Temp1:set(fontSpace, fontSpace)
+                )
         end
 
         cursor.offsetY(10)
@@ -968,7 +974,7 @@ function button.treeNodeChild(label, size, active, bold, count, defaultOpen)
         local fontSize = style.main.font.header.size
         local fontSpace = style.main.font.header.space
         local fontColor = settings.Appearance.uiColorText
-        local size = vec2(ui.availableSpaceX() - 10 * scale.get(), fontSpace + 20 * scale.get())
+        local size = vec2Temp1:set(ui.availableSpaceX() - 10 * scale.get(), fontSpace + 20 * scale.get())
         local offset = bold and 0 or size.y
 
         local tempCursor = ui.getCursor()
