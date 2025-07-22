@@ -1,5 +1,11 @@
 ## ACUIR Changelog
 *Requires minimum CSP version 0.2.11 (3465)*
+### 0.9.5.6-beta
+
+Fixes:
+- Fixed Mirror link button activation space being too large
+- Began altering bottom widget bar
+
 ### 0.9.5.4
 
 Features:
