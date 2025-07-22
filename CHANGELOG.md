@@ -1,5 +1,18 @@
 ## ACUIR Changelog
 *Requires minimum CSP version 0.2.11 (3465)*
+### 0.9.6.2-beta
+
+Features:
+- New window popup for chat emojis.
+- Settings View now has "Reset to Saved" option
+
+Optimization:
+- First optimization pass done, need to free up some memory and reduce GC hits. CPU time is acceptable currently.
+
+Fixes:
+- Fixed setup spinners not refreshing when their tab is not visible
+- General style cleanup.
+
 ### 0.9.5.6-beta
 
 Fixes:
