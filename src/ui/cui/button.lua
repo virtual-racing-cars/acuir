@@ -226,7 +226,8 @@ function button.menu(label, size, horizontalAligment, verticalAlignment, flags, 
                 false,
                 fontColor
         )
-        ui.setCursor(vec2Temp1:set(r2.x, r1.y))
+        ui.setCursor(r1)
+        ui.dummy(buttonSize)
 
         ui.popDWriteFont()
 

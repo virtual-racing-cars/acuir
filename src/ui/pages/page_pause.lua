@@ -136,7 +136,7 @@ function page.draw(dt)
                                         menuButton.func()
                                 end
 
-                                cui.offsetCursorY(65)
+                                cui.offsetCursorY(5)
                         end
 
                         ui.popStyleColor(1)

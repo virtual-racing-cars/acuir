@@ -644,10 +644,9 @@ local function searchFilters()
                 setupExchangeAPI.setupsOrder[setupExchangeAPI.stored.setupsOrder][1],
                 ui.Alignment.Start,
                 true,
-                vec2Temp1:set(comboSize.x, comboSize.y * (#setupExchangeAPI.setupsOrder + 3)),
+                vec2Temp1:set(comboSize.x, comboSize.y * (#setupExchangeAPI.setupsOrder + 2.5)),
                 function()
-                        cui.offsetCursorX(25)
-                        cui.offsetCursorY(15)
+                        cui.offsetCursorX(15)
                         local showTracksChanged = false
                         local showTracksValue = not setupExchangeAPI.stored.setupsFilterTrack
                         showTracksValue, showTracksChanged = cui.checkbox(
@@ -678,8 +677,6 @@ local function searchFilters()
                                 end
                                 cui.offsetCursorY(5)
                         end
-
-                        cui.offsetCursorY(15)
                 end
         )
 end

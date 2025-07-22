@@ -135,7 +135,8 @@ ui.onExclusiveHUD(function(mode)
         exclusiveHudMode = nil
 
         -- pages:goToSettingsControls()
-        pages:goToSettingsView()
+        -- pages:goToSettingsView()
+        -- pages:goToSetup()
 
         camera.windowHovered = ui.getHoveredID() ~= 0
         style:pushStyleMain()

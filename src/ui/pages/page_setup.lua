@@ -84,11 +84,11 @@ function page:draw()
         setupItemWindow()
 
         carStatusWindow:setPosition(ui.windowWidth() * 0.75, 0)
-        carStatusWindow:setSize(ui.windowWidth() * 0.25, ui.windowHeight() * 0.84 - 7.5 * cui.scale())
+        carStatusWindow:setSize(ui.windowWidth() * 0.25, ui.windowHeight() * 0.8 - 7.5 * cui.scale())
         carStatusWindow:draw()
 
-        dataLoggerWindow:setPosition(ui.windowWidth() * 0.75, ui.windowHeight() * 0.84 + 7.5 * cui.scale())
-        dataLoggerWindow:setSize(ui.windowWidth() * 0.25, ui.windowHeight() * 0.16 - 7.5 * cui.scale())
+        dataLoggerWindow:setPosition(ui.windowWidth() * 0.75, ui.windowHeight() * 0.8 + 7.5 * cui.scale())
+        dataLoggerWindow:setSize(ui.windowWidth() * 0.25, ui.windowHeight() * 0.2 - 7.5 * cui.scale())
         dataLoggerWindow:draw()
 
         return app.state.setupTab > 1 and "finalize" or "apps"
