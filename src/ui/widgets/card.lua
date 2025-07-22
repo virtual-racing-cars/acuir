@@ -5,6 +5,7 @@ local style = require("ui.cui.style")
 local sim = ac.getSim()
 
 local vec2Temp1 = vec2()
+local vec2Temp2 = vec2()
 
 local card = {}
 
@@ -83,8 +84,6 @@ end
 
 local function getDriverTags(carIndex) return ac.DriverTags(ac.getDriverName(carIndex)) end
 
-local comboActive = false
-
 function card:draw(xPos, yPos, width, height)
         local fontSize = style.main.font.body.size
         local fontSpace = style.main.font.body.space
@@ -92,7 +91,7 @@ function card:draw(xPos, yPos, width, height)
         cui.pushWindow("card_widget_window", xPos, yPos, width, height, false)
         local border = style.main.margins.innerSize
         local buttonHeight = style.main.font.body.size * 2
-        local comboSize = vec2Temp1:set(ui.availableSpaceX() - 25 * cui.scale() - buttonHeight * 2, buttonHeight)
+        local comboSize = vec2Temp2:set(ui.availableSpaceX() - 25 * cui.scale() - buttonHeight * 2, buttonHeight)
 
         ui.drawRectFilled(
                 0,

@@ -352,8 +352,6 @@ local function getTrackLocation()
                 local city = JSON.parse(io.load(path .. "ui_track.json")).city
                 local country = JSON.parse(io.load(path .. "ui_track.json")).country
 
-                ac.log(city, country)
-
                 if city and country then
                         trackLocation = string.reggsub(city, [[\t|</?br\s*/?\s*>]], "")
                                 .. ", "

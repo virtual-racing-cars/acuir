@@ -112,6 +112,18 @@ local hudModes = {
         end,
 }
 
+-- pages:goToSession()
+-- pages:goToLapTimes()
+-- pages:goToSetup()
+-- pages:goToSettingsControls()
+-- pages:goToSettingsGeneral()
+-- pages:goToSettingsAudio()
+-- pages:goToSettingsGeneral()
+-- pages:goToSettingsView()
+-- pages:goToTelemetry()
+-- pages:goToSettings()
+-- pages:goToAbout()
+
 ui.onExclusiveHUD(function(mode)
         if ac.getLastError() or not app.state.appOpen then return end
         exclusiveHudMode = nil
@@ -122,18 +134,6 @@ ui.onExclusiveHUD(function(mode)
         --         style:popStyleMain()
         --         return ""
         -- end
-
-        -- pages:goToSession()
-        -- pages:goToLapTimes()
-        -- pages:goToSetup()
-        -- pages:goToSettingsControls()
-        -- pages:goToSettingsGeneral()
-        -- pages:goToSettingsAudio()
-        -- pages:goToSettingsGeneral()
-        -- pages:goToSettingsView()
-        -- pages:goToTelemetry()
-        -- pages:goToSettings()
-        -- pages:goToAbout()
 
         camera.windowHovered = ui.getHoveredID() ~= 0
         style:pushStyleMain()
@@ -185,8 +185,8 @@ ui.onExclusiveHUD(function(mode)
 
                 ui.transparentWindow("dialog_window", 0, ui.windowSize(), true, true, function()
                         ui.bringWindowToFront()
-                        ui.drawRectFilled(vec2Temp1:set(0, 0), ui.windowSize(), rgbm.colors.black * 0.75)
-                        ui.drawRectFilled(vec2Temp1:set(0, 0), ui.windowSize(), settings.Appearance.uiColorPrimary)
+                        ui.drawRectFilled(0, ui.windowSize(), rgbm.colors.black * 0.75)
+                        ui.drawRectFilled(0, ui.windowSize(), settings.Appearance.uiColorPrimary)
 
                         local childWindowWith = ui.windowWidth() / 5
                         local childWindowHeight = ui.windowHeight() / 5

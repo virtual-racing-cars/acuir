@@ -8,7 +8,11 @@ local sim = ac.getSim()
 local vec2Temp1 = vec2()
 local vec2Temp2 = vec2()
 
+local clamp = math.clamp
+local min = math.min
+local max = math.max
 local round = math.round
+local isnan = math.isnan
 
 local card = {}
 
@@ -24,8 +28,7 @@ end
 
 function card:draw(xPos, yPos, width, height)
         local border = 20 * cui.scale()
-        vec2Temp1:set(ui.windowWidth() / 3, 32 * cui.scale())
-        local textBoxSize = vec2Temp1
+        local fontSize = style.main.font.title.size
 
         cui.pushWindow("pedals_widget_window", xPos, yPos, width, height, false)
         ui.drawRectFilled(
@@ -36,31 +39,20 @@ function card:draw(xPos, yPos, width, height)
                 ui.CornerFlags.All
         )
         local spectatedCar = ac.getCar(sim.focusedCar)
+        vec2Temp2:set(ui.windowWidth() / 3, style.main.font.title.space)
 
         cui.setCursorX(15)
         cui.setCursorY(50)
         cui.snapCursor()
-        ui.dwriteTextAligned("SPEED", style.main.font.body.size, ui.Alignment.Start, ui.Alignment.Center, textBoxSize)
+        ui.dwriteTextAligned("SPEED", style.main.font.body.size, ui.Alignment.Start, ui.Alignment.Center, vec2Temp2)
         ui.sameLine()
 
         cui.snapCursor()
-        ui.dwriteTextAligned(
-                "POSITION",
-                style.main.font.body.size,
-                ui.Alignment.Start,
-                ui.Alignment.Center,
-                textBoxSize
-        )
+        ui.dwriteTextAligned("POSITION", style.main.font.body.size, ui.Alignment.Start, ui.Alignment.Center, vec2Temp2)
         ui.sameLine()
 
         cui.snapCursor()
-        ui.dwriteTextAligned(
-                "LAST LAP",
-                style.main.font.body.size,
-                ui.Alignment.Start,
-                ui.Alignment.Center,
-                textBoxSize
-        )
+        ui.dwriteTextAligned("LAST LAP", style.main.font.body.size, ui.Alignment.Start, ui.Alignment.Center, vec2Temp2)
 
         cui.setCursorX(15)
         cui.setCursorY(15)
@@ -70,7 +62,7 @@ function card:draw(xPos, yPos, width, height)
                 32 * cui.scale(),
                 ui.Alignment.Start,
                 ui.Alignment.Center,
-                textBoxSize
+                vec2Temp2
         )
         ui.sameLine()
 
@@ -80,7 +72,7 @@ function card:draw(xPos, yPos, width, height)
                 32 * cui.scale(),
                 ui.Alignment.Start,
                 ui.Alignment.Center,
-                textBoxSize
+                vec2Temp2
         )
         ui.sameLine()
 
@@ -90,7 +82,7 @@ function card:draw(xPos, yPos, width, height)
                 32 * cui.scale(),
                 ui.Alignment.Start,
                 ui.Alignment.Center,
-                textBoxSize
+                vec2Temp2
         )
         ui.sameLine()
 
@@ -111,12 +103,12 @@ function card:draw(xPos, yPos, width, height)
         local barStart = 100 * cui.scale()
         local barWidth = ui.availableSpaceX() - barStart - 15 * cui.scale()
 
-        local steer = math.round(math.clamp(spectatedCar.steer / spectatedCar.steerLock, -1, 1), 3)
+        local steer = round(clamp(spectatedCar.steer / spectatedCar.steerLock, -1, 1), 3)
 
-        if math.isnan(spectatedCar.steer) then steer = 0 end
+        if isnan(spectatedCar.steer) then steer = 0 end
 
         progressBar(
-                math.max(steer, 0),
+                max(steer, 0),
                 barStart + barWidth * 0.5,
                 barPosition,
                 barWidth * 0.5 * 0.93,
@@ -133,7 +125,7 @@ function card:draw(xPos, yPos, width, height)
         )
 
         progressBar(
-                -math.min(steer, 0),
+                -min(steer, 0),
                 barStart + barWidth * 0.5,
                 barPosition,
                 -barWidth * 0.5 * 0.93,
@@ -144,7 +136,7 @@ function card:draw(xPos, yPos, width, height)
 
         barPosition = (ui.windowHeight() / 20) * 10
 
-        local gas = math.round(spectatedCar.gas, 3)
+        local gas = round(spectatedCar.gas, 3)
         progressBar(gas, barStart, barPosition, barWidth * 0.965, rgbm(0, 0.8, 0, 1), border)
         progressBar(
                 gas >= 1 and 1 or 0,
