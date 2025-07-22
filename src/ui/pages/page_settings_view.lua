@@ -30,7 +30,7 @@ local bottomBarButtons = {
                 label = "RESET TO SAVED",
                 enabled = true,
                 func = function()
-                        ac.setOnboardCameraParams(0, onboardParamsDefaults, false)
+                        ac.setOnboardCameraParams(0, onboardParamsDefaults, true)
                         ac.setFirstPersonCameraFOV(firstPersonCameraFOV)
                 end,
         },
