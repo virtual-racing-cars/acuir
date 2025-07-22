@@ -415,13 +415,12 @@ function button.bindingAxle(name, label, binder, size, flags)
         local fontSize = math.floor(sizeY * 0.4)
 
         if not flags then flags = ui.ButtonFlags.None end
-        -- if flags == ui.ButtonFlags.Disabled then fontColor = settings.Appearance.uiColorTextDim end
 
         local clicked = ui.invisibleButton("##" .. binder.bind, size, flags)
         local r1, r2 = ui.itemRect()
         local hovered = ui.itemHovered() and not callback.dialog
 
-        local buttonColor = settings.Appearance.uiColorBackgroundShade
+        local buttonColor = settings.Appearance.uiColorPrimary
         local textColor = settings.Appearance.uiColorText
 
         if hovered then
@@ -429,7 +428,6 @@ function button.bindingAxle(name, label, binder, size, flags)
                 textColor = settings.Appearance.uiColorBackground
         end
 
-        -- if hovered and ui.mouseClicked(ui.MouseButton.Right) then button:unbind(i) end
         ui.drawRectFilled(r1, r2, buttonColor, 6 * scale.get())
 
         if binder.isCentered and binder.inputModeBound then
