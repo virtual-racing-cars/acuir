@@ -5,10 +5,12 @@ local pages = require("ui.pages")
 local settings = require("settings")
 local style = require("ui.cui.style")
 local sim = ac.getSim()
-local firstPersonCameraFOV = sim.firstPersonCameraFOV
 
 local vec2Temp1 = vec2()
 local vec2Temp2 = vec2()
+
+local firstPersonCameraFOV = sim.firstPersonCameraFOV
+local onboardParamsDefaults = ac.getOnboardCameraDefaultParams(0)
 
 local bottomBarButtons = {
         {
@@ -25,10 +27,10 @@ local bottomBarButtons = {
                 end,
         },
         {
-                label = "RESET",
-                enabled = false,
+                label = "RESET TO SAVED",
+                enabled = true,
                 func = function()
-                        ac.setOnboardCameraParams(0, ac.getOnboardCameraDefaultParams(0), false)
+                        ac.setOnboardCameraParams(0, onboardParamsDefaults, false)
                         ac.setFirstPersonCameraFOV(firstPersonCameraFOV)
                 end,
         },
@@ -38,11 +40,10 @@ local bottomBarButtons = {
                 func = function()
                         firstPersonCameraFOV = sim.firstPersonCameraFOV
                         ac.setOnboardCameraParams(0, ac.getOnboardCameraParams(0), true)
+                        onboardParamsDefaults = ac.getOnboardCameraParams(0)
                 end,
         },
 }
-
-local onboardParamsDefaults = ac.getOnboardCameraDefaultParams(0)
 
 local views = {
         {
@@ -149,6 +150,8 @@ local views = {
 }
 
 function page:draw()
+        ui.forceSimplifiedComposition()
+
         ui.drawSimpleLine(
                 vec2Temp1:set(ui.windowWidth() * 0.5, 0),
                 vec2Temp2:set(ui.windowWidth() * 0.5, ui.windowHeight()),
@@ -211,7 +214,7 @@ function page:draw()
                 if changed then viewSetting.set(onboardParams, value) end
         end
 
-        -- bottomBarButtons[2].enabled = ac.areOnboardCameraParamsNeedSaving()
+        bottomBarButtons[3].enabled = ac.areOnboardCameraParamsNeedSaving()
 
         cui.popContentWindow()
         bottomBar(bottomBarButtons)

@@ -119,7 +119,7 @@ local function mfdWidgetSpinner(name, height, index, value, format, min, max, it
                 fontSize,
                 ui.Alignment.End,
                 ui.Alignment.Center,
-                vecvec2Temp1:set2((ui.windowWidth() / 5) * 2, buttonSize)
+                vec2Temp1:set((ui.windowWidth() / 5) * 2, buttonSize)
         )
         ui.sameLine()
         ui.setCursorX(ui.windowWidth() / 2 - ui.windowWidth() / 10)
@@ -129,7 +129,7 @@ local function mfdWidgetSpinner(name, height, index, value, format, min, max, it
                 fontSize,
                 ui.Alignment.Center,
                 ui.Alignment.Center,
-                vecvec2Temp1:set2(ui.windowWidth() / 5, buttonSize)
+                vec2Temp1:set(ui.windowWidth() / 5, buttonSize)
         )
 
         local displayValue = items and items[value + 1] or string.format(format, value)

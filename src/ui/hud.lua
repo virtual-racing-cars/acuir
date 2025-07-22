@@ -38,8 +38,6 @@ local fadingTimer = ui.FadingElement(function()
         cui.popWindow()
 end)
 
--- settings.AppData.shownOnboarding = false
-
 local exclusiveHudMode = ""
 
 local hudModes = {
@@ -112,10 +110,11 @@ local hudModes = {
         end,
 }
 
+-- settings.AppData.shownOnboarding = false
+
 -- pages:goToSession()
 -- pages:goToLapTimes()
 -- pages:goToSetup()
--- pages:goToSettingsControls()
 -- pages:goToSettingsGeneral()
 -- pages:goToSettingsAudio()
 -- pages:goToSettingsGeneral()
@@ -124,16 +123,19 @@ local hudModes = {
 -- pages:goToSettings()
 -- pages:goToAbout()
 
+-- if true then
+--         style:pushStyleMain()
+--         testUI()
+--         style:popStyleMain()
+--         return ""
+-- end
+
 ui.onExclusiveHUD(function(mode)
         if ac.getLastError() or not app.state.appOpen then return end
         exclusiveHudMode = nil
 
-        -- if true then
-        --         style:pushStyleMain()
-        --         testUI()
-        --         style:popStyleMain()
-        --         return ""
-        -- end
+        -- pages:goToSettingsControls()
+        -- pages:goToSettingsView()
 
         camera.windowHovered = ui.getHoveredID() ~= 0
         style:pushStyleMain()

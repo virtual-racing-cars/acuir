@@ -60,14 +60,14 @@ function bottomBar(buttons)
                                 menuButtonSize,
                                 ui.Alignment.Center,
                                 ui.Alignment.Center,
-                                menuButton.enabled and ui.ButtonFlags.None or ui.ButtonFlags.Disabled
+                                menuButton.enabled and ui.ButtonFlags.None or ui.ButtonFlags.Disabled,
+                                false,
+                                false,
+                                i == 1 and ui.CornerFlags.Left or ui.CornerFlags.None
                         )
                 then
                         menuButton.func()
                 end
-
-                ui.sameLine()
-                ui.offsetCursor(-1)
         end
 
         ui.popStyleColor(1)
